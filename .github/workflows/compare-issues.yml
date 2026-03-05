@@ -1,0 +1,61 @@
+name: Compare pgschema Issues with pgdelta Coverage
+
+on:
+  schedule:
+    # Run every day at 08:00 UTC
+    - cron: "0 8 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: >
+          Dry run – analyse issues and log what would be created,
+          but do not actually create any GitHub issues.
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "true"
+          - "false"
+      model:
+        description: >
+          GitHub Models / Copilot model to use for coverage evaluation and
+          issue generation (must be available via the GitHub Models API).
+        required: false
+        default: "gpt-4o-mini"
+
+jobs:
+  compare-issues:
+    name: Compare pgschema issues with pgdelta
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write    # create issues in this repository
+      models: read     # access GitHub Models API (used for LLM calls via GITHUB_TOKEN)
+      contents: read
+
+    steps:
+      - name: Checkout repository with submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Update submodules to latest upstream commits
+        run: git submodule update --remote --merge
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run issue comparison
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PGSCHEMA_REPO: pgplex/pgschema
+          PGDELTA_LOCAL_PATH: repos/pg-toolbelt/packages/pg-delta
+          PGSCHEMA_LOCAL_PATH: repos/pgschema
+          MODEL: ${{ inputs.model || 'gpt-4o-mini' }}
+          DRY_RUN: ${{ inputs.dry_run || 'false' }}
+        run: python scripts/compare_issues.py
