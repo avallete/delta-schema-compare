@@ -136,5 +136,7 @@ CREATE SCHEMA test_schema;
 ## Labelling
 
 All tracking issues must have:
-- **`from-pgschema`** – links back to the upstream source
+- **`from-pgschema`** – links back to the upstream source (for open issues)
+- **`resolved-in-pgschema`** – links back to a resolved upstream issue
+  (historical gap; used by `compare_resolved.py`)
 - **`needs-test`** – signals that a pg-delta test case is needed

@@ -1,14 +1,14 @@
-name: Compare pgschema Issues with pgdelta Coverage
+name: Compare Resolved pgschema Issues with pgdelta Coverage
 
 on:
   schedule:
-    # Run every day at 08:00 UTC
-    - cron: "0 8 * * *"
+    # Run every Monday at 09:00 UTC (weekly, offset from the daily open-issues job)
+    - cron: "0 9 * * 1"
   workflow_dispatch:
     inputs:
       dry_run:
         description: >
-          Dry run – analyse issues and log what would be created,
+          Dry run – analyse resolved issues and log what would be created,
           but do not actually create any GitHub issues.
         required: false
         default: "false"
@@ -24,8 +24,8 @@ on:
         default: "claude-opus-4.6"
 
 jobs:
-  compare-issues:
-    name: Compare pgschema issues with pgdelta
+  compare-resolved:
+    name: Compare resolved pgschema issues with pgdelta
     runs-on: ubuntu-latest
     permissions:
       issues: write    # create issues in this repository
@@ -50,7 +50,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run issue comparison
+      - name: Run resolved issue comparison
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PGSCHEMA_REPO: pgplex/pgschema
@@ -58,4 +58,4 @@ jobs:
           PGSCHEMA_LOCAL_PATH: repos/pgschema
           MODEL: ${{ inputs.model || 'claude-opus-4.6' }}
           DRY_RUN: ${{ inputs.dry_run || 'false' }}
-        run: python scripts/compare_issues.py
+        run: python scripts/compare_resolved.py

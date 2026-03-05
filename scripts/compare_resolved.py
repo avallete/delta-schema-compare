@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 """
-Compare open pgschema issues (Bug/Feature) against pgdelta test coverage.
+Compare **closed** pgschema issues (Bug/Feature) against pgdelta test coverage.
 
-The script uses the locally-checked-out submodules to search for coverage
-(no GitHub code-search API calls) and the GitHub Models API (accessed with
-GITHUB_TOKEN) for LLM evaluation and issue generation – no separate OpenAI
-key is required.
+While ``compare_issues.py`` looks at *open* pgschema issues (upcoming gaps),
+this script looks at **resolved** issues — things pgschema has *already fixed*
+that pg-delta may still not handle.  These are "historical gaps": pgschema
+shipped a fix or feature, but the corresponding scenario has no test coverage
+in pg-delta.
 
-For each uncovered issue a detailed GitHub issue is created in THIS repository
-(avallete/delta-schema-compare) with labels ``from-pgschema`` and ``needs-test``.
+The script uses the same local-submodule search and GitHub Models LLM
+evaluation approach as ``compare_issues.py``.
+
+For each uncovered resolved issue a detailed GitHub issue is created in the
+TARGET_REPO with labels ``resolved-in-pgschema`` and ``needs-test``.
 
 Required environment variables:
     GITHUB_TOKEN        – GitHub token (read issues, write issues to this repo,
@@ -34,7 +38,6 @@ import logging
 import os
 import re
 import sys
-import time
 from pathlib import Path
 from typing import Optional
 
@@ -68,7 +71,7 @@ GITHUB_API = "https://api.github.com"
 # GitHub Models endpoint – accessed with GITHUB_TOKEN, no extra API key needed.
 GITHUB_MODELS_ENDPOINT = "https://models.inference.ai.azure.com"
 
-TRACKING_LABEL = "from-pgschema"
+TRACKING_LABEL = "resolved-in-pgschema"
 NEEDS_TEST_LABEL = "needs-test"
 
 _github_headers: dict[str, str] = {
@@ -95,15 +98,9 @@ def _get(url: str, params: Optional[dict] = None, retries: int = 3) -> requests.
 
     If the GitHub API responds with a 403 that indicates rate limiting the
     function sleeps until the reset window has passed and then retries.
-
-    Args:
-        url:     Full URL to request.
-        params:  Optional query-string parameters.
-        retries: Maximum number of attempts before raising.
-
-    Returns:
-        A :class:`requests.Response` with a 2xx status code.
     """
+    import time
+
     for attempt in range(retries):
         resp = requests.get(url, headers=_github_headers, params=params, timeout=30)
         if resp.status_code == 403 and "rate limit" in resp.text.lower():
@@ -138,17 +135,17 @@ def paginate(url: str, params: Optional[dict] = None) -> list[dict]:
 
 
 # ---------------------------------------------------------------------------
-# Fetch pgschema issues
+# Fetch closed pgschema issues
 # ---------------------------------------------------------------------------
 
 
-def get_pgschema_issues() -> list[dict]:
-    """Return all open pgschema issues labelled Bug or Feature (deduped)."""
+def get_resolved_pgschema_issues() -> list[dict]:
+    """Return all closed pgschema issues labelled Bug or Feature (deduped)."""
     url = f"{GITHUB_API}/repos/{PGSCHEMA_REPO}/issues"
     seen: set[int] = set()
     issues: list[dict] = []
     for label in ("Bug", "Feature"):
-        for item in paginate(url, {"state": "open", "labels": label}):
+        for item in paginate(url, {"state": "closed", "labels": label}):
             # Skip pull requests
             if "pull_request" in item:
                 continue
@@ -256,18 +253,6 @@ def collect_pgdelta_snippets(issue: dict) -> list[str]:
     """
     Collect up to 4 relevant file excerpts from the pg-delta codebase for use
     as context in the LLM coverage check.
-
-    Searches tests/ first (most likely to indicate coverage) then src/.
-    Truncates each file to ~4 000 characters (~1 000 tokens) to stay within
-    LLM context limits when sending multiple snippets.
-
-    Returns:
-        A list of formatted strings, each of the form::
-
-            **File:** `<relative-path>`
-            ```
-            <file content excerpt>
-            ```
     """
     title: str = issue.get("title", "")
     body: str = issue.get("body") or ""
@@ -284,8 +269,6 @@ def collect_pgdelta_snippets(issue: dict) -> list[str]:
             if len(snippets) >= 4:
                 break
             rel = fpath.relative_to(PGDELTA_LOCAL_PATH)
-            # Truncate large files to ~1 000 tokens (~4 000 chars) so the
-            # combined snippet payload stays within LLM context limits.
             excerpt = content[:4000]
             snippets.append(f"**File:** `{rel}`\n```\n{excerpt}\n```")
     return snippets
@@ -294,17 +277,6 @@ def collect_pgdelta_snippets(issue: dict) -> list[str]:
 def collect_pgschema_snippets(issue: dict) -> list[str]:
     """
     Collect up to 2 relevant file excerpts from the pgschema codebase.
-
-    These give the LLM context on *how* pgschema handles the feature, which
-    helps generate more accurate pg-delta tracking issues.
-
-    Returns:
-        A list of formatted strings, each of the form::
-
-            **File (pgschema):** `<relative-path>`
-            ```
-            <file content excerpt>
-            ```
     """
     title: str = issue.get("title", "")
     body: str = issue.get("body") or ""
@@ -352,14 +324,7 @@ def get_tracked_issue_numbers(repo: str) -> set[int]:
 
 
 def ensure_label(repo: str, name: str, color: str, description: str = "") -> None:
-    """Create *name* in *repo* if it does not already exist.
-
-    Args:
-        repo:        Repository slug in ``owner/repo`` format.
-        name:        Label name to create.
-        color:       Hex colour string without the leading ``#`` (e.g. ``"0075ca"``).
-        description: Optional short description for the label.
-    """
+    """Create *name* in *repo* if it does not already exist."""
     check_url = f"{GITHUB_API}/repos/{repo}/labels/{requests.utils.quote(name)}"
     resp = requests.get(check_url, headers=_github_headers, timeout=30)
     if resp.status_code == 404:
@@ -389,9 +354,6 @@ _llm_client: Optional[OpenAI] = None
 def _get_llm_client() -> OpenAI:
     """
     Return an OpenAI-compatible client pointed at the GitHub Models endpoint.
-
-    The GitHub Models API is free for GitHub users and accessed with the
-    standard GITHUB_TOKEN – no separate OPENAI_API_KEY is required.
     """
     global _llm_client
     if _llm_client is None:
@@ -405,13 +367,14 @@ def _get_llm_client() -> OpenAI:
 COVERAGE_SYSTEM_PROMPT = """\
 You are an expert in PostgreSQL tooling.  You will be given:
 1. A GitHub issue from *pgschema* (a Go-based PostgreSQL declarative schema
-   migration tool at pgplex/pgschema).
+   migration tool at pgplex/pgschema) that has been **closed / resolved**.
+   This means pgschema has already fixed or implemented the described behaviour.
 2. File excerpts from the *pg-delta* project (a TypeScript/Bun PostgreSQL
    schema diff tool at supabase/pg-toolbelt, package @supabase/pg-delta).
 
 Decide whether the pg-delta excerpts already contain a test case or
-implementation that **fully** covers the scenario described in the pgschema
-issue.
+implementation that **fully** covers the scenario described in the
+(now-resolved) pgschema issue.
 
 Rules:
 - Only return {"covered": true} if there is clear evidence that pg-delta
@@ -431,9 +394,12 @@ You are an expert PostgreSQL contributor familiar with both:
 - *pg-delta* (TypeScript/Bun, @supabase/pg-delta in supabase/pg-toolbelt) –
   a schema diff and migration-script generator
 
-Given a pgschema GitHub issue (Bug or Feature), write a detailed, actionable
-issue to be filed in the *delta-schema-compare* tracking repository, explaining
-what pg-delta is missing or should implement.
+You are given a **closed / resolved** pgschema GitHub issue (Bug or Feature).
+This means pgschema already handles this scenario correctly.  Your task is to
+write a detailed, actionable issue to be filed in the *delta-schema-compare*
+tracking repository, explaining what pg-delta is **still missing** — i.e. the
+"historical gap" between what pgschema already supports and what pg-delta does
+not yet cover.
 
 The issue body MUST contain these exact markdown sections:
 ## Context
@@ -441,6 +407,8 @@ The issue body MUST contain these exact markdown sections:
 ## Suggested Fix
 
 Rules:
+- "Context" must mention that pgschema has already resolved this issue and that
+  pg-delta still lacks coverage.
 - "Test Case to Reproduce" must include runnable SQL demonstrating the scenario.
 - "Suggested Fix" must be specific: include a code sketch, file path hints, or
   algorithm description referencing pg-delta's TypeScript source layout
@@ -460,7 +428,7 @@ def llm_has_coverage(pgschema_issue: dict, snippets: list[str]) -> bool:
     """Ask the LLM whether the provided pg-delta snippets cover the pgschema issue."""
     snippet_text = "\n\n---\n\n".join(snippets) if snippets else "(no relevant files found)"
     user_msg = (
-        "### pgschema issue\n"
+        "### pgschema issue (resolved)\n"
         f"**Title:** {pgschema_issue['title']}\n\n"
         f"{pgschema_issue.get('body') or '*(no body)*'}\n\n"
         f"### pg-delta code excerpts\n{snippet_text}"
@@ -480,12 +448,7 @@ def llm_has_coverage(pgschema_issue: dict, snippets: list[str]) -> bool:
 
 
 def generate_tracking_issue(pgschema_issue: dict) -> dict[str, str]:
-    """Use the LLM to generate a title + body for the tracking issue.
-
-    In addition to the pgschema issue text, the prompt includes relevant
-    excerpts from both the pg-delta and pgschema local codebases so the LLM
-    can produce more accurate file-path references and test patterns.
-    """
+    """Use the LLM to generate a title + body for the tracking issue."""
     pgdelta_snippets = collect_pgdelta_snippets(pgschema_issue)
     pgschema_snippets = collect_pgschema_snippets(pgschema_issue)
 
@@ -496,10 +459,11 @@ def generate_tracking_issue(pgschema_issue: dict) -> dict[str, str]:
         extra_ctx += "\n\n### Relevant pgschema source excerpts (for reference)\n" + "\n\n---\n\n".join(pgschema_snippets)
 
     user_msg = (
-        "### Original pgschema issue\n"
+        "### Original pgschema issue (resolved)\n"
         f"**Title:** {pgschema_issue['title']}\n"
         f"**URL:** {pgschema_issue['html_url']}\n"
-        f"**Labels:** {', '.join(l['name'] for l in pgschema_issue.get('labels', []))}\n\n"
+        f"**Labels:** {', '.join(l['name'] for l in pgschema_issue.get('labels', []))}\n"
+        f"**State:** {pgschema_issue.get('state', 'closed')}\n\n"
         f"{pgschema_issue.get('body') or '*(no body)*'}"
         f"{extra_ctx}"
     )
@@ -550,7 +514,7 @@ def main() -> None:
         logger.error("GITHUB_TOKEN is not set – aborting.")
         sys.exit(1)
 
-    logger.info("=== delta-schema-compare starting ===")
+    logger.info("=== delta-schema-compare (resolved issues) starting ===")
     logger.info("pgschema repo      : %s", PGSCHEMA_REPO)
     logger.info("pg-delta local path: %s", PGDELTA_LOCAL_PATH)
     logger.info("pgschema local path: %s", PGSCHEMA_LOCAL_PATH)
@@ -566,10 +530,10 @@ def main() -> None:
         )
         sys.exit(1)
 
-    # ---- 1. Fetch open pgschema issues ----
-    logger.info("Fetching open pgschema issues with Bug/Feature labels…")
-    issues = get_pgschema_issues()
-    logger.info("Found %d issues to process.", len(issues))
+    # ---- 1. Fetch closed pgschema issues ----
+    logger.info("Fetching closed pgschema issues with Bug/Feature labels…")
+    issues = get_resolved_pgschema_issues()
+    logger.info("Found %d resolved issues to process.", len(issues))
 
     if not issues:
         logger.info("Nothing to do.")
@@ -577,11 +541,11 @@ def main() -> None:
 
     # ---- 2. Ensure labels exist in target repo ----
     if not DRY_RUN:
-        ensure_label(TARGET_REPO, TRACKING_LABEL, "0075ca", "Mirrored from pgschema")
+        ensure_label(TARGET_REPO, TRACKING_LABEL, "1d76db", "Resolved in pgschema but not yet in pg-delta")
         ensure_label(TARGET_REPO, NEEDS_TEST_LABEL, "e4e669", "Needs a test case in pg-delta")
 
     # ---- 3. Find already-processed issues ----
-    logger.info("Loading already-tracked issue numbers…")
+    logger.info("Loading already-tracked resolved issue numbers…")
     tracked = get_tracked_issue_numbers(TARGET_REPO)
     logger.info("Already tracked: %d issue(s).", len(tracked))
 
@@ -600,7 +564,7 @@ def main() -> None:
             skipped_tracked += 1
             continue
 
-        logger.info("[#%d] Checking pg-delta coverage for: %s", num, title)
+        logger.info("[#%d] Checking pg-delta coverage for resolved issue: %s", num, title)
 
         # Fast local keyword check first
         covered_locally = has_local_coverage(issue)
@@ -635,7 +599,7 @@ def main() -> None:
             f"\n\n---\n"
             f"*Automatically generated by "
             f"[delta-schema-compare](https://github.com/{TARGET_REPO}) "
-            f"from pgschema issue #{num}: {issue['html_url']}*"
+            f"from resolved pgschema issue #{num}: {issue['html_url']}*"
         )
 
         if DRY_RUN:
@@ -664,12 +628,12 @@ def main() -> None:
             errors += 1
 
     # ---- Summary ----
-    logger.info("=== Summary ===")
-    logger.info("Issues processed  : %d", len(issues))
-    logger.info("Already tracked   : %d", skipped_tracked)
-    logger.info("Covered in pgdelta: %d", skipped_covered)
-    logger.info("Issues created    : %d", created)
-    logger.info("Errors            : %d", errors)
+    logger.info("=== Summary (resolved issues) ===")
+    logger.info("Resolved issues processed: %d", len(issues))
+    logger.info("Already tracked          : %d", skipped_tracked)
+    logger.info("Covered in pgdelta       : %d", skipped_covered)
+    logger.info("Issues created           : %d", created)
+    logger.info("Errors                   : %d", errors)
 
     if errors:
         sys.exit(1)
