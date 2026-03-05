@@ -1,0 +1,73 @@
+name: Compare pgschema Issues with pgdelta Coverage
+
+on:
+  schedule:
+    # Run every Monday at 08:00 UTC
+    - cron: "0 8 * * 1"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: >
+          Dry run – analyse issues and log what would be created,
+          but do not actually create any GitHub issues.
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "true"
+          - "false"
+      pgschema_repo:
+        description: "pgschema source repository (owner/repo)"
+        required: false
+        default: "pgplex/pgschema"
+      pgdelta_repo:
+        description: "pgdelta host repository (owner/repo)"
+        required: false
+        default: "supabase/pg-toolbelt"
+      pgdelta_path:
+        description: "Sub-path inside pgdelta repo to restrict search"
+        required: false
+        default: "pgdelta"
+      target_repo:
+        description: >
+          Repository where generated issues are created (owner/repo).
+          The GITHUB_TOKEN must have write access to this repo.
+        required: false
+        default: "avallete/delta-schema-compare"
+      openai_model:
+        description: "OpenAI chat model to use"
+        required: false
+        default: "gpt-4o-mini"
+
+jobs:
+  compare-issues:
+    name: Compare pgschema issues with pgdelta
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write   # create issues in this repository
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run issue comparison
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PGSCHEMA_REPO: ${{ inputs.pgschema_repo || 'pgplex/pgschema' }}
+          PGDELTA_REPO: ${{ inputs.pgdelta_repo || 'supabase/pg-toolbelt' }}
+          PGDELTA_PATH: ${{ inputs.pgdelta_path || 'pgdelta' }}
+          TARGET_REPO: ${{ inputs.target_repo || 'avallete/delta-schema-compare' }}
+          OPENAI_MODEL: ${{ inputs.openai_model || 'gpt-4o-mini' }}
+          DRY_RUN: ${{ inputs.dry_run || 'false' }}
+        run: python scripts/compare_issues.py
