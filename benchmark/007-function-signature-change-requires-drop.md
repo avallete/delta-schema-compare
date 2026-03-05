@@ -95,12 +95,19 @@ No `DropProcedure` is pushed before the `CreateProcedure`.
    **before** `CreateProcedure` for the new one:
    ```typescript
    if (nonAlterablePropsChanged) {
-     // If argument types changed, DROP old signature first
-     if (!deepEqual(mainProcedure.argument_types, branchProcedure.argument_types)) {
+     const signatureChanged = !deepEqual(
+       mainProcedure.argument_types,
+       branchProcedure.argument_types,
+     );
+     if (signatureChanged) {
+       // Argument types changed — DROP old signature first
        changes.push(new DropProcedure({ procedure: mainProcedure }));
      }
      changes.push(
-       new CreateProcedure({ procedure: branchProcedure, orReplace: !needsDrop }),
+       new CreateProcedure({
+         procedure: branchProcedure,
+         orReplace: !signatureChanged,
+       }),
      );
    }
    ```

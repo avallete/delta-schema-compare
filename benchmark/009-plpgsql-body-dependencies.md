@@ -68,9 +68,10 @@ approach since SQL parsing in Go is non-trivial.
 **Important nuance**: Unlike pgschema which applies DDL line-by-line,
 `CREATE OR REPLACE FUNCTION` in PostgreSQL does **not** validate body
 references at creation time for plpgsql functions. The body is only checked
-at execution time. So this may be a non-issue for pg-delta in practice, but
-only for plpgsql. For `LANGUAGE SQL` functions, the body IS validated at
-creation time, making ordering critical.
+at execution time. This means ordering is unlikely to cause failures for
+plpgsql functions in practice. However, for `LANGUAGE SQL` functions the body
+IS validated at creation time, so correct ordering is critical in that case.
+The recommendation is to focus testing effort on SQL-language functions first.
 
 ## Plan to handle it in pg-delta
 

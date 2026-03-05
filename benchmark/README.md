@@ -39,9 +39,9 @@ Each file follows this template:
 | 002 | [BEGIN ATOMIC functions](002-begin-atomic-functions.md) | [#241](https://github.com/pgplex/pgschema/issues/241) | Function DDL | Medium |
 | 003 | [INSTEAD OF triggers](003-instead-of-triggers.md) | [#287](https://github.com/pgplex/pgschema/issues/287) | Trigger DDL | Medium |
 | 004 | [pgvector typmod](004-pgvector-typmod.md) | [#295](https://github.com/pgplex/pgschema/issues/295) | Type modifiers | High |
-| 005 | [ALTER column type USING](005-alter-column-type-using-clause.md) | [#190](https://github.com/pgplex/pgschema/issues/190) | Column DDL | 🔴 High |
+| 005 | [ALTER column type USING](005-alter-column-type-using-clause.md) | [#190](https://github.com/pgplex/pgschema/issues/190) | Column DDL | Critical |
 | 006 | [Composite FK column order](006-composite-fk-column-order.md) | [#266](https://github.com/pgplex/pgschema/issues/266) | Constraint DDL | High |
-| 007 | [Function signature DROP](007-function-signature-change-requires-drop.md) | [#326](https://github.com/pgplex/pgschema/issues/326) | Function DDL | 🔴 High |
+| 007 | [Function signature DROP](007-function-signature-change-requires-drop.md) | [#326](https://github.com/pgplex/pgschema/issues/326) | Function DDL | Critical |
 | 008 | [Mat view cascade deps](008-materialized-view-cascade-dependencies.md) | [#268](https://github.com/pgplex/pgschema/issues/268) | Dependency ordering | High |
 | 009 | [plpgsql body deps](009-plpgsql-body-dependencies.md) | [#256](https://github.com/pgplex/pgschema/issues/256) | Dependency ordering | Medium |
 | 010 | [Domain CHECK + function](010-domain-check-function-deps.md) | [#254](https://github.com/pgplex/pgschema/issues/254) | Dependency ordering | Medium |
@@ -49,7 +49,7 @@ Each file follows this template:
 | 012 | [Trigger function drop](012-trigger-function-drop-order.md) | [#148](https://github.com/pgplex/pgschema/issues/148) | Dependency ordering | High |
 | 013 | [Sequence identity](013-sequence-identity-transitions.md) | [#279](https://github.com/pgplex/pgschema/issues/279) | Column DDL | High |
 | 014 | [View SELECT * + column add](014-view-select-star-column-add.md) | [#308](https://github.com/pgplex/pgschema/issues/308) | View DDL | Medium |
-| 015 | [Grant/Revoke ordering](015-grant-revoke-ordering.md) | [#324](https://github.com/pgplex/pgschema/issues/324) | Privilege DDL | 🔴 High |
+| 015 | [Grant/Revoke ordering](015-grant-revoke-ordering.md) | [#324](https://github.com/pgplex/pgschema/issues/324) | Privilege DDL | Critical |
 
 ## Covered by pg-delta (excluded from benchmark)
 
