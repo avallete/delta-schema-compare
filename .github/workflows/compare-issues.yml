@@ -2,8 +2,8 @@ name: Compare pgschema Issues with pgdelta Coverage
 
 on:
   schedule:
-    # Run every Monday at 08:00 UTC
-    - cron: "0 8 * * 1"
+    # Run every day at 08:00 UTC
+    - cron: "0 8 * * *"
   workflow_dispatch:
     inputs:
       dry_run:
@@ -16,26 +16,10 @@ on:
         options:
           - "true"
           - "false"
-      pgschema_repo:
-        description: "pgschema source repository (owner/repo)"
-        required: false
-        default: "pgplex/pgschema"
-      pgdelta_repo:
-        description: "pgdelta host repository (owner/repo)"
-        required: false
-        default: "supabase/pg-toolbelt"
-      pgdelta_path:
-        description: "Sub-path inside pgdelta repo to restrict search"
-        required: false
-        default: "pgdelta"
-      target_repo:
+      model:
         description: >
-          Repository where generated issues are created (owner/repo).
-          The GITHUB_TOKEN must have write access to this repo.
-        required: false
-        default: "avallete/delta-schema-compare"
-      openai_model:
-        description: "OpenAI chat model to use"
+          GitHub Models / Copilot model to use for coverage evaluation and
+          issue generation (must be available via the GitHub Models API).
         required: false
         default: "gpt-4o-mini"
 
@@ -44,12 +28,18 @@ jobs:
     name: Compare pgschema issues with pgdelta
     runs-on: ubuntu-latest
     permissions:
-      issues: write   # create issues in this repository
+      issues: write    # create issues in this repository
+      models: read     # access GitHub Models API (used for LLM calls via GITHUB_TOKEN)
       contents: read
 
     steps:
-      - name: Checkout repository
+      - name: Checkout repository with submodules
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Update submodules to latest upstream commits
+        run: git submodule update --remote --merge
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -63,11 +53,9 @@ jobs:
       - name: Run issue comparison
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          PGSCHEMA_REPO: ${{ inputs.pgschema_repo || 'pgplex/pgschema' }}
-          PGDELTA_REPO: ${{ inputs.pgdelta_repo || 'supabase/pg-toolbelt' }}
-          PGDELTA_PATH: ${{ inputs.pgdelta_path || 'pgdelta' }}
-          TARGET_REPO: ${{ inputs.target_repo || 'avallete/delta-schema-compare' }}
-          OPENAI_MODEL: ${{ inputs.openai_model || 'gpt-4o-mini' }}
+          PGSCHEMA_REPO: pgplex/pgschema
+          PGDELTA_LOCAL_PATH: repos/pg-toolbelt/packages/pg-delta
+          PGSCHEMA_LOCAL_PATH: repos/pgschema
+          MODEL: ${{ inputs.model || 'gpt-4o-mini' }}
           DRY_RUN: ${{ inputs.dry_run || 'false' }}
         run: python scripts/compare_issues.py

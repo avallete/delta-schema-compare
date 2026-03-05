@@ -1,25 +1,49 @@
 # delta-schema-compare
 
-Automated comparison tool that bridges open issues in
-[pgschema](https://github.com/pgplex/pgschema) with the
-[pgdelta](https://github.com/supabase/pg-toolbelt) codebase.
+Automated daily comparison between open issues in
+[pgschema](https://github.com/pgplex/pgschema) and the test coverage of
+[@supabase/pg-delta](https://github.com/supabase/pg-toolbelt/tree/main/packages/pg-delta).
+
+Both upstream codebases are included as **git submodules**, making it easy to
+browse the source locally or with the GitHub Copilot coding agent.
 
 ## What it does
 
-A scheduled GitHub Actions workflow runs weekly and:
+A scheduled GitHub Actions workflow runs **every day at 08:00 UTC** and:
 
 1. **Fetches** all open pgschema issues labelled **Bug** or **Feature**.
-2. **Checks** whether the [pgdelta](https://github.com/supabase/pg-toolbelt/tree/main/pgdelta)
-   codebase already contains a test case or implementation that covers the scenario described
-   in each issue (keyword search + LLM evaluation).
-3. **Generates** a detailed issue (via OpenAI) for any uncovered case, including:
-   - **Context** – how the pgschema issue relates to pgdelta.
+2. **Checks** whether the pg-delta codebase (local submodule) already contains
+   a test case or implementation that covers the exact scenario described in
+   each issue — using local filesystem search followed by LLM evaluation via
+   the **GitHub Models API** (no separate API key needed).
+3. **Generates** a detailed tracking issue (via GitHub Copilot / GitHub Models)
+   for any uncovered case, including:
+   - **Context** – how the pgschema issue relates to pg-delta.
    - **Test Case to Reproduce** – runnable SQL.
-   - **Suggested Fix** – a concrete code sketch or algorithm outline.
-4. **Creates** the generated issue in the configured `TARGET_REPO`
-   (defaults to this repository) with the labels `from-pgschema` and `needs-test`.
+   - **Suggested Fix** – a concrete code sketch referencing pg-delta source paths.
+4. **Creates** the generated issue in **this repository** with the labels
+   `from-pgschema` and `needs-test`.
 
 Duplicate detection ensures each pgschema issue is processed only once.
+
+## Repository structure
+
+```
+.github/
+  copilot-instructions.md    Copilot agent context for this repo
+  workflows/
+    compare-issues.yml       Daily + manual-dispatch workflow
+docs/
+  pgdelta-structure.md       pg-delta codebase map and test anatomy
+  coverage-guide.md          How to evaluate coverage and write tracking issues
+repos/
+  pgschema/                  git submodule – pgplex/pgschema (Go)
+  pg-toolbelt/               git submodule – supabase/pg-toolbelt (TypeScript)
+    packages/pg-delta/       @supabase/pg-delta source and tests
+scripts/
+  compare_issues.py          Main comparison and generation script
+requirements.txt             Python dependencies (Python 3.11+)
+```
 
 ## Setup
 
@@ -27,48 +51,59 @@ Duplicate detection ensures each pgschema issue is processed only once.
 
 | Secret | Description |
 |---|---|
-| `OPENAI_API_KEY` | OpenAI API key (used for coverage evaluation and issue generation) |
+| *(none extra)* | `GITHUB_TOKEN` is provided automatically by GitHub Actions |
 
-`GITHUB_TOKEN` is provided automatically by GitHub Actions.
+The script uses the **GitHub Models API** (endpoint:
+`https://models.inference.ai.azure.com`) with the workflow's `GITHUB_TOKEN`.
+No `OPENAI_API_KEY` is required.
 
-### Optional variables (workflow dispatch inputs)
+### Workflow dispatch inputs
 
 | Input | Default | Description |
 |---|---|---|
-| `dry_run` | `false` | Log what would be created without actually creating issues |
-| `pgschema_repo` | `pgplex/pgschema` | Source repository for Bug/Feature issues |
-| `pgdelta_repo` | `supabase/pg-toolbelt` | Repository hosting the pgdelta tool |
-| `pgdelta_path` | `pgdelta` | Sub-path inside the pgdelta repo to scope code search |
-| `target_repo` | `avallete/delta-schema-compare` | Where generated issues are filed |
-| `openai_model` | `gpt-4o-mini` | OpenAI chat model to use |
-
-> **Note:** If `TARGET_REPO` is an external repository, replace `GITHUB_TOKEN` with a
-> fine-grained PAT (stored as a repository secret named `GH_PAT`) that has **Issues: write**
-> permission on that repository, and update the workflow to use
-> `${{ secrets.GH_PAT }}` instead of `${{ secrets.GITHUB_TOKEN }}`.
+| `dry_run` | `false` | Log what would be created without creating issues |
+| `model` | `gpt-4o-mini` | GitHub Models model for coverage evaluation and generation |
 
 ## Running locally
 
-**Requirements:** Python 3.11+
+**Requirements:** Python 3.11+, git with submodule support.
 
 ```bash
+# Clone with submodules
+git clone --recurse-submodules https://github.com/avallete/delta-schema-compare
+cd delta-schema-compare
+
+# Or, if already cloned:
+git submodule update --init --recursive
+
+# Install Python dependencies
 pip install -r requirements.txt
 
+# Run (dry run recommended for local testing)
 export GITHUB_TOKEN=ghp_...
-export OPENAI_API_KEY=sk-...
-export TARGET_REPO=avallete/delta-schema-compare
-export DRY_RUN=true   # optional – skip issue creation
+export DRY_RUN=true
 
 python scripts/compare_issues.py
 ```
 
-## Project structure
+## Using the Copilot coding agent
 
-```
-.github/
-  workflows/
-    compare-issues.yml   # Scheduled + manual-dispatch workflow
-scripts/
-  compare_issues.py      # Main comparison & generation script
-requirements.txt         # Python dependencies
-```
+Because both upstream repos are available as local submodules, the GitHub
+Copilot coding agent can browse them directly.  The file
+`.github/copilot-instructions.md` provides Copilot with the context it needs
+to:
+
+- Locate the right test files in `repos/pg-toolbelt/packages/pg-delta/tests/`
+- Understand the roundtrip fidelity test pattern
+- Generate well-structured tracking issues following the template in
+  `docs/coverage-guide.md`
+
+To trigger the agent manually: open a new issue or comment, mention
+`@github-copilot`, and describe which pgschema issue you want analysed.
+
+## Labels used in this repo
+
+| Label | Meaning |
+|---|---|
+| `from-pgschema` | Issue was auto-generated from a pgschema Bug/Feature issue |
+| `needs-test` | A pg-delta integration test case is needed for this scenario |

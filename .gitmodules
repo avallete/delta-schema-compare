@@ -1,0 +1,6 @@
+[submodule "repos/pgschema"]
+	path = repos/pgschema
+	url = https://github.com/pgplex/pgschema
+[submodule "repos/pg-toolbelt"]
+	path = repos/pg-toolbelt
+	url = https://github.com/supabase/pg-toolbelt
