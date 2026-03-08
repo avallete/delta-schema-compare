@@ -64,6 +64,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+OUTPUT_MODE_BENCHMARK = "benchmark"
+OUTPUT_MODE_ISSUES = "issues"
+VALID_OUTPUT_MODES = {OUTPUT_MODE_BENCHMARK, OUTPUT_MODE_ISSUES}
+SNIPPET_SEPARATOR = "\n\n---\n\n"
+MAX_SLUG_LENGTH = 72
+
 GITHUB_TOKEN: str = os.environ.get("GITHUB_TOKEN", "")
 
 PGSCHEMA_REPO: str = os.environ.get("PGSCHEMA_REPO", "pgplex/pgschema")
@@ -76,7 +82,7 @@ PGSCHEMA_LOCAL_PATH: Path = Path(
 TARGET_REPO: str = os.environ.get("TARGET_REPO", "avallete/delta-schema-compare")
 MODEL: str = os.environ.get("MODEL", "claude-opus-4.6")
 DRY_RUN: bool = os.environ.get("DRY_RUN", "false").lower() == "true"
-OUTPUT_MODE: str = os.environ.get("OUTPUT_MODE", "benchmark").lower()
+OUTPUT_MODE: str = os.environ.get("OUTPUT_MODE", OUTPUT_MODE_BENCHMARK).lower()
 REVIEW_MEMORY_PATH: Path = Path(
     os.environ.get("REVIEW_MEMORY_PATH", "benchmark/review-memory.json")
 )
@@ -320,8 +326,9 @@ def collect_pgschema_snippets(issue: dict) -> list[str]:
 
 def slugify(text: str) -> str:
     """Convert *text* to a filename-safe slug."""
-    slug = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
-    return slug[:72] if slug else "issue"
+    slug = re.sub(r"[^a-z0-9]+", "-", text.lower())
+    trimmed = slug[:MAX_SLUG_LENGTH].strip("-")
+    return trimmed if trimmed else "issue"
 
 
 def benchmark_issue_map(benchmark_dir: Path) -> dict[int, Path]:
@@ -559,9 +566,9 @@ def generate_tracking_issue(pgschema_issue: dict) -> dict[str, str]:
 
     extra_ctx = ""
     if pgdelta_snippets:
-        extra_ctx += "\n\n### Relevant pg-delta source excerpts\n" + "\n\n---\n\n".join(pgdelta_snippets)
+        extra_ctx += "\n\n### Relevant pg-delta source excerpts\n" + SNIPPET_SEPARATOR.join(pgdelta_snippets)
     if pgschema_snippets:
-        extra_ctx += "\n\n### Relevant pgschema source excerpts (for reference)\n" + "\n\n---\n\n".join(pgschema_snippets)
+        extra_ctx += "\n\n### Relevant pgschema source excerpts (for reference)\n" + SNIPPET_SEPARATOR.join(pgschema_snippets)
 
     user_msg = (
         "### Original pgschema issue (resolved)\n"
@@ -592,9 +599,9 @@ def generate_benchmark_entry(pgschema_issue: dict) -> dict[str, str]:
 
     extra_ctx = ""
     if pgdelta_snippets:
-        extra_ctx += "\n\n### Relevant pg-delta source excerpts\n" + "\n\n---\n\n".join(pgdelta_snippets)
+        extra_ctx += "\n\n### Relevant pg-delta source excerpts\n" + SNIPPET_SEPARATOR.join(pgdelta_snippets)
     if pgschema_snippets:
-        extra_ctx += "\n\n### Relevant pgschema source excerpts\n" + "\n\n---\n\n".join(pgschema_snippets)
+        extra_ctx += "\n\n### Relevant pgschema source excerpts\n" + SNIPPET_SEPARATOR.join(pgschema_snippets)
 
     user_msg = (
         "### Original pgschema issue (resolved)\n"
@@ -647,7 +654,7 @@ def create_github_issue(
 def main() -> None:
     _set_auth_header()
 
-    if OUTPUT_MODE not in {"benchmark", "issues"}:
+    if OUTPUT_MODE not in VALID_OUTPUT_MODES:
         logger.error("OUTPUT_MODE must be 'benchmark' or 'issues' (got: %s)", OUTPUT_MODE)
         sys.exit(1)
 
@@ -684,12 +691,12 @@ def main() -> None:
         return
 
     # ---- 2. Ensure labels exist in target repo ----
-    if OUTPUT_MODE == "issues" and not DRY_RUN:
+    if OUTPUT_MODE == OUTPUT_MODE_ISSUES and not DRY_RUN:
         ensure_label(TARGET_REPO, TRACKING_LABEL, "1d76db", "Resolved in pgschema but not yet in pg-delta")
         ensure_label(TARGET_REPO, NEEDS_TEST_LABEL, "e4e669", "Needs a test case in pg-delta")
 
     # ---- 3. Find already-processed issues ----
-    if OUTPUT_MODE == "issues":
+    if OUTPUT_MODE == OUTPUT_MODE_ISSUES:
         logger.info("Loading already-tracked resolved issue numbers…")
         tracked = get_tracked_issue_numbers(TARGET_REPO)
     else:
@@ -753,14 +760,14 @@ def main() -> None:
             logger.info(
                 "[#%d] No local coverage found – generating %s.",
                 num,
-                "benchmark entry" if OUTPUT_MODE == "benchmark" else "tracking issue",
+                "benchmark entry" if OUTPUT_MODE == OUTPUT_MODE_BENCHMARK else "tracking issue",
             )
 
         # ---- Generate output with LLM ----
         try:
             generated = (
                 generate_benchmark_entry(issue)
-                if OUTPUT_MODE == "benchmark"
+                if OUTPUT_MODE == OUTPUT_MODE_BENCHMARK
                 else generate_tracking_issue(issue)
             )
         except Exception as exc:
@@ -776,7 +783,7 @@ def main() -> None:
             logger.info(
                 "[#%d] DRY RUN – would create %s:\n  Title: %s\n  Body preview: %.200s",
                 num,
-                "benchmark file" if OUTPUT_MODE == "benchmark" else "issue",
+                "benchmark file" if OUTPUT_MODE == OUTPUT_MODE_BENCHMARK else "issue",
                 gen_title,
                 gen_body,
             )
@@ -784,7 +791,7 @@ def main() -> None:
             created += 1
             continue
 
-        if OUTPUT_MODE == "benchmark":
+        if OUTPUT_MODE == OUTPUT_MODE_BENCHMARK:
             try:
                 fpath = write_benchmark_file(BENCHMARK_DIR, issue, gen_title, gen_body)
                 logger.info("[#%d] Wrote benchmark entry: %s", num, fpath)
@@ -830,7 +837,11 @@ def main() -> None:
     logger.info("Resolved issues processed: %d", len(issues))
     logger.info("Already tracked          : %d", skipped_tracked)
     logger.info("Covered in pgdelta       : %d", skipped_covered)
-    logger.info("%s created          : %d", "Benchmark files" if OUTPUT_MODE == "benchmark" else "Issues", created)
+    logger.info(
+        "%s created           : %d",
+        "Benchmark files" if OUTPUT_MODE == OUTPUT_MODE_BENCHMARK else "Issues",
+        created,
+    )
     logger.info("Errors                   : %d", errors)
 
     if errors:

@@ -19,6 +19,11 @@ class CompareResolvedBenchmarkTests(unittest.TestCase):
     def test_slugify(self) -> None:
         self.assertEqual(slugify("ALTER COLUMN TYPE ... USING"), "alter-column-type-using")
         self.assertEqual(slugify("!!!"), "issue")
+        self.assertEqual(slugify(""), "issue")
+        self.assertTrue(slugify("A" * 200).startswith("a"))
+        self.assertLessEqual(len(slugify("A" * 200)), 72)
+        self.assertFalse(slugify("A" * 100 + "-" * 100).endswith("-"))
+        self.assertEqual(slugify("Some::Gap ### 2026"), "some-gap-2026")
 
     def test_benchmark_issue_map_and_next_index(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
