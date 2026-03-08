@@ -1,6 +1,15 @@
 {
   "open": {},
   "resolved": {
+    "324": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-02-26T04:37:53Z\", \"pgdelta_sha\": \"f7de56c19e19894c6e79a03eb1075e67fe3ad8d4\", \"pgschema_sha\": \"23c2f564b70733c6bd313a33e4e0a59f03db3452\"}",
+      "issue_number": 324,
+      "issue_title": "Bug with apply, grants and order application",
+      "issue_updated_at": "2026-02-26T04:37:53Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/324",
+      "reviewed_at": "2026-03-08T13:50:00+00:00",
+      "verdict": "covered"
+    },
     "342": {
       "fingerprint": "{\"issue_updated_at\": \"2026-03-08T12:09:48Z\", \"pgdelta_sha\": \"f7de56c19e19894c6e79a03eb1075e67fe3ad8d4\", \"pgschema_sha\": \"23c2f564b70733c6bd313a33e4e0a59f03db3452\"}",
       "issue_number": 342,
