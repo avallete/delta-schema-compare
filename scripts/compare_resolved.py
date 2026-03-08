@@ -11,8 +11,9 @@ in pg-delta.
 The script uses the same local-submodule search and GitHub Models LLM
 evaluation approach as ``compare_issues.py``.
 
-For each uncovered resolved issue a detailed GitHub issue is created in the
-TARGET_REPO with labels ``resolved-in-pgschema`` and ``needs-test``.
+For each uncovered resolved issue this script can either:
+1) create a detailed GitHub tracking issue in TARGET_REPO, or
+2) generate a benchmark markdown file in ``benchmark/``.
 
 Required environment variables:
     GITHUB_TOKEN        – GitHub token (read issues, write issues to this repo,
@@ -30,7 +31,8 @@ Optional environment variables:
                           (default: avallete/delta-schema-compare).
     MODEL               – GitHub Models model name
                           (default: claude-opus-4.6).
-    DRY_RUN             – Set to "true" to skip issue creation (default: false).
+    DRY_RUN             – Set to "true" to skip writes (default: false).
+    OUTPUT_MODE         – "benchmark" (default) or "issues".
 """
 
 import json
@@ -43,6 +45,14 @@ from typing import Optional
 
 import requests
 from openai import OpenAI
+from review_memory import (
+    build_fingerprint,
+    get_git_head,
+    is_covered_cache_hit,
+    load_review_memory,
+    record_review_result,
+    save_review_memory,
+)
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -53,6 +63,12 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(message)s",
 )
 logger = logging.getLogger(__name__)
+
+OUTPUT_MODE_BENCHMARK = "benchmark"
+OUTPUT_MODE_ISSUES = "issues"
+VALID_OUTPUT_MODES = {OUTPUT_MODE_BENCHMARK, OUTPUT_MODE_ISSUES}
+SNIPPET_SEPARATOR = "\n\n---\n\n"
+MAX_SLUG_LENGTH = 72
 
 GITHUB_TOKEN: str = os.environ.get("GITHUB_TOKEN", "")
 
@@ -66,6 +82,11 @@ PGSCHEMA_LOCAL_PATH: Path = Path(
 TARGET_REPO: str = os.environ.get("TARGET_REPO", "avallete/delta-schema-compare")
 MODEL: str = os.environ.get("MODEL", "claude-opus-4.6")
 DRY_RUN: bool = os.environ.get("DRY_RUN", "false").lower() == "true"
+OUTPUT_MODE: str = os.environ.get("OUTPUT_MODE", OUTPUT_MODE_BENCHMARK).lower()
+REVIEW_MEMORY_PATH: Path = Path(
+    os.environ.get("REVIEW_MEMORY_PATH", "benchmark/review-memory.json")
+)
+BENCHMARK_DIR: Path = Path(os.environ.get("BENCHMARK_DIR", "benchmark"))
 
 GITHUB_API = "https://api.github.com"
 # GitHub Models endpoint – accessed with GITHUB_TOKEN, no extra API key needed.
@@ -299,6 +320,70 @@ def collect_pgschema_snippets(issue: dict) -> list[str]:
 
 
 # ---------------------------------------------------------------------------
+# Benchmark helpers
+# ---------------------------------------------------------------------------
+
+
+def slugify(text: str) -> str:
+    """Convert *text* to a filename-safe slug."""
+    slug = re.sub(r"[^a-z0-9]+", "-", text.lower())
+    trimmed = slug[:MAX_SLUG_LENGTH].strip("-")
+    return trimmed if trimmed else "issue"
+
+
+def benchmark_issue_map(benchmark_dir: Path) -> dict[int, Path]:
+    """
+    Return {pgschema_issue_number: benchmark_file_path} by scanning benchmark docs.
+    """
+    mapping: dict[int, Path] = {}
+    if not benchmark_dir.exists():
+        return mapping
+
+    for md in sorted(benchmark_dir.glob("*.md")):
+        if md.name.lower() == "readme.md":
+            continue
+        try:
+            text = md.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        m = re.search(r"pgschema\s+issue\s+#(\d+)", text, re.IGNORECASE)
+        if m:
+            mapping[int(m.group(1))] = md
+    return mapping
+
+
+def next_benchmark_index(benchmark_dir: Path) -> int:
+    """Return the next numeric prefix (NNN) for benchmark files."""
+    highest = 0
+    if benchmark_dir.exists():
+        for md in benchmark_dir.glob("*.md"):
+            m = re.match(r"^(\d{3})-", md.name)
+            if m:
+                highest = max(highest, int(m.group(1)))
+    return highest + 1
+
+
+def write_benchmark_file(
+    benchmark_dir: Path,
+    issue: dict,
+    title: str,
+    body: str,
+) -> Path:
+    """Write a benchmark markdown file and return its path."""
+    benchmark_dir.mkdir(parents=True, exist_ok=True)
+    index = next_benchmark_index(benchmark_dir)
+    fname = f"{index:03d}-{slugify(title)}.md"
+    fpath = benchmark_dir / fname
+    content = (
+        f"# {title}\n\n"
+        f"Relates to pgschema issue #{issue['number']}: {issue['html_url']}\n\n"
+        f"{body.rstrip()}\n"
+    )
+    fpath.write_text(content, encoding="utf-8")
+    return fpath
+
+
+# ---------------------------------------------------------------------------
 # Duplicate-issue detection in TARGET_REPO
 # ---------------------------------------------------------------------------
 
@@ -423,6 +508,33 @@ Reply ONLY with valid JSON:
 }
 """
 
+BENCHMARK_GENERATION_SYSTEM_PROMPT = """\
+You are an expert PostgreSQL contributor familiar with:
+- pgschema (Go, pgplex/pgschema)
+- pg-delta (TypeScript/Bun, @supabase/pg-delta)
+
+You are given a closed/resolved pgschema issue that is not fully covered by
+pg-delta. Produce benchmark markdown content with these exact sections:
+## Context
+## Reproduction SQL
+## How pgschema handled it
+## Current pg-delta status
+## Comparison of approaches
+## Plan to handle it in pg-delta
+
+Rules:
+- Context must link to the original pgschema issue.
+- Reproduction SQL must contain runnable SQL.
+- Keep claims evidence-based from given issue/snippets.
+- Keep title concise (<= 80 chars).
+
+Reply ONLY with valid JSON:
+{
+  "title": "<short title>",
+  "body": "<markdown body containing the six required sections>"
+}
+"""
+
 
 def llm_has_coverage(pgschema_issue: dict, snippets: list[str]) -> bool:
     """Ask the LLM whether the provided pg-delta snippets cover the pgschema issue."""
@@ -454,9 +566,9 @@ def generate_tracking_issue(pgschema_issue: dict) -> dict[str, str]:
 
     extra_ctx = ""
     if pgdelta_snippets:
-        extra_ctx += "\n\n### Relevant pg-delta source excerpts\n" + "\n\n---\n\n".join(pgdelta_snippets)
+        extra_ctx += "\n\n### Relevant pg-delta source excerpts\n" + SNIPPET_SEPARATOR.join(pgdelta_snippets)
     if pgschema_snippets:
-        extra_ctx += "\n\n### Relevant pgschema source excerpts (for reference)\n" + "\n\n---\n\n".join(pgschema_snippets)
+        extra_ctx += "\n\n### Relevant pgschema source excerpts (for reference)\n" + SNIPPET_SEPARATOR.join(pgschema_snippets)
 
     user_msg = (
         "### Original pgschema issue (resolved)\n"
@@ -472,6 +584,38 @@ def generate_tracking_issue(pgschema_issue: dict) -> dict[str, str]:
         model=MODEL,
         messages=[
             {"role": "system", "content": ISSUE_GENERATION_SYSTEM_PROMPT},
+            {"role": "user", "content": user_msg},
+        ],
+        response_format={"type": "json_object"},
+        temperature=0.2,
+    )
+    return json.loads(resp.choices[0].message.content)
+
+
+def generate_benchmark_entry(pgschema_issue: dict) -> dict[str, str]:
+    """Use the LLM to generate benchmark title + body."""
+    pgdelta_snippets = collect_pgdelta_snippets(pgschema_issue)
+    pgschema_snippets = collect_pgschema_snippets(pgschema_issue)
+
+    extra_ctx = ""
+    if pgdelta_snippets:
+        extra_ctx += "\n\n### Relevant pg-delta source excerpts\n" + SNIPPET_SEPARATOR.join(pgdelta_snippets)
+    if pgschema_snippets:
+        extra_ctx += "\n\n### Relevant pgschema source excerpts\n" + SNIPPET_SEPARATOR.join(pgschema_snippets)
+
+    user_msg = (
+        "### Original pgschema issue (resolved)\n"
+        f"**Title:** {pgschema_issue['title']}\n"
+        f"**URL:** {pgschema_issue['html_url']}\n"
+        f"**Labels:** {', '.join(l['name'] for l in pgschema_issue.get('labels', []))}\n\n"
+        f"{pgschema_issue.get('body') or '*(no body)*'}"
+        f"{extra_ctx}"
+    )
+    client = _get_llm_client()
+    resp = client.chat.completions.create(
+        model=MODEL,
+        messages=[
+            {"role": "system", "content": BENCHMARK_GENERATION_SYSTEM_PROMPT},
             {"role": "user", "content": user_msg},
         ],
         response_format={"type": "json_object"},
@@ -510,6 +654,10 @@ def create_github_issue(
 def main() -> None:
     _set_auth_header()
 
+    if OUTPUT_MODE not in VALID_OUTPUT_MODES:
+        logger.error("OUTPUT_MODE must be 'benchmark' or 'issues' (got: %s)", OUTPUT_MODE)
+        sys.exit(1)
+
     if not GITHUB_TOKEN:
         logger.error("GITHUB_TOKEN is not set – aborting.")
         sys.exit(1)
@@ -520,7 +668,10 @@ def main() -> None:
     logger.info("pgschema local path: %s", PGSCHEMA_LOCAL_PATH)
     logger.info("target repo        : %s", TARGET_REPO)
     logger.info("model              : %s", MODEL)
+    logger.info("output mode        : %s", OUTPUT_MODE)
     logger.info("dry run            : %s", DRY_RUN)
+    logger.info("benchmark dir      : %s", BENCHMARK_DIR)
+    logger.info("review memory path : %s", REVIEW_MEMORY_PATH)
 
     if not PGDELTA_LOCAL_PATH.exists():
         logger.error(
@@ -540,14 +691,25 @@ def main() -> None:
         return
 
     # ---- 2. Ensure labels exist in target repo ----
-    if not DRY_RUN:
+    if OUTPUT_MODE == OUTPUT_MODE_ISSUES and not DRY_RUN:
         ensure_label(TARGET_REPO, TRACKING_LABEL, "1d76db", "Resolved in pgschema but not yet in pg-delta")
         ensure_label(TARGET_REPO, NEEDS_TEST_LABEL, "e4e669", "Needs a test case in pg-delta")
 
     # ---- 3. Find already-processed issues ----
-    logger.info("Loading already-tracked resolved issue numbers…")
-    tracked = get_tracked_issue_numbers(TARGET_REPO)
+    if OUTPUT_MODE == OUTPUT_MODE_ISSUES:
+        logger.info("Loading already-tracked resolved issue numbers…")
+        tracked = get_tracked_issue_numbers(TARGET_REPO)
+    else:
+        logger.info("Loading already-benchmarked resolved issue numbers…")
+        tracked = set(benchmark_issue_map(BENCHMARK_DIR).keys())
     logger.info("Already tracked: %d issue(s).", len(tracked))
+
+    # ---- 3b. Load persisted review memory ----
+    review_memory = load_review_memory(REVIEW_MEMORY_PATH)
+    pgdelta_sha = get_git_head(PGDELTA_LOCAL_PATH)
+    pgschema_sha = get_git_head(PGSCHEMA_LOCAL_PATH)
+    logger.info("pg-delta HEAD       : %s", pgdelta_sha)
+    logger.info("pgschema HEAD       : %s", pgschema_sha)
 
     # ---- 4. Process each issue ----
     created = 0
@@ -558,10 +720,23 @@ def main() -> None:
     for issue in issues:
         num: int = issue["number"]
         title: str = issue["title"]
+        fingerprint = build_fingerprint(issue, pgdelta_sha, pgschema_sha)
 
+        def remember(verdict: str) -> None:
+            if record_review_result(review_memory, "resolved", issue, fingerprint, verdict):
+                logger.debug("[#%d] Review memory updated (%s).", num, verdict)
+
+        # "Tracked" is authoritative (issue already exists in TARGET_REPO), so it
+        # takes precedence over review-memory cache checks.
         if num in tracked:
             logger.info("[#%d] Already tracked – skipping.", num)
+            remember("tracked")
             skipped_tracked += 1
+            continue
+
+        if is_covered_cache_hit(review_memory, "resolved", num, fingerprint):
+            logger.info("[#%d] Review-memory hit (still covered) – skipping.", num)
+            skipped_covered += 1
             continue
 
         logger.info("[#%d] Checking pg-delta coverage for resolved issue: %s", num, title)
@@ -575,64 +750,98 @@ def main() -> None:
             covered_by_llm = llm_has_coverage(issue, snippets)
             if covered_by_llm:
                 logger.info("[#%d] Fully covered in pg-delta – skipping.", num)
+                remember("covered")
                 skipped_covered += 1
                 continue
             logger.info(
                 "[#%d] Keyword hit but LLM says not fully covered – generating issue.", num
             )
         else:
-            logger.info("[#%d] No local coverage found – generating tracking issue.", num)
+            logger.info(
+                "[#%d] No local coverage found – generating %s.",
+                num,
+                "benchmark entry" if OUTPUT_MODE == OUTPUT_MODE_BENCHMARK else "tracking issue",
+            )
 
-        # ---- Generate issue with LLM ----
+        # ---- Generate output with LLM ----
         try:
-            generated = generate_tracking_issue(issue)
+            generated = (
+                generate_benchmark_entry(issue)
+                if OUTPUT_MODE == OUTPUT_MODE_BENCHMARK
+                else generate_tracking_issue(issue)
+            )
         except Exception as exc:
             logger.error("[#%d] LLM generation failed: %s", num, exc)
+            remember("generation_error")
             errors += 1
             continue
 
         gen_title: str = generated.get("title", f"pgschema #{num}: {title}")
         gen_body: str = generated.get("body", "")
 
-        # Append provenance footer (used for duplicate detection on future runs)
-        gen_body += (
-            f"\n\n---\n"
-            f"*Automatically generated by "
-            f"[delta-schema-compare](https://github.com/{TARGET_REPO}) "
-            f"from resolved pgschema issue #{num}: {issue['html_url']}*"
-        )
-
         if DRY_RUN:
             logger.info(
-                "[#%d] DRY RUN – would create issue:\n  Title: %s\n  Body preview: %.200s",
+                "[#%d] DRY RUN – would create %s:\n  Title: %s\n  Body preview: %.200s",
                 num,
+                "benchmark file" if OUTPUT_MODE == OUTPUT_MODE_BENCHMARK else "issue",
                 gen_title,
                 gen_body,
             )
+            remember("not_covered")
             created += 1
             continue
 
-        try:
-            new_issue = create_github_issue(
-                TARGET_REPO,
-                gen_title,
-                gen_body,
-                [TRACKING_LABEL, NEEDS_TEST_LABEL],
+        if OUTPUT_MODE == OUTPUT_MODE_BENCHMARK:
+            try:
+                fpath = write_benchmark_file(BENCHMARK_DIR, issue, gen_title, gen_body)
+                logger.info("[#%d] Wrote benchmark entry: %s", num, fpath)
+                remember("not_covered")
+                created += 1
+            except OSError as exc:
+                logger.error("[#%d] Failed to write benchmark file: %s", num, exc)
+                remember("create_error")
+                errors += 1
+        else:
+            # Append provenance footer (used for duplicate detection on future runs)
+            gen_body += (
+                f"\n\n---\n"
+                f"*Automatically generated by "
+                f"[delta-schema-compare](https://github.com/{TARGET_REPO}) "
+                f"from resolved pgschema issue #{num}: {issue['html_url']}*"
             )
-            logger.info(
-                "[#%d] Created issue in %s: %s", num, TARGET_REPO, new_issue["html_url"]
-            )
-            created += 1
-        except requests.HTTPError as exc:
-            logger.error("[#%d] Failed to create issue: %s", num, exc)
-            errors += 1
+
+            try:
+                new_issue = create_github_issue(
+                    TARGET_REPO,
+                    gen_title,
+                    gen_body,
+                    [TRACKING_LABEL, NEEDS_TEST_LABEL],
+                )
+                logger.info(
+                    "[#%d] Created issue in %s: %s", num, TARGET_REPO, new_issue["html_url"]
+                )
+                remember("not_covered")
+                created += 1
+            except requests.HTTPError as exc:
+                logger.error("[#%d] Failed to create issue: %s", num, exc)
+                remember("create_error")
+                errors += 1
+
+    try:
+        save_review_memory(REVIEW_MEMORY_PATH, review_memory)
+    except OSError as exc:
+        logger.warning("Could not write review memory file '%s': %s", REVIEW_MEMORY_PATH, exc)
 
     # ---- Summary ----
     logger.info("=== Summary (resolved issues) ===")
     logger.info("Resolved issues processed: %d", len(issues))
     logger.info("Already tracked          : %d", skipped_tracked)
     logger.info("Covered in pgdelta       : %d", skipped_covered)
-    logger.info("Issues created           : %d", created)
+    logger.info(
+        "%s created           : %d",
+        "Benchmark files" if OUTPUT_MODE == OUTPUT_MODE_BENCHMARK else "Issues",
+        created,
+    )
     logger.info("Errors                   : %d", errors)
 
     if errors:

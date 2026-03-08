@@ -85,6 +85,26 @@ the issue is definitely not covered.
 
 ---
 
+## Step 3.5 — Persist review memory
+
+After each run, write reviewed issues to:
+
+```
+benchmark/review-memory.json
+```
+
+For each reviewed issue, store:
+- pgschema issue number, title, URL
+- verdict (`covered`, `not_covered`, or `tracked`)
+- issue `updated_at`
+- `repos/pgschema` HEAD SHA
+- `repos/pg-toolbelt/packages/pg-delta` HEAD SHA
+
+If these markers are unchanged on the next run, treat the previous result as
+fresh and skip re-review.
+
+---
+
 ## Step 4 — Write the tracking issue
 
 Use this template when coverage is missing.  All three sections are required.

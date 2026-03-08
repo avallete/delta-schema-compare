@@ -1,4 +1,4 @@
-name: Compare Resolved pgschema Issues with pgdelta Coverage
+name: Compare Resolved pgschema Issues and Generate Benchmark
 
 on:
   schedule:
@@ -8,8 +8,8 @@ on:
     inputs:
       dry_run:
         description: >
-          Dry run – analyse resolved issues and log what would be created,
-          but do not actually create any GitHub issues.
+          Dry run – analyse resolved issues and log what would be generated,
+          but do not write benchmark files.
         required: false
         default: "false"
         type: choice
@@ -25,10 +25,9 @@ on:
 
 jobs:
   compare-resolved:
-    name: Compare resolved pgschema issues with pgdelta
+    name: Compare resolved pgschema issues and benchmark gaps
     runs-on: ubuntu-latest
     permissions:
-      issues: write    # create issues in this repository
       models: read     # access GitHub Models API (used for LLM calls via GITHUB_TOKEN)
       contents: read
 
@@ -58,4 +57,5 @@ jobs:
           PGSCHEMA_LOCAL_PATH: repos/pgschema
           MODEL: ${{ inputs.model || 'claude-opus-4.6' }}
           DRY_RUN: ${{ inputs.dry_run || 'false' }}
+          OUTPUT_MODE: benchmark
         run: python scripts/compare_resolved.py
