@@ -30,10 +30,28 @@ class ReviewMemoryTests(unittest.TestCase):
             "updated_at": "2026-01-01T00:00:00Z",
         }
         fingerprint = build_fingerprint(issue, "pgdelta-sha", "pgschema-sha")
-        record_review_result(memory, "open", issue, fingerprint, "covered")
+        wrote = record_review_result(memory, "open", issue, fingerprint, "covered")
+        self.assertTrue(wrote)
 
         self.assertTrue(is_covered_cache_hit(memory, "open", 42, fingerprint))
         self.assertFalse(is_covered_cache_hit(memory, "open", 42, "different"))
+
+    def test_record_is_noop_when_fingerprint_and_verdict_are_unchanged(self) -> None:
+        memory = {"open": {}, "resolved": {}}
+        issue = {
+            "number": 7,
+            "title": "sample",
+            "html_url": "https://example.test/7",
+            "updated_at": "2026-01-01T00:00:00Z",
+        }
+        fingerprint = build_fingerprint(issue, "pgdelta-sha", "pgschema-sha")
+        first = record_review_result(memory, "open", issue, fingerprint, "tracked")
+        reviewed_at = memory["open"]["7"]["reviewed_at"]
+        second = record_review_result(memory, "open", issue, fingerprint, "tracked")
+
+        self.assertTrue(first)
+        self.assertFalse(second)
+        self.assertEqual(memory["open"]["7"]["reviewed_at"], reviewed_at)
 
     def test_save_and_load_round_trip(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -45,6 +63,7 @@ class ReviewMemoryTests(unittest.TestCase):
             # confirm JSON file remains valid and human-readable
             data = json.loads(path.read_text(encoding="utf-8"))
             self.assertIn("open", data)
+            self.assertIn("resolved", data)
 
 
 if __name__ == "__main__":

@@ -82,10 +82,19 @@ def record_review_result(
     issue: dict,
     fingerprint: str,
     verdict: str,
-) -> None:
+) -> bool:
     """Record the latest review result for *issue* under *scope*."""
     memory.setdefault(scope, {})
-    memory[scope][str(issue["number"])] = {
+    issue_key = str(issue["number"])
+    existing = memory[scope].get(issue_key)
+    if (
+        isinstance(existing, dict)
+        and existing.get("fingerprint") == fingerprint
+        and existing.get("verdict") == verdict
+    ):
+        return False
+
+    memory[scope][issue_key] = {
         "issue_number": issue["number"],
         "issue_title": issue.get("title", ""),
         "issue_url": issue.get("html_url", ""),
@@ -94,3 +103,4 @@ def record_review_result(
         "fingerprint": fingerprint,
         "verdict": verdict,
     }
+    return True

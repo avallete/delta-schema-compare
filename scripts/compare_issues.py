@@ -615,9 +615,15 @@ def main() -> None:
         title: str = issue["title"]
         fingerprint = build_fingerprint(issue, pgdelta_sha, pgschema_sha)
 
+        def remember(verdict: str) -> None:
+            if record_review_result(review_memory, "open", issue, fingerprint, verdict):
+                logger.debug("[#%d] Review memory updated (%s).", num, verdict)
+
+        # "Tracked" is authoritative (issue already exists in TARGET_REPO), so it
+        # takes precedence over review-memory cache checks.
         if num in tracked:
             logger.info("[#%d] Already tracked – skipping.", num)
-            record_review_result(review_memory, "open", issue, fingerprint, "tracked")
+            remember("tracked")
             skipped_tracked += 1
             continue
 
@@ -637,7 +643,7 @@ def main() -> None:
             covered_by_llm = llm_has_coverage(issue, snippets)
             if covered_by_llm:
                 logger.info("[#%d] Fully covered in pg-delta – skipping.", num)
-                record_review_result(review_memory, "open", issue, fingerprint, "covered")
+                remember("covered")
                 skipped_covered += 1
                 continue
             logger.info(
@@ -651,7 +657,7 @@ def main() -> None:
             generated = generate_tracking_issue(issue)
         except Exception as exc:
             logger.error("[#%d] LLM generation failed: %s", num, exc)
-            record_review_result(review_memory, "open", issue, fingerprint, "generation_error")
+            remember("generation_error")
             errors += 1
             continue
 
@@ -673,7 +679,7 @@ def main() -> None:
                 gen_title,
                 gen_body,
             )
-            record_review_result(review_memory, "open", issue, fingerprint, "not_covered")
+            remember("not_covered")
             created += 1
             continue
 
@@ -687,11 +693,11 @@ def main() -> None:
             logger.info(
                 "[#%d] Created issue in %s: %s", num, TARGET_REPO, new_issue["html_url"]
             )
-            record_review_result(review_memory, "open", issue, fingerprint, "not_covered")
+            remember("not_covered")
             created += 1
         except requests.HTTPError as exc:
             logger.error("[#%d] Failed to create issue: %s", num, exc)
-            record_review_result(review_memory, "open", issue, fingerprint, "create_error")
+            remember("create_error")
             errors += 1
 
     try:
