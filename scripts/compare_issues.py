@@ -40,6 +40,14 @@ from typing import Optional
 
 import requests
 from openai import OpenAI
+from review_memory import (
+    build_fingerprint,
+    get_git_head,
+    is_covered_cache_hit,
+    load_review_memory,
+    record_review_result,
+    save_review_memory,
+)
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -63,6 +71,9 @@ PGSCHEMA_LOCAL_PATH: Path = Path(
 TARGET_REPO: str = os.environ.get("TARGET_REPO", "avallete/delta-schema-compare")
 MODEL: str = os.environ.get("MODEL", "claude-opus-4.6")
 DRY_RUN: bool = os.environ.get("DRY_RUN", "false").lower() == "true"
+REVIEW_MEMORY_PATH: Path = Path(
+    os.environ.get("REVIEW_MEMORY_PATH", "benchmark/review-memory.json")
+)
 
 GITHUB_API = "https://api.github.com"
 # GitHub Models endpoint – accessed with GITHUB_TOKEN, no extra API key needed.
@@ -557,6 +568,7 @@ def main() -> None:
     logger.info("target repo        : %s", TARGET_REPO)
     logger.info("model              : %s", MODEL)
     logger.info("dry run            : %s", DRY_RUN)
+    logger.info("review memory path : %s", REVIEW_MEMORY_PATH)
 
     if not PGDELTA_LOCAL_PATH.exists():
         logger.error(
@@ -585,6 +597,13 @@ def main() -> None:
     tracked = get_tracked_issue_numbers(TARGET_REPO)
     logger.info("Already tracked: %d issue(s).", len(tracked))
 
+    # ---- 3b. Load persisted review memory ----
+    review_memory = load_review_memory(REVIEW_MEMORY_PATH)
+    pgdelta_sha = get_git_head(PGDELTA_LOCAL_PATH)
+    pgschema_sha = get_git_head(PGSCHEMA_LOCAL_PATH)
+    logger.info("pg-delta HEAD       : %s", pgdelta_sha)
+    logger.info("pgschema HEAD       : %s", pgschema_sha)
+
     # ---- 4. Process each issue ----
     created = 0
     skipped_tracked = 0
@@ -594,10 +613,17 @@ def main() -> None:
     for issue in issues:
         num: int = issue["number"]
         title: str = issue["title"]
+        fingerprint = build_fingerprint(issue, pgdelta_sha, pgschema_sha)
 
         if num in tracked:
             logger.info("[#%d] Already tracked – skipping.", num)
+            record_review_result(review_memory, "open", issue, fingerprint, "tracked")
             skipped_tracked += 1
+            continue
+
+        if is_covered_cache_hit(review_memory, "open", num, fingerprint):
+            logger.info("[#%d] Review-memory hit (still covered) – skipping.", num)
+            skipped_covered += 1
             continue
 
         logger.info("[#%d] Checking pg-delta coverage for: %s", num, title)
@@ -611,6 +637,7 @@ def main() -> None:
             covered_by_llm = llm_has_coverage(issue, snippets)
             if covered_by_llm:
                 logger.info("[#%d] Fully covered in pg-delta – skipping.", num)
+                record_review_result(review_memory, "open", issue, fingerprint, "covered")
                 skipped_covered += 1
                 continue
             logger.info(
@@ -624,6 +651,7 @@ def main() -> None:
             generated = generate_tracking_issue(issue)
         except Exception as exc:
             logger.error("[#%d] LLM generation failed: %s", num, exc)
+            record_review_result(review_memory, "open", issue, fingerprint, "generation_error")
             errors += 1
             continue
 
@@ -645,6 +673,7 @@ def main() -> None:
                 gen_title,
                 gen_body,
             )
+            record_review_result(review_memory, "open", issue, fingerprint, "not_covered")
             created += 1
             continue
 
@@ -658,10 +687,17 @@ def main() -> None:
             logger.info(
                 "[#%d] Created issue in %s: %s", num, TARGET_REPO, new_issue["html_url"]
             )
+            record_review_result(review_memory, "open", issue, fingerprint, "not_covered")
             created += 1
         except requests.HTTPError as exc:
             logger.error("[#%d] Failed to create issue: %s", num, exc)
+            record_review_result(review_memory, "open", issue, fingerprint, "create_error")
             errors += 1
+
+    try:
+        save_review_memory(REVIEW_MEMORY_PATH, review_memory)
+    except OSError as exc:
+        logger.warning("Could not write review memory file '%s': %s", REVIEW_MEMORY_PATH, exc)
 
     # ---- Summary ----
     logger.info("=== Summary ===")

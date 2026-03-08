@@ -40,6 +40,8 @@ pg-delta still lacks test coverage for the same scenario, there is a
    `needs-test` for each unresolved gap.
 
 Duplicate detection ensures each pgschema issue is processed only once.
+Additionally, review results are persisted in `benchmark/review-memory.json`
+so unchanged covered scenarios can be skipped on later runs.
 
 ## Repository structure
 

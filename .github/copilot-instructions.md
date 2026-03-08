@@ -27,6 +27,14 @@ Both upstream codebases are available locally as **git submodules**:
 5. If no test exists (or the existing test does not cover the scenario),
    generate a tracking issue following the template in
    `docs/coverage-guide.md`.
+6. After each review run, update the review-memory file at
+   `benchmark/review-memory.json` for every issue you checked:
+   - Record the verdict (`covered`, `not_covered`, or `tracked`).
+   - Include enough change markers to detect staleness at the next run
+     (at minimum: pgschema issue `updated_at`, `repos/pgschema` HEAD, and
+     `repos/pg-toolbelt/packages/pg-delta` HEAD).
+   - If none of those markers changed, skip re-review and reuse the stored
+     verdict.
 
 ## How to generate a tracking issue
 
