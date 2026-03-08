@@ -26,7 +26,7 @@ A scheduled GitHub Actions workflow runs **every day at 08:00 UTC** and:
 4. **Creates** the generated issue in **this repository** with the labels
    `from-pgschema` and `needs-test`.
 
-### Resolved issues — historical gaps (weekly)
+### Resolved issues — historical gaps benchmark (weekly)
 
 A second workflow runs **every Monday at 09:00 UTC** and looks at the other
 side of the coin: pgschema issues that have been **closed / resolved**.  These
@@ -36,8 +36,8 @@ pg-delta still lacks test coverage for the same scenario, there is a
 
 1. **Fetches** all closed pgschema issues labelled **Bug** or **Feature**.
 2. **Checks** pg-delta coverage the same way (local search + LLM evaluation).
-3. **Creates** a tracking issue with the labels `resolved-in-pgschema` and
-   `needs-test` for each unresolved gap.
+3. **Generates** a benchmark markdown file in `benchmark/` for each unresolved
+   gap (one file per uncovered closed pgschema issue).
 
 Duplicate detection ensures each pgschema issue is processed only once.
 Additionally, review results are persisted in `benchmark/review-memory.json`
@@ -104,8 +104,8 @@ pip install -r requirements.txt
 export GITHUB_TOKEN=ghp_...
 export DRY_RUN=true
 
-python scripts/compare_issues.py          # open issues
-python scripts/compare_resolved.py       # resolved / historical gaps
+python scripts/compare_issues.py          # open issues -> tracking issues
+OUTPUT_MODE=benchmark python scripts/compare_resolved.py  # resolved issues -> benchmark/*.md
 ```
 
 ## Using the Copilot coding agent
