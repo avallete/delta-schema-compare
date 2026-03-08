@@ -1,4 +1,23 @@
 {
   "open": {},
-  "resolved": {}
+  "resolved": {
+    "342": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-03-08T12:09:48Z\", \"pgdelta_sha\": \"f7de56c19e19894c6e79a03eb1075e67fe3ad8d4\", \"pgschema_sha\": \"23c2f564b70733c6bd313a33e4e0a59f03db3452\"}",
+      "issue_number": 342,
+      "issue_title": "[Feature Request] Add support for trigger on specific fields",
+      "issue_updated_at": "2026-03-08T12:09:48Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/342",
+      "reviewed_at": "2026-03-08T13:40:00+00:00",
+      "verdict": "tracked"
+    },
+    "343": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-03-08T13:21:33Z\", \"pgdelta_sha\": \"f7de56c19e19894c6e79a03eb1075e67fe3ad8d4\", \"pgschema_sha\": \"23c2f564b70733c6bd313a33e4e0a59f03db3452\"}",
+      "issue_number": 343,
+      "issue_title": "[Feature Request] Add support for tracking `security_invoker` on views",
+      "issue_updated_at": "2026-03-08T13:21:33Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/343",
+      "reviewed_at": "2026-03-08T13:40:00+00:00",
+      "verdict": "covered"
+    }
+  }
 }
