@@ -49,7 +49,7 @@ Each file follows this template:
 | 012 | [Trigger function drop](012-trigger-function-drop-order.md) | [#148](https://github.com/pgplex/pgschema/issues/148) | Dependency ordering | High |
 | 013 | [Sequence identity](013-sequence-identity-transitions.md) | [#279](https://github.com/pgplex/pgschema/issues/279) | Column DDL | High |
 | 014 | [View SELECT * + column add](014-view-select-star-column-add.md) | [#308](https://github.com/pgplex/pgschema/issues/308) | View DDL | Medium |
-| 015 | [Grant/Revoke ordering](015-grant-revoke-ordering.md) | [#324](https://github.com/pgplex/pgschema/issues/324) | Privilege DDL | Critical |
+| 015 | [Trigger UPDATE OF columns](015-trigger-update-of-columns.md) | [#342](https://github.com/pgplex/pgschema/issues/342) | Trigger DDL | High |
 
 ## Covered by pg-delta (excluded from benchmark)
 
@@ -67,3 +67,5 @@ and are not included above:
 - **#83** — Named FK constraints (`constraint-operations.test.ts`)
 - **#104** — View UNION subquery (`view-operations.test.ts`)
 - **#101** — Table functions / RETURNS SETOF (`table-function-*.test.ts`)
+- **#343** — View `security_invoker` reloptions (`view-operations.test.ts`)
+- **#324** — Grant/Revoke ordering (`privilege-operations.test.ts`)
