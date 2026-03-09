@@ -377,3 +377,37 @@ Requires Docker (for PostgreSQL containers).
 - `docs/pgdelta-structure.md` — pg-delta directory map, test file listing, and test anatomy
 - `.github/copilot-instructions.md` — Copilot-specific agent instructions
 - `benchmark/README.md` — summary of all 15 benchmarked gaps with severity ratings
+
+## Cursor Cloud specific instructions
+
+### Services overview
+
+| Service | Purpose | How to run |
+|---|---|---|
+| Python automation scripts | Core product — compares pgschema issues vs pg-delta coverage | `python3 scripts/compare_issues.py` or `python3 scripts/compare_resolved.py` (see README for env vars) |
+| pg-delta integration tests | Validates pg-delta coverage via roundtrip fidelity tests | `cd repos/pg-toolbelt && bun run test:pg-delta` (requires Docker) |
+
+### Running the Python scripts
+
+The scripts must be invoked from the workspace root (`/workspace`). They require `GITHUB_TOKEN` — use `export GITHUB_TOKEN=$(gh auth token)` if the `gh` CLI is authenticated. Always set `DRY_RUN=true` for local testing to avoid creating real GitHub issues.
+
+### Running pg-delta tests
+
+Docker must be running (`sudo dockerd` if not already started, then `sudo chmod 666 /var/run/docker.sock`). Tests use testcontainers to spin up PostgreSQL 15 and 17 containers. Run from `repos/pg-toolbelt`:
+
+```bash
+bun run test:pg-delta                                    # all tests
+bun test packages/pg-delta/tests/integration/<file>.test.ts  # single file
+```
+
+Some tests may time out on first run while Docker pulls PostgreSQL images. The `add column then create unique index on it` test in `alter-table-operations.test.ts` is known to be flaky with a 5-second timeout.
+
+### Linting
+
+- **pg-toolbelt (TypeScript):** `cd repos/pg-toolbelt && bun run format-and-lint` (uses Biome)
+- **Python scripts:** No formal linter configured in the repo. `ruff check scripts/` can be used for ad-hoc linting; existing E741 warnings (ambiguous variable name `l`) are pre-existing in the codebase.
+
+### Building
+
+- **pg-toolbelt:** `cd repos/pg-toolbelt && bun run build`
+- **Type check:** `cd repos/pg-toolbelt && bun run check-types`
