@@ -68,4 +68,5 @@ and are not included above:
 - **#104** — View UNION subquery (`view-operations.test.ts`)
 - **#101** — Table functions / RETURNS SETOF (`table-function-*.test.ts`)
 - **#343** — View `security_invoker` reloptions (`view-operations.test.ts`)
+- **#350** — ALTER VIEW `SET/RESET` reloptions incl. `security_invoker` (`view-operations.test.ts`)
 - **#324** — Grant/Revoke ordering (`privilege-operations.test.ts`)
