@@ -27,6 +27,15 @@
       "issue_url": "https://github.com/pgplex/pgschema/issues/343",
       "reviewed_at": "2026-03-08T13:40:00+00:00",
       "verdict": "covered"
+    },
+    "355": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-03-13T08:34:53Z\", \"pgdelta_sha\": \"366cc2670a6d058fcfac4d94c523cc6ab8dfb03a\", \"pgschema_sha\": \"44bb45ebb92bed640ed153ae8db2dfb582cee12e\"}",
+      "issue_number": 355,
+      "issue_title": "\"nulls not distinct\" being silently dropped when creating a unique index.",
+      "issue_updated_at": "2026-03-13T08:34:53Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/355",
+      "reviewed_at": "2026-03-13T08:36:38+00:00",
+      "verdict": "tracked"
     }
   }
 }
