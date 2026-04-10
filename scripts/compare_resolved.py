@@ -733,6 +733,26 @@ def main() -> None:
             if record_review_result(review_memory, "resolved", issue, fingerprint, verdict):
                 logger.debug("[#%d] Review memory updated (%s).", num, verdict)
 
+        def retire_existing_benchmark_if_needed() -> None:
+            nonlocal retired
+            if existing_benchmark is None:
+                return
+            if DRY_RUN:
+                logger.info(
+                    "[#%d] DRY RUN – would retire benchmark file: %s",
+                    num,
+                    existing_benchmark,
+                )
+                return
+            existing_benchmark.unlink(missing_ok=True)
+            benchmark_files.pop(num, None)
+            retired += 1
+            logger.info(
+                "[#%d] Covered in pg-delta – retired benchmark file: %s",
+                num,
+                existing_benchmark,
+            )
+
         # "Tracked" is authoritative (issue already exists in TARGET_REPO), so it
         # takes precedence over review-memory cache checks.
         if OUTPUT_MODE == OUTPUT_MODE_ISSUES and num in tracked:
@@ -748,6 +768,7 @@ def main() -> None:
             )
 
         if is_covered_cache_hit(review_memory, "resolved", num, fingerprint):
+            retire_existing_benchmark_if_needed()
             logger.info("[#%d] Review-memory hit (still covered) – skipping.", num)
             skipped_covered += 1
             continue
@@ -762,22 +783,7 @@ def main() -> None:
             snippets = collect_pgdelta_snippets(issue)
             covered_by_llm = llm_has_coverage(issue, snippets)
             if covered_by_llm:
-                if existing_benchmark is not None:
-                    if DRY_RUN:
-                        logger.info(
-                            "[#%d] DRY RUN – would retire benchmark file: %s",
-                            num,
-                            existing_benchmark,
-                        )
-                    else:
-                        existing_benchmark.unlink(missing_ok=True)
-                        benchmark_files.pop(num, None)
-                        retired += 1
-                        logger.info(
-                            "[#%d] Covered in pg-delta – retired benchmark file: %s",
-                            num,
-                            existing_benchmark,
-                        )
+                retire_existing_benchmark_if_needed()
                 logger.info("[#%d] Fully covered in pg-delta – skipping.", num)
                 remember("covered")
                 skipped_covered += 1
