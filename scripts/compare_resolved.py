@@ -733,23 +733,23 @@ def main() -> None:
             if record_review_result(review_memory, "resolved", issue, fingerprint, verdict):
                 logger.debug("[#%d] Review memory updated (%s).", num, verdict)
 
-        def retire_existing_benchmark_if_needed() -> None:
+        def retire_existing_benchmark_if_needed(issue_number: int) -> None:
             nonlocal retired
             if existing_benchmark is None:
                 return
             if DRY_RUN:
                 logger.info(
                     "[#%d] DRY RUN – would retire benchmark file: %s",
-                    num,
+                    issue_number,
                     existing_benchmark,
                 )
                 return
             existing_benchmark.unlink(missing_ok=True)
-            benchmark_files.pop(num, None)
+            benchmark_files.pop(issue_number, None)
             retired += 1
             logger.info(
                 "[#%d] Covered in pg-delta – retired benchmark file: %s",
-                num,
+                issue_number,
                 existing_benchmark,
             )
 
@@ -762,13 +762,13 @@ def main() -> None:
             continue
         if existing_benchmark is not None:
             logger.info(
-                "[#%d] Existing benchmark entry %s found – revalidating.",
+                "[#%d] Existing benchmark entry %s found – starting revalidation.",
                 num,
                 existing_benchmark.name,
             )
 
         if is_covered_cache_hit(review_memory, "resolved", num, fingerprint):
-            retire_existing_benchmark_if_needed()
+            retire_existing_benchmark_if_needed(num)
             logger.info("[#%d] Review-memory hit (still covered) – skipping.", num)
             skipped_covered += 1
             continue
@@ -783,7 +783,7 @@ def main() -> None:
             snippets = collect_pgdelta_snippets(issue)
             covered_by_llm = llm_has_coverage(issue, snippets)
             if covered_by_llm:
-                retire_existing_benchmark_if_needed()
+                retire_existing_benchmark_if_needed(num)
                 logger.info("[#%d] Fully covered in pg-delta – skipping.", num)
                 remember("covered")
                 skipped_covered += 1

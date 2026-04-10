@@ -2,6 +2,8 @@
 
 > pgschema issue [#373](https://github.com/pgplex/pgschema/issues/373) (closed), fixed by [pgschema#374](https://github.com/pgplex/pgschema/pull/374)
 
+Relates to pgschema issue #373: https://github.com/pgplex/pgschema/issues/373
+
 ## Context
 
 pgschema issue #373 reports a migration-ordering bug for row-level security
