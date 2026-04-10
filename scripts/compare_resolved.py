@@ -705,6 +705,8 @@ def main() -> None:
         tracked = get_tracked_issue_numbers(TARGET_REPO)
     else:
         logger.info("Loading already-benchmarked resolved issue numbers…")
+        # In benchmark mode, existing files are revalidated instead of skipped.
+        # We still collect their issue numbers for summary logging.
         benchmark_files = benchmark_issue_map(BENCHMARK_DIR)
         tracked = set(benchmark_files.keys())
     logger.info("Already tracked: %d issue(s).", len(tracked))
@@ -737,6 +739,7 @@ def main() -> None:
             nonlocal retired
             if existing_benchmark is None:
                 return
+            # The caller records the final "covered" verdict in review memory.
             if DRY_RUN:
                 logger.info(
                     "[#%d] DRY RUN – would retire benchmark file: %s",
