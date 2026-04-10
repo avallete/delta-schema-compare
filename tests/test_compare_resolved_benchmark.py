@@ -47,6 +47,27 @@ class CompareResolvedBenchmarkTests(unittest.TestCase):
             self.assertIn("Relates to pgschema issue #77", text)
             self.assertIn("## Context", text)
 
+    def test_write_benchmark_file_overwrites_existing_path(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            existing = root / "001-existing-gap.md"
+            existing.write_text("old", encoding="utf-8")
+            issue = {"number": 88, "html_url": "https://github.com/pgplex/pgschema/issues/88"}
+
+            out = write_benchmark_file(
+                root,
+                issue,
+                "Updated Gap",
+                "## Context\nnew",
+                path=existing,
+            )
+
+            self.assertEqual(out, existing)
+            text = out.read_text(encoding="utf-8")
+            self.assertIn("# Updated Gap", text)
+            self.assertIn("Relates to pgschema issue #88", text)
+            self.assertIn("## Context\nnew", text)
+
 
 if __name__ == "__main__":
     unittest.main()

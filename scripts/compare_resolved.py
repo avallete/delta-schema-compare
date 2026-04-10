@@ -368,12 +368,15 @@ def write_benchmark_file(
     issue: dict,
     title: str,
     body: str,
+    path: Optional[Path] = None,
 ) -> Path:
-    """Write a benchmark markdown file and return its path."""
+    """Write or update a benchmark markdown file and return its path."""
     benchmark_dir.mkdir(parents=True, exist_ok=True)
-    index = next_benchmark_index(benchmark_dir)
-    fname = f"{index:03d}-{slugify(title)}.md"
-    fpath = benchmark_dir / fname
+    fpath = path
+    if fpath is None:
+        index = next_benchmark_index(benchmark_dir)
+        fname = f"{index:03d}-{slugify(title)}.md"
+        fpath = benchmark_dir / fname
     content = (
         f"# {title}\n\n"
         f"Relates to pgschema issue #{issue['number']}: {issue['html_url']}\n\n"
@@ -696,12 +699,14 @@ def main() -> None:
         ensure_label(TARGET_REPO, NEEDS_TEST_LABEL, "e4e669", "Needs a test case in pg-delta")
 
     # ---- 3. Find already-processed issues ----
+    benchmark_files: dict[int, Path] = {}
     if OUTPUT_MODE == OUTPUT_MODE_ISSUES:
         logger.info("Loading already-tracked resolved issue numbers…")
         tracked = get_tracked_issue_numbers(TARGET_REPO)
     else:
         logger.info("Loading already-benchmarked resolved issue numbers…")
-        tracked = set(benchmark_issue_map(BENCHMARK_DIR).keys())
+        benchmark_files = benchmark_issue_map(BENCHMARK_DIR)
+        tracked = set(benchmark_files.keys())
     logger.info("Already tracked: %d issue(s).", len(tracked))
 
     # ---- 3b. Load persisted review memory ----
@@ -715,12 +720,14 @@ def main() -> None:
     created = 0
     skipped_tracked = 0
     skipped_covered = 0
+    retired = 0
     errors = 0
 
     for issue in issues:
         num: int = issue["number"]
         title: str = issue["title"]
         fingerprint = build_fingerprint(issue, pgdelta_sha, pgschema_sha)
+        existing_benchmark = benchmark_files.get(num)
 
         def remember(verdict: str) -> None:
             if record_review_result(review_memory, "resolved", issue, fingerprint, verdict):
@@ -728,11 +735,17 @@ def main() -> None:
 
         # "Tracked" is authoritative (issue already exists in TARGET_REPO), so it
         # takes precedence over review-memory cache checks.
-        if num in tracked:
+        if OUTPUT_MODE == OUTPUT_MODE_ISSUES and num in tracked:
             logger.info("[#%d] Already tracked – skipping.", num)
             remember("tracked")
             skipped_tracked += 1
             continue
+        if existing_benchmark is not None:
+            logger.info(
+                "[#%d] Existing benchmark entry %s found – revalidating.",
+                num,
+                existing_benchmark.name,
+            )
 
         if is_covered_cache_hit(review_memory, "resolved", num, fingerprint):
             logger.info("[#%d] Review-memory hit (still covered) – skipping.", num)
@@ -749,6 +762,22 @@ def main() -> None:
             snippets = collect_pgdelta_snippets(issue)
             covered_by_llm = llm_has_coverage(issue, snippets)
             if covered_by_llm:
+                if existing_benchmark is not None:
+                    if DRY_RUN:
+                        logger.info(
+                            "[#%d] DRY RUN – would retire benchmark file: %s",
+                            num,
+                            existing_benchmark,
+                        )
+                    else:
+                        existing_benchmark.unlink(missing_ok=True)
+                        benchmark_files.pop(num, None)
+                        retired += 1
+                        logger.info(
+                            "[#%d] Covered in pg-delta – retired benchmark file: %s",
+                            num,
+                            existing_benchmark,
+                        )
                 logger.info("[#%d] Fully covered in pg-delta – skipping.", num)
                 remember("covered")
                 skipped_covered += 1
@@ -781,8 +810,9 @@ def main() -> None:
 
         if DRY_RUN:
             logger.info(
-                "[#%d] DRY RUN – would create %s:\n  Title: %s\n  Body preview: %.200s",
+                "[#%d] DRY RUN – would %s %s:\n  Title: %s\n  Body preview: %.200s",
                 num,
+                "update" if existing_benchmark is not None else "create",
                 "benchmark file" if OUTPUT_MODE == OUTPUT_MODE_BENCHMARK else "issue",
                 gen_title,
                 gen_body,
@@ -793,8 +823,20 @@ def main() -> None:
 
         if OUTPUT_MODE == OUTPUT_MODE_BENCHMARK:
             try:
-                fpath = write_benchmark_file(BENCHMARK_DIR, issue, gen_title, gen_body)
-                logger.info("[#%d] Wrote benchmark entry: %s", num, fpath)
+                fpath = write_benchmark_file(
+                    BENCHMARK_DIR,
+                    issue,
+                    gen_title,
+                    gen_body,
+                    path=existing_benchmark,
+                )
+                benchmark_files[num] = fpath
+                logger.info(
+                    "[#%d] %s benchmark entry: %s",
+                    num,
+                    "Updated" if existing_benchmark is not None else "Wrote",
+                    fpath,
+                )
                 remember("not_covered")
                 created += 1
             except OSError as exc:
@@ -839,9 +881,11 @@ def main() -> None:
     logger.info("Covered in pgdelta       : %d", skipped_covered)
     logger.info(
         "%s created           : %d",
-        "Benchmark files" if OUTPUT_MODE == OUTPUT_MODE_BENCHMARK else "Issues",
+        "Benchmark files written" if OUTPUT_MODE == OUTPUT_MODE_BENCHMARK else "Issues",
         created,
     )
+    if OUTPUT_MODE == OUTPUT_MODE_BENCHMARK:
+        logger.info("Benchmark files retired  : %d", retired)
     logger.info("Errors                   : %d", errors)
 
     if errors:

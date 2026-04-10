@@ -45,6 +45,15 @@
       "issue_url": "https://github.com/pgplex/pgschema/issues/364",
       "reviewed_at": "2026-04-03T10:08:39.917165+00:00",
       "verdict": "not_covered"
+    },
+    "373": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-03-27T07:20:56Z\", \"pgdelta_sha\": \"e375d33e692b7b2841568627495e96ed80dafbc6\", \"pgschema_sha\": \"8b9d15d91194643b7241e39c3b69e77e6be94200\"}",
+      "issue_number": 373,
+      "issue_title": "Bug: RLS Policies Generated Before Referenced Tables Exist",
+      "issue_updated_at": "2026-03-27T07:20:56Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/373",
+      "reviewed_at": "2026-04-10T12:25:00+00:00",
+      "verdict": "not_covered"
     }
   }
 }
