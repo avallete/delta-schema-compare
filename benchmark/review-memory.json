@@ -1,49 +1,166 @@
 {
   "open": {},
   "resolved": {
+    "148": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"e375d33e692b7b2841568627495e96ed80dafbc6\", \"pgschema_sha\": \"8b9d15d91194643b7241e39c3b69e77e6be94200\"}",
+      "issue_number": 148,
+      "issue_title": "Can't drop trigger function",
+      "issue_updated_at": "2026-02-09T03:57:30Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/148",
+      "reviewed_at": "2026-04-10T13:37:25+00:00",
+      "verdict": "covered"
+    },
+    "190": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"e375d33e692b7b2841568627495e96ed80dafbc6\", \"pgschema_sha\": \"8b9d15d91194643b7241e39c3b69e77e6be94200\"}",
+      "issue_number": 190,
+      "issue_title": "Column type change to enum fails: missing USING clause and existing default can't be cast",
+      "issue_updated_at": "2026-02-09T03:57:30Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/190",
+      "reviewed_at": "2026-04-10T13:37:25+00:00",
+      "verdict": "not_covered"
+    },
+    "241": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"e375d33e692b7b2841568627495e96ed80dafbc6\", \"pgschema_sha\": \"8b9d15d91194643b7241e39c3b69e77e6be94200\"}",
+      "issue_number": 241,
+      "issue_title": "functions with BEGIN ATOMIC produce a syntax error when dumped",
+      "issue_updated_at": "2026-02-09T03:57:30Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/241",
+      "reviewed_at": "2026-04-10T13:37:25+00:00",
+      "verdict": "covered"
+    },
+    "253": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"e375d33e692b7b2841568627495e96ed80dafbc6\", \"pgschema_sha\": \"8b9d15d91194643b7241e39c3b69e77e6be94200\"}",
+      "issue_number": 253,
+      "issue_title": "Default privileges + selective REVOKE requires two apply cycles to converge",
+      "issue_updated_at": "2026-02-09T03:57:30Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/253",
+      "reviewed_at": "2026-04-10T13:37:25+00:00",
+      "verdict": "covered"
+    },
+    "254": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-01-27T17:55:43Z\", \"pgdelta_sha\": \"e375d33e692b7b2841568627495e96ed80dafbc6\", \"pgschema_sha\": \"8b9d15d91194643b7241e39c3b69e77e6be94200\"}",
+      "issue_number": 254,
+      "issue_title": "Invalid statement ordering with CREATE DOMAIN CHECK constraints with function references",
+      "issue_updated_at": "2026-01-27T17:55:43Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/254",
+      "reviewed_at": "2026-04-10T13:37:25+00:00",
+      "verdict": "covered"
+    },
+    "256": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-01-27T14:57:11Z\", \"pgdelta_sha\": \"e375d33e692b7b2841568627495e96ed80dafbc6\", \"pgschema_sha\": \"8b9d15d91194643b7241e39c3b69e77e6be94200\"}",
+      "issue_number": 256,
+      "issue_title": "`plpgsql` function body references not included in function dependency ordering",
+      "issue_updated_at": "2026-01-27T14:57:11Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/256",
+      "reviewed_at": "2026-04-10T13:37:25+00:00",
+      "verdict": "covered"
+    },
+    "266": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"e375d33e692b7b2841568627495e96ed80dafbc6\", \"pgschema_sha\": \"8b9d15d91194643b7241e39c3b69e77e6be94200\"}",
+      "issue_number": 266,
+      "issue_title": "Composite FK referenced column order incorrect when FK order differs from table column order",
+      "issue_updated_at": "2026-02-09T03:57:30Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/266",
+      "reviewed_at": "2026-04-10T13:37:25+00:00",
+      "verdict": "covered"
+    },
+    "279": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"e375d33e692b7b2841568627495e96ed80dafbc6\", \"pgschema_sha\": \"8b9d15d91194643b7241e39c3b69e77e6be94200\"}",
+      "issue_number": 279,
+      "issue_title": "Bug: Can't track sequences properly",
+      "issue_updated_at": "2026-02-09T03:57:30Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/279",
+      "reviewed_at": "2026-04-10T13:37:25+00:00",
+      "verdict": "not_covered"
+    },
+    "281": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-02-15T16:09:21Z\", \"pgdelta_sha\": \"e375d33e692b7b2841568627495e96ed80dafbc6\", \"pgschema_sha\": \"8b9d15d91194643b7241e39c3b69e77e6be94200\"}",
+      "issue_number": 281,
+      "issue_title": "EXCLUDE constraint incorrectly dumped as regular INDEX",
+      "issue_updated_at": "2026-02-15T16:09:21Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/281",
+      "reviewed_at": "2026-04-10T13:37:25+00:00",
+      "verdict": "covered"
+    },
+    "287": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-02-16T13:55:31Z\", \"pgdelta_sha\": \"e375d33e692b7b2841568627495e96ed80dafbc6\", \"pgschema_sha\": \"8b9d15d91194643b7241e39c3b69e77e6be94200\"}",
+      "issue_number": 287,
+      "issue_title": "INSTEAD OF triggers on views are missing from dump",
+      "issue_updated_at": "2026-02-16T13:55:31Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/287",
+      "reviewed_at": "2026-04-10T13:37:25+00:00",
+      "verdict": "covered"
+    },
+    "295": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-02-20T03:19:35Z\", \"pgdelta_sha\": \"e375d33e692b7b2841568627495e96ed80dafbc6\", \"pgschema_sha\": \"8b9d15d91194643b7241e39c3b69e77e6be94200\"}",
+      "issue_number": 295,
+      "issue_title": "pgvector typmod lost: vector/halfvec dimensions dropped in plan/apply, causing HNSW index failure (\"column does not have dimensions\")",
+      "issue_updated_at": "2026-02-20T03:19:35Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/295",
+      "reviewed_at": "2026-04-10T13:37:25+00:00",
+      "verdict": "covered"
+    },
+    "308": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-02-22T06:50:05Z\", \"pgdelta_sha\": \"e375d33e692b7b2841568627495e96ed80dafbc6\", \"pgschema_sha\": \"8b9d15d91194643b7241e39c3b69e77e6be94200\"}",
+      "issue_number": 308,
+      "issue_title": "Adding a column to a table fails when dependent views use `SELECT *`",
+      "issue_updated_at": "2026-02-22T06:50:05Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/308",
+      "reviewed_at": "2026-04-10T13:37:25+00:00",
+      "verdict": "covered"
+    },
     "324": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-02-26T04:37:53Z\", \"pgdelta_sha\": \"f7de56c19e19894c6e79a03eb1075e67fe3ad8d4\", \"pgschema_sha\": \"23c2f564b70733c6bd313a33e4e0a59f03db3452\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-02-26T04:37:53Z\", \"pgdelta_sha\": \"e375d33e692b7b2841568627495e96ed80dafbc6\", \"pgschema_sha\": \"8b9d15d91194643b7241e39c3b69e77e6be94200\"}",
       "issue_number": 324,
       "issue_title": "Bug with apply, grants and order application",
       "issue_updated_at": "2026-02-26T04:37:53Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/324",
-      "reviewed_at": "2026-03-08T13:50:00+00:00",
+      "reviewed_at": "2026-04-10T13:37:25+00:00",
       "verdict": "covered"
     },
+    "326": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-02-26T07:15:03Z\", \"pgdelta_sha\": \"e375d33e692b7b2841568627495e96ed80dafbc6\", \"pgschema_sha\": \"8b9d15d91194643b7241e39c3b69e77e6be94200\"}",
+      "issue_number": 326,
+      "issue_title": "Changing the type of a function must drop it before creating the new one",
+      "issue_updated_at": "2026-02-26T07:15:03Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/326",
+      "reviewed_at": "2026-04-10T13:37:25+00:00",
+      "verdict": "not_covered"
+    },
     "342": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-03-08T12:09:48Z\", \"pgdelta_sha\": \"f7de56c19e19894c6e79a03eb1075e67fe3ad8d4\", \"pgschema_sha\": \"23c2f564b70733c6bd313a33e4e0a59f03db3452\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-03-08T12:09:48Z\", \"pgdelta_sha\": \"e375d33e692b7b2841568627495e96ed80dafbc6\", \"pgschema_sha\": \"8b9d15d91194643b7241e39c3b69e77e6be94200\"}",
       "issue_number": 342,
       "issue_title": "[Feature Request] Add support for trigger on specific fields",
       "issue_updated_at": "2026-03-08T12:09:48Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/342",
-      "reviewed_at": "2026-03-08T13:40:00+00:00",
-      "verdict": "tracked"
+      "reviewed_at": "2026-04-10T13:37:25+00:00",
+      "verdict": "not_covered"
     },
     "343": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-03-08T13:21:33Z\", \"pgdelta_sha\": \"f7de56c19e19894c6e79a03eb1075e67fe3ad8d4\", \"pgschema_sha\": \"23c2f564b70733c6bd313a33e4e0a59f03db3452\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-03-08T13:21:33Z\", \"pgdelta_sha\": \"e375d33e692b7b2841568627495e96ed80dafbc6\", \"pgschema_sha\": \"8b9d15d91194643b7241e39c3b69e77e6be94200\"}",
       "issue_number": 343,
       "issue_title": "[Feature Request] Add support for tracking `security_invoker` on views",
       "issue_updated_at": "2026-03-08T13:21:33Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/343",
-      "reviewed_at": "2026-03-08T13:40:00+00:00",
+      "reviewed_at": "2026-04-10T13:37:25+00:00",
       "verdict": "covered"
     },
     "355": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-03-13T08:34:53Z\", \"pgdelta_sha\": \"366cc2670a6d058fcfac4d94c523cc6ab8dfb03a\", \"pgschema_sha\": \"44bb45ebb92bed640ed153ae8db2dfb582cee12e\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-03-13T08:34:53Z\", \"pgdelta_sha\": \"e375d33e692b7b2841568627495e96ed80dafbc6\", \"pgschema_sha\": \"8b9d15d91194643b7241e39c3b69e77e6be94200\"}",
       "issue_number": 355,
       "issue_title": "\"nulls not distinct\" being silently dropped when creating a unique index.",
       "issue_updated_at": "2026-03-13T08:34:53Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/355",
-      "reviewed_at": "2026-03-13T08:36:38+00:00",
-      "verdict": "tracked"
+      "reviewed_at": "2026-04-10T13:37:25+00:00",
+      "verdict": "not_covered"
     },
     "364": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-03-23T13:43:29Z\", \"pgdelta_sha\": \"366cc2670a6d058fcfac4d94c523cc6ab8dfb03a\", \"pgschema_sha\": \"44bb45ebb92bed640ed153ae8db2dfb582cee12e\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-03-23T13:43:29Z\", \"pgdelta_sha\": \"e375d33e692b7b2841568627495e96ed80dafbc6\", \"pgschema_sha\": \"8b9d15d91194643b7241e39c3b69e77e6be94200\"}",
       "issue_number": 364,
       "issue_title": "WITHOUT OVERLAPS and PERIOD clauses are dropped from temporal primary keys and foreign keys (PostgreSQL 18)",
       "issue_updated_at": "2026-03-23T13:43:29Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/364",
-      "reviewed_at": "2026-04-03T10:08:39.917165+00:00",
+      "reviewed_at": "2026-04-10T13:37:25+00:00",
       "verdict": "not_covered"
     },
     "373": {
@@ -52,7 +169,7 @@
       "issue_title": "Bug: RLS Policies Generated Before Referenced Tables Exist",
       "issue_updated_at": "2026-03-27T07:20:56Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/373",
-      "reviewed_at": "2026-04-10T12:25:00+00:00",
+      "reviewed_at": "2026-04-10T13:37:25+00:00",
       "verdict": "not_covered"
     }
   }
