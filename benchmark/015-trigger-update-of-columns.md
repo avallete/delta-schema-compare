@@ -13,8 +13,12 @@ field on any update). pgschema fixed this in PR #344 by explicitly tracking and
 emitting the `UPDATE OF ...` column list.
 
 In pg-delta, trigger support exists and there is broad trigger integration
-coverage in `tests/integration/trigger-operations.test.ts`, but no integration
-scenario specifically validates `UPDATE OF <columns>` behavior.
+coverage in `tests/integration/trigger-operations.test.ts`. The trigger model
+already captures `tgattr` as `column_numbers`, and trigger creation reuses
+`pg_get_triggerdef()` output via the captured `definition`, so the column list
+appears to be preserved by the current implementation. The remaining gap is
+that there is still no dedicated integration scenario proving roundtrip
+fidelity for `UPDATE OF <columns>`.
 
 ## Reproduction SQL
 
@@ -64,15 +68,16 @@ specificity.
 | Trigger create/replace support | ✅ Present |
 | Trigger integration tests (general) | ✅ Present |
 | Integration test for `UPDATE OF <columns>` | ❌ Missing |
-| Explicit `UPDATE OF` field in trigger model | ❌ Missing (no dedicated modeled field) |
+| Trigger model captures update-column metadata | ✅ `column_numbers` extracted in `src/core/objects/trigger/trigger.model.ts` |
+| Create SQL preserves captured trigger definition | ✅ `definition` from `pg_get_triggerdef()` is reused |
 
 ## Comparison of approaches
 
 | | pgschema | pg-delta |
 |---|---|---|
-| **Issue handling** | Fixed in merged PR #344 | No dedicated parity test yet |
-| **Evidence level** | Verified by issue + merged tests | Behavior likely supported via raw trigger definition, but unproven by integration test |
-| **Risk** | Addressed | Medium/High for regression blind spot |
+| **Issue handling** | Fixed in merged PR #344 | Implementation likely preserves `UPDATE OF`, but there is no dedicated parity test |
+| **Evidence level** | Verified by issue + merged tests | Source-level support exists, but roundtrip behavior is unproven by integration test |
+| **Risk** | Addressed | Medium regression blind spot until a focused test exists |
 
 ## Plan to handle it in pg-delta
 
@@ -80,6 +85,6 @@ specificity.
    covering creation and replacement of a trigger with `UPDATE OF email`.
 2. Assert generated SQL includes the column list (`UPDATE OF email`) and does
    not broaden to plain `UPDATE`.
-3. Optionally add explicit trigger metadata for update-column lists in
-   `src/core/objects/trigger/trigger.model.ts` to make intent testable without
-   relying only on serialized definition text.
+3. Optionally add an assertion against extracted trigger metadata in
+   `src/core/objects/trigger/trigger.model.ts` so the test validates both the
+   catalog model and serialized SQL output.

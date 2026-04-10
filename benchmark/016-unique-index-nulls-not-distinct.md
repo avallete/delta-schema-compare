@@ -57,7 +57,7 @@ rewrites. The fix is covered by the existing `create_index/add_index` fixture in
 |---|---|
 | `nulls_not_distinct` extracted from catalog | ✅ Present in `src/core/objects/index/index.model.ts` |
 | Diff treats clause changes as index recreation | ✅ Present in `src/core/objects/index/index.diff.ts` |
-| Create SQL preserves captured index definition | ✅ Likely via `src/core/objects/index/changes/index.create.ts` |
+| Create SQL preserves captured index definition | ✅ Serialized from the catalog-backed index definition |
 | Integration test for `NULLS NOT DISTINCT` unique indexes | ❌ Missing from `tests/integration/index-operations.test.ts` |
 | Existing pg-toolbelt open issue / PR for this exact scenario | ❌ None found during review |
 
@@ -65,9 +65,9 @@ rewrites. The fix is covered by the existing `create_index/add_index` fixture in
 
 | | pgschema | pg-delta |
 |---|---|---|
-| **Current state** | Fixed in merged PR #356 with regression fixture | Source appears partially ready, but exact roundtrip coverage is missing |
-| **Evidence level** | Verified by merged fix + diff/plan fixtures | Implementation hints exist, but behavior is unproven by integration test |
-| **Risk** | Addressed | High-confidence blind spot for a correctness-sensitive unique-index feature |
+| **Current state** | Fixed in merged PR #356 with regression fixture | Source model and diff path are in place, but exact roundtrip coverage is missing |
+| **Evidence level** | Verified by merged fix + diff/plan fixtures | Catalog extraction and recreate logic exist, but behavior is unproven by integration test |
+| **Risk** | Addressed | High-confidence regression blind spot for a correctness-sensitive unique-index feature |
 
 ## Plan to handle it in pg-delta
 
