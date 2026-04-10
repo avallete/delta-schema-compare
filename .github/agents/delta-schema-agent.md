@@ -377,3 +377,31 @@ Requires Docker (for PostgreSQL containers).
 - `docs/pgdelta-structure.md` — pg-delta directory map, test file listing, and test anatomy
 - `.github/copilot-instructions.md` — Copilot-specific agent instructions
 - `benchmark/README.md` — summary of all 15 benchmarked gaps with severity ratings
+
+## Cursor Cloud specific instructions
+
+### Services overview
+
+This repo has two concerns:
+
+1. **Python automation scripts** (`scripts/compare_issues.py`, `scripts/compare_resolved.py`) — the primary "application". They require `GITHUB_TOKEN` and use the GitHub Models API (no separate OpenAI key needed). Run with `DRY_RUN=true` for safe local testing.
+2. **pg-delta submodule** (`repos/pg-toolbelt/packages/pg-delta/`) — a TypeScript/Bun schema diff tool whose tests require Docker (for PostgreSQL containers via testcontainers).
+
+### Running services
+
+| What | Command | Notes |
+|---|---|---|
+| Python scripts (dry run) | `DRY_RUN=true python3 scripts/compare_issues.py` | Needs `GITHUB_TOKEN` in env |
+| Lint (pg-toolbelt) | `cd repos/pg-toolbelt && bun run format-and-lint` | Uses Biome |
+| Type check (pg-toolbelt) | `cd repos/pg-toolbelt && bun run check-types` | |
+| Build (pg-toolbelt) | `cd repos/pg-toolbelt && bun run build` | |
+| Unit tests (pg-delta) | `cd repos/pg-toolbelt && bun test packages/pg-delta/src/` | No Docker needed |
+| Integration tests (pg-delta) | `cd repos/pg-toolbelt && sudo -E env "PATH=$PATH" bun test packages/pg-delta/tests/integration/<file>.test.ts` | Requires Docker; see gotcha below |
+
+### Gotchas
+
+- **Docker must be running** before pg-delta integration tests. Start with `sudo dockerd &>/tmp/dockerd.log &` and wait ~3s. The daemon is configured with `fuse-overlayfs` storage driver and `iptables-legacy` for the cloud VM environment.
+- **Integration tests need sudo** (or Docker socket access) because testcontainers spins up PostgreSQL containers. Use `sudo -E env "PATH=$PATH" bun test ...` to preserve the Bun path.
+- **First integration test run may timeout** on the first test case of each PG version because Docker pulls the PostgreSQL image. Subsequent runs are fast.
+- **Submodules must be initialized** before any script or test will work: `git submodule update --init --recursive`.
+- **Bun is installed in `~/.bun/bin/`** — make sure it's on PATH (`export PATH="$HOME/.bun/bin:$PATH"`).
