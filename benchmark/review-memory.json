@@ -171,6 +171,15 @@
       "issue_url": "https://github.com/pgplex/pgschema/issues/373",
       "reviewed_at": "2026-04-10T13:37:25+00:00",
       "verdict": "not_covered"
+    },
+    "386": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-04-07T11:16:43Z\", \"pgdelta_sha\": \"e375d33e692b7b2841568627495e96ed80dafbc6\", \"pgschema_sha\": \"8b9d15d91194643b7241e39c3b69e77e6be94200\"}",
+      "issue_number": 386,
+      "issue_title": "`CHECK (FALSE) NO INHERIT` constraints silently dropped during plan/apply",
+      "issue_updated_at": "2026-04-07T11:16:43Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/386",
+      "reviewed_at": "2026-04-15T15:13:09+00:00",
+      "verdict": "not_covered"
     }
   }
 }
