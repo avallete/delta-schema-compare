@@ -103,14 +103,14 @@ Before creating a tracking issue, **check pg-delta's open issues and PRs** to av
 
 - **Schedule:** Every day at 08:00 UTC
 - **Script:** `python scripts/compare_issues.py`
-- **What it does:** Fetches open pgschema issues (Bug/Feature), checks pg-delta coverage via local search + LLM evaluation, creates tracking issues for uncovered gaps.
+- **What it does:** Fetches open pgschema issues (currently filtered by `Bug`/`Feature` labels), checks pg-delta coverage via local search + LLM evaluation, creates tracking issues for uncovered gaps.
 - **Labels applied:** `from-pgschema`, `needs-test`
 
 ### Weekly — Resolved Issues (`compare-resolved.yml`)
 
 - **Schedule:** Every Monday at 09:00 UTC
 - **Script:** `python scripts/compare_resolved.py`
-- **What it does:** Fetches closed pgschema issues, checks if pg-delta still lacks coverage for the resolved scenario, creates tracking issues for historical gaps.
+- **What it does:** Fetches closed pgschema issues (currently filtered by `Bug`/`Feature` labels), checks if pg-delta still lacks coverage for the resolved scenario, creates tracking issues for historical gaps.
 - **Labels applied:** `resolved-in-pgschema`, `needs-test`
 
 ### Running locally
@@ -129,6 +129,44 @@ python scripts/compare_resolved.py   # resolved / historical gaps
 | --------- | ----------------- | ------------------------------------------------- |
 | `dry_run` | `false`           | Log what would be created without creating issues |
 | `model`   | `claude-opus-4.6` | GitHub Models model for coverage evaluation       |
+
+---
+
+## Benchmark → issue workflow SOP (required order)
+
+When asked to create issues from the benchmark, always follow this order:
+
+### 1) Map benchmark entries to pg-delta issues/PRs first
+
+For each benchmark item:
+
+1. Find matching pg-toolbelt issue(s) and PR(s).
+2. Refresh the benchmark status as one of:
+   - **covered** (fix merged and behavior is now covered),
+   - **tracked** (issue/PR exists but is still in progress),
+   - **not_covered** (no effective fix yet).
+3. Update benchmark docs + `benchmark/review-memory.json` before drafting any
+   new issue.
+
+### 2) Find missing pg-toolbelt issues second
+
+After status refresh:
+
+1. Screen remaining pgschema scenarios that are not represented.
+2. Check duplicates in pg-toolbelt issues and PRs.
+3. Prepare issue drafts in markdown first (do not open immediately), each with:
+   - context,
+   - runnable MRE SQL,
+   - concrete suggested fix paths.
+
+This ordering prevents duplicate issue creation and keeps benchmark state
+accurate before proposing net-new tracker issues.
+
+### Label-filter caveat
+
+Current automation scripts filter pgschema issues by `Bug`/`Feature` labels.
+If upstream issues are unlabeled, script runs may miss relevant items; in that
+case, do a manual issue/PR scan and record findings in benchmark memory/docs.
 
 ---
 
