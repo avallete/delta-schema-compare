@@ -1,76 +1,51 @@
-# Benchmark — pgschema Issues Not Covered by pg-delta
+# Benchmark — pgschema vs pg-delta parity status
 
-This directory contains benchmark files for closed
-[pgschema](https://github.com/pgplex/pgschema) issues that represent bugs or
-features **not currently covered** by
-[@supabase/pg-delta](https://github.com/supabase/pg-toolbelt/tree/main/packages/pg-delta).
+This directory tracks parity between resolved pgschema issues and pg-delta.
+Each benchmark file documents a scenario that was previously missing or
+insufficient in pg-delta.
 
-## How issues were selected
+## Latest refresh snapshot (2026-04-22)
 
-1. All [closed pgschema issues](https://github.com/pgplex/pgschema/issues?q=is%3Aissue+state%3Aclosed)
-   were reviewed.
-2. Issues were filtered to include only **bugs** and **features** relevant to
-   schema diffing and DDL generation — excluding pgschema-specific concerns
-   like dump formatting, CLI flags, binary distribution, and connection
-   handling.
-3. Each remaining issue was cross-referenced against pg-delta's integration
-   tests (`tests/integration/`) and source modules (`src/core/objects/`) to
-   determine whether the specific scenario is covered.
-4. Issues already covered by pg-delta (e.g. overloaded functions, FORCE ROW
-   LEVEL SECURITY, view dependency ordering, named FK constraints) were
-   excluded.
+Refreshed against:
 
-## File structure
+- `repos/pg-toolbelt` @ `b812a4698478ed92dbabb19fa819873bebe0faf8`
+- `repos/pgschema` @ `0352fc1fc6a0067f616b61b3d669265b6ed2e818`
 
-Each file follows this template:
+## Benchmark status matrix
 
-- **Context** — what the pgschema issue describes and why it matters
-- **Reproduction SQL** — runnable SQL demonstrating the scenario
-- **How pgschema handled it** — the approach taken in the Go codebase
-- **Current pg-delta status** — what pg-delta supports today (with evidence)
-- **Comparison of approaches** — pgschema vs pg-delta architecture differences
-- **Plan to handle it in pg-delta** — concrete steps to close the gap
+| # | File | pgschema | pg-toolbelt issue | pg-toolbelt PR | Current status |
+|---|---|---|---|---|---|
+| 005 | [ALTER column type USING](005-alter-column-type-using-clause.md) | [#190](https://github.com/pgplex/pgschema/issues/190) | [#130](https://github.com/supabase/pg-toolbelt/issues/130) (open) | [#146](https://github.com/supabase/pg-toolbelt/pull/146) (open) | **Tracked (in progress)** |
+| 007 | [Function signature DROP](007-function-signature-change-requires-drop.md) | [#326](https://github.com/pgplex/pgschema/issues/326) | [#132](https://github.com/supabase/pg-toolbelt/issues/132) (open) | [#214](https://github.com/supabase/pg-toolbelt/pull/214) (merged) | **Solved in pg-delta** |
+| 008 | [Mat view cascade deps](008-materialized-view-cascade-dependencies.md) | [#268](https://github.com/pgplex/pgschema/issues/268) | [#133](https://github.com/supabase/pg-toolbelt/issues/133) (open) | [#149](https://github.com/supabase/pg-toolbelt/pull/149) (open) | **Tracked (in progress)** |
+| 013 | [Sequence identity](013-sequence-identity-transitions.md) | [#279](https://github.com/pgplex/pgschema/issues/279) | [#138](https://github.com/supabase/pg-toolbelt/issues/138) (closed) | [#154](https://github.com/supabase/pg-toolbelt/pull/154) (merged) | **Solved in pg-delta** |
+| 015 | [Trigger UPDATE OF columns](015-trigger-update-of-columns.md) | [#342](https://github.com/pgplex/pgschema/issues/342) | [#140](https://github.com/supabase/pg-toolbelt/issues/140) (closed) | [#200](https://github.com/supabase/pg-toolbelt/pull/200) (merged) | **Solved in pg-delta** |
+| 016 | [Unique index NULLS NOT DISTINCT](016-unique-index-nulls-not-distinct.md) | [#355](https://github.com/pgplex/pgschema/issues/355) | [#183](https://github.com/supabase/pg-toolbelt/issues/183) (closed) | [#185](https://github.com/supabase/pg-toolbelt/pull/185) (merged) | **Solved in pg-delta** |
+| 017 | [Temporal WITHOUT OVERLAPS / PERIOD constraints](017-temporal-without-overlaps-period-constraints.md) | [#364](https://github.com/pgplex/pgschema/issues/364) | [#182](https://github.com/supabase/pg-toolbelt/issues/182) (open) | [#213](https://github.com/supabase/pg-toolbelt/pull/213) (merged) | **Solved in pg-delta** |
+| 018 | [Cross-table RLS policy ordering](018-cross-table-rls-policy-ordering.md) | [#373](https://github.com/pgplex/pgschema/issues/373) | [#184](https://github.com/supabase/pg-toolbelt/issues/184) (open) | [#187](https://github.com/supabase/pg-toolbelt/pull/187) (open) | **Tracked (in progress)** |
+| 019 | [Column-less CHECK NO INHERIT](019-columnless-check-no-inherit.md) | [#386](https://github.com/pgplex/pgschema/issues/386) | [#198](https://github.com/supabase/pg-toolbelt/issues/198) (closed) | [#212](https://github.com/supabase/pg-toolbelt/pull/212) (merged) | **Solved in pg-delta** |
 
-## Summary of gaps
+> Note: a few pg-toolbelt tracking issues remain open even though their fixing
+> PR is merged (e.g. #132, #182). In this benchmark, merged fixing PRs are
+> treated as solved parity for pg-delta behavior.
 
-| # | File | pgschema Issue | Category | Severity |
-|---|---|---|---|---|
-| 005 | [ALTER column type USING](005-alter-column-type-using-clause.md) | [#190](https://github.com/pgplex/pgschema/issues/190) | Column DDL | Critical |
-| 007 | [Function signature DROP](007-function-signature-change-requires-drop.md) | [#326](https://github.com/pgplex/pgschema/issues/326) | Function DDL | Critical |
-| 008 | [Mat view cascade deps](008-materialized-view-cascade-dependencies.md) | [#268](https://github.com/pgplex/pgschema/issues/268) | Dependency ordering | High |
-| 013 | [Sequence identity](013-sequence-identity-transitions.md) | [#279](https://github.com/pgplex/pgschema/issues/279) | Column DDL | High |
-| 015 | [Trigger UPDATE OF columns](015-trigger-update-of-columns.md) | [#342](https://github.com/pgplex/pgschema/issues/342) | Trigger DDL | High |
-| 016 | [Unique index NULLS NOT DISTINCT](016-unique-index-nulls-not-distinct.md) | [#355](https://github.com/pgplex/pgschema/issues/355) | Index DDL | High |
-| 017 | [Temporal WITHOUT OVERLAPS / PERIOD constraints](017-temporal-without-overlaps-period-constraints.md) | [#364](https://github.com/pgplex/pgschema/issues/364) | Constraint DDL | High |
-| 018 | [Cross-table RLS policy ordering](018-cross-table-rls-policy-ordering.md) | [#373](https://github.com/pgplex/pgschema/issues/373) | Dependency ordering | High |
-| 019 | [Column-less CHECK NO INHERIT](019-columnless-check-no-inherit.md) | [#386](https://github.com/pgplex/pgschema/issues/386) | Constraint DDL | High |
+## Active gaps after refresh
 
-## Covered by pg-delta (excluded from benchmark)
+Only these benchmark scenarios remain active as unresolved or in-progress:
 
-The following pgschema issues were found to be **already covered** by pg-delta
-and are not included above:
+- **005** — `ALTER COLUMN TYPE ... USING` flow
+- **008** — materialized view replacement with cascade dependencies
+- **018** — cross-table RLS policy ordering
 
-- **#214** — FORCE ROW LEVEL SECURITY (`table.alter.test.ts`)
-- **#191** — Overloaded functions (`function-operations.test.ts`)
-- **#183** — Generated columns (`alter-table-operations.test.ts`)
-- **#148** — Drop trigger before drop function (`trigger-operations.test.ts`)
-- **#241** — `BEGIN ATOMIC` SQL functions (`function-operations.test.ts`)
-- **#253** — Default privileges + selective `REVOKE` convergence (`default-privileges-edge-case.test.ts`)
-- **#254** — Domain `CHECK` function dependency ordering (`type-operations.test.ts`)
-- **#256** — `plpgsql`/SQL function body dependency ordering (`function-operations.test.ts`)
-- **#266** — Composite FK referenced column order (`constraint-operations.test.ts`)
-- **#281** — `EXCLUDE USING` constraints (`constraint-operations.test.ts`)
-- **#287** — `INSTEAD OF` view triggers (`trigger-operations.test.ts`)
-- **#295** — pgvector typmod preservation (`extension-operations.test.ts`)
-- **#335** — Table/function dependency order (`table-function-*.test.ts`)
-- **#307** — View dependency ordering (`view-operations.test.ts`)
-- **#308** — View `SELECT *` recreation on base-table column changes (`view-operations.test.ts`)
-- **#248/#155** — FK constraint ordering (`fk-constraint-ordering.test.ts`)
-- **#246** — Function-to-function ordering (`complex-dependency-ordering.test.ts`)
-- **#122** — Cross-schema FK constraints (`fk-constraint-ordering.test.ts`)
-- **#83** — Named FK constraints (`constraint-operations.test.ts`)
-- **#104** — View UNION subquery (`view-operations.test.ts`)
-- **#101** — Table functions / RETURNS SETOF (`table-function-*.test.ts`)
-- **#343** — View `security_invoker` reloptions (`view-operations.test.ts`)
-- **#350** — ALTER VIEW `SET/RESET` reloptions incl. `security_invoker` (`view-operations.test.ts`)
-- **#324** — Grant/Revoke ordering (`privilege-operations.test.ts`)
+## New open pgschema issue screening (draft-only output)
+
+Screened candidates:
+
+- **#362** numeric precision changes — **covered** in pg-delta integration tests
+- **#401** `RETURNS SETOF <table>` dependency ordering — **covered** in pg-delta integration tests
+- **#404** deferrable unique constraints — **not covered** (draft prepared)
+- **#366** function privilege signatures with enum argument types — **not covered** (draft prepared)
+
+Draft issues were recorded as markdown only (not opened yet):
+
+- [`docs/parity-issue-drafts-2026-04-22.md`](../docs/parity-issue-drafts-2026-04-22.md)
