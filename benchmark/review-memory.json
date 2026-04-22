@@ -16,7 +16,7 @@
       "issue_updated_at": "2026-03-23T03:23:36Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/366",
       "reviewed_at": "2026-04-22T00:00:00+00:00",
-      "verdict": "not_covered"
+      "verdict": "tracked"
     },
     "401": {
       "fingerprint": "{\"issue_updated_at\": \"2026-04-15T03:11:17Z\", \"pgdelta_sha\": \"b812a4698478ed92dbabb19fa819873bebe0faf8\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
@@ -34,7 +34,7 @@
       "issue_updated_at": "2026-04-16T16:02:28Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/404",
       "reviewed_at": "2026-04-22T00:00:00+00:00",
-      "verdict": "not_covered"
+      "verdict": "tracked"
     }
   },
   "resolved": {

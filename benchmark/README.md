@@ -43,9 +43,9 @@ Screened candidates:
 
 - **#362** numeric precision changes — **covered** in pg-delta integration tests
 - **#401** `RETURNS SETOF <table>` dependency ordering — **covered** in pg-delta integration tests
-- **#404** deferrable unique constraints — **not covered** (draft prepared)
-- **#366** function privilege signatures with enum argument types — **not covered** (draft prepared)
+- **#404** deferrable unique constraints — **tracked** in pg-toolbelt issue [#218](https://github.com/supabase/pg-toolbelt/issues/218)
+- **#366** function privilege signatures with enum argument types — **tracked** in pg-toolbelt issue [#219](https://github.com/supabase/pg-toolbelt/issues/219)
 
-Draft issues were recorded as markdown only (not opened yet):
+Draft details remain in:
 
 - [`docs/parity-issue-drafts-2026-04-22.md`](../docs/parity-issue-drafts-2026-04-22.md)
