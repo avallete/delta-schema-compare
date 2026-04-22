@@ -85,6 +85,40 @@ the issue is definitely not covered.
 
 ---
 
+## Step 3.25 — Benchmark-to-issue synchronization SOP
+
+When asked to create issues from the benchmark (or refresh parity), always run
+this two-step workflow first:
+
+### 3.25a) Map benchmark entries to pg-delta issues/PRs
+
+For each benchmark item:
+
+1. Find matching pg-toolbelt issue(s) and PR(s).
+2. Classify status:
+   - **covered / solved**: fix PR merged and behavior is now covered
+   - **tracked**: issue exists and fix PR is open/in progress
+   - **not_covered**: no matching fix exists
+3. Update benchmark memory and summary docs accordingly before drafting new
+   issues.
+
+### 3.25b) Only then detect missing pg-toolbelt issues
+
+After status refresh:
+
+1. Scan relevant open pgschema issues for scenarios not represented in the
+   benchmark/pg-toolbelt trackers.
+2. Perform duplicate checks in pg-toolbelt issues + PRs.
+3. For each genuinely missing gap, create a draft issue body in markdown first
+   (do **not** open immediately), including:
+   - clear context
+   - runnable MRE SQL
+   - concrete suggested fix paths in pg-delta
+
+This order prevents duplicate issue creation and keeps benchmark status current.
+
+---
+
 ## Step 3.5 — Persist review memory
 
 After each run, write reviewed issues to:
@@ -108,6 +142,9 @@ fresh and skip re-review.
 ## Step 4 — Write the tracking issue
 
 Use this template when coverage is missing.  All three sections are required.
+
+**Default workflow:** draft in markdown/review memory first, then open issues
+in a separate explicit step.
 
 ---
 

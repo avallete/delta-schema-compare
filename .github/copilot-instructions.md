@@ -36,6 +36,27 @@ Both upstream codebases are available locally as **git submodules**:
    - If none of those markers changed, skip re-review and reuse the stored
      verdict.
 
+## Benchmark-to-issue workflow (required order)
+
+When asked to create issues from the benchmark, always use this sequence:
+
+1. **Map benchmark ↔ pg-delta issues/PRs first**
+   - Build a mapping from each benchmark item to matching pg-toolbelt issues/PRs.
+   - Refresh each item's status as:
+     - `covered` (merged fix and scenario now covered),
+     - `tracked` (issue/PR exists but not merged),
+     - `not_covered` (no effective fix yet).
+   - Update benchmark markdown and review memory before drafting any new issue.
+
+2. **Find truly missing pg-toolbelt issues second**
+   - Screen new pgschema candidates not already represented.
+   - Run duplicate checks against existing pg-toolbelt issues and PRs.
+   - Draft missing issues in markdown first with:
+     - context,
+     - runnable MRE SQL,
+     - suggested fix paths.
+   - Do not open issues in the same pass unless explicitly requested.
+
 ## How to generate a tracking issue
 
 Use the structure defined in `docs/coverage-guide.md`.  All generated issues
