@@ -722,7 +722,7 @@ def main() -> None:
     created = 0
     skipped_tracked = 0
     skipped_covered = 0
-    retired = 0
+    retained_historical = 0
     errors = 0
 
     for issue in issues:
@@ -735,23 +735,20 @@ def main() -> None:
             if record_review_result(review_memory, "resolved", issue, fingerprint, verdict):
                 logger.debug("[#%d] Review memory updated (%s).", num, verdict)
 
-        def retire_existing_benchmark_if_needed(issue_number: int) -> None:
-            nonlocal retired
+        def keep_existing_benchmark_if_covered(issue_number: int) -> None:
+            nonlocal retained_historical
             if existing_benchmark is None:
                 return
-            # The caller records the final "covered" verdict in review memory.
             if DRY_RUN:
                 logger.info(
-                    "[#%d] DRY RUN – would retire benchmark file: %s",
+                    "[#%d] DRY RUN – would keep historical benchmark file: %s",
                     issue_number,
                     existing_benchmark,
                 )
                 return
-            existing_benchmark.unlink(missing_ok=True)
-            benchmark_files.pop(issue_number, None)
-            retired += 1
+            retained_historical += 1
             logger.info(
-                "[#%d] Covered in pg-delta – retired benchmark file: %s",
+                "[#%d] Covered in pg-delta – keeping historical benchmark file: %s",
                 issue_number,
                 existing_benchmark,
             )
@@ -771,7 +768,7 @@ def main() -> None:
             )
 
         if is_covered_cache_hit(review_memory, "resolved", num, fingerprint):
-            retire_existing_benchmark_if_needed(num)
+            keep_existing_benchmark_if_covered(num)
             logger.info("[#%d] Review-memory hit (still covered) – skipping.", num)
             skipped_covered += 1
             continue
@@ -786,7 +783,7 @@ def main() -> None:
             snippets = collect_pgdelta_snippets(issue)
             covered_by_llm = llm_has_coverage(issue, snippets)
             if covered_by_llm:
-                retire_existing_benchmark_if_needed(num)
+                keep_existing_benchmark_if_covered(num)
                 logger.info("[#%d] Fully covered in pg-delta – skipping.", num)
                 remember("covered")
                 skipped_covered += 1
@@ -888,13 +885,12 @@ def main() -> None:
     logger.info("Resolved issues processed: %d", len(issues))
     logger.info("Already tracked          : %d", skipped_tracked)
     logger.info("Covered in pgdelta       : %d", skipped_covered)
-    logger.info(
-        "%s created           : %d",
-        "Benchmark files written" if OUTPUT_MODE == OUTPUT_MODE_BENCHMARK else "Issues",
-        created,
-    )
     if OUTPUT_MODE == OUTPUT_MODE_BENCHMARK:
-        logger.info("Benchmark files retired  : %d", retired)
+        logger.info("Benchmark files written : %d", created)
+    else:
+        logger.info("Issues created          : %d", created)
+    if OUTPUT_MODE == OUTPUT_MODE_BENCHMARK:
+        logger.info("Historical files kept    : %d", retained_historical)
     logger.info("Errors                   : %d", errors)
 
     if errors:
