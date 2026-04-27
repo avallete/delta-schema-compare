@@ -1,40 +1,40 @@
 {
   "open": {
     "362": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-03-23T03:21:35Z\", \"pgdelta_sha\": \"b812a4698478ed92dbabb19fa819873bebe0faf8\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-03-23T03:21:35Z\", \"pgdelta_sha\": \"8a31133f1799d1fbc159ccb75c282d61ab581f1e\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
       "issue_number": 362,
       "issue_title": "Bug: pgschema is not detecting changes in numeric precision",
       "issue_updated_at": "2026-03-23T03:21:35Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/362",
-      "reviewed_at": "2026-04-22T00:00:00+00:00",
+      "reviewed_at": "2026-04-27T07:17:46.585912+00:00",
       "verdict": "covered"
     },
     "366": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-03-23T03:23:36Z\", \"pgdelta_sha\": \"b812a4698478ed92dbabb19fa819873bebe0faf8\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-03-23T03:23:36Z\", \"pgdelta_sha\": \"8a31133f1799d1fbc159ccb75c282d61ab581f1e\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
       "issue_number": 366,
       "issue_title": "Bug: Changing privileges of functions with enums include the qualified name of the temporal schema",
       "issue_updated_at": "2026-03-23T03:23:36Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/366",
-      "reviewed_at": "2026-04-22T00:00:00+00:00",
-      "verdict": "not_covered"
+      "reviewed_at": "2026-04-27T07:17:46.585912+00:00",
+      "verdict": "tracked"
     },
     "401": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-04-15T03:11:17Z\", \"pgdelta_sha\": \"b812a4698478ed92dbabb19fa819873bebe0faf8\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-04-15T03:11:17Z\", \"pgdelta_sha\": \"8a31133f1799d1fbc159ccb75c282d61ab581f1e\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
       "issue_number": 401,
       "issue_title": "Table dependency not resolving",
       "issue_updated_at": "2026-04-15T03:11:17Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/401",
-      "reviewed_at": "2026-04-22T00:00:00+00:00",
+      "reviewed_at": "2026-04-27T07:17:46.585912+00:00",
       "verdict": "covered"
     },
     "404": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-04-16T16:02:28Z\", \"pgdelta_sha\": \"b812a4698478ed92dbabb19fa819873bebe0faf8\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-04-16T16:02:28Z\", \"pgdelta_sha\": \"8a31133f1799d1fbc159ccb75c282d61ab581f1e\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
       "issue_number": 404,
       "issue_title": "DEFERRABLE INITIALLY DEFERRED on UNIQUE constraints is silently stripped during dump, plan, and apply",
       "issue_updated_at": "2026-04-16T16:02:28Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/404",
-      "reviewed_at": "2026-04-22T00:00:00+00:00",
-      "verdict": "not_covered"
+      "reviewed_at": "2026-04-27T07:17:46.585912+00:00",
+      "verdict": "tracked"
     }
   },
   "resolved": {
@@ -48,12 +48,12 @@
       "verdict": "covered"
     },
     "190": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"b812a4698478ed92dbabb19fa819873bebe0faf8\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"8a31133f1799d1fbc159ccb75c282d61ab581f1e\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
       "issue_number": 190,
       "issue_title": "Column type change to enum fails: missing USING clause and existing default can't be cast",
       "issue_updated_at": "2026-02-09T03:57:30Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/190",
-      "reviewed_at": "2026-04-22T00:00:00+00:00",
+      "reviewed_at": "2026-04-27T07:17:46.585912+00:00",
       "verdict": "tracked"
     },
     "241": {
@@ -102,21 +102,21 @@
       "verdict": "covered"
     },
     "268": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"b812a4698478ed92dbabb19fa819873bebe0faf8\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"8a31133f1799d1fbc159ccb75c282d61ab581f1e\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
       "issue_number": 268,
       "issue_title": "Migration fails when other objects were dependent on a dropped and recreated materialized view",
       "issue_updated_at": "2026-02-09T03:57:30Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/268",
-      "reviewed_at": "2026-04-22T00:00:00+00:00",
-      "verdict": "tracked"
+      "reviewed_at": "2026-04-27T07:17:46.585912+00:00",
+      "verdict": "covered"
     },
     "279": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"b812a4698478ed92dbabb19fa819873bebe0faf8\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"8a31133f1799d1fbc159ccb75c282d61ab581f1e\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
       "issue_number": 279,
       "issue_title": "Bug: Can't track sequences properly",
       "issue_updated_at": "2026-02-09T03:57:30Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/279",
-      "reviewed_at": "2026-04-22T00:00:00+00:00",
+      "reviewed_at": "2026-04-27T07:17:46.585912+00:00",
       "verdict": "covered"
     },
     "281": {
@@ -165,21 +165,21 @@
       "verdict": "covered"
     },
     "326": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-02-26T07:15:03Z\", \"pgdelta_sha\": \"b812a4698478ed92dbabb19fa819873bebe0faf8\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-02-26T07:15:03Z\", \"pgdelta_sha\": \"8a31133f1799d1fbc159ccb75c282d61ab581f1e\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
       "issue_number": 326,
       "issue_title": "Changing the type of a function must drop it before creating the new one",
       "issue_updated_at": "2026-02-26T07:15:03Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/326",
-      "reviewed_at": "2026-04-22T00:00:00+00:00",
+      "reviewed_at": "2026-04-27T07:17:46.585912+00:00",
       "verdict": "covered"
     },
     "342": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-03-08T12:09:48Z\", \"pgdelta_sha\": \"b812a4698478ed92dbabb19fa819873bebe0faf8\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-03-08T12:09:48Z\", \"pgdelta_sha\": \"8a31133f1799d1fbc159ccb75c282d61ab581f1e\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
       "issue_number": 342,
       "issue_title": "[Feature Request] Add support for trigger on specific fields",
       "issue_updated_at": "2026-03-08T12:09:48Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/342",
-      "reviewed_at": "2026-04-22T00:00:00+00:00",
+      "reviewed_at": "2026-04-27T07:17:46.585912+00:00",
       "verdict": "covered"
     },
     "343": {
@@ -192,39 +192,39 @@
       "verdict": "covered"
     },
     "355": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-03-13T08:34:53Z\", \"pgdelta_sha\": \"b812a4698478ed92dbabb19fa819873bebe0faf8\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-03-13T08:34:53Z\", \"pgdelta_sha\": \"8a31133f1799d1fbc159ccb75c282d61ab581f1e\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
       "issue_number": 355,
       "issue_title": "\"nulls not distinct\" being silently dropped when creating a unique index.",
       "issue_updated_at": "2026-03-13T08:34:53Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/355",
-      "reviewed_at": "2026-04-22T00:00:00+00:00",
+      "reviewed_at": "2026-04-27T07:17:46.585912+00:00",
       "verdict": "covered"
     },
     "364": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-03-23T13:43:29Z\", \"pgdelta_sha\": \"b812a4698478ed92dbabb19fa819873bebe0faf8\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-03-23T13:43:29Z\", \"pgdelta_sha\": \"8a31133f1799d1fbc159ccb75c282d61ab581f1e\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
       "issue_number": 364,
       "issue_title": "WITHOUT OVERLAPS and PERIOD clauses are dropped from temporal primary keys and foreign keys (PostgreSQL 18)",
       "issue_updated_at": "2026-03-23T13:43:29Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/364",
-      "reviewed_at": "2026-04-22T00:00:00+00:00",
+      "reviewed_at": "2026-04-27T07:17:46.585912+00:00",
       "verdict": "covered"
     },
     "373": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-03-27T07:20:56Z\", \"pgdelta_sha\": \"b812a4698478ed92dbabb19fa819873bebe0faf8\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-03-27T07:20:56Z\", \"pgdelta_sha\": \"8a31133f1799d1fbc159ccb75c282d61ab581f1e\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
       "issue_number": 373,
       "issue_title": "Bug: RLS Policies Generated Before Referenced Tables Exist",
       "issue_updated_at": "2026-03-27T07:20:56Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/373",
-      "reviewed_at": "2026-04-22T00:00:00+00:00",
-      "verdict": "tracked"
+      "reviewed_at": "2026-04-27T07:17:46.585912+00:00",
+      "verdict": "covered"
     },
     "386": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-04-07T11:16:43Z\", \"pgdelta_sha\": \"b812a4698478ed92dbabb19fa819873bebe0faf8\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-04-07T11:16:43Z\", \"pgdelta_sha\": \"8a31133f1799d1fbc159ccb75c282d61ab581f1e\", \"pgschema_sha\": \"0352fc1fc6a0067f616b61b3d669265b6ed2e818\"}",
       "issue_number": 386,
       "issue_title": "`CHECK (FALSE) NO INHERIT` constraints silently dropped during plan/apply",
       "issue_updated_at": "2026-04-07T11:16:43Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/386",
-      "reviewed_at": "2026-04-22T00:00:00+00:00",
+      "reviewed_at": "2026-04-27T07:17:46.585912+00:00",
       "verdict": "covered"
     }
   }

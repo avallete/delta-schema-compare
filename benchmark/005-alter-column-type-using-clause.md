@@ -1,4 +1,4 @@
-# Column Type Change Missing USING Clause
+# Column Type Change Missing `USING` Clause
 
 > pgschema issue [#190](https://github.com/pgplex/pgschema/issues/190) (closed)
 
@@ -14,8 +14,11 @@ pgschema was generating `ALTER COLUMN ... TYPE enum_type` without the `USING`
 clause and without handling existing defaults.
 
 pg-delta's `AlterTableAlterColumnType.serialize()` (in
-`src/core/objects/table/changes/table.alter.ts`) generates the ALTER statement
-**without a USING clause** — the code only emits TYPE and optional COLLATE.
+`src/core/objects/table/changes/table.alter.ts`) still generates the ALTER
+statement **without a `USING` clause** — the code only emits `TYPE` and
+optional `COLLATE`. There is an open draft fix in
+[pg-toolbelt#146](https://github.com/supabase/pg-toolbelt/pull/146), but it has
+not been merged into the latest pg-delta revision in this benchmark refresh.
 
 ## Reproduction SQL
 
@@ -52,10 +55,11 @@ It also handles the default drop/re-set workflow.
 |---|---|
 | `AlterTableAlterColumnType` change class | ✅ Exists |
 | USING clause in serialize() | ❌ **Not generated** |
-| Default drop/re-set around type change | ❌ Not handled |
-| Integration test for type change with USING | ❌ None |
+| Default drop/re-set around type change | ⚠️ Partial coverage only — default-preserving widening tests exist, but the enum / explicit-cast flow is still unresolved |
+| Integration regression for `text -> enum` with `USING` | ❌ Missing (the only enum-related case is still skipped) |
+| Existing pg-toolbelt issue / PR | ✅ [#130](https://github.com/supabase/pg-toolbelt/issues/130) open, [#146](https://github.com/supabase/pg-toolbelt/pull/146) open draft |
 
-**Source evidence** (`table.alter.ts` lines 605–618):
+**Source evidence** (`table.alter.ts` lines 609–621 in the refreshed submodule):
 ```typescript
 serialize(): string {
   const parts: string[] = [
@@ -72,13 +76,20 @@ serialize(): string {
 
 No `USING` clause is appended.
 
+`tests/integration/alter-table-operations.test.ts` now includes
+`"widen column type preserves pre-existing default"` for safer same-family
+changes, but the exact enum/default case remains
+`test.skip("change column type from enum to text preserves default", ...)`,
+which is still blocked by dependency ordering on the dropped source type.
+
 ## Comparison of approaches
 
 | | pgschema | pg-delta |
 |---|---|---|
 | **Root cause** | Missing USING in ALTER DDL output | Same — no USING in `serialize()` |
 | **Fix scope** | IR ALTER serialiser | `AlterTableAlterColumnType` + diff logic |
-| **Complexity** | Medium — needs to decide when USING is required | Medium — same analysis needed |
+| **Current upstream state** | Fixed in pgschema | pg-delta fix exists only as draft PR #146 |
+| **Complexity** | Medium — needs to decide when USING is required | Medium — same analysis needed plus dependency ordering around dropped source types |
 
 ## Plan to handle it in pg-delta
 
@@ -95,3 +106,14 @@ No `USING` clause is appended.
    - Type change on column with existing default
 4. **Edge case**: columns with `NOT NULL` and data — the USING must produce
    non-null values.
+
+## Latest refresh note (2026-04-27)
+
+This benchmark entry remains active after refreshing to
+`repos/pg-toolbelt@8a31133f1799d1fbc159ccb75c282d61ab581f1e`.
+
+- The pg-toolbelt tracking issue remains open: [#130](https://github.com/supabase/pg-toolbelt/issues/130)
+- A concrete implementation exists but is still unmerged:
+  [#146](https://github.com/supabase/pg-toolbelt/pull/146) (**draft**)
+- Upstream pg-delta did add nearby regression coverage for safer default-aware
+  type changes, but not the full enum / `USING` parity case from pgschema #190

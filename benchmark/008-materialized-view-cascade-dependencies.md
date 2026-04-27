@@ -11,8 +11,12 @@ order. pgschema was not searching for dependent objects before dropping a
 materialized view, causing `ERROR: cannot drop materialized view ... because
 other objects depend on it`.
 
-pg-delta has materialized view tests but **no test for cascade dependency
-handling** when a materialized view is modified and has dependent objects.
+Refresh note (2026-04-27): this parity gap is now fixed in pg-delta. The
+tracking issue [pg-toolbelt#133](https://github.com/supabase/pg-toolbelt/issues/133)
+is closed, and
+[pg-toolbelt#149](https://github.com/supabase/pg-toolbelt/pull/149) merged
+dedicated replace-dependency handling plus integration coverage for a
+materialized view with both a dependent index and a dependent regular view.
 
 ## Reproduction SQL
 
@@ -73,27 +77,28 @@ the entire dependency chain.
 | Aspect | Status |
 |---|---|
 | Materialized view create/drop | ✅ Tested |
-| Materialized view modification | ✅ Basic test |
-| Cascade dependency handling | ❌ Not tested |
-| Index on mat view + dependent view | ❌ Not tested |
+| Materialized view modification | ✅ Tested |
+| Cascade dependency handling | ✅ Fixed in `pg-toolbelt#149` |
+| Index on mat view + dependent view | ✅ Covered by `tests/integration/materialized-view-operations.test.ts` |
+| Existing pg-toolbelt issue / PR for this exact scenario | ✅ `#133` closed by merged PR `#149` |
+
+Latest merged coverage includes the integration case
+`"replace materialized view with dependent index and view"` in
+`repos/pg-toolbelt/packages/pg-delta/tests/integration/materialized-view-operations.test.ts`,
+which asserts that the dependent index and view are dropped before the
+materialized view and recreated after it.
 
 ## Comparison of approaches
 
 | | pgschema | pg-delta |
 |---|---|---|
-| **Root cause** | No dependency traversal before DROP | Untested cascade scenario |
-| **Fix scope** | Dependency walker + DDL planner | Dependency graph + sort module |
-| **pg-delta advantage** | N/A | Already has dependency graph infrastructure |
+| **Historical root cause** | No dependency traversal before DROP | Replacement flow did not expand through dependent index/view chain |
+| **Current fix** | Traverses `pg_depend` before emitting DROP/CREATE | Expands replace-dependency chains to include dependent indexes and views |
+| **Regression coverage** | Fixture coverage in pgschema | Integration coverage for drop/recreate order in pg-delta |
 
-## Plan to handle it in pg-delta
+## Remaining follow-up
 
-1. **Add integration test** in
-   `tests/integration/materialized-view-operations.test.ts`:
-   - Create a mat view with a dependent index and a dependent regular view
-   - Modify the mat view definition
-   - Verify the DDL drops dependents first and recreates them after
-2. **Verify the dependency graph** in `src/core/sort/` — ensure that
-   indexes and views depending on a materialized view have edges in the
-   topological sort.
-3. **Test with `REFRESH MATERIALIZED VIEW`** — ensure refresh doesn't
-   trigger unnecessary cascade drops.
+No active parity gap remains for this benchmark item after pg-toolbelt #149.
+Future work, if needed, would be limited to extending the same replacement-chain
+logic to any additional dependent object types that show up in real-world
+reports.
