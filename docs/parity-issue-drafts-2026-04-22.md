@@ -1,9 +1,12 @@
 # Parity issue drafts (2026-04-22)
 
-This document records **draft-only** issue candidates from the latest
+This document records issue candidates from the latest
 pgschema ↔ pg-delta parity refresh.
 
-No GitHub issues were opened from this file yet.
+Status update: these two draft issues have now been created in pg-toolbelt:
+
+- #218 — https://github.com/supabase/pg-toolbelt/issues/218
+- #219 — https://github.com/supabase/pg-toolbelt/issues/219
 
 ## Duplicate-check summary (pg-toolbelt)
 
@@ -15,8 +18,10 @@ keywords:
 - `numeric precision`
 - `SETOF table dependency`
 
-Result: no matching open/closed pg-toolbelt issues were found for the first
-two scenarios below at draft time.
+Result at draft time: no matching open/closed pg-toolbelt issues were found
+for the first two scenarios below.
+
+Current state: the scenarios are now tracked by #218 and #219.
 
 ---
 
