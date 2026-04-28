@@ -1,12 +1,15 @@
 # Parity issue drafts (2026-04-22)
 
-This document records issue candidates from the latest
+This document records the **original draft text** from the 2026-04-22
 pgschema ↔ pg-delta parity refresh.
 
-Status update: these two draft issues have now been created in pg-toolbelt:
+Since this draft was created, the two scenarios below have been turned into
+real pg-toolbelt tracking issues:
 
-- #218 — https://github.com/supabase/pg-toolbelt/issues/218
-- #219 — https://github.com/supabase/pg-toolbelt/issues/219
+- pgschema #404 → [pg-toolbelt#218](https://github.com/supabase/pg-toolbelt/issues/218)
+- pgschema #366 → [pg-toolbelt#219](https://github.com/supabase/pg-toolbelt/issues/219)
+
+The content below is retained as historical drafting context only.
 
 ## Duplicate-check summary (pg-toolbelt)
 

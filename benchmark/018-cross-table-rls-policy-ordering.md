@@ -18,12 +18,12 @@ The merged PR also added a regression fixture,
 `repos/pgschema/testdata/diff/dependency/issue_373_policy_references_other_table/`,
 that exercises the exact failing scenario.
 
-In pg-delta, the closest coverage is
-`repos/pg-toolbelt/packages/pg-delta/tests/integration/policy-dependencies.test.ts`,
-but those tests only cover policies on their own table and creating a table plus
-its policy together. There is no integration case for a policy whose predicate
-references a second new table, so the latest cross-table ordering behavior is
-not covered.
+This gap was fixed in pg-delta by
+[pg-toolbelt#187](https://github.com/supabase/pg-toolbelt/pull/187), which
+teaches `CreateRlsPolicy.requires` to include table references found in policy
+expressions. The same PR also added focused regression coverage in
+`repos/pg-toolbelt/packages/pg-delta/tests/integration/policy-dependencies.test.ts`
+for policies whose `USING` expression references another newly created table.
 
 ## Reproduction SQL
 
@@ -63,9 +63,8 @@ USING (
 **Expected:** pg-delta emits migration SQL in an order where `project_manager`
 exists before `employee_manager_select` is created.
 
-**Actual:** the exact scenario is not covered by pg-delta integration tests, and
-the sort/dependency code does not include an explicit guard for cross-table
-references inside policy expressions.
+**Current pg-delta behavior:** the referenced table is now ordered before the
+policy create statement, and the end-to-end regression test asserts that order.
 
 ## How pgschema handled it
 
@@ -83,32 +82,26 @@ demonstrates the exact before/after ordering and locks the behavior in place.
 
 | Aspect | Status |
 |---|---|
-| Integration test for policy depending on another new table | ❌ Missing from `tests/integration/policy-dependencies.test.ts` |
-| Existing policy dependency tests | ⚠️ Only cover self-table policies and create-table-plus-policy cases |
+| Integration test for policy depending on another new table | ✅ Present in `tests/integration/policy-dependencies.test.ts` |
+| Existing policy dependency tests | ✅ Cover self-table cases and cross-table references |
 | RLS policy model stores policy expressions | ✅ `src/core/objects/rls-policy/rls-policy.model.ts` captures `using_expression` / `with_check_expression` |
-| Explicit cross-table policy ordering rule | ❌ No dedicated handling found in `src/core/depend.ts` or `src/core/sort/logical-sort.ts` |
-| Existing pg-toolbelt issue / PR for this exact scenario | ❌ None found during review |
+| Explicit cross-table policy ordering rule | ✅ `CreateRlsPolicy.requires` now tracks referenced relations from policy expressions |
+| Existing pg-toolbelt issue / PR for this exact scenario | ✅ Fixed by issue [#184](https://github.com/supabase/pg-toolbelt/issues/184) / PR [#187](https://github.com/supabase/pg-toolbelt/pull/187) |
 
 ## Comparison of approaches
 
 | | pgschema | pg-delta |
 |---|---|---|
-| **Ordering strategy** | Defers only cross-table policies after all tables exist | Groups `rls_policy` with table-adjacent objects and relies on generic dependency ordering |
-| **Scenario coverage** | Has a dedicated regression fixture for issue #373 | No integration test for a policy referencing another new table |
-| **Policy expression handling** | Uses policy expression inspection to detect new-table references | Stores expressions, but no explicit cross-table ordering check is covered |
+| **Ordering strategy** | Defers only cross-table policies after all tables exist | Adds the missing dependency edge directly to policy creation requirements |
+| **Scenario coverage** | Has a dedicated regression fixture for issue #373 | Has dedicated integration regressions for `EXISTS` and multi-table `IN (SELECT ...)` policy references |
+| **Policy expression handling** | Uses policy expression inspection to detect new-table references | Parses policy expressions and converts referenced relations into ordering dependencies |
 
-## Plan to handle it in pg-delta
+## Resolution in pg-delta
 
-1. Add an integration regression in
-   `repos/pg-toolbelt/packages/pg-delta/tests/integration/policy-dependencies.test.ts`
-   that creates two new tables and a policy on one table that references the
-   other.
-2. Extend dependency extraction or policy planning in
-   `repos/pg-toolbelt/packages/pg-delta/src/core/depend.ts` so policies can
-   depend on referenced newly created tables, not only on their owning table.
-3. If dependency extraction cannot express the relationship directly, add a
-   targeted policy deferral step before final plan ordering, similar in spirit
-   to pgschema's issue #373 fix.
-4. Re-run the policy dependency integration suite to verify that self-table
-   policy ordering remains unchanged while the cross-table case is emitted
-   safely.
+pg-delta now treats referenced relations inside policy expressions as explicit
+dependencies. The merged fix in `pg-toolbelt#187` adds regression coverage for
+cross-table policy references and verifies the planner emits `CREATE POLICY`
+only after referenced new tables exist.
+
+This benchmark entry is therefore retained as historical context, but the parity
+gap is now solved in the current pg-delta snapshot.
