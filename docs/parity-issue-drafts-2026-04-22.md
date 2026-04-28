@@ -24,6 +24,8 @@ keywords:
 Result at draft time: no matching open/closed pg-toolbelt issues were found
 for the first two scenarios below.
 
+Current state: the scenarios are now tracked by #218 and #219.
+
 ---
 
 ## Draft 1 — pgschema #404 (DEFERRABLE UNIQUE constraints)

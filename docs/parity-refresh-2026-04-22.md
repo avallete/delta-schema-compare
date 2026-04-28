@@ -33,16 +33,21 @@ The benchmark tracks nine core parity scenarios. Their current status is:
 - pgschema [#401](https://github.com/pgplex/pgschema/issues/401): `RETURNS SETOF <table>` dependencies
   - Evidence: `table-function-circular-dependency.test.ts` and `table-function-dependency-ordering.test.ts`.
 
-### Not yet covered (drafts prepared, no issue created)
+### Not yet covered (now tracked in pg-toolbelt issues)
 
 - pgschema [#404](https://github.com/pgplex/pgschema/issues/404): `UNIQUE ... DEFERRABLE INITIALLY DEFERRED`
 - pgschema [#366](https://github.com/pgplex/pgschema/issues/366): function privilege signatures with enum args
 
-Draft issue writeups (with MREs) are stored in:
+Tracking issues:
+
+- https://github.com/supabase/pg-toolbelt/issues/218 (maps to pgschema #404)
+- https://github.com/supabase/pg-toolbelt/issues/219 (maps to pgschema #366)
+
+Draft issue writeups (with MREs), from before issue creation, are stored in:
 
 - [`docs/parity-issue-drafts-2026-04-22.md`](./parity-issue-drafts-2026-04-22.md)
 
 ## 3) Notes
 
 - Some pg-toolbelt tracking issues remain open despite merged fix PRs; this report treats merged fix PRs as solved parity on pg-delta behavior.
-- No issues were created directly from this refresh; all new findings are captured as markdown drafts first.
+- New issues #218 and #219 were opened after the draft-only pass; benchmark and review memory now mark #404/#366 as tracked.
