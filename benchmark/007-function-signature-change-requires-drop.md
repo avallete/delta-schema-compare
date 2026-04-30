@@ -1,21 +1,18 @@
 # Function Signature Change Requires DROP Before CREATE
 
-> pgschema issue [#326](https://github.com/pgplex/pgschema/issues/326) (closed)
+> pgschema issue [#326](https://github.com/pgplex/pgschema/issues/326) (closed), fixed by [pgschema#327](https://github.com/pgplex/pgschema/pull/327)
 
 ## Context
 
-PostgreSQL does not allow `CREATE OR REPLACE FUNCTION` to change a function's
-parameter types because the parameter types are part of the function's identity
-(OID). To change parameter types, you must `DROP FUNCTION` the old signature
-first, then `CREATE FUNCTION` with the new signature.
+PostgreSQL does not allow `CREATE OR REPLACE FUNCTION` to change a
+function's signature when the parameter types, arity, defaults, or return
+type require a new function identity. Those changes must be applied as
+`DROP FUNCTION <old-signature>` followed by `CREATE FUNCTION <new-signature>`.
 
-pgschema was generating only `CREATE OR REPLACE FUNCTION` for signature changes,
-which fails with `ERROR: cannot change name of input parameter`.
-
-pg-delta has the **same bug**. When non-alterable fields change (including
-`argument_types`), the diff logic in `procedure.diff.ts` generates
-`CreateProcedure` with `orReplace: true` — but never emits a `DropProcedure`
-for the old signature.
+pgschema issue #326 covered this class of failure. pg-delta used to have
+the same bug, but it is now fixed by
+[pg-toolbelt#214](https://github.com/supabase/pg-toolbelt/pull/214), which
+closed [pg-toolbelt#132](https://github.com/supabase/pg-toolbelt/issues/132).
 
 ## Reproduction SQL
 
@@ -33,7 +30,9 @@ $$;
 **Change to diff:**
 
 ```sql
-CREATE OR REPLACE FUNCTION test_schema.process_item(param1 uuid)
+DROP FUNCTION test_schema.process_item(text);
+
+CREATE FUNCTION test_schema.process_item(param1 uuid)
 RETURNS void LANGUAGE plpgsql AS $$
 BEGIN
   RAISE NOTICE 'Processing: %', param1::text;
@@ -41,80 +40,42 @@ END;
 $$;
 ```
 
-**Expected DDL:**
-
-```sql
-DROP FUNCTION test_schema.process_item(text);
-CREATE FUNCTION test_schema.process_item(param1 uuid) ...;
-```
-
-**Actual pg-delta DDL (buggy):**
-
-```sql
-CREATE OR REPLACE FUNCTION test_schema.process_item(param1 uuid) ...;
--- ERROR: cannot change name of input parameter "param1"
--- (or creates a second overload instead of replacing)
-```
+**Expected:** pg-delta emits `DROP FUNCTION ...` before `CREATE FUNCTION ...`.
 
 ## How pgschema handled it
 
-pgschema now emits `DROP FUNCTION` before `CREATE FUNCTION` when the function
-signature (argument types) changes.
+pgschema fixed the planner so signature changes use `DROP + CREATE`
+instead of `CREATE OR REPLACE`.
 
 ## Current pg-delta status
 
 | Aspect | Status |
 |---|---|
-| Detects signature changes via NON_ALTERABLE_FIELDS | ✅ |
-| Generates DROP before CREATE on signature change | ❌ **Bug** |
-| Integration test for signature change | ❌ None |
+| Detects signature-changing function differences | Yes |
+| Emits `DROP FUNCTION` before recreate | Yes |
+| Integration test: parameter type change | Yes - `function signature: parameter type change` |
+| Integration test: parameter arity change | Yes - `function signature: parameter arity change` |
+| Integration test: input-parameter rename-only case | Yes - `function signature: parameter name change only` |
+| Integration test: default removal / return-type change | Yes |
+| Integration test: dependent-object cascade through a view | Yes |
+| Existing pg-toolbelt issue / PR | Yes - issue [#132](https://github.com/supabase/pg-toolbelt/issues/132) closed by merged PR [#214](https://github.com/supabase/pg-toolbelt/pull/214) |
 
-**Source evidence** (`procedure.diff.ts` lines 198–201):
-```typescript
-if (nonAlterablePropsChanged) {
-  changes.push(
-    new CreateProcedure({ procedure: branchProcedure, orReplace: true }),
-  );
-}
-```
-
-No `DropProcedure` is pushed before the `CreateProcedure`.
+The coverage lives in
+`repos/pg-toolbelt/packages/pg-delta/tests/integration/function-operations.test.ts`.
+It now exercises parameter-type changes, arity changes, parameter-name
+rewrites, default removal, return-type changes, and a dependent-view
+cascade.
 
 ## Comparison of approaches
 
 | | pgschema | pg-delta |
 |---|---|---|
-| **Root cause** | Missing DROP for signature changes | Same — only CREATE OR REPLACE emitted |
-| **Fix scope** | Diff planner | `procedure.diff.ts` lines 198–201 |
-| **Severity** | 🔴 Migration fails at runtime | 🔴 Same |
+| Historical root cause | Used `CREATE OR REPLACE` when signature changes required replacement | Same |
+| Current upstream state | Fixed in merged PR #327 | Fixed in merged PR #214 |
+| Regression coverage | pgschema fixture coverage | Multiple end-to-end function replacement regressions |
 
-## Plan to handle it in pg-delta
+## Resolution in pg-delta
 
-1. **Fix `procedure.diff.ts`** — when `nonAlterablePropsChanged` is true AND
-   `argument_types` differ, emit `DropProcedure` for the old signature
-   **before** `CreateProcedure` for the new one:
-   ```typescript
-   if (nonAlterablePropsChanged) {
-     const signatureChanged = !deepEqual(
-       mainProcedure.argument_types,
-       branchProcedure.argument_types,
-     );
-     if (signatureChanged) {
-       // Argument types changed — DROP old signature first
-       changes.push(new DropProcedure({ procedure: mainProcedure }));
-     }
-     changes.push(
-       new CreateProcedure({
-         procedure: branchProcedure,
-         orReplace: !signatureChanged,
-       }),
-     );
-   }
-   ```
-2. **Add integration test** in `tests/integration/function-operations.test.ts`:
-   - Change a function parameter from `text` to `uuid`
-   - Change parameter count
-   - Verify the DDL contains DROP then CREATE (not CREATE OR REPLACE)
-3. **Handle cascading dependencies** — dropping a function may require
-   dropping dependent objects first (triggers, views, defaults). Verify the
-   dependency sorter handles this.
+pg-delta now treats function signature changes as replacement operations
+and covers the benchmark scenario directly in integration tests. This
+benchmark entry remains only as historical context.
