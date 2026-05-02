@@ -12,17 +12,12 @@ with `INHERITS` continue to exist as if the constraint had been preserved.
 
 pgschema fixed this in PR #391 by keeping column-less CHECK constraints during
 introspection, propagating `connoinherit`, and adding a regression fixture in
-`repos/pgschema/testdata/diff/online/issue_386_check_no_inherit/`. In pg-delta,
-the closest integration coverage is
-`repos/pg-toolbelt/packages/pg-delta/tests/integration/constraint-operations.test.ts`,
-but it only exercises column-based CHECK constraints such as `CHECK (price > 0)`.
-There is no roundtrip test for a column-less CHECK, `NO INHERIT`, or the
-inherited-table scenario from pgschema #386.
+`repos/pgschema/testdata/diff/online/issue_386_check_no_inherit/`.
 
-This matters because the gap is not cosmetic. If pg-delta misses or mis-diffs a
-`CHECK (FALSE) NO INHERIT` constraint, users can ship a weaker schema than the
-branch database intended, silently allowing writes that should have been blocked
-on the parent table.
+This parity gap is now also fixed in pg-delta. The relevant work landed in
+[pg-toolbelt#212](https://github.com/supabase/pg-toolbelt/pull/212) and is
+tracked by the now-closed issue
+[pg-toolbelt#198](https://github.com/supabase/pg-toolbelt/issues/198).
 
 ## Reproduction SQL
 
@@ -43,11 +38,8 @@ CREATE TABLE test_schema.child (
 **Expected:** pg-delta preserves the `no_direct_insert` constraint definition,
 including `NO INHERIT`, when diffing or replaying the inherited-table schema.
 
-**Actual:** pg-delta has no integration regression covering this exact scenario.
-The table constraint model already records `no_inherit`, but the extraction query
-in `src/core/objects/table/table.model.ts` builds `key_columns` from
-`json_agg(unnest(c.conkey))` without an explicit empty-array fallback for
-column-less CHECK constraints, and no end-to-end test exercises that path.
+**Current pg-delta behavior:** the refreshed pg-delta tree now covers both the
+standalone and inherited-table variants in its constraint integration suite.
 
 ## How pgschema handled it
 
@@ -65,31 +57,27 @@ behavior stays locked in.
 
 | Aspect | Status |
 |---|---|
-| Integration test for column-less `CHECK (FALSE) NO INHERIT` | ❌ Missing from `tests/integration/constraint-operations.test.ts` |
-| Integration test for inherited-table variant | ❌ Missing from `tests/integration/` |
 | Table constraint model stores `no_inherit` | ✅ `src/core/objects/table/table.model.ts` includes `no_inherit` |
 | Table diff compares `no_inherit` and `check_expression` | ✅ `src/core/objects/table/table.diff.ts` compares both fields |
-| Serializer can emit `NO INHERIT` | ✅ `src/core/plan/sql-format/*` has unit coverage for `NO INHERIT` output |
-| Safe extraction path for empty `conkey` exercised end-to-end | ❌ No exact coverage found |
-| Existing pg-toolbelt issue / PR for this exact scenario | ❌ None found during review |
+| Empty-`conkey` extraction path returns a stable empty array | ✅ `table.model.ts` uses `coalesce(..., '[]'::json)` for column-less constraints |
+| Integration test for column-less `CHECK (FALSE) NO INHERIT` | ✅ `constraint-operations.test.ts` includes `"add CHECK (FALSE) NO INHERIT constraint on inheritance parent"` |
+| Integration test for inherited-table variant | ✅ `constraint-operations.test.ts` includes `"add CHECK (FALSE) NO INHERIT on parent with INHERITS child"` |
+| Existing pg-toolbelt issue / PR for this exact scenario | ✅ issue [#198](https://github.com/supabase/pg-toolbelt/issues/198) closed by merged PR [#212](https://github.com/supabase/pg-toolbelt/pull/212) |
 
 ## Comparison of approaches
 
 | | pgschema | pg-delta |
 |---|---|---|
-| **Catalog extraction** | Explicitly fixed column-less CHECK introspection in PR #391 | Extracts `connoinherit`, but the empty-`conkey` path is not covered end-to-end |
-| **DDL fidelity** | Preserves both the CHECK body and `NO INHERIT` modifier | Formatter can output `NO INHERIT`, but exact roundtrip coverage is missing |
-| **Regression coverage** | Has a dedicated fixture for issue #386 | Only tests ordinary column-based CHECK constraints |
-| **Inheritance scenario** | Regression fixture covers parent/child inheritance use case | No integration case for `INHERITS (...)` plus column-less CHECK |
+| **Catalog extraction** | Explicitly fixed column-less CHECK introspection in PR #391 | Handles empty-`conkey` constraints without collapsing to `null` |
+| **DDL fidelity** | Preserves both the CHECK body and `NO INHERIT` modifier | Preserves `NO INHERIT` through table-constraint diffing and serialization |
+| **Regression coverage** | Has a dedicated fixture for issue #386 | Has dedicated roundtrip tests for both standalone and inherited variants |
+| **Current parity state** | Fixed | Fixed |
 
-## Plan to handle it in pg-delta
+## Resolution in pg-delta
 
-1. Add an integration regression in
-   `repos/pg-toolbelt/packages/pg-delta/tests/integration/constraint-operations.test.ts`
-   for `CHECK (FALSE) NO INHERIT`.
-2. Add a second integration case covering
-   `CREATE TABLE ... INHERITS (parent_base)` with the constraint on the parent.
-3. Verify `src/core/objects/table/table.model.ts` returns a stable empty array
-   for column-less CHECK `key_columns` rather than `null` when `conkey` is empty.
-4. Re-run the constraint integration suite to confirm pg-delta preserves the
-   constraint definition and does not regress ordinary CHECK handling.
+pg-delta now keeps column-less `CHECK (FALSE) NO INHERIT` constraints through
+catalog extraction, diffing, and roundtrip application, including the
+inheritance-parent scenario from pgschema #386.
+
+This benchmark entry is therefore retained as historical context, but the parity
+gap is solved in the current pg-delta snapshot.
