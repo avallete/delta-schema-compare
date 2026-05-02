@@ -1,21 +1,18 @@
 # Function Signature Change Requires DROP Before CREATE
 
-> pgschema issue [#326](https://github.com/pgplex/pgschema/issues/326) (closed)
+> pgschema issue [#326](https://github.com/pgplex/pgschema/issues/326) (closed),
+> fixed by [pgschema#327](https://github.com/pgplex/pgschema/pull/327)
 
 ## Context
 
 PostgreSQL does not allow `CREATE OR REPLACE FUNCTION` to change a function's
-parameter types because the parameter types are part of the function's identity
-(OID). To change parameter types, you must `DROP FUNCTION` the old signature
-first, then `CREATE FUNCTION` with the new signature.
+signature. Parameter types, return type, and some other signature-level fields
+are part of the function identity, so changing them requires `DROP FUNCTION`
+followed by `CREATE FUNCTION`.
 
-pgschema was generating only `CREATE OR REPLACE FUNCTION` for signature changes,
-which fails with `ERROR: cannot change name of input parameter`.
-
-pg-delta has the **same bug**. When non-alterable fields change (including
-`argument_types`), the diff logic in `procedure.diff.ts` generates
-`CreateProcedure` with `orReplace: true` — but never emits a `DropProcedure`
-for the old signature.
+pgschema originally emitted only a replacement-style create and failed at apply
+time. pg-delta had the same parity gap until
+[pg-toolbelt#214](https://github.com/supabase/pg-toolbelt/pull/214) merged.
 
 ## Reproduction SQL
 
@@ -23,7 +20,9 @@ for the old signature.
 CREATE SCHEMA test_schema;
 
 CREATE OR REPLACE FUNCTION test_schema.process_item(param1 text)
-RETURNS void LANGUAGE plpgsql AS $$
+RETURNS void
+LANGUAGE plpgsql
+AS $$
 BEGIN
   RAISE NOTICE 'Processing: %', param1;
 END;
@@ -33,88 +32,56 @@ $$;
 **Change to diff:**
 
 ```sql
-CREATE OR REPLACE FUNCTION test_schema.process_item(param1 uuid)
-RETURNS void LANGUAGE plpgsql AS $$
+DROP FUNCTION test_schema.process_item(text);
+
+CREATE FUNCTION test_schema.process_item(param1 uuid)
+RETURNS void
+LANGUAGE plpgsql
+AS $$
 BEGIN
   RAISE NOTICE 'Processing: %', param1::text;
 END;
 $$;
 ```
 
-**Expected DDL:**
-
-```sql
-DROP FUNCTION test_schema.process_item(text);
-CREATE FUNCTION test_schema.process_item(param1 uuid) ...;
-```
-
-**Actual pg-delta DDL (buggy):**
-
-```sql
-CREATE OR REPLACE FUNCTION test_schema.process_item(param1 uuid) ...;
--- ERROR: cannot change name of input parameter "param1"
--- (or creates a second overload instead of replacing)
-```
+**Expected:** pg-delta emits `DROP FUNCTION ...` before recreating the new
+signature.
 
 ## How pgschema handled it
 
-pgschema now emits `DROP FUNCTION` before `CREATE FUNCTION` when the function
-signature (argument types) changes.
+pgschema PR #327 switched signature-changing routine diffs to an explicit
+drop-and-recreate flow so PostgreSQL receives valid DDL for parameter-type,
+parameter-name, and return-type changes.
 
 ## Current pg-delta status
 
 | Aspect | Status |
 |---|---|
-| Detects signature changes via NON_ALTERABLE_FIELDS | ✅ |
-| Generates DROP before CREATE on signature change | ❌ **Bug** |
-| Integration test for signature change | ❌ None |
+| Signature-changing routine diffs use DROP + CREATE | ✅ Fixed in [pg-toolbelt#214](https://github.com/supabase/pg-toolbelt/pull/214) |
+| Integration test for parameter type change | ✅ Present in `tests/integration/function-operations.test.ts` |
+| Integration test for arity / parameter-name / return-type changes | ✅ Present |
+| Historical pg-toolbelt issue | ✅ [#132](https://github.com/supabase/pg-toolbelt/issues/132) closed |
 
-**Source evidence** (`procedure.diff.ts` lines 198–201):
-```typescript
-if (nonAlterablePropsChanged) {
-  changes.push(
-    new CreateProcedure({ procedure: branchProcedure, orReplace: true }),
-  );
-}
-```
+Current integration coverage includes:
 
-No `DropProcedure` is pushed before the `CreateProcedure`.
+- `function signature: parameter type change`
+- `function signature: parameter arity change`
+- `function signature: parameter name change only`
+- `function signature: return type change`
+
+all in
+`repos/pg-toolbelt/packages/pg-delta/tests/integration/function-operations.test.ts`.
 
 ## Comparison of approaches
 
 | | pgschema | pg-delta |
 |---|---|---|
-| **Root cause** | Missing DROP for signature changes | Same — only CREATE OR REPLACE emitted |
-| **Fix scope** | Diff planner | `procedure.diff.ts` lines 198–201 |
-| **Severity** | 🔴 Migration fails at runtime | 🔴 Same |
+| **Historical root cause** | Replacement path ignored function identity rules | Same |
+| **Current fix** | Explicit DROP + CREATE on signature changes | Explicit DROP + CREATE on signature changes |
+| **Regression coverage** | Merged fix PR + fixtures | Multiple end-to-end integration cases |
 
-## Plan to handle it in pg-delta
+## Resolution in pg-delta
 
-1. **Fix `procedure.diff.ts`** — when `nonAlterablePropsChanged` is true AND
-   `argument_types` differ, emit `DropProcedure` for the old signature
-   **before** `CreateProcedure` for the new one:
-   ```typescript
-   if (nonAlterablePropsChanged) {
-     const signatureChanged = !deepEqual(
-       mainProcedure.argument_types,
-       branchProcedure.argument_types,
-     );
-     if (signatureChanged) {
-       // Argument types changed — DROP old signature first
-       changes.push(new DropProcedure({ procedure: mainProcedure }));
-     }
-     changes.push(
-       new CreateProcedure({
-         procedure: branchProcedure,
-         orReplace: !signatureChanged,
-       }),
-     );
-   }
-   ```
-2. **Add integration test** in `tests/integration/function-operations.test.ts`:
-   - Change a function parameter from `text` to `uuid`
-   - Change parameter count
-   - Verify the DDL contains DROP then CREATE (not CREATE OR REPLACE)
-3. **Handle cascading dependencies** — dropping a function may require
-   dropping dependent objects first (triggers, views, defaults). Verify the
-   dependency sorter handles this.
+This benchmark entry is now historical. The parity gap is solved in current
+pg-delta: the relevant integration tests assert that signature-level changes
+roundtrip through the required `DROP FUNCTION` + `CREATE FUNCTION` flow.
