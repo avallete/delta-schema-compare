@@ -6,15 +6,16 @@
 
 pgschema issue #355 reports that `CREATE UNIQUE INDEX ... NULLS NOT DISTINCT`
 was being planned and applied without the `NULLS NOT DISTINCT` clause. That
-silently weakens the index semantics: rows that should conflict because they
+silently weakens index semantics: rows that should conflict because they
 share `NULL` values can be inserted successfully.
 
-pgschema fixed this in PR #356 by explicitly tracking the property in its index
-IR and re-emitting the clause in diff and plan output. In pg-delta, the index
-catalog model already exposes `nulls_not_distinct`, and index create SQL is
-serialized from the captured catalog definition, but there is still no
-integration scenario that proves roundtrip fidelity for this exact PostgreSQL
-15+ feature.
+This benchmark originally tracked whether pg-delta preserved the same
+PostgreSQL 15+ modifier on standalone unique indexes.
+
+Refresh note (2026-05-03): pg-delta now covers this scenario end-to-end.
+pg-toolbelt issue [#183](https://github.com/supabase/pg-toolbelt/issues/183)
+is closed and the fix landed in merged PR
+[#185](https://github.com/supabase/pg-toolbelt/pull/185).
 
 ## Reproduction SQL
 
@@ -37,47 +38,31 @@ CREATE UNIQUE INDEX example_name_unique
     NULLS NOT DISTINCT;
 ```
 
-**Expected:** generated DDL preserves `NULLS NOT DISTINCT` on the unique index.
-
-**Risky behavior if not preserved:** generated DDL falls back to a plain unique
-index, allowing duplicate rows that differ only by `NULL` handling and changing
-application-visible uniqueness semantics.
-
 ## How pgschema handled it
 
-pgschema added a `NullsNotDistinct` field to its index IR, detected the clause
-from inspected index definitions, and re-emitted it during diff and plan
-rewrites. The fix is covered by the existing `create_index/add_index` fixture in
-`repos/pgschema/testdata/diff/create_index/add_index/`, which now includes a
-`CREATE UNIQUE INDEX ... NULLS NOT DISTINCT` regression case.
+pgschema added a `NullsNotDistinct` field to its index IR and re-emits the
+modifier in diff and plan output.
 
 ## Current pg-delta status
 
 | Aspect | Status |
 |---|---|
-| `nulls_not_distinct` extracted from catalog | ✅ Present in `src/core/objects/index/index.model.ts` |
-| Diff treats clause changes as index recreation | ✅ Present in `src/core/objects/index/index.diff.ts` |
-| Create SQL preserves captured index definition | ✅ Serialized from the catalog-backed index definition |
-| Integration test for `NULLS NOT DISTINCT` unique indexes | ❌ Missing from `tests/integration/index-operations.test.ts` |
-| Existing pg-toolbelt open issue / PR for this exact scenario | ❌ None found during review |
+| `nulls_not_distinct` extracted from the catalog | ✅ `src/core/objects/index/index.model.ts` reads `pg_index.indnullsnotdistinct` |
+| Diff recreates indexes when the modifier changes | ✅ `src/core/objects/index/index.diff.ts` treats `nulls_not_distinct` as non-alterable |
+| Integration regression coverage | ✅ `tests/integration/index-operations.test.ts` covers create + toggle to / from `NULLS NOT DISTINCT` |
+| Existing pg-toolbelt issue / PR | ✅ [#183](https://github.com/supabase/pg-toolbelt/issues/183) closed, [#185](https://github.com/supabase/pg-toolbelt/pull/185) merged |
+| Scope note | ✅ This benchmark covers standalone unique indexes; the table-constraint variant is tracked separately in [020](020-unique-constraint-nulls-not-distinct.md) |
 
 ## Comparison of approaches
 
 | | pgschema | pg-delta |
 |---|---|---|
-| **Current state** | Fixed in merged PR #356 with regression fixture | Source model and diff path are in place, but exact roundtrip coverage is missing |
-| **Evidence level** | Verified by merged fix + diff/plan fixtures | Catalog extraction and recreate logic exist, but behavior is unproven by integration test |
-| **Risk** | Addressed | High-confidence regression blind spot for a correctness-sensitive unique-index feature |
+| **Historical root cause** | Dropped the modifier from unique index output | Same parity question originally existed |
+| **Current fix** | Tracks the modifier explicitly in index IR | Tracks the modifier in the index model and recreates indexes when it changes |
+| **Regression coverage** | Fixture-backed upstream | PG15+ integration coverage in `index-operations.test.ts` |
 
-## Plan to handle it in pg-delta
+## Resolution in pg-delta
 
-1. Add a PostgreSQL 15+ integration test in
-   `tests/integration/index-operations.test.ts` covering
-   `CREATE UNIQUE INDEX ... NULLS NOT DISTINCT`.
-2. Add a second roundtrip case that changes an existing unique index between
-   plain unique and `NULLS NOT DISTINCT` to verify the recreate path in
-   `src/core/objects/index/index.diff.ts`.
-3. If the roundtrip fails, adjust index definition extraction or serialization
-   in `src/core/objects/index/index.model.ts` and
-   `src/core/objects/index/changes/index.create.ts` so the clause is preserved
-   across diff/apply.
+This benchmark entry is now historical. Current pg-delta preserves `NULLS
+NOT DISTINCT` for standalone unique indexes and validates both creation and
+modifier toggles in integration tests.
