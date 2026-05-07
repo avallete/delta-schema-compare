@@ -1,24 +1,21 @@
 # Trigger `UPDATE OF` Column Lists
 
-> pgschema issue [#342](https://github.com/pgplex/pgschema/issues/342) (closed), fixed by [pgschema#344](https://github.com/pgplex/pgschema/pull/344)
+> pgschema issue [#342](https://github.com/pgplex/pgschema/issues/342) (closed),
+> fixed by [pgschema#344](https://github.com/pgplex/pgschema/pull/344)
 
 ## Context
 
 pgschema issue #342 reports that triggers declared with `UPDATE OF <column_list>`
-were dumped/planned as plain `UPDATE`, dropping the column list and making the
-trigger fire for unrelated updates.
+were dumped/planned as plain `UPDATE`, dropping the column list and widening the
+trigger so it fired on unrelated updates.
 
-This can produce application-level corruption (for example, re-encrypting a
-field on any update). pgschema fixed this in PR #344 by explicitly tracking and
-emitting the `UPDATE OF ...` column list.
-
-In pg-delta, trigger support exists and there is broad trigger integration
-coverage in `tests/integration/trigger-operations.test.ts`. The trigger model
-already captures `tgattr` as `column_numbers`, and trigger creation reuses
-`pg_get_triggerdef()` output via the captured `definition`, so the column list
-appears to be preserved by the current implementation. The remaining gap is
-that there is still no dedicated integration scenario proving roundtrip
-fidelity for `UPDATE OF <columns>`.
+Refresh note (2026-05-07): this parity gap is now fixed in pg-delta. The
+tracking issue [pg-toolbelt#140](https://github.com/supabase/pg-toolbelt/issues/140)
+is closed, and
+[pg-toolbelt#200](https://github.com/supabase/pg-toolbelt/pull/200) added
+focused integration coverage. Current pg-delta also carries a second regression
+test that exercises the underlying `tgattr` / column-number diff loop for
+`UPDATE OF` triggers created on different table shapes.
 
 ## Reproduction SQL
 
@@ -26,16 +23,16 @@ fidelity for `UPDATE OF <columns>`.
 CREATE SCHEMA test_schema;
 
 CREATE TABLE test_schema.user_account (
-    id bigint generated always as identity primary key,
-    email text not null,
-    verified boolean not null default false
+  id bigint generated always as identity primary key,
+  email text not null,
+  verified boolean not null default false
 );
 
 CREATE OR REPLACE FUNCTION test_schema.user_account_encrypt_secret_email()
 RETURNS trigger LANGUAGE plpgsql AS $$
 BEGIN
-    NEW.email := 'enc:' || NEW.email;
-    RETURN NEW;
+  NEW.email := 'enc:' || NEW.email;
+  RETURN NEW;
 END;
 $$;
 ```
@@ -44,47 +41,41 @@ $$;
 
 ```sql
 CREATE OR REPLACE TRIGGER user_account_encrypt_secret_trigger_email
-    BEFORE INSERT OR UPDATE OF email ON test_schema.user_account
-    FOR EACH ROW
-    EXECUTE FUNCTION test_schema.user_account_encrypt_secret_email();
+  BEFORE INSERT OR UPDATE OF email ON test_schema.user_account
+  FOR EACH ROW
+  EXECUTE FUNCTION test_schema.user_account_encrypt_secret_email();
 ```
-
-**Expected:** generated DDL preserves `UPDATE OF email`.
-
-**Risky behavior if not preserved:** generated DDL uses `BEFORE INSERT OR UPDATE`
-without the column filter, causing the trigger to run on updates that do not
-modify `email`.
 
 ## How pgschema handled it
 
-pgschema added explicit handling for `UPDATE OF` columns in trigger
-introspection and output generation (PR #344), preventing loss of trigger event
-specificity.
+pgschema PR #344 added explicit handling for `UPDATE OF` trigger columns during
+introspection and DDL emission.
 
 ## Current pg-delta status
 
 | Aspect | Status |
 |---|---|
-| Trigger create/replace support | ✅ Present |
-| Trigger integration tests (general) | ✅ Present |
-| Integration test for `UPDATE OF <columns>` | ❌ Missing |
-| Trigger model captures update-column metadata | ✅ `column_numbers` extracted in `src/core/objects/trigger/trigger.model.ts` |
-| Create SQL preserves captured trigger definition | ✅ `definition` from `pg_get_triggerdef()` is reused |
+| Trigger model preserves update-column metadata | ✅ `Trigger.column_numbers` tracks the raw `tgattr` data |
+| Create SQL preserves `UPDATE OF <columns>` | ✅ Covered in `tests/integration/trigger-operations.test.ts` |
+| Regression for column-number diff loop / convergence | ✅ Covered in `tests/integration/trigger-update-of-column-numbers.test.ts` |
+| Existing pg-toolbelt issue / PR | ✅ Issue [#140](https://github.com/supabase/pg-toolbelt/issues/140) closed by merged PR [#200](https://github.com/supabase/pg-toolbelt/pull/200) |
+
+Current integration coverage includes:
+
+- `multi-event trigger preserves UPDATE OF column list`
+- `trigger UPDATE OF column-number diff loop`
 
 ## Comparison of approaches
 
 | | pgschema | pg-delta |
 |---|---|---|
-| **Issue handling** | Fixed in merged PR #344 | Implementation likely preserves `UPDATE OF`, but there is no dedicated parity test |
-| **Evidence level** | Verified by issue + merged tests | Source-level support exists, but roundtrip behavior is unproven by integration test |
-| **Risk** | Addressed | Medium regression blind spot until a focused test exists |
+| **Historical gap** | Dropped the `UPDATE OF` column filter | Needed dedicated regression coverage for the same trigger shape |
+| **Current fix** | Tracks and re-emits the filtered column list | Preserves the `UPDATE OF` list and tests both SQL output and convergence behavior |
+| **Coverage** | Fixed upstream | Dedicated integration coverage on current `main` |
 
-## Plan to handle it in pg-delta
+## Resolution in pg-delta
 
-1. Add an integration test in `tests/integration/trigger-operations.test.ts`
-   covering creation and replacement of a trigger with `UPDATE OF email`.
-2. Assert generated SQL includes the column list (`UPDATE OF email`) and does
-   not broaden to plain `UPDATE`.
-3. Optionally add an assertion against extracted trigger metadata in
-   `src/core/objects/trigger/trigger.model.ts` so the test validates both the
-   catalog model and serialized SQL output.
+The current pg-delta snapshot preserves `UPDATE OF` trigger column lists and
+has targeted regressions protecting both SQL output and the internal
+column-number diff path. This benchmark entry is therefore historical context,
+not an active parity gap.
