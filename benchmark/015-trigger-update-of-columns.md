@@ -4,21 +4,17 @@
 
 ## Context
 
-pgschema issue #342 reports that triggers declared with `UPDATE OF <column_list>`
-were dumped/planned as plain `UPDATE`, dropping the column list and making the
-trigger fire for unrelated updates.
+pgschema issue #342 reported that triggers declared with `UPDATE OF <column_list>`
+were being downgraded to plain `UPDATE`, which broadens trigger firing to
+unrelated column updates.
 
-This can produce application-level corruption (for example, re-encrypting a
-field on any update). pgschema fixed this in PR #344 by explicitly tracking and
-emitting the `UPDATE OF ...` column list.
+That parity gap is now closed in current pg-delta as well. The refreshed
+pg-delta tree keeps the column list in trigger definitions and has dedicated
+integration coverage for a multi-event trigger that includes `UPDATE OF email`.
 
-In pg-delta, trigger support exists and there is broad trigger integration
-coverage in `tests/integration/trigger-operations.test.ts`. The trigger model
-already captures `tgattr` as `column_numbers`, and trigger creation reuses
-`pg_get_triggerdef()` output via the captured `definition`, so the column list
-appears to be preserved by the current implementation. The remaining gap is
-that there is still no dedicated integration scenario proving roundtrip
-fidelity for `UPDATE OF <columns>`.
+Refresh note (2026-05-09): the original pg-toolbelt tracker
+[#140](https://github.com/supabase/pg-toolbelt/issues/140) is closed, and
+[pg-toolbelt#200](https://github.com/supabase/pg-toolbelt/pull/200) is merged.
 
 ## Reproduction SQL
 
@@ -49,42 +45,32 @@ CREATE OR REPLACE TRIGGER user_account_encrypt_secret_trigger_email
     EXECUTE FUNCTION test_schema.user_account_encrypt_secret_email();
 ```
 
-**Expected:** generated DDL preserves `UPDATE OF email`.
-
-**Risky behavior if not preserved:** generated DDL uses `BEFORE INSERT OR UPDATE`
-without the column filter, causing the trigger to run on updates that do not
-modify `email`.
-
 ## How pgschema handled it
 
-pgschema added explicit handling for `UPDATE OF` columns in trigger
-introspection and output generation (PR #344), preventing loss of trigger event
-specificity.
+pgschema fixed the bug by preserving the `UPDATE OF ...` column list during
+trigger introspection and plan emission, rather than collapsing the event list
+to plain `UPDATE`.
 
 ## Current pg-delta status
 
 | Aspect | Status |
 |---|---|
-| Trigger create/replace support | ✅ Present |
-| Trigger integration tests (general) | ✅ Present |
-| Integration test for `UPDATE OF <columns>` | ❌ Missing |
-| Trigger model captures update-column metadata | ✅ `column_numbers` extracted in `src/core/objects/trigger/trigger.model.ts` |
-| Create SQL preserves captured trigger definition | ✅ `definition` from `pg_get_triggerdef()` is reused |
+| Trigger model captures update-column metadata | ✅ `src/core/objects/trigger/trigger.model.ts` |
+| Trigger SQL preserves captured trigger definition | ✅ current trigger create path reuses the catalog definition |
+| Dedicated integration test for `UPDATE OF <columns>` | ✅ `tests/integration/trigger-operations.test.ts` (`"multi-event trigger preserves UPDATE OF column list"`) |
+| Generated SQL asserts the column filter is retained | ✅ test asserts `UPDATE OF email` is present in emitted SQL |
+| Existing pg-toolbelt issue / PR for this exact scenario | ✅ issue [#140](https://github.com/supabase/pg-toolbelt/issues/140) closed, PR [#200](https://github.com/supabase/pg-toolbelt/pull/200) merged |
 
 ## Comparison of approaches
 
 | | pgschema | pg-delta |
 |---|---|---|
-| **Issue handling** | Fixed in merged PR #344 | Implementation likely preserves `UPDATE OF`, but there is no dedicated parity test |
-| **Evidence level** | Verified by issue + merged tests | Source-level support exists, but roundtrip behavior is unproven by integration test |
-| **Risk** | Addressed | Medium regression blind spot until a focused test exists |
+| **Historical gap** | Dropped the trigger's column filter | Same parity risk existed originally |
+| **Current fix** | Preserve `UPDATE OF ...` on dump and plan output | Preserve the trigger definition and assert the column filter in integration tests |
+| **Regression coverage** | Upstream fix coverage | Dedicated roundtrip coverage for the exact trigger shape |
 
-## Plan to handle it in pg-delta
+## Resolution in pg-delta
 
-1. Add an integration test in `tests/integration/trigger-operations.test.ts`
-   covering creation and replacement of a trigger with `UPDATE OF email`.
-2. Assert generated SQL includes the column list (`UPDATE OF email`) and does
-   not broaden to plain `UPDATE`.
-3. Optionally add an assertion against extracted trigger metadata in
-   `src/core/objects/trigger/trigger.model.ts` so the test validates both the
-   catalog model and serialized SQL output.
+No active parity gap remains for this benchmark item in the refreshed pg-delta
+snapshot. The issue stays documented here as historical context for a now-fixed
+behavioral mismatch.
