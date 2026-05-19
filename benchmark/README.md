@@ -4,17 +4,24 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-05-17)
+## Latest refresh snapshot (2026-05-19)
 
 Refreshed against:
 
 - `repos/pg-toolbelt` @ `f1704bd26b80dec379cb19ef4ee2e30639dead8f`
 - `repos/pgschema` @ `e4f3a123d5ef8987e48379c4a2027b2de4c73a09`
 
-This refresh revalidated the live GitHub issue / PR state against the same
-upstream SHAs used by the unmerged 2026-05-16 parity refresh branch; today's
-extra screening of pgschema issues #415 / #416 / #419 / #436 also found no
-additional parity-state delta.
+This refresh found **no parity-state delta** versus the 2026-05-17 snapshot:
+benchmark **020** remains the only unresolved historical gap, and the open
+pg-delta parity trackers remain
+[pg-toolbelt#218](https://github.com/supabase/pg-toolbelt/issues/218) for
+pgschema **#404** plus
+[pg-toolbelt#219](https://github.com/supabase/pg-toolbelt/issues/219) for
+pgschema **#366**.
+
+Latest detailed report:
+
+- [`docs/parity-refresh-2026-05-19.md`](../docs/parity-refresh-2026-05-19.md)
 
 ## Benchmark status matrix
 
@@ -87,6 +94,13 @@ Current draft text is recorded in markdown here:
 - **#403** table row-type composite parameters in function validation — **not a
   pg-delta parity gap**; this is specific to pgschema's temp-schema validation
   architecture
+- **#410** built-in `name` columns dumped as `char[]` — **screened, no
+  benchmark item added**; pg-delta column extraction preserves `data_type_str`
+  via `format_type(a.atttypid, a.atttypmod)`, so this pgschema dump bug does
+  not appear reproducible in current pg-delta
+- **#423** `UNLOGGED` dropped from table definitions — **covered** in
+  pg-delta's table persistence model and unit coverage for both
+  `CREATE UNLOGGED TABLE` and `ALTER TABLE ... SET UNLOGGED`
 - **#412** table-level `UNIQUE NULLS NOT DISTINCT` constraints — **not covered**
   in current pg-delta; benchmarked as
   [020](020-table-constraint-unique-nulls-not-distinct.md) and drafted in
