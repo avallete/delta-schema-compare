@@ -4,7 +4,7 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-05-23)
+## Latest refresh snapshot (2026-05-25)
 
 Refreshed against:
 
@@ -35,6 +35,9 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
+There is no parity-state delta versus the 2026-05-23 refresh: benchmark 020
+remains the only active resolved-issue gap.
+
 ## New open pgschema issue screening (draft-only output)
 
 Screened candidates:
@@ -44,11 +47,13 @@ Screened candidates:
 - **#404** deferrable unique constraints — **tracked** by [pg-toolbelt#218](https://github.com/supabase/pg-toolbelt/issues/218)
 - **#366** function privilege signatures with enum argument types — **tracked** by [pg-toolbelt#219](https://github.com/supabase/pg-toolbelt/issues/219)
 - **#408** quoted custom / reserved type names in plan output — **covered** in the current pg-delta source path; column types come from `format_type(...)` and quoted custom types are exercised in `type-operations.test.ts`
+- **#436** required extensions in dump output — **covered** in pg-delta's extension model and integration coverage (`src/core/objects/extension/`, `tests/integration/extension-operations.test.ts`)
 - **#418** `CREATE INDEX CONCURRENTLY` on partitioned parents — **no duplicate pg-toolbelt issue drafted**; this is specific to pgschema's online-DDL rewrite and pg-delta does not synthesize `CONCURRENTLY`
 - **#420 / #421 / #422** array-typmod and quoted-name dump edge cases — **no pg-toolbelt issue drafted yet**; current pg-delta source looks closer to correct than pgschema, but the exact scenarios are still missing dedicated roundtrip coverage
 - **#427** schema-qualified functions in RLS policy expressions — **not covered**; draft issue text saved in [`docs/parity-issue-drafts-2026-05-23.md`](../docs/parity-issue-drafts-2026-05-23.md)
 - **#439** replacing `UNIQUE` with `PRIMARY KEY` when dependents still point at the old constraint — **not covered**; draft issue text saved in [`docs/parity-issue-drafts-2026-05-23.md`](../docs/parity-issue-drafts-2026-05-23.md)
 - **#406 / #407 / #409 / #429** `.pgschemaignore` follow-ups — **not parity work for pg-delta** (pgschema-specific ignore-file surface area)
+- **#49** explicit rename / refactor workflow proposal — **not parity work for pg-delta**; this is a pgschema-specific workflow design, not a current pg-delta diff or planning gap
 
 Historical draft text is recorded in markdown for both the older tracked
 scenarios and the newly screened uncovered candidates:
