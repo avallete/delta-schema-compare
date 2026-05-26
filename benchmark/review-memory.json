@@ -6,7 +6,7 @@
       "issue_title": "Introduce an Explicit Workflow for Renaming Schema Objects",
       "issue_updated_at": "2026-05-15T16:02:47Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/49",
-      "reviewed_at": "2026-05-25T07:00:00+00:00",
+      "reviewed_at": "2026-05-26T07:36:18+00:00",
       "verdict": "not_parity"
     },
     "362": {
@@ -15,7 +15,7 @@
       "issue_title": "Bug: pgschema is not detecting changes in numeric precision",
       "issue_updated_at": "2026-03-23T03:21:35Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/362",
-      "reviewed_at": "2026-05-23T07:23:30+00:00",
+      "reviewed_at": "2026-05-26T07:36:18+00:00",
       "verdict": "covered"
     },
     "366": {
@@ -24,7 +24,7 @@
       "issue_title": "Bug: Changing privileges of functions with enums include the qualified name of the temporal schema",
       "issue_updated_at": "2026-03-23T03:23:36Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/366",
-      "reviewed_at": "2026-05-23T07:23:30+00:00",
+      "reviewed_at": "2026-05-26T07:36:18+00:00",
       "verdict": "tracked"
     },
     "401": {
@@ -33,7 +33,7 @@
       "issue_title": "Table dependency not resolving",
       "issue_updated_at": "2026-05-11T17:43:14Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/401",
-      "reviewed_at": "2026-05-23T07:23:30+00:00",
+      "reviewed_at": "2026-05-26T07:36:18+00:00",
       "verdict": "covered"
     },
     "404": {
@@ -42,7 +42,7 @@
       "issue_title": "DEFERRABLE INITIALLY DEFERRED on UNIQUE constraints is silently stripped during dump, plan, and apply",
       "issue_updated_at": "2026-04-27T15:17:16Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/404",
-      "reviewed_at": "2026-05-23T07:23:30+00:00",
+      "reviewed_at": "2026-05-26T07:36:18+00:00",
       "verdict": "tracked"
     },
     "408": {
@@ -51,7 +51,7 @@
       "issue_title": "pgschema seems to be stripping quotes from ddl when rendering plan script",
       "issue_updated_at": "2026-04-27T15:16:06Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/408",
-      "reviewed_at": "2026-05-23T07:23:30+00:00",
+      "reviewed_at": "2026-05-26T07:36:18+00:00",
       "verdict": "covered"
     },
     "427": {
@@ -60,7 +60,7 @@
       "issue_title": "Schema-qualified functions in RLS policy expressions are dumped/planned as unqualified functions",
       "issue_updated_at": "2026-05-03T14:08:43Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/427",
-      "reviewed_at": "2026-05-23T07:23:30+00:00",
+      "reviewed_at": "2026-05-26T07:36:18+00:00",
       "verdict": "not_covered"
     },
     "436": {
@@ -69,7 +69,7 @@
       "issue_title": "Include Required Extensions in Dump Output",
       "issue_updated_at": "2026-05-16T14:12:05Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/436",
-      "reviewed_at": "2026-05-25T07:00:00+00:00",
+      "reviewed_at": "2026-05-26T07:36:18+00:00",
       "verdict": "covered"
     },
     "439": {
@@ -78,8 +78,17 @@
       "issue_title": "Dropping constraint cascade",
       "issue_updated_at": "2026-05-20T10:40:46Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/439",
-      "reviewed_at": "2026-05-23T07:23:30+00:00",
+      "reviewed_at": "2026-05-26T07:36:18+00:00",
       "verdict": "not_covered"
+    },
+    "444": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-05-25T18:20:45Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"e4f3a123d5ef8987e48379c4a2027b2de4c73a09\"}",
+      "issue_number": 444,
+      "issue_title": "Bug: DROP COLUMN ordered before dependent view's DROP within same group, apply fails",
+      "issue_updated_at": "2026-05-25T18:20:45Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/444",
+      "reviewed_at": "2026-05-26T07:36:18+00:00",
+      "verdict": "covered"
     }
   },
   "resolved": {
