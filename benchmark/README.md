@@ -4,7 +4,7 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-05-25)
+## Latest refresh snapshot (2026-05-26)
 
 Refreshed against:
 
@@ -35,7 +35,7 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-There is no parity-state delta versus the 2026-05-23 refresh: benchmark 020
+There is no parity-state delta versus the 2026-05-25 refresh: benchmark 020
 remains the only active resolved-issue gap.
 
 ## New open pgschema issue screening (draft-only output)
@@ -48,6 +48,7 @@ Screened candidates:
 - **#366** function privilege signatures with enum argument types — **tracked** by [pg-toolbelt#219](https://github.com/supabase/pg-toolbelt/issues/219)
 - **#408** quoted custom / reserved type names in plan output — **covered** in the current pg-delta source path; column types come from `format_type(...)` and quoted custom types are exercised in `type-operations.test.ts`
 - **#436** required extensions in dump output — **covered** in pg-delta's extension model and integration coverage (`src/core/objects/extension/`, `tests/integration/extension-operations.test.ts`)
+- **#444** drop-column ordering with dependent views — **covered** by pg-delta's existing view replacement path; `tests/integration/view-operations.test.ts` asserts `DROP VIEW` happens before the table change when projected columns change, matching the same dependency class fixed by [pg-toolbelt#139](https://github.com/supabase/pg-toolbelt/issues/139) / [#155](https://github.com/supabase/pg-toolbelt/pull/155)
 - **#418** `CREATE INDEX CONCURRENTLY` on partitioned parents — **no duplicate pg-toolbelt issue drafted**; this is specific to pgschema's online-DDL rewrite and pg-delta does not synthesize `CONCURRENTLY`
 - **#420 / #421 / #422** array-typmod and quoted-name dump edge cases — **no pg-toolbelt issue drafted yet**; current pg-delta source looks closer to correct than pgschema, but the exact scenarios are still missing dedicated roundtrip coverage
 - **#427** schema-qualified functions in RLS policy expressions — **not covered**; draft issue text saved in [`docs/parity-issue-drafts-2026-05-23.md`](../docs/parity-issue-drafts-2026-05-23.md)
