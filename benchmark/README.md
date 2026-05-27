@@ -4,7 +4,7 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-05-26)
+## Latest refresh snapshot (2026-05-27)
 
 Refreshed against:
 
@@ -35,8 +35,8 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-There is no parity-state delta versus the 2026-05-25 refresh: benchmark 020
-remains the only active resolved-issue gap.
+There is no resolved-issue parity-state delta versus the 2026-05-26 refresh:
+benchmark 020 remains the only active resolved-issue gap.
 
 ## New open pgschema issue screening (draft-only output)
 
@@ -47,10 +47,20 @@ Screened candidates:
 - **#404** deferrable unique constraints — **tracked** by [pg-toolbelt#218](https://github.com/supabase/pg-toolbelt/issues/218)
 - **#366** function privilege signatures with enum argument types — **tracked** by [pg-toolbelt#219](https://github.com/supabase/pg-toolbelt/issues/219)
 - **#408** quoted custom / reserved type names in plan output — **covered** in the current pg-delta source path; column types come from `format_type(...)` and quoted custom types are exercised in `type-operations.test.ts`
+- **#414** views created after `ADD COLUMN` changes — **covered** in pg-delta's
+  current sort path; `mixed-objects.test.ts` roundtrips `ADD COLUMN` plus view
+  creation, and logical sorting keeps table changes ahead of view creation
 - **#436** required extensions in dump output — **covered** in pg-delta's extension model and integration coverage (`src/core/objects/extension/`, `tests/integration/extension-operations.test.ts`)
 - **#444** drop-column ordering with dependent views — **covered** by pg-delta's existing view replacement path; `tests/integration/view-operations.test.ts` asserts `DROP VIEW` happens before the table change when projected columns change, matching the same dependency class fixed by [pg-toolbelt#139](https://github.com/supabase/pg-toolbelt/issues/139) / [#155](https://github.com/supabase/pg-toolbelt/pull/155)
-- **#418** `CREATE INDEX CONCURRENTLY` on partitioned parents — **no duplicate pg-toolbelt issue drafted**; this is specific to pgschema's online-DDL rewrite and pg-delta does not synthesize `CONCURRENTLY`
-- **#420 / #421 / #422** array-typmod and quoted-name dump edge cases — **no pg-toolbelt issue drafted yet**; current pg-delta source looks closer to correct than pgschema, but the exact scenarios are still missing dedicated roundtrip coverage
+- **#418** `CREATE INDEX CONCURRENTLY` on partitioned parents — **not parity
+  work for pg-delta**; this is specific to pgschema's online-DDL rewrite and
+  pg-delta does not synthesize `CONCURRENTLY`
+- **#420** `varchar(n)[]` typmod preservation — **not covered**; there is still
+  no matching pg-toolbelt issue or PR, and draft issue text is saved in
+  [`docs/parity-issue-drafts-2026-05-27.md`](../docs/parity-issue-drafts-2026-05-27.md)
+- **#421 / #422** quoted-name dump edge cases — **not parity work for
+  pg-delta**; these are tied to pgschema's dump -> temp-schema -> plan
+  roundtrip path rather than pg-delta's catalog-diff workflow
 - **#427** schema-qualified functions in RLS policy expressions — **not covered**; draft issue text saved in [`docs/parity-issue-drafts-2026-05-23.md`](../docs/parity-issue-drafts-2026-05-23.md)
 - **#439** replacing `UNIQUE` with `PRIMARY KEY` when dependents still point at the old constraint — **not covered**; draft issue text saved in [`docs/parity-issue-drafts-2026-05-23.md`](../docs/parity-issue-drafts-2026-05-23.md)
 - **#406 / #407 / #409 / #429** `.pgschemaignore` follow-ups — **not parity work for pg-delta** (pgschema-specific ignore-file surface area)
@@ -61,6 +71,7 @@ scenarios and the newly screened uncovered candidates:
 
 - [`docs/parity-issue-drafts-2026-04-22.md`](../docs/parity-issue-drafts-2026-04-22.md)
 - [`docs/parity-issue-drafts-2026-05-23.md`](../docs/parity-issue-drafts-2026-05-23.md)
+- [`docs/parity-issue-drafts-2026-05-27.md`](../docs/parity-issue-drafts-2026-05-27.md)
 
 ## Recent closed-issue screening notes
 
