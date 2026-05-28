@@ -15,6 +15,8 @@ and PRs for overlapping work:
 - Existing trackers already cover:
   - pgschema #404 -> [pg-toolbelt#218](https://github.com/supabase/pg-toolbelt/issues/218)
   - pgschema #366 -> [pg-toolbelt#219](https://github.com/supabase/pg-toolbelt/issues/219)
+- Upstream pgschema fix work is now in progress for:
+  - pgschema #427 -> [pgschema#428](https://github.com/pgplex/pgschema/pull/428)
 - No matching pg-toolbelt issue or PR was found for:
   - pgschema #427
   - pgschema #439
@@ -25,12 +27,18 @@ and PRs for overlapping work:
 
 Relates to pgschema issue #427: https://github.com/pgplex/pgschema/issues/427
 
+Upstream pgschema now also has open fix PR
+[#428](https://github.com/pgplex/pgschema/pull/428), so this remains saved as a
+draft-only pg-delta parity candidate rather than a duplicate live issue.
+
 ### Context
 
 pgschema issue #427 reports that schema-qualified function calls inside RLS
 policy expressions, such as `auth.uid()` and `auth.role()`, are dumped and
 planned as unqualified `uid()` / `role()` calls. That breaks Supabase-style RLS
 policies whose semantics depend on the explicit `auth.` schema qualification.
+The new pgschema PR #428 confirms upstream considers this a real bug and is
+already carrying a targeted fix for it.
 
 pg-delta's RLS policy extraction currently reads policy expressions using
 `pg_get_expr(p.polqual, p.polrelid)` in
