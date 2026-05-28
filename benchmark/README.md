@@ -4,7 +4,7 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-05-27)
+## Latest refresh snapshot (2026-05-28)
 
 Refreshed against:
 
@@ -35,7 +35,7 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-There is no resolved-issue parity-state delta versus the 2026-05-26 refresh:
+There is no resolved-issue parity-state delta versus the 2026-05-27 refresh:
 benchmark 020 remains the only active resolved-issue gap.
 
 ## New open pgschema issue screening (draft-only output)
@@ -55,13 +55,18 @@ Screened candidates:
 - **#418** `CREATE INDEX CONCURRENTLY` on partitioned parents — **not parity
   work for pg-delta**; this is specific to pgschema's online-DDL rewrite and
   pg-delta does not synthesize `CONCURRENTLY`
-- **#420** `varchar(n)[]` typmod preservation — **not covered**; there is still
-  no matching pg-toolbelt issue or PR, and draft issue text is saved in
+- **#420** `varchar(n)[]` typmod preservation — **not covered**; pgschema now
+  has open fix PR [#438](https://github.com/pgplex/pgschema/pull/438), but
+  there is still no matching pg-toolbelt issue or PR, and draft issue text is
+  saved in
   [`docs/parity-issue-drafts-2026-05-27.md`](../docs/parity-issue-drafts-2026-05-27.md)
 - **#421 / #422** quoted-name dump edge cases — **not parity work for
   pg-delta**; these are tied to pgschema's dump -> temp-schema -> plan
   roundtrip path rather than pg-delta's catalog-diff workflow
-- **#427** schema-qualified functions in RLS policy expressions — **not covered**; draft issue text saved in [`docs/parity-issue-drafts-2026-05-23.md`](../docs/parity-issue-drafts-2026-05-23.md)
+- **#427** schema-qualified functions in RLS policy expressions — **not covered**;
+  pgschema now has open fix PR [#428](https://github.com/pgplex/pgschema/pull/428),
+  while pg-delta still has no matching issue or PR. Draft issue text remains in
+  [`docs/parity-issue-drafts-2026-05-23.md`](../docs/parity-issue-drafts-2026-05-23.md)
 - **#439** replacing `UNIQUE` with `PRIMARY KEY` when dependents still point at the old constraint — **not covered**; draft issue text saved in [`docs/parity-issue-drafts-2026-05-23.md`](../docs/parity-issue-drafts-2026-05-23.md)
 - **#406 / #407 / #409 / #429** `.pgschemaignore` follow-ups — **not parity work for pg-delta** (pgschema-specific ignore-file surface area)
 - **#49** explicit rename / refactor workflow proposal — **not parity work for pg-delta**; this is a pgschema-specific workflow design, not a current pg-delta diff or planning gap
