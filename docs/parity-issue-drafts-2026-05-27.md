@@ -19,6 +19,8 @@ pg-toolbelt issues and PRs for overlapping work:
   - [pg-toolbelt#263](https://github.com/supabase/pg-toolbelt/issues/263)
     covers dependency-chain failures for `ALTER COLUMN TYPE` and `DROP FUNCTION`
     with policy/view dependents, not array typmod preservation
+- Upstream pgschema fix work is now in progress for:
+  - pgschema #420 -> [pgschema#438](https://github.com/pgplex/pgschema/pull/438)
 - No matching pg-toolbelt issue or PR was found for:
   - pgschema #420
 
@@ -28,11 +30,17 @@ pg-toolbelt issues and PRs for overlapping work:
 
 Relates to pgschema issue #420: https://github.com/pgplex/pgschema/issues/420
 
+Upstream pgschema now also has open fix PR
+[#438](https://github.com/pgplex/pgschema/pull/438), so this remains saved as a
+draft-only pg-delta parity candidate rather than a duplicate live issue.
+
 ### Context
 
 pgschema issue #420 reports that `varchar(n)[]` columns are dumped as `varchar[]`
 and silently lose their element length modifier. That changes database-level
-validation behavior and can make dump/plan/apply roundtrips lossy.
+validation behavior and can make dump/plan/apply roundtrips lossy. The new
+pgschema PR #438 confirms upstream is already pursuing a focused fix for this
+exact array-typmod bug.
 
 pg-delta's catalog extraction currently reads column type strings using
 `format_type(a.atttypid, a.atttypmod)` in
