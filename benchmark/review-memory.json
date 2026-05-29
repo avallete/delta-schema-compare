@@ -90,6 +90,24 @@
       "reviewed_at": "2026-05-27T07:23:44+00:00",
       "verdict": "covered"
     },
+    "415": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-04-27T19:55:44Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"e4f3a123d5ef8987e48379c4a2027b2de4c73a09\"}",
+      "issue_number": 415,
+      "issue_title": "`DROP` of materialized view for refactor - does not recognize that view is materialized",
+      "issue_updated_at": "2026-04-27T19:55:44Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/415",
+      "reviewed_at": "2026-05-29T07:00:59+00:00",
+      "verdict": "covered"
+    },
+    "416": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-04-27T20:27:08Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"e4f3a123d5ef8987e48379c4a2027b2de4c73a09\"}",
+      "issue_number": 416,
+      "issue_title": "Custom aggregates are silently dropped from the dump",
+      "issue_updated_at": "2026-04-27T20:27:08Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/416",
+      "reviewed_at": "2026-05-29T07:00:59+00:00",
+      "verdict": "covered"
+    },
     "418": {
       "fingerprint": "{\"issue_updated_at\": \"2026-04-28T06:56:39Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"e4f3a123d5ef8987e48379c4a2027b2de4c73a09\"}",
       "issue_number": 418,
@@ -97,6 +115,15 @@
       "issue_updated_at": "2026-04-28T06:56:39Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/418",
       "reviewed_at": "2026-05-27T07:23:44+00:00",
+      "verdict": "not_parity"
+    },
+    "419": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-04-28T17:59:04Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"e4f3a123d5ef8987e48379c4a2027b2de4c73a09\"}",
+      "issue_number": 419,
+      "issue_title": "Use of .pgschemaignore in github actions with pgschema install using Go vs AMD package",
+      "issue_updated_at": "2026-04-28T17:59:04Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/419",
+      "reviewed_at": "2026-05-29T07:00:59+00:00",
       "verdict": "not_parity"
     },
     "420": {
@@ -362,6 +389,15 @@
       "reviewed_at": "2026-05-23T07:23:30+00:00",
       "verdict": "covered"
     },
+    "410": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-04-27T17:42:23Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"e4f3a123d5ef8987e48379c4a2027b2de4c73a09\"}",
+      "issue_number": 410,
+      "issue_title": "pgschema dump outputs `char[]` for columns declared as `name`",
+      "issue_updated_at": "2026-04-27T17:42:23Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/410",
+      "reviewed_at": "2026-05-29T07:00:59+00:00",
+      "verdict": "covered"
+    },
     "412": {
       "fingerprint": "{\"issue_updated_at\": \"2026-04-29T02:24:27Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"e4f3a123d5ef8987e48379c4a2027b2de4c73a09\"}",
       "issue_number": 412,
@@ -379,6 +415,15 @@
       "issue_url": "https://github.com/pgplex/pgschema/issues/423",
       "reviewed_at": "2026-05-23T07:23:30+00:00",
       "verdict": "covered"
+    },
+    "426": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-05-03T13:52:47Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"e4f3a123d5ef8987e48379c4a2027b2de4c73a09\"}",
+      "issue_number": 426,
+      "issue_title": "Docker Hub image lags far behind GitHub release (latest v1.9.0 vs v1.6.2)",
+      "issue_updated_at": "2026-05-03T13:52:47Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/426",
+      "reviewed_at": "2026-05-29T07:00:59+00:00",
+      "verdict": "not_parity"
     }
   }
 }

@@ -4,7 +4,7 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-05-28)
+## Latest refresh snapshot (2026-05-29)
 
 Refreshed against:
 
@@ -35,7 +35,7 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-There is no resolved-issue parity-state delta versus the 2026-05-27 refresh:
+There is no resolved-issue parity-state delta versus the 2026-05-28 refresh:
 benchmark 020 remains the only active resolved-issue gap.
 
 ## New open pgschema issue screening (draft-only output)
@@ -50,11 +50,21 @@ Screened candidates:
 - **#414** views created after `ADD COLUMN` changes — **covered** in pg-delta's
   current sort path; `mixed-objects.test.ts` roundtrips `ADD COLUMN` plus view
   creation, and logical sorting keeps table changes ahead of view creation
+- **#415** materialized-view refactors — **covered** in pg-delta's dedicated
+  materialized-view replacement path; `materialized-view-operations.test.ts`
+  exercises replace flows and `materialized-view.drop.ts` emits
+  `DROP MATERIALIZED VIEW`
+- **#416** custom aggregates missing from dump output — **covered** in
+  pg-delta's aggregate model, export mapping, and
+  `aggregate-operations.test.ts`
 - **#436** required extensions in dump output — **covered** in pg-delta's extension model and integration coverage (`src/core/objects/extension/`, `tests/integration/extension-operations.test.ts`)
 - **#444** drop-column ordering with dependent views — **covered** by pg-delta's existing view replacement path; `tests/integration/view-operations.test.ts` asserts `DROP VIEW` happens before the table change when projected columns change, matching the same dependency class fixed by [pg-toolbelt#139](https://github.com/supabase/pg-toolbelt/issues/139) / [#155](https://github.com/supabase/pg-toolbelt/pull/155)
 - **#418** `CREATE INDEX CONCURRENTLY` on partitioned parents — **not parity
   work for pg-delta**; this is specific to pgschema's online-DDL rewrite and
   pg-delta does not synthesize `CONCURRENTLY`
+- **#419** `.pgschemaignore` behavior differs by GitHub Actions install path —
+  **not parity work for pg-delta**; this is packaging and install-surface
+  behavior in pgschema rather than a catalog diff gap
 - **#420** `varchar(n)[]` typmod preservation — **not covered**; pgschema now
   has open fix PR [#438](https://github.com/pgplex/pgschema/pull/438), but
   there is still no matching pg-toolbelt issue or PR, and draft issue text is
@@ -80,7 +90,11 @@ scenarios and the newly screened uncovered candidates:
 
 ## Recent closed-issue screening notes
 
+- **#410** `name` typed columns rendered as `char[]` — **covered** in
+  pg-delta's type extraction path via `format_type(...)`
 - **#412** `UNIQUE NULLS NOT DISTINCT` on table constraints — **not covered** in
   the current pg-delta constraint path; benchmarked as [020](020-unique-constraint-nulls-not-distinct.md)
 - **#423** `UNLOGGED` tables — **covered** in pg-delta's table persistence
   extraction and diff logic (`relpersistence`, `SET UNLOGGED`, `SET LOGGED`)
+- **#426** Docker Hub image lag versus GitHub releases — **not parity work for
+  pg-delta**; this is release packaging only
