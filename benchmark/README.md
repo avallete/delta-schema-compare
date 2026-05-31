@@ -4,12 +4,12 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-05-29)
+## Latest refresh snapshot (2026-05-31)
 
 Refreshed against:
 
 - `repos/pg-toolbelt` @ `ee9385daf75f72d443882020247ffd2599050090`
-- `repos/pgschema` @ `e4f3a123d5ef8987e48379c4a2027b2de4c73a09`
+- `repos/pgschema` @ `592c19c95b06830255b45bc4d80eeacd62e7e727`
 
 ## Benchmark status matrix
 
@@ -35,7 +35,7 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-There is no resolved-issue parity-state delta versus the 2026-05-28 refresh:
+There is no resolved-issue parity-state delta versus the 2026-05-29 refresh:
 benchmark 020 remains the only active resolved-issue gap.
 
 ## New open pgschema issue screening (draft-only output)
@@ -46,7 +46,6 @@ Screened candidates:
 - **#401** `RETURNS SETOF <table>` dependency ordering — **covered** in pg-delta integration tests
 - **#404** deferrable unique constraints — **tracked** by [pg-toolbelt#218](https://github.com/supabase/pg-toolbelt/issues/218)
 - **#366** function privilege signatures with enum argument types — **tracked** by [pg-toolbelt#219](https://github.com/supabase/pg-toolbelt/issues/219)
-- **#408** quoted custom / reserved type names in plan output — **covered** in the current pg-delta source path; column types come from `format_type(...)` and quoted custom types are exercised in `type-operations.test.ts`
 - **#414** views created after `ADD COLUMN` changes — **covered** in pg-delta's
   current sort path; `mixed-objects.test.ts` roundtrips `ADD COLUMN` plus view
   creation, and logical sorting keeps table changes ahead of view creation
@@ -65,10 +64,11 @@ Screened candidates:
 - **#419** `.pgschemaignore` behavior differs by GitHub Actions install path —
   **not parity work for pg-delta**; this is packaging and install-surface
   behavior in pgschema rather than a catalog diff gap
-- **#420** `varchar(n)[]` typmod preservation — **not covered**; pgschema now
-  has open fix PR [#438](https://github.com/pgplex/pgschema/pull/438), but
-  there is still no matching pg-toolbelt issue or PR, and draft issue text is
-  saved in
+- **#420** `varchar(n)[]` typmod preservation — **not covered**; upstream
+  pgschema has now merged fix PR
+  [#438](https://github.com/pgplex/pgschema/pull/438), but the issue remains
+  open, there is still no matching pg-toolbelt issue or PR, and draft issue
+  text is saved in
   [`docs/parity-issue-drafts-2026-05-27.md`](../docs/parity-issue-drafts-2026-05-27.md)
 - **#421 / #422** quoted-name dump edge cases — **not parity work for
   pg-delta**; these are tied to pgschema's dump -> temp-schema -> plan
@@ -78,7 +78,7 @@ Screened candidates:
   while pg-delta still has no matching issue or PR. Draft issue text remains in
   [`docs/parity-issue-drafts-2026-05-23.md`](../docs/parity-issue-drafts-2026-05-23.md)
 - **#439** replacing `UNIQUE` with `PRIMARY KEY` when dependents still point at the old constraint — **not covered**; draft issue text saved in [`docs/parity-issue-drafts-2026-05-23.md`](../docs/parity-issue-drafts-2026-05-23.md)
-- **#406 / #407 / #409 / #429** `.pgschemaignore` follow-ups — **not parity work for pg-delta** (pgschema-specific ignore-file surface area)
+- **#407 / #409 / #429** `.pgschemaignore` follow-ups — **not parity work for pg-delta** (pgschema-specific ignore-file surface area)
 - **#49** explicit rename / refactor workflow proposal — **not parity work for pg-delta**; this is a pgschema-specific workflow design, not a current pg-delta diff or planning gap
 
 Historical draft text is recorded in markdown for both the older tracked
@@ -90,6 +90,12 @@ scenarios and the newly screened uncovered candidates:
 
 ## Recent closed-issue screening notes
 
+- **#406** indexes in `.pgschemaignore` — **not parity work for pg-delta**;
+  this is pgschema-specific ignore-file surface area rather than a catalog diff
+  gap
+- **#408** quoted custom / reserved type names in plan output — **covered** in
+  the current pg-delta source path; column types come from `format_type(...)`
+  and quoted custom types are exercised in `type-operations.test.ts`
 - **#410** `name` typed columns rendered as `char[]` — **covered** in
   pg-delta's type extraction path via `format_type(...)`
 - **#412** `UNIQUE NULLS NOT DISTINCT` on table constraints — **not covered** in
@@ -98,3 +104,11 @@ scenarios and the newly screened uncovered candidates:
   extraction and diff logic (`relpersistence`, `SET UNLOGGED`, `SET LOGGED`)
 - **#426** Docker Hub image lag versus GitHub releases — **not parity work for
   pg-delta**; this is release packaging only
+- **#445** CHECK constraint qualifier drift for same-schema functions and types
+  — **not parity work for pg-delta**; this is specific to pgschema's
+  temp-schema normalization path, while pg-delta already exercises same-schema
+  function and type references in `check-constraint-ordering.test.ts`
+- **#446** explicit `UNIQUE` constraints on `PRIMARY KEY` columns — **not
+  parity work for pg-delta**; pgschema drops them during desired-state
+  normalization, while pg-delta extracts table constraints directly from
+  `pg_constraint` without collapsing `UNIQUE` under `PRIMARY KEY`

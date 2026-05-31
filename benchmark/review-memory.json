@@ -1,12 +1,12 @@
 {
   "open": {
     "49": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-05-15T16:02:47Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"e4f3a123d5ef8987e48379c4a2027b2de4c73a09\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-05-30T05:03:35Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"592c19c95b06830255b45bc4d80eeacd62e7e727\"}",
       "issue_number": 49,
       "issue_title": "Introduce an Explicit Workflow for Renaming Schema Objects",
-      "issue_updated_at": "2026-05-15T16:02:47Z",
+      "issue_updated_at": "2026-05-30T05:03:35Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/49",
-      "reviewed_at": "2026-05-27T07:23:44+00:00",
+      "reviewed_at": "2026-05-31T07:17:52+00:00",
       "verdict": "not_parity"
     },
     "362": {
@@ -45,15 +45,6 @@
       "reviewed_at": "2026-05-27T07:23:44+00:00",
       "verdict": "tracked"
     },
-    "406": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-04-25T08:03:24Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"e4f3a123d5ef8987e48379c4a2027b2de4c73a09\"}",
-      "issue_number": 406,
-      "issue_title": "Add support for indexes to .pgschemaignore",
-      "issue_updated_at": "2026-04-25T08:03:24Z",
-      "issue_url": "https://github.com/pgplex/pgschema/issues/406",
-      "reviewed_at": "2026-05-27T07:23:44+00:00",
-      "verdict": "not_parity"
-    },
     "407": {
       "fingerprint": "{\"issue_updated_at\": \"2026-04-22T02:10:52Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"e4f3a123d5ef8987e48379c4a2027b2de4c73a09\"}",
       "issue_number": 407,
@@ -62,15 +53,6 @@
       "issue_url": "https://github.com/pgplex/pgschema/issues/407",
       "reviewed_at": "2026-05-27T07:23:44+00:00",
       "verdict": "not_parity"
-    },
-    "408": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-04-27T15:16:06Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"e4f3a123d5ef8987e48379c4a2027b2de4c73a09\"}",
-      "issue_number": 408,
-      "issue_title": "pgschema seems to be stripping quotes from ddl when rendering plan script",
-      "issue_updated_at": "2026-04-27T15:16:06Z",
-      "issue_url": "https://github.com/pgplex/pgschema/issues/408",
-      "reviewed_at": "2026-05-27T07:23:44+00:00",
-      "verdict": "covered"
     },
     "409": {
       "fingerprint": "{\"issue_updated_at\": \"2026-04-27T15:16:20Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"e4f3a123d5ef8987e48379c4a2027b2de4c73a09\"}",
@@ -127,12 +109,12 @@
       "verdict": "not_parity"
     },
     "420": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-04-29T13:52:55Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"e4f3a123d5ef8987e48379c4a2027b2de4c73a09\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-05-30T05:15:42Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"592c19c95b06830255b45bc4d80eeacd62e7e727\"}",
       "issue_number": 420,
       "issue_title": "Bug: varchar(n)[] length modifier silently dropped in dump",
-      "issue_updated_at": "2026-04-29T13:52:55Z",
+      "issue_updated_at": "2026-05-30T05:15:42Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/420",
-      "reviewed_at": "2026-05-27T07:23:44+00:00",
+      "reviewed_at": "2026-05-31T07:17:52+00:00",
       "verdict": "not_covered"
     },
     "421": {
@@ -389,6 +371,24 @@
       "reviewed_at": "2026-05-23T07:23:30+00:00",
       "verdict": "covered"
     },
+    "406": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-05-30T05:18:24Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"592c19c95b06830255b45bc4d80eeacd62e7e727\"}",
+      "issue_number": 406,
+      "issue_title": "Add support for indexes to .pgschemaignore",
+      "issue_updated_at": "2026-05-30T05:18:24Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/406",
+      "reviewed_at": "2026-05-31T07:17:52+00:00",
+      "verdict": "not_parity"
+    },
+    "408": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-05-29T22:26:00Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"592c19c95b06830255b45bc4d80eeacd62e7e727\"}",
+      "issue_number": 408,
+      "issue_title": "pgschema seems to be stripping quotes from ddl when rendering plan script",
+      "issue_updated_at": "2026-05-29T22:26:00Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/408",
+      "reviewed_at": "2026-05-31T07:17:52+00:00",
+      "verdict": "covered"
+    },
     "410": {
       "fingerprint": "{\"issue_updated_at\": \"2026-04-27T17:42:23Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"e4f3a123d5ef8987e48379c4a2027b2de4c73a09\"}",
       "issue_number": 410,
@@ -399,12 +399,12 @@
       "verdict": "covered"
     },
     "412": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-04-29T02:24:27Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"e4f3a123d5ef8987e48379c4a2027b2de4c73a09\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-04-29T02:24:27Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"592c19c95b06830255b45bc4d80eeacd62e7e727\"}",
       "issue_number": 412,
       "issue_title": "`pgschema dump` drops `NULLS NOT DISTINCT` from `UNIQUE` table constraints",
       "issue_updated_at": "2026-04-29T02:24:27Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/412",
-      "reviewed_at": "2026-05-27T07:23:44+00:00",
+      "reviewed_at": "2026-05-31T07:17:52+00:00",
       "verdict": "not_covered"
     },
     "423": {
@@ -423,6 +423,24 @@
       "issue_updated_at": "2026-05-03T13:52:47Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/426",
       "reviewed_at": "2026-05-29T07:00:59+00:00",
+      "verdict": "not_parity"
+    },
+    "445": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-05-29T22:26:16Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"592c19c95b06830255b45bc4d80eeacd62e7e727\"}",
+      "issue_number": 445,
+      "issue_title": "Unresolvable drift on CHECK constraints referencing functions/types in same schema",
+      "issue_updated_at": "2026-05-29T22:26:16Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/445",
+      "reviewed_at": "2026-05-31T07:17:52+00:00",
+      "verdict": "not_parity"
+    },
+    "446": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-05-30T21:56:05Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"592c19c95b06830255b45bc4d80eeacd62e7e727\"}",
+      "issue_number": 446,
+      "issue_title": "UNIQUE constraints on PRIMARY KEY columns are lost",
+      "issue_updated_at": "2026-05-30T21:56:05Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/446",
+      "reviewed_at": "2026-05-31T07:17:52+00:00",
       "verdict": "not_parity"
     }
   }
