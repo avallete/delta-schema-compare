@@ -4,7 +4,7 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-05-31)
+## Latest refresh snapshot (2026-06-01)
 
 Refreshed against:
 
@@ -35,8 +35,13 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-There is no resolved-issue parity-state delta versus the 2026-05-29 refresh:
+There is no resolved-issue parity-state delta versus the 2026-05-31 refresh:
 benchmark 020 remains the only active resolved-issue gap.
+
+Open-issue screening did change: pgschema #444 is now treated as a
+draft-only uncovered candidate because current pg-delta evidence covers the
+analogous `ADD COLUMN` view-replacement case, but not the exact `DROP COLUMN`
+ordering scenario from the pgschema report.
 
 ## New open pgschema issue screening (draft-only output)
 
@@ -57,7 +62,6 @@ Screened candidates:
   pg-delta's aggregate model, export mapping, and
   `aggregate-operations.test.ts`
 - **#436** required extensions in dump output — **covered** in pg-delta's extension model and integration coverage (`src/core/objects/extension/`, `tests/integration/extension-operations.test.ts`)
-- **#444** drop-column ordering with dependent views — **covered** by pg-delta's existing view replacement path; `tests/integration/view-operations.test.ts` asserts `DROP VIEW` happens before the table change when projected columns change, matching the same dependency class fixed by [pg-toolbelt#139](https://github.com/supabase/pg-toolbelt/issues/139) / [#155](https://github.com/supabase/pg-toolbelt/pull/155)
 - **#418** `CREATE INDEX CONCURRENTLY` on partitioned parents — **not parity
   work for pg-delta**; this is specific to pgschema's online-DDL rewrite and
   pg-delta does not synthesize `CONCURRENTLY`
@@ -78,6 +82,7 @@ Screened candidates:
   while pg-delta still has no matching issue or PR. Draft issue text remains in
   [`docs/parity-issue-drafts-2026-05-23.md`](../docs/parity-issue-drafts-2026-05-23.md)
 - **#439** replacing `UNIQUE` with `PRIMARY KEY` when dependents still point at the old constraint — **not covered**; draft issue text saved in [`docs/parity-issue-drafts-2026-05-23.md`](../docs/parity-issue-drafts-2026-05-23.md)
+- **#444** drop-column ordering with dependent views — **not covered**; pg-delta has analogous `ADD COLUMN` + view replacement coverage plus related dependency-ordering work in [pg-toolbelt#263](https://github.com/supabase/pg-toolbelt/issues/263), but there is still no exact `DROP COLUMN` + dependent-view regression or dedicated tracker. Draft issue text is saved in [`docs/parity-issue-drafts-2026-06-01.md`](../docs/parity-issue-drafts-2026-06-01.md)
 - **#407 / #409 / #429** `.pgschemaignore` follow-ups — **not parity work for pg-delta** (pgschema-specific ignore-file surface area)
 - **#49** explicit rename / refactor workflow proposal — **not parity work for pg-delta**; this is a pgschema-specific workflow design, not a current pg-delta diff or planning gap
 
@@ -87,6 +92,7 @@ scenarios and the newly screened uncovered candidates:
 - [`docs/parity-issue-drafts-2026-04-22.md`](../docs/parity-issue-drafts-2026-04-22.md)
 - [`docs/parity-issue-drafts-2026-05-23.md`](../docs/parity-issue-drafts-2026-05-23.md)
 - [`docs/parity-issue-drafts-2026-05-27.md`](../docs/parity-issue-drafts-2026-05-27.md)
+- [`docs/parity-issue-drafts-2026-06-01.md`](../docs/parity-issue-drafts-2026-06-01.md)
 
 ## Recent closed-issue screening notes
 
