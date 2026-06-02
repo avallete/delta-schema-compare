@@ -141,8 +141,8 @@
       "issue_title": "Schema-qualified functions in RLS policy expressions are dumped/planned as unqualified functions",
       "issue_updated_at": "2026-05-03T14:08:43Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/427",
-      "reviewed_at": "2026-06-01T07:01:55+00:00",
-      "verdict": "not_covered"
+      "reviewed_at": "2026-06-02T07:13:02+00:00",
+      "verdict": "covered"
     },
     "429": {
       "fingerprint": "{\"issue_updated_at\": \"2026-05-12T13:52:33Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"592c19c95b06830255b45bc4d80eeacd62e7e727\"}",
