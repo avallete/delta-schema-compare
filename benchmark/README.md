@@ -4,7 +4,7 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-06-01)
+## Latest refresh snapshot (2026-06-02)
 
 Refreshed against:
 
@@ -35,13 +35,15 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-There is no resolved-issue parity-state delta versus the 2026-05-31 refresh:
+There is no resolved-issue parity-state delta versus the 2026-06-01 refresh:
 benchmark 020 remains the only active resolved-issue gap.
 
-Open-issue screening did change: pgschema #444 is now treated as a
-draft-only uncovered candidate because current pg-delta evidence covers the
-analogous `ADD COLUMN` view-replacement case, but not the exact `DROP COLUMN`
-ordering scenario from the pgschema report.
+Open-issue screening did change: pgschema #427 is now treated as covered in
+current pg-delta after re-checking the live RLS policy extraction and
+integration coverage, while #444 remains a draft-only uncovered candidate
+because current evidence still only covers the analogous `ADD COLUMN`
+view-replacement case rather than the exact `DROP COLUMN` ordering scenario
+from the pgschema report.
 
 ## New open pgschema issue screening (draft-only output)
 
@@ -61,6 +63,11 @@ Screened candidates:
 - **#416** custom aggregates missing from dump output — **covered** in
   pg-delta's aggregate model, export mapping, and
   `aggregate-operations.test.ts`
+- **#427** schema-qualified functions in RLS policy expressions — **covered**
+  in current pg-delta; `rls-operations.test.ts` roundtrips a policy that calls
+  a schema-qualified function, `policy-dependencies.test.ts` covers the related
+  policy/function ordering path, and policy extraction preserves expressions
+  via `pg_get_expr(...)`
 - **#436** required extensions in dump output — **covered** in pg-delta's extension model and integration coverage (`src/core/objects/extension/`, `tests/integration/extension-operations.test.ts`)
 - **#418** `CREATE INDEX CONCURRENTLY` on partitioned parents — **not parity
   work for pg-delta**; this is specific to pgschema's online-DDL rewrite and
@@ -77,10 +84,6 @@ Screened candidates:
 - **#421 / #422** quoted-name dump edge cases — **not parity work for
   pg-delta**; these are tied to pgschema's dump -> temp-schema -> plan
   roundtrip path rather than pg-delta's catalog-diff workflow
-- **#427** schema-qualified functions in RLS policy expressions — **not covered**;
-  pgschema now has open fix PR [#428](https://github.com/pgplex/pgschema/pull/428),
-  while pg-delta still has no matching issue or PR. Draft issue text remains in
-  [`docs/parity-issue-drafts-2026-05-23.md`](../docs/parity-issue-drafts-2026-05-23.md)
 - **#439** replacing `UNIQUE` with `PRIMARY KEY` when dependents still point at the old constraint — **not covered**; draft issue text saved in [`docs/parity-issue-drafts-2026-05-23.md`](../docs/parity-issue-drafts-2026-05-23.md)
 - **#444** drop-column ordering with dependent views — **not covered**; pg-delta has analogous `ADD COLUMN` + view replacement coverage plus related dependency-ordering work in [pg-toolbelt#263](https://github.com/supabase/pg-toolbelt/issues/263), but there is still no exact `DROP COLUMN` + dependent-view regression or dedicated tracker. Draft issue text is saved in [`docs/parity-issue-drafts-2026-06-01.md`](../docs/parity-issue-drafts-2026-06-01.md)
 - **#407 / #409 / #429** `.pgschemaignore` follow-ups — **not parity work for pg-delta** (pgschema-specific ignore-file surface area)
