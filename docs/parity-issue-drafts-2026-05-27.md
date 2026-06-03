@@ -7,9 +7,10 @@ No GitHub issues were opened as part of this refresh. These drafts are saved so
 the findings can be reviewed in a PR first and then promoted to real
 pg-toolbelt issues only if they still look correct.
 
-Latest status note (2026-05-31): pgschema PR
-[#438](https://github.com/pgplex/pgschema/pull/438) is now merged, but issue
-#420 remains open and there is still no matching pg-toolbelt issue or PR.
+Latest status note (2026-06-03): current pg-delta already preserves array
+typmods via `format_type(a.atttypid, a.atttypmod)` and verbatim
+`data_type_str` serialization, so pgschema #420 is now treated as covered. The
+draft below is retained as historical review context only.
 
 ## Duplicate-check summary (pg-toolbelt)
 
