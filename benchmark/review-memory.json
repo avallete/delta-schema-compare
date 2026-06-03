@@ -114,8 +114,8 @@
       "issue_title": "Bug: varchar(n)[] length modifier silently dropped in dump",
       "issue_updated_at": "2026-05-30T05:15:42Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/420",
-      "reviewed_at": "2026-06-01T07:01:55+00:00",
-      "verdict": "not_covered"
+      "reviewed_at": "2026-06-03T07:21:21+00:00",
+      "verdict": "covered"
     },
     "421": {
       "fingerprint": "{\"issue_updated_at\": \"2026-04-29T13:57:50Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"592c19c95b06830255b45bc4d80eeacd62e7e727\"}",
@@ -179,6 +179,15 @@
       "issue_url": "https://github.com/pgplex/pgschema/issues/444",
       "reviewed_at": "2026-06-01T07:01:55+00:00",
       "verdict": "not_covered"
+    },
+    "447": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-02T13:32:48Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"592c19c95b06830255b45bc4d80eeacd62e7e727\"}",
+      "issue_number": 447,
+      "issue_title": "Support Constraints with .pgschemaignore",
+      "issue_updated_at": "2026-06-02T13:32:48Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/447",
+      "reviewed_at": "2026-06-03T07:21:21+00:00",
+      "verdict": "not_parity"
     }
   },
   "resolved": {
@@ -440,8 +449,8 @@
       "issue_title": "UNIQUE constraints on PRIMARY KEY columns are lost",
       "issue_updated_at": "2026-05-30T21:56:05Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/446",
-      "reviewed_at": "2026-06-01T07:01:55+00:00",
-      "verdict": "not_parity"
+      "reviewed_at": "2026-06-03T07:21:21+00:00",
+      "verdict": "covered"
     }
   }
 }

@@ -4,7 +4,7 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-06-02)
+## Latest refresh snapshot (2026-06-03)
 
 Refreshed against:
 
@@ -35,15 +35,17 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-There is no resolved-issue parity-state delta versus the 2026-06-01 refresh:
+There is no resolved-issue parity-state delta versus the 2026-06-02 refresh:
 benchmark 020 remains the only active resolved-issue gap.
 
-Open-issue screening did change: pgschema #427 is now treated as covered in
-current pg-delta after re-checking the live RLS policy extraction and
-integration coverage, while #444 remains a draft-only uncovered candidate
-because current evidence still only covers the analogous `ADD COLUMN`
-view-replacement case rather than the exact `DROP COLUMN` ordering scenario
-from the pgschema report.
+Open/closed screening did change: pgschema #420 is now treated as covered in
+current pg-delta because column extraction preserves array typmods via
+`format_type(a.atttypid, a.atttypmod)` and the table create / alter paths
+serialize `data_type_str` verbatim, pgschema #446 is now treated as covered
+because pg-delta extracts explicit `UNIQUE` and `PRIMARY KEY` constraints
+separately from `pg_constraint`, and new issue #447 remains not parity work
+because it is another `.pgschemaignore` follow-up rather than a pg-delta diff
+gap.
 
 ## New open pgschema issue screening (draft-only output)
 
@@ -75,18 +77,19 @@ Screened candidates:
 - **#419** `.pgschemaignore` behavior differs by GitHub Actions install path —
   **not parity work for pg-delta**; this is packaging and install-surface
   behavior in pgschema rather than a catalog diff gap
-- **#420** `varchar(n)[]` typmod preservation — **not covered**; upstream
-  pgschema has now merged fix PR
-  [#438](https://github.com/pgplex/pgschema/pull/438), but the issue remains
-  open, there is still no matching pg-toolbelt issue or PR, and draft issue
-  text is saved in
-  [`docs/parity-issue-drafts-2026-05-27.md`](../docs/parity-issue-drafts-2026-05-27.md)
+- **#420** `varchar(n)[]` typmod preservation — **covered** in pg-delta's
+  current source path; column extraction uses
+  `format_type(a.atttypid, a.atttypmod)`, type diffs key off `data_type_str`,
+  and table create / alter SQL serialize `data_type_str` verbatim
 - **#421 / #422** quoted-name dump edge cases — **not parity work for
   pg-delta**; these are tied to pgschema's dump -> temp-schema -> plan
   roundtrip path rather than pg-delta's catalog-diff workflow
 - **#439** replacing `UNIQUE` with `PRIMARY KEY` when dependents still point at the old constraint — **not covered**; draft issue text saved in [`docs/parity-issue-drafts-2026-05-23.md`](../docs/parity-issue-drafts-2026-05-23.md)
 - **#444** drop-column ordering with dependent views — **not covered**; pg-delta has analogous `ADD COLUMN` + view replacement coverage plus related dependency-ordering work in [pg-toolbelt#263](https://github.com/supabase/pg-toolbelt/issues/263), but there is still no exact `DROP COLUMN` + dependent-view regression or dedicated tracker. Draft issue text is saved in [`docs/parity-issue-drafts-2026-06-01.md`](../docs/parity-issue-drafts-2026-06-01.md)
 - **#407 / #409 / #429** `.pgschemaignore` follow-ups — **not parity work for pg-delta** (pgschema-specific ignore-file surface area)
+- **#447** `.pgschemaignore` constraints support — **not parity work for
+  pg-delta**; this is another ignore-file feature request specific to
+  pgschema's dump / plan surface area
 - **#49** explicit rename / refactor workflow proposal — **not parity work for pg-delta**; this is a pgschema-specific workflow design, not a current pg-delta diff or planning gap
 
 Historical draft text is recorded in markdown for both the older tracked
@@ -117,7 +120,7 @@ scenarios and the newly screened uncovered candidates:
   — **not parity work for pg-delta**; this is specific to pgschema's
   temp-schema normalization path, while pg-delta already exercises same-schema
   function and type references in `check-constraint-ordering.test.ts`
-- **#446** explicit `UNIQUE` constraints on `PRIMARY KEY` columns — **not
-  parity work for pg-delta**; pgschema drops them during desired-state
-  normalization, while pg-delta extracts table constraints directly from
-  `pg_constraint` without collapsing `UNIQUE` under `PRIMARY KEY`
+- **#446** explicit `UNIQUE` constraints on `PRIMARY KEY` columns — **covered**
+  in pg-delta's current table-constraint path; `constraint_type` includes both
+  `p` and `u`, and the diff path compares constraints directly instead of
+  normalizing redundant `UNIQUE` constraints away
