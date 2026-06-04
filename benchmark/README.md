@@ -4,7 +4,7 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-06-03)
+## Latest refresh snapshot (2026-06-04)
 
 Refreshed against:
 
@@ -35,17 +35,16 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-There is no resolved-issue parity-state delta versus the 2026-06-02 refresh:
+There is no resolved-issue parity-state delta versus the 2026-06-03 refresh:
 benchmark 020 remains the only active resolved-issue gap.
 
-Open/closed screening did change: pgschema #420 is now treated as covered in
-current pg-delta because column extraction preserves array typmods via
-`format_type(a.atttypid, a.atttypmod)` and the table create / alter paths
-serialize `data_type_str` verbatim, pgschema #446 is now treated as covered
-because pg-delta extracts explicit `UNIQUE` and `PRIMARY KEY` constraints
-separately from `pg_constraint`, and new issue #447 remains not parity work
-because it is another `.pgschemaignore` follow-up rather than a pg-delta diff
-gap.
+Open-issue screening did change: new pgschema issues #449 and #450 are both
+now classified as not parity work for pg-delta. Issue #449 is a declarative-SQL
+vs live-catalog normalization problem in pgschema after apply, while pg-delta
+compares live catalogs on both sides via `pg_get_expr(...)` /
+`pg_get_constraintdef(...)`. Issue #450 is a temp-schema planning failure for a
+missing role in pgschema's dump -> plan workflow, while pg-delta diffs live
+catalogs directly and already models roles plus privilege dependencies.
 
 ## New open pgschema issue screening (draft-only output)
 
@@ -90,6 +89,14 @@ Screened candidates:
 - **#447** `.pgschemaignore` constraints support — **not parity work for
   pg-delta**; this is another ignore-file feature request specific to
   pgschema's dump / plan surface area
+- **#449** repeat drift for same-schema policy / CHECK expressions after apply
+  — **not parity work for pg-delta**; this is a declarative-SQL vs live-catalog
+  normalization issue in pgschema, while pg-delta compares policy expressions
+  and CHECK definitions extracted from live catalogs on both sides
+- **#450** missing role blocks plan/apply — **not parity work for pg-delta**;
+  this is specific to pgschema applying dumped SQL into a temporary planning
+  schema, while pg-delta diffs live catalogs directly and already models roles
+  plus privilege dependencies
 - **#49** explicit rename / refactor workflow proposal — **not parity work for pg-delta**; this is a pgschema-specific workflow design, not a current pg-delta diff or planning gap
 
 Historical draft text is recorded in markdown for both the older tracked

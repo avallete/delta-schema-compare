@@ -188,6 +188,24 @@
       "issue_url": "https://github.com/pgplex/pgschema/issues/447",
       "reviewed_at": "2026-06-03T07:21:21+00:00",
       "verdict": "not_parity"
+    },
+    "449": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-03T13:11:32Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"592c19c95b06830255b45bc4d80eeacd62e7e727\"}",
+      "issue_number": 449,
+      "issue_title": "v1.10.0: repeat plan drift for same-schema policy and CHECK expressions after apply",
+      "issue_updated_at": "2026-06-03T13:11:32Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/449",
+      "reviewed_at": "2026-06-04T07:01:12+00:00",
+      "verdict": "not_parity"
+    },
+    "450": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-04T02:35:18Z\", \"pgdelta_sha\": \"ee9385daf75f72d443882020247ffd2599050090\", \"pgschema_sha\": \"592c19c95b06830255b45bc4d80eeacd62e7e727\"}",
+      "issue_number": 450,
+      "issue_title": "Missing role blocks plan and apply",
+      "issue_updated_at": "2026-06-04T02:35:18Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/450",
+      "reviewed_at": "2026-06-04T07:01:12+00:00",
+      "verdict": "not_parity"
     }
   },
   "resolved": {
