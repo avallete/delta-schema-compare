@@ -21,6 +21,18 @@ This matters because the downgrade is silent. A migration plan that emits
 `UNIQUE (a, b)` instead of `UNIQUE NULLS NOT DISTINCT (a, b)` looks plausible,
 but it weakens uniqueness semantics for nullable columns.
 
+## Refresh note (2026-06-05)
+
+pg-delta advanced from `ee9385daf75f72d443882020247ffd2599050090` to
+`b9b8b157c23e08e9d8a9c7573718edcc06f603c3` during this refresh. The new upstream
+change adds `NOT VALID` constraint convergence handling, but it does not change
+this benchmark's parity state.
+
+A focused unit-level diff probe against the current table-constraint path still
+reported zero planned changes when only the definition changed from
+`UNIQUE (a, b)` to `UNIQUE NULLS NOT DISTINCT (a, b)`, confirming that the
+modifier is still ignored in the table-constraint diff logic.
+
 ## Reproduction SQL
 
 ```sql
@@ -72,7 +84,7 @@ The merged change added:
 | Constraint diff compares `NULLS NOT DISTINCT` on table constraints | No - `src/core/objects/table/table.diff.ts` compares structured fields but not the full rendered definition |
 | Constraint `definition` is captured from the catalog | Yes - `pg_get_constraintdef(c.oid, true)` is stored on the table constraint model |
 | Integration regression for `UNIQUE NULLS NOT DISTINCT` table constraints | No - `tests/integration/constraint-operations.test.ts` only covers plain `UNIQUE (...)` |
-| Existing pg-toolbelt issue / PR for this exact scenario | No - none found during the 2026-05-31 refresh |
+| Existing pg-toolbelt issue / PR for this exact scenario | No - none found during the 2026-06-05 refresh |
 
 ## Comparison of approaches
 

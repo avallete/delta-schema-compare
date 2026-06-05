@@ -4,11 +4,11 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-06-04)
+## Latest refresh snapshot (2026-06-05)
 
 Refreshed against:
 
-- `repos/pg-toolbelt` @ `ee9385daf75f72d443882020247ffd2599050090`
+- `repos/pg-toolbelt` @ `b9b8b157c23e08e9d8a9c7573718edcc06f603c3`
 - `repos/pgschema` @ `592c19c95b06830255b45bc4d80eeacd62e7e727`
 
 ## Benchmark status matrix
@@ -35,18 +35,20 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-There is no resolved-issue parity-state delta versus the 2026-06-03 refresh:
-benchmark 020 remains the only active resolved-issue gap.
+There is no resolved-issue or open-issue parity-state delta versus the
+2026-06-04 refresh: benchmark 020 remains the only active resolved-issue gap,
+pg-toolbelt issues #218 and #219 remain the only active open parity trackers,
+draft-only candidates #439 and #444 remain unduplicated, and pgschema #449 /
+#450 remain classified as not parity work for pg-delta.
 
-Open-issue screening did change: new pgschema issues #449 and #450 are both
-now classified as not parity work for pg-delta. Issue #449 is a declarative-SQL
-vs live-catalog normalization problem in pgschema after apply, while pg-delta
-compares live catalogs on both sides via `pg_get_expr(...)` /
-`pg_get_constraintdef(...)`. Issue #450 is a temp-schema planning failure for a
-missing role in pgschema's dump -> plan workflow, while pg-delta diffs live
-catalogs directly and already models roles plus privilege dependencies.
+The only upstream code change in this refresh is pg-delta advancing to
+`b9b8b157c23e08e9d8a9c7573718edcc06f603c3`. That new work adds `NOT VALID`
+constraint convergence handling, but it does not close benchmark 020: a focused
+unit-level diff probe against the current table constraint path still produced
+zero changes when only the table-constraint definition changed from
+`UNIQUE (a, b)` to `UNIQUE NULLS NOT DISTINCT (a, b)`.
 
-## New open pgschema issue screening (draft-only output)
+## Open pgschema issue screening (current state)
 
 Screened candidates:
 
