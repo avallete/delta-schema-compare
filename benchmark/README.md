@@ -4,7 +4,7 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-06-07)
+## Latest refresh snapshot (2026-06-08)
 
 Refreshed against:
 
@@ -36,18 +36,21 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
 There is no resolved-issue or open-issue parity-state delta versus the
-2026-06-05 refresh: benchmark 020 remains the only active resolved-issue gap,
+2026-06-07 refresh: benchmark 020 remains the only active resolved-issue gap,
 pg-toolbelt issues #218 and #219 remain the only active open parity trackers,
-draft-only candidates #439 and #444 remain unduplicated, and pgschema #449 /
-#450 remain classified as not parity work for pg-delta.
+draft-only candidates #439 and #444 remain unduplicated, pgschema #449 / #450
+remain classified as not parity work for pg-delta, and upstream pgschema PR
+[#451](https://github.com/pgplex/pgschema/pull/451) is only a watch item for
+already-screened quoted-name cases rather than a new pg-delta tracker.
 
-The only upstream code change in this refresh is pg-delta advancing from
-`b9b8b157c23e08e9d8a9c7573718edcc06f603c3` to
-`f95e0a8b773539dfb60ebf541131ab9feba4a525`. That newer work includes policy
-dependency fixes, but it does not close benchmark 020: a focused unit-level
-diff probe against the current table constraint path still produced zero
-changes when only the table-constraint definition changed from
-`UNIQUE (a, b)` to `UNIQUE NULLS NOT DISTINCT (a, b)`.
+There is also no upstream code delta versus the 2026-06-07 refresh: pg-delta
+remains at `f95e0a8b773539dfb60ebf541131ab9feba4a525` and pgschema remains at
+`592c19c95b06830255b45bc4d80eeacd62e7e727`. This refresh instead reconciles
+the repo metadata with that snapshot: `benchmark/review-memory.json` is brought
+forward to the current pg-delta fingerprint, and a focused unit-level diff
+probe still produces zero planned changes when only the table-constraint
+definition changes from `UNIQUE (a, b)` to
+`UNIQUE NULLS NOT DISTINCT (a, b)`.
 
 ## Open pgschema issue screening (current state)
 
@@ -90,14 +93,18 @@ Screened candidates:
   verbatim
 - **#421 / #422** quoted-name dump edge cases — **not parity work for
   pg-delta**; these are tied to pgschema's dump -> temp-schema -> plan
-  roundtrip path rather than pg-delta's catalog-diff workflow
+  roundtrip path rather than pg-delta's catalog-diff workflow. Open upstream PR
+  [#451](https://github.com/pgplex/pgschema/pull/451) overlaps the mixed-case
+  trigger / FK quoting surface, but it does not change pg-delta's parity
+  verdict
 - **#439** replacing `UNIQUE` with `PRIMARY KEY` when dependents still point at the old constraint — **not covered**; draft issue text saved in [`docs/parity-issue-drafts-2026-05-23.md`](../docs/parity-issue-drafts-2026-05-23.md)
 - **#444** drop-column ordering with dependent views — **not covered**; pg-delta
   has analogous `ADD COLUMN` + view replacement coverage plus adjacent
   dependency-ordering work in [pg-toolbelt#263](https://github.com/supabase/pg-toolbelt/issues/263)
-  and open PR [#273](https://github.com/supabase/pg-toolbelt/pull/273), but
-  there is still no exact `DROP COLUMN` + dependent-view regression or
-  dedicated tracker. Draft issue text is saved in
+  plus open PR [#273](https://github.com/supabase/pg-toolbelt/pull/273) and
+  open PR [#275](https://github.com/supabase/pg-toolbelt/pull/275), but there
+  is still no exact `DROP COLUMN` + dependent-view regression or dedicated
+  tracker. Draft issue text is saved in
   [`docs/parity-issue-drafts-2026-06-01.md`](../docs/parity-issue-drafts-2026-06-01.md)
 - **#407 / #409 / #429** `.pgschemaignore` follow-ups — **not parity work for pg-delta** (pgschema-specific ignore-file surface area)
 - **#447** `.pgschemaignore` constraints support — **not parity work for
