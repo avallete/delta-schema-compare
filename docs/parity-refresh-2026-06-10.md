@@ -157,8 +157,8 @@ Older closed-item verdicts remain unchanged:
   That reproduces the unresolved benchmark 020 behavior on the current
   `pg-delta` head without needing a Docker-backed integration environment.
 - `python3 -m unittest tests.test_review_memory tests.test_compare_resolved_benchmark`
-  should pass after the review-memory rebucketing and snapshot updates
-- `python3 -m json.tool benchmark/review-memory.json >/dev/null` should pass
+  passed after the review-memory rebucketing and snapshot updates
+- `python3 -m json.tool benchmark/review-memory.json >/dev/null` passed
 - `DRY_RUN=true python3 scripts/compare_issues.py` and
   `DRY_RUN=true OUTPUT_MODE=benchmark python3 scripts/compare_resolved.py`
   are still expected to return zero items because most current pgschema issues
@@ -168,7 +168,7 @@ Older closed-item verdicts remain unchanged:
 ## 5) Metadata refresh note
 
 This refresh is mostly about upstream state tracking rather than a pg-delta code
-change. `benchmark/review-memory.json` needs to:
+change. `benchmark/review-memory.json` now:
 
 - move newly closed issues out of the `open` bucket and into `resolved`
 - keep #404 / #366 marked `tracked` even though pgschema closed them upstream
