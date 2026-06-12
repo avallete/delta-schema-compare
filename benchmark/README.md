@@ -4,12 +4,12 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-06-10)
+## Latest refresh snapshot (2026-06-12)
 
 Refreshed against:
 
-- `repos/pg-toolbelt` @ `f95e0a8b773539dfb60ebf541131ab9feba4a525`
-- `repos/pgschema` @ `b0d7efafe297eaf2985981e9521c75bd9f02bc3b`
+- `repos/pg-toolbelt` @ `436b3d19b1330970ccf158c4bb8ed6e59b7cef01`
+- `repos/pgschema` @ `8b7a248ce08f155b43b31cdee9ea38751aff6d5d`
 
 ## Benchmark status matrix
 
@@ -35,27 +35,21 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-Compared with the 2026-06-08 refresh, pg-delta's parity verdicts are
-unchanged: benchmark 020 remains the only active resolved-issue benchmark gap,
-pg-toolbelt issues [#218](https://github.com/supabase/pg-toolbelt/issues/218)
-and [#219](https://github.com/supabase/pg-toolbelt/issues/219) remain the only
-active pg-delta parity trackers for historical pgschema gaps, open draft-only
-candidate [#439](https://github.com/pgplex/pgschema/issues/439) remains
-unduplicated, historical draft-only candidate
-[#444](https://github.com/pgplex/pgschema/issues/444) remains untracked in
-pg-toolbelt, pgschema #49 / #445 / #449 / #450 remain classified as not parity
-work for pg-delta, and merged upstream pgschema PR
-[#451](https://github.com/pgplex/pgschema/pull/451) remains only a watch item
-for already-screened quoted-name cases rather than a new pg-delta tracker.
+Compared with the 2026-06-10 refresh, pg-delta's benchmark parity verdicts are
+still unchanged: benchmark 020 remains the only active resolved-issue
+benchmark gap, pg-toolbelt issues
+[#218](https://github.com/supabase/pg-toolbelt/issues/218) and
+[#219](https://github.com/supabase/pg-toolbelt/issues/219) remain the only
+active pg-delta parity trackers for older pgschema gaps, and historical
+draft-only gaps [#439](https://github.com/pgplex/pgschema/issues/439) and
+[#444](https://github.com/pgplex/pgschema/issues/444) still have no exact
+pg-toolbelt issue or PR.
 
-pg-delta remains at `f95e0a8b773539dfb60ebf541131ab9feba4a525` while pgschema
-advanced to `b0d7efafe297eaf2985981e9521c75bd9f02bc3b`. The concrete upstream
-delta in this refresh is issue lifecycle state rather than coverage: pgschema
-closed a broad June 9-10 batch of previously screened issues (#362, #366,
-#401, #404, #407, #409, #414, #415, #416, #418, #419, #420, #421, #422, #427,
-#429, #444, and #447). The recent closed-issue screening notes below rebucket
-those issues from "open screening" to their current historical verdicts
-without changing pg-delta's parity call.
+Both submodules advanced in this refresh (`pg-delta@436b3d19...`,
+`pgschema@8b7a248c...`), but the concrete upstream delta is still issue
+lifecycle rather than coverage. pgschema closed previously open screenings
+#436, #439, #445, and #449, while new open issues #471, #472, and #473 were
+screened without changing the current pg-delta parity call.
 
 A focused unit-level diff probe still produces zero planned changes when only
 the table-constraint definition changes from `UNIQUE (a, b)` to
@@ -65,31 +59,28 @@ the table-constraint definition changes from `UNIQUE (a, b)` to
 
 Screened open candidates:
 
-- **#436** required extensions in dump output — **covered** in pg-delta's
-  extension model and integration coverage
-  (`src/core/objects/extension/`,
-  `tests/integration/extension-operations.test.ts`)
-- **#439** replacing `UNIQUE` with `PRIMARY KEY` when dependents still point at
-  the old constraint — **not covered**; draft issue text saved in
-  [`docs/parity-issue-drafts-2026-05-23.md`](../docs/parity-issue-drafts-2026-05-23.md)
-- **#445** CHECK constraint qualifier drift for same-schema functions and types
-  — **not parity work for pg-delta**; this is specific to pgschema's
-  temp-schema normalization path, while pg-delta already exercises same-schema
-  function and type references in `check-constraint-ordering.test.ts`
-- **#449** repeat drift for same-schema policy / CHECK expressions after apply
-  — **not parity work for pg-delta**; this is a declarative-SQL vs live-catalog
-  normalization issue in pgschema, while pg-delta compares policy expressions
-  and CHECK definitions extracted from live catalogs on both sides
+- **#49** explicit rename / refactor workflow proposal — **not parity work for
+  pg-delta**; this is a pgschema-specific workflow design, not a current
+  pg-delta diff or planning gap
 - **#450** missing role blocks plan/apply — **not parity work for pg-delta**;
   this is specific to pgschema applying dumped SQL into a temporary planning
   schema, while pg-delta diffs live catalogs directly and already models roles
   plus privilege dependencies
-- **#49** explicit rename / refactor workflow proposal — **not parity work for
-  pg-delta**; this is a pgschema-specific workflow design, not a current
-  pg-delta diff or planning gap
+- **#471** partitioned-table RLS enablement — **covered** in pg-delta's generic
+  table RLS extraction and diff path (`c.relrowsecurity` in
+  `src/core/objects/table/table.model.ts`, `ALTER TABLE ... ENABLE|DISABLE ROW
+  LEVEL SECURITY` in `table.diff.ts`)
+- **#472** partition-clone child triggers with ignored child tables —
+  **not parity work for pg-delta**; pg-delta already skips partition-clone
+  triggers in `src/core/objects/trigger/trigger.diff.ts`, and the remaining
+  mismatch is `.pgschemaignore` semantics rather than catalog diff behavior
+- **#473** partial-index `IN (...)` predicate normalization —
+  **not parity work for pg-delta**; pg-delta compares canonical live-catalog
+  predicates from `pg_get_expr(i.indpred, i.indrelid)` in
+  `src/core/objects/index/index.model.ts` rather than dumped SQL text
 
-No newer parity-relevant open pgschema issues appeared after #450 during this
-refresh.
+No additional open parity-relevant pgschema issues appeared after #473 during
+this refresh.
 
 Historical draft text is recorded in markdown for both the older tracked
 scenarios and the newly screened uncovered candidates:
@@ -100,6 +91,30 @@ scenarios and the newly screened uncovered candidates:
 - [`docs/parity-issue-drafts-2026-06-01.md`](../docs/parity-issue-drafts-2026-06-01.md)
 
 ## Recent closed-issue screening notes
+
+Newly closed upstream since the 2026-06-10 refresh, with unchanged pg-delta
+verdicts:
+
+- **#436** required extensions in dump output — **covered** in pg-delta's
+  extension model and integration coverage
+  (`src/core/objects/extension/`,
+  `tests/integration/extension-operations.test.ts`)
+- **#439** replacing `UNIQUE` with `PRIMARY KEY` when dependents still point at
+  the old constraint — **not covered**; pgschema now carries a regression
+  fixture under `repos/pgschema/testdata/diff/dependency/issue_439_unique_to_pk_fk_dependent/`,
+  but there is still no exact pg-toolbelt issue or PR. Draft issue text
+  remains in
+  [`docs/parity-issue-drafts-2026-05-23.md`](../docs/parity-issue-drafts-2026-05-23.md)
+- **#445** CHECK constraint qualifier drift for same-schema functions and types
+  — **not parity work for pg-delta**; this is specific to pgschema's
+  temp-schema normalization path, while pg-delta already exercises same-schema
+  function and type references in `check-constraint-ordering.test.ts`
+- **#449** repeat drift for same-schema policy / CHECK expressions after apply
+  — **not parity work for pg-delta**; this is a declarative-SQL vs live-catalog
+  normalization issue in pgschema, while pg-delta compares policy expressions
+  and CHECK definitions extracted from live catalogs on both sides
+
+Earlier closed-item verdicts remain unchanged:
 
 - **#362** numeric precision changes — **covered** in pg-delta integration
   tests; pgschema has now closed the issue upstream
@@ -176,7 +191,7 @@ scenarios and the newly screened uncovered candidates:
   issue is now closed upstream, but pg-delta still has only analogous `ADD
   COLUMN` + view replacement coverage plus adjacent dependency-ordering work in
   [pg-toolbelt#263](https://github.com/supabase/pg-toolbelt/issues/263) and
-  open PRs [#273](https://github.com/supabase/pg-toolbelt/pull/273) /
+  merged PRs [#273](https://github.com/supabase/pg-toolbelt/pull/273) /
   [#275](https://github.com/supabase/pg-toolbelt/pull/275). There is still no
   exact `DROP COLUMN` + dependent-view regression or dedicated tracker; draft
   issue text is saved in
