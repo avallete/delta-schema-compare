@@ -4,11 +4,11 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-06-12)
+## Latest refresh snapshot (2026-06-13)
 
 Refreshed against:
 
-- `repos/pg-toolbelt` @ `436b3d19b1330970ccf158c4bb8ed6e59b7cef01`
+- `repos/pg-toolbelt` @ `c06f081208c067e9aab5a4f9b109cd2f5546bbc1`
 - `repos/pgschema` @ `8b7a248ce08f155b43b31cdee9ea38751aff6d5d`
 
 ## Benchmark status matrix
@@ -35,7 +35,7 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-Compared with the 2026-06-10 refresh, pg-delta's benchmark parity verdicts are
+Compared with the 2026-06-12 refresh, pg-delta's benchmark parity verdicts are
 still unchanged: benchmark 020 remains the only active resolved-issue
 benchmark gap, pg-toolbelt issues
 [#218](https://github.com/supabase/pg-toolbelt/issues/218) and
@@ -45,11 +45,11 @@ draft-only gaps [#439](https://github.com/pgplex/pgschema/issues/439) and
 [#444](https://github.com/pgplex/pgschema/issues/444) still have no exact
 pg-toolbelt issue or PR.
 
-Both submodules advanced in this refresh (`pg-delta@436b3d19...`,
-`pgschema@8b7a248c...`), but the concrete upstream delta is still issue
-lifecycle rather than coverage. pgschema closed previously open screenings
-#436, #439, #445, and #449, while new open issues #471, #472, and #473 were
-screened without changing the current pg-delta parity call.
+Since the 2026-06-12 refresh, `pgschema` stayed pinned at `8b7a248c...` while
+`pg-delta` advanced to `c06f0812...`. The intervening pg-toolbelt changes were
+publication/planning/topology work rather than fixes for the tracked parity
+surfaces, so the concrete upstream delta is still state-tracking rather than a
+coverage change.
 
 A focused unit-level diff probe still produces zero planned changes when only
 the table-constraint definition changes from `UNIQUE (a, b)` to
@@ -80,7 +80,11 @@ Screened open candidates:
   `src/core/objects/index/index.model.ts` rather than dumped SQL text
 
 No additional open parity-relevant pgschema issues appeared after #473 during
-this refresh.
+this refresh. New upstream pgschema PRs [#474](https://github.com/pgplex/pgschema/pull/474)
+and [#475](https://github.com/pgplex/pgschema/pull/475) do not change the
+issue-level parity call: #474 is pgschema-specific temp-schema behavior, and
+#475 is adjacent to the historical #439 dependency-replacement gap but still
+does not map to an exact pg-toolbelt issue or PR.
 
 Historical draft text is recorded in markdown for both the older tracked
 scenarios and the newly screened uncovered candidates:
@@ -92,8 +96,8 @@ scenarios and the newly screened uncovered candidates:
 
 ## Recent closed-issue screening notes
 
-Newly closed upstream since the 2026-06-10 refresh, with unchanged pg-delta
-verdicts:
+The latest newly closed upstream items are still the set that moved between the
+2026-06-10 and 2026-06-12 refreshes, with unchanged pg-delta verdicts:
 
 - **#436** required extensions in dump output — **covered** in pg-delta's
   extension model and integration coverage

@@ -21,17 +21,18 @@ This matters because the downgrade is silent. A migration plan that emits
 `UNIQUE (a, b)` instead of `UNIQUE NULLS NOT DISTINCT (a, b)` looks plausible,
 but it weakens uniqueness semantics for nullable columns.
 
-## Refresh note (2026-06-12)
+## Refresh note (2026-06-13)
 
 Since the previous refresh, pg-delta advanced to
-`436b3d19b1330970ccf158c4bb8ed6e59b7cef01` and pgschema advanced to
+`c06f081208c067e9aab5a4f9b109cd2f5546bbc1` while pgschema stayed at
 `8b7a248ce08f155b43b31cdee9ea38751aff6d5d`.
 
-A focused unit-level diff probe against the current table-constraint path still
-reported zero planned changes when only the definition changed from
-`UNIQUE (a, b)` to `UNIQUE NULLS NOT DISTINCT (a, b)`, confirming that the
-modifier is still ignored in the table-constraint diff logic even on the
-latest pg-delta head.
+The intervening pg-toolbelt commits cover publication, planning, and topology
+surfaces rather than table-constraint parity. A focused unit-level diff probe
+against the current table-constraint path still reported zero planned changes
+when only the definition changed from `UNIQUE (a, b)` to
+`UNIQUE NULLS NOT DISTINCT (a, b)`, confirming that the modifier is still
+ignored in the table-constraint diff logic even on the latest pg-delta head.
 
 ## Reproduction SQL
 
