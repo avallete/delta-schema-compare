@@ -4,21 +4,21 @@
 
 ## Context
 
-When changing a column's type (e.g. `text` → custom enum), PostgreSQL requires
-a `USING` clause if the implicit cast doesn't exist. Without it the ALTER fails
-with `ERROR: column "x" cannot be cast automatically to type "y"`. Additionally,
-if the column has a default value that is incompatible with the new type, the
-default must be dropped first and re-set after the ALTER.
+When changing a column's type (for example `text` to a custom enum),
+PostgreSQL requires a `USING` clause if the cast is not implicit. If the
+column also has an incompatible default, that default must be dropped before
+the type change and then re-applied afterward.
 
-pgschema was generating `ALTER COLUMN ... TYPE enum_type` without the `USING`
-clause and without handling existing defaults.
+pgschema originally emitted `ALTER COLUMN ... TYPE enum_type` without the
+`USING` clause and without a default-safe flow. That made the migration fail
+for the exact enum conversion reproduced below.
 
-pg-delta's `AlterTableAlterColumnType.serialize()` (in
-`src/core/objects/table/changes/table.alter.ts`) still generates the ALTER
-statement **without a `USING` clause** — the code only emits `TYPE` and
-optional `COLLATE`. There is an open draft fix in
-[pg-toolbelt#146](https://github.com/supabase/pg-toolbelt/pull/146), but it has
-not been merged into the latest pg-delta revision in this benchmark refresh.
+pg-delta had the same gap when this benchmark entry was first written, but the
+current upstream submodule now covers the scenario. The earlier draft PR
+[#146](https://github.com/supabase/pg-toolbelt/pull/146) was closed and
+superseded by the merged fix PR
+[#231](https://github.com/supabase/pg-toolbelt/pull/231), which also closed
+the tracking issue [#130](https://github.com/supabase/pg-toolbelt/issues/130).
 
 ## Reproduction SQL
 
@@ -46,74 +46,53 @@ ALTER TABLE test_schema.items
 
 ## How pgschema handled it
 
-pgschema added USING clause generation for type changes involving custom types.
-It also handles the default drop/re-set workflow.
+pgschema fixed the issue by emitting the `USING` cast when a custom-type
+conversion requires it and by handling the default drop/re-set sequence around
+the type change.
 
 ## Current pg-delta status
 
 | Aspect | Status |
 |---|---|
-| `AlterTableAlterColumnType` change class | ✅ Exists |
-| USING clause in serialize() | ❌ **Not generated** |
-| Default drop/re-set around type change | ⚠️ Partial coverage only — default-preserving widening tests exist, but the enum / explicit-cast flow is still unresolved |
-| Integration regression for `text -> enum` with `USING` | ❌ Missing (the only enum-related case is still skipped) |
-| Existing pg-toolbelt issue / PR | ✅ [#130](https://github.com/supabase/pg-toolbelt/issues/130) open, [#146](https://github.com/supabase/pg-toolbelt/pull/146) open draft |
+| `AlterTableAlterColumnType` change class | Yes |
+| USING clause in serialize() | Yes - generated when the previous and new column types differ |
+| Default drop/re-set around type change | Yes - emitted in the table diff flow when a type change collides with an existing default |
+| Integration regression for `text -> enum` with default | Yes - present in `tests/integration/alter-table-operations.test.ts` |
+| Existing pg-toolbelt issue / PR | Yes - [#130](https://github.com/supabase/pg-toolbelt/issues/130) closed, [#146](https://github.com/supabase/pg-toolbelt/pull/146) closed, replacement [#231](https://github.com/supabase/pg-toolbelt/pull/231) merged |
 
-**Source evidence** (`table.alter.ts` lines 609–621 in the refreshed submodule):
-```typescript
-serialize(): string {
-  const parts: string[] = [
-    "ALTER TABLE", `${this.table.schema}.${this.table.name}`,
-    "ALTER COLUMN", this.column.name,
-    "TYPE", this.column.data_type_str,
-  ];
-  if (this.column.collation) {
-    parts.push("COLLATE", this.column.collation);
-  }
-  return parts.join(" ");
-}
-```
+**Source evidence** in the refreshed pg-delta submodule:
 
-No `USING` clause is appended.
-
-`tests/integration/alter-table-operations.test.ts` now includes
-`"widen column type preserves pre-existing default"` for safer same-family
-changes, but the exact enum/default case remains
-`test.skip("change column type from enum to text preserves default", ...)`,
-which is still blocked by dependency ordering on the dropped source type.
+- `src/core/objects/table/changes/table.alter.ts` now appends
+  `USING <column>::<new_type>` when `previousColumn.data_type_str` differs from
+  the target type.
+- `src/core/objects/table/table.diff.ts` emits
+  `DROP DEFAULT -> ALTER TYPE -> SET DEFAULT` when a type change would leave an
+  incompatible default in place.
+- `tests/integration/alter-table-operations.test.ts` includes
+  `"change column type to enum with default"`, which exercises the same
+  `text -> enum` + default flow as the pgschema repro.
 
 ## Comparison of approaches
 
 | | pgschema | pg-delta |
 |---|---|---|
-| **Root cause** | Missing USING in ALTER DDL output | Same — no USING in `serialize()` |
-| **Fix scope** | IR ALTER serialiser | `AlterTableAlterColumnType` + diff logic |
-| **Current upstream state** | Fixed in pgschema | pg-delta fix exists only as draft PR #146 |
-| **Complexity** | Medium — needs to decide when USING is required | Medium — same analysis needed plus dependency ordering around dropped source types |
+| **Original gap** | Missing `USING` and default-safe sequencing | Same |
+| **Current upstream state** | Fixed | Fixed |
+| **Coverage** | Regression fixture in pgschema | Roundtrip integration test in pg-delta |
+| **Remaining follow-up** | None for issue #190 | A separate skipped reverse-direction enum regression still exists, but it does not block the pgschema #190 direction |
 
-## Plan to handle it in pg-delta
+## Resolution in pg-delta
 
-1. **Modify `AlterTableAlterColumnType`** in `src/core/objects/table/changes/table.alter.ts`:
-   - Add logic to detect when old type → new type requires a USING clause
-   - Generate `USING column_name::new_type` as a safe default
-   - Consider allowing explicit USING expressions in the future
-2. **Handle default drop/re-set**: when a column's type changes and it has a
-   default, emit `ALTER COLUMN ... DROP DEFAULT` before the type change, then
-   `ALTER COLUMN ... SET DEFAULT ...` after.
-3. **Add integration tests** in `tests/integration/alter-table-operations.test.ts`:
-   - `text` → `enum` type change
-   - `varchar` → `integer` type change
-   - Type change on column with existing default
-4. **Edge case**: columns with `NOT NULL` and data — the USING must produce
-   non-null values.
+pg-delta now resolves the benchmark scenario end-to-end:
 
-## Latest refresh note (2026-04-27)
+1. `AlterTableAlterColumnType.serialize()` adds a `USING` cast for true type
+   changes.
+2. `diffTables()` wraps the type change in a default-safe drop/re-set flow when
+   the original column had a default.
+3. The integration suite covers the exact `text -> enum` path with live row
+   data and a default value.
 
-This benchmark entry remains active after refreshing to
-`repos/pg-toolbelt@8a31133f1799d1fbc159ccb75c282d61ab581f1e`.
+## Latest refresh note (2026-05-23)
 
-- The pg-toolbelt tracking issue remains open: [#130](https://github.com/supabase/pg-toolbelt/issues/130)
-- A concrete implementation exists but is still unmerged:
-  [#146](https://github.com/supabase/pg-toolbelt/pull/146) (**draft**)
-- Upstream pg-delta did add nearby regression coverage for safer default-aware
-  type changes, but not the full enum / `USING` parity case from pgschema #190
+This benchmark entry moved from **tracked** to **solved in pg-delta** after
+refreshing to `repos/pg-toolbelt@ee9385daf75f72d443882020247ffd2599050090`.
