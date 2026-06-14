@@ -4,7 +4,7 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-06-13)
+## Latest refresh snapshot (2026-06-14)
 
 Refreshed against:
 
@@ -35,7 +35,7 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-Compared with the 2026-06-12 refresh, pg-delta's benchmark parity verdicts are
+Compared with the 2026-06-13 refresh, pg-delta's benchmark parity verdicts are
 still unchanged: benchmark 020 remains the only active resolved-issue
 benchmark gap, pg-toolbelt issues
 [#218](https://github.com/supabase/pg-toolbelt/issues/218) and
@@ -45,11 +45,10 @@ draft-only gaps [#439](https://github.com/pgplex/pgschema/issues/439) and
 [#444](https://github.com/pgplex/pgschema/issues/444) still have no exact
 pg-toolbelt issue or PR.
 
-Since the 2026-06-12 refresh, `pgschema` stayed pinned at `8b7a248c...` while
-`pg-delta` advanced to `c06f0812...`. The intervening pg-toolbelt changes were
-publication/planning/topology work rather than fixes for the tracked parity
-surfaces, so the concrete upstream delta is still state-tracking rather than a
-coverage change.
+Since the 2026-06-13 refresh, both upstream repos stayed pinned at the same
+commits (`pgschema@8b7a248c...`, `pg-delta@c06f0812...`), and the live upstream
+issue/PR recheck did not surface any new parity-relevant pgschema issues or any
+exact new pg-toolbelt tracker for the historical draft-only gaps.
 
 A focused unit-level diff probe still produces zero planned changes when only
 the table-constraint definition changes from `UNIQUE (a, b)` to
@@ -80,11 +79,13 @@ Screened open candidates:
   `src/core/objects/index/index.model.ts` rather than dumped SQL text
 
 No additional open parity-relevant pgschema issues appeared after #473 during
-this refresh. New upstream pgschema PRs [#474](https://github.com/pgplex/pgschema/pull/474)
-and [#475](https://github.com/pgplex/pgschema/pull/475) do not change the
-issue-level parity call: #474 is pgschema-specific temp-schema behavior, and
-#475 is adjacent to the historical #439 dependency-replacement gap but still
-does not map to an exact pg-toolbelt issue or PR.
+this refresh window. Existing upstream pgschema PRs
+[#474](https://github.com/pgplex/pgschema/pull/474) and
+[#475](https://github.com/pgplex/pgschema/pull/475) remain open and do not
+change the issue-level parity call: #474 is pgschema-specific temp-schema
+behavior, and #475 is adjacent to the historical #439
+dependency-replacement gap but still does not map to an exact pg-toolbelt
+issue or PR.
 
 Historical draft text is recorded in markdown for both the older tracked
 scenarios and the newly screened uncovered candidates:
