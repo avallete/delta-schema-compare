@@ -4,7 +4,7 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-06-15)
+## Latest refresh snapshot (2026-06-16)
 
 Refreshed against:
 
@@ -35,23 +35,41 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-Compared with the 2026-06-14 refresh, pg-delta's benchmark parity verdicts are
+Compared with the 2026-06-15 refresh, pg-delta's benchmark parity verdicts are
 still unchanged: benchmark 020 remains the only active resolved-issue
 benchmark gap, pg-toolbelt issues
 [#218](https://github.com/supabase/pg-toolbelt/issues/218) and
 [#219](https://github.com/supabase/pg-toolbelt/issues/219) remain the only
-active pg-delta parity trackers for older pgschema gaps, and historical
+exact active parity trackers for older pgschema gaps, and historical
 draft-only gaps [#439](https://github.com/pgplex/pgschema/issues/439) and
 [#444](https://github.com/pgplex/pgschema/issues/444) still have no exact
 pg-toolbelt issue or PR.
 
-Since the 2026-06-14 refresh, both upstream repos stayed pinned at the same
-commits (`pgschema@8b7a248c...`, `pg-delta@c06f0812...`), and the live upstream
-issue/PR recheck did not surface any new parity-relevant pgschema issues or any
-exact new pg-toolbelt tracker for the historical draft-only gaps.
+Since the 2026-06-15 refresh, neither upstream repo head nor the relevant
+issue/PR mapping changed:
 
-A focused unit-level diff probe still produces zero planned changes when only
-the table-constraint definition changes from `UNIQUE (a, b)` to
+- `pgschema` stayed at `8b7a248c...`
+- `pg-delta` stayed at `c06f0812...`
+- exact pg-delta parity trackers
+  [#218](https://github.com/supabase/pg-toolbelt/issues/218) and
+  [#219](https://github.com/supabase/pg-toolbelt/issues/219) remain open
+- adjacent dependency-chain work
+  [#263](https://github.com/supabase/pg-toolbelt/issues/263),
+  [#285](https://github.com/supabase/pg-toolbelt/pull/285), and
+  [#291](https://github.com/supabase/pg-toolbelt/pull/291) still does not
+  create an exact duplicate target for historical gaps
+  [#439](https://github.com/pgplex/pgschema/issues/439) or
+  [#444](https://github.com/pgplex/pgschema/issues/444)
+
+The newest open pgschema issues are still
+[#471](https://github.com/pgplex/pgschema/issues/471),
+[#472](https://github.com/pgplex/pgschema/issues/472), and
+[#473](https://github.com/pgplex/pgschema/issues/473), and the live recheck did
+not surface any new parity-relevant pgschema issue or any exact new
+pg-toolbelt tracker.
+
+A focused June 16 unit-level diff probe still produces zero planned changes
+when only the table-constraint definition changes from `UNIQUE (a, b)` to
 `UNIQUE NULLS NOT DISTINCT (a, b)`.
 
 ## Open pgschema issue screening (current state)
@@ -69,7 +87,7 @@ Screened open candidates:
   table RLS extraction and diff path (`c.relrowsecurity` in
   `src/core/objects/table/table.model.ts`, parent tables extracted with relkind
   `p`, `ALTER TABLE ... ENABLE|DISABLE ROW LEVEL SECURITY` in `table.diff.ts`);
-  a focused June 15 unit probe on a partitioned parent still emits
+  a focused June 16 unit probe on a partitioned parent still emits
   `ALTER TABLE ... ENABLE ROW LEVEL SECURITY`
 - **#472** partition-clone child triggers with ignored child tables —
   **not parity work for pg-delta**; pg-delta already skips partition-clone
@@ -80,8 +98,9 @@ Screened open candidates:
   predicates from `pg_get_expr(i.indpred, i.indrelid)` in
   `src/core/objects/index/index.model.ts` rather than dumped SQL text
 
-No additional open parity-relevant pgschema issues appeared after #473 during
-this refresh window. Existing upstream pgschema PRs
+The newest open pgschema issues are still #473 / #472 / #471; no additional
+parity-relevant open issues appeared during this refresh window. Existing
+upstream pgschema PRs
 [#474](https://github.com/pgplex/pgschema/pull/474) and
 [#475](https://github.com/pgplex/pgschema/pull/475) remain open and do not
 change the issue-level parity call: #474 is pgschema-specific temp-schema

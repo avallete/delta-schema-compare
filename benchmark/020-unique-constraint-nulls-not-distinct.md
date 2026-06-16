@@ -21,13 +21,19 @@ This matters because the downgrade is silent. A migration plan that emits
 `UNIQUE (a, b)` instead of `UNIQUE NULLS NOT DISTINCT (a, b)` looks plausible,
 but it weakens uniqueness semantics for nullable columns.
 
-## Refresh note (2026-06-15)
+## Refresh note (2026-06-16)
 
-Since the 2026-06-14 refresh, both upstream repos stayed pinned at the same
+Since the 2026-06-15 refresh, both upstream repos stayed pinned at the same
 commits (`pg-delta@c06f081208c067e9aab5a4f9b109cd2f5546bbc1`,
 `pgschema@8b7a248ce08f155b43b31cdee9ea38751aff6d5d`).
 
-A focused June 15 unit-level diff probe against the current table-constraint
+The relevant exact pg-delta parity tracker set is also unchanged: issues
+[#218](https://github.com/supabase/pg-toolbelt/issues/218) and
+[#219](https://github.com/supabase/pg-toolbelt/issues/219) remain open for
+older gaps, while there is still no exact pg-toolbelt issue or PR for the
+table-constraint `NULLS NOT DISTINCT` behavior from pgschema #412.
+
+A focused June 16 unit-level diff probe against the current table-constraint
 path still reported zero planned changes when only the definition changed from
 `UNIQUE (a, b)` to `UNIQUE NULLS NOT DISTINCT (a, b)`, confirming that the
 modifier is still ignored in the table-constraint diff logic even after the
@@ -84,7 +90,7 @@ The merged change added:
 | Constraint diff compares `NULLS NOT DISTINCT` on table constraints | No - `src/core/objects/table/table.diff.ts` compares structured fields but not the full rendered definition |
 | Constraint `definition` is captured from the catalog | Yes - `pg_get_constraintdef(c.oid, true)` is stored on the table constraint model |
 | Integration regression for `UNIQUE NULLS NOT DISTINCT` table constraints | No - `tests/integration/constraint-operations.test.ts` only covers plain `UNIQUE (...)` |
-| Existing pg-toolbelt issue / PR for this exact scenario | No - none found during the 2026-06-12 refresh |
+| Existing pg-toolbelt issue / PR for this exact scenario | No - searches for pgschema #412 and `NULLS NOT DISTINCT` still only hit the already-solved unique-index pair [#183](https://github.com/supabase/pg-toolbelt/issues/183) / [#185](https://github.com/supabase/pg-toolbelt/pull/185) during the 2026-06-16 refresh |
 
 ## Comparison of approaches
 
