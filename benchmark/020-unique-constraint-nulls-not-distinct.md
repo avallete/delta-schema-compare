@@ -21,17 +21,23 @@ This matters because the downgrade is silent. A migration plan that emits
 `UNIQUE (a, b)` instead of `UNIQUE NULLS NOT DISTINCT (a, b)` looks plausible,
 but it weakens uniqueness semantics for nullable columns.
 
-## Refresh note (2026-06-07)
+## Refresh note (2026-06-17)
 
-pg-delta advanced from `b9b8b157c23e08e9d8a9c7573718edcc06f603c3` to
-`f95e0a8b773539dfb60ebf541131ab9feba4a525` during this refresh. The new
-upstream work includes policy dependency fixes, but it does not change this
-benchmark's parity state.
+The checked-in upstreams advanced from
+`pgschema@592c19c95b06830255b45bc4d80eeacd62e7e727` and
+`pg-delta@f95e0a8b773539dfb60ebf541131ab9feba4a525` to
+`pgschema@8b7a248ce08f155b43b31cdee9ea38751aff6d5d` and
+`pg-delta@c06f081208c067e9aab5a4f9b109cd2f5546bbc1` during this refresh.
 
-A focused unit-level diff probe against the current table-constraint path still
-reported zero planned changes when only the definition changed from
-`UNIQUE (a, b)` to `UNIQUE NULLS NOT DISTINCT (a, b)`, confirming that the
-modifier is still ignored in the table-constraint diff logic.
+That newer upstream work adds dependency, view/materialized-view, plan, and
+subscription changes, but it still does not change this benchmark's parity
+state.
+
+A rerun of the focused unit-level diff probe against the current
+table-constraint path still reported zero planned changes when only the
+definition changed from `UNIQUE (a, b)` to
+`UNIQUE NULLS NOT DISTINCT (a, b)`, confirming that the modifier is still
+ignored in the table-constraint diff logic.
 
 ## Reproduction SQL
 
