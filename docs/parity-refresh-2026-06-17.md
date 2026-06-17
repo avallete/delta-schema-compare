@@ -93,4 +93,24 @@ There is no benchmark-matrix parity delta versus the 2026-06-07 refresh.
 
 ## 5) Validation notes
 
-Validation details are added after local checks run on this branch.
+- `bun test packages/pg-delta/src/core/objects/table/table.diff.test.ts`
+  passed on current `pg-delta@c06f081208c067e9aab5a4f9b109cd2f5546bbc1`
+- a focused one-off Bun probe constructed two otherwise-identical table
+  constraints whose only difference was `UNIQUE (a, b)` versus
+  `UNIQUE NULLS NOT DISTINCT (a, b)`. The current diff code returned:
+
+  ```json
+  {
+    "changeCount": 0,
+    "sql": []
+  }
+  ```
+
+  That reproduces the unresolved benchmark 020 behavior on the current
+  `pg-delta` head without needing a Docker-backed integration environment.
+- `python3 -m json.tool benchmark/review-memory.json >/dev/null` succeeded
+- `DRY_RUN=true python3 scripts/compare_issues.py` and
+  `DRY_RUN=true OUTPUT_MODE=benchmark python3 scripts/compare_resolved.py`
+  both returned zero items, which remains expected because most current
+  pgschema issues are unlabeled and those scripts still filter on the
+  `Bug` / `Feature` labels
