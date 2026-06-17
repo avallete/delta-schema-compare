@@ -18,15 +18,6 @@
       "reviewed_at": "2026-06-05T07:18:38+00:00",
       "verdict": "covered"
     },
-    "366": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-03-23T03:23:36Z\", \"pgdelta_sha\": \"b9b8b157c23e08e9d8a9c7573718edcc06f603c3\", \"pgschema_sha\": \"592c19c95b06830255b45bc4d80eeacd62e7e727\"}",
-      "issue_number": 366,
-      "issue_title": "Bug: Changing privileges of functions with enums include the qualified name of the temporal schema",
-      "issue_updated_at": "2026-03-23T03:23:36Z",
-      "issue_url": "https://github.com/pgplex/pgschema/issues/366",
-      "reviewed_at": "2026-06-05T07:18:38+00:00",
-      "verdict": "tracked"
-    },
     "401": {
       "fingerprint": "{\"issue_updated_at\": \"2026-05-11T17:43:14Z\", \"pgdelta_sha\": \"b9b8b157c23e08e9d8a9c7573718edcc06f603c3\", \"pgschema_sha\": \"592c19c95b06830255b45bc4d80eeacd62e7e727\"}",
       "issue_number": 401,
@@ -35,15 +26,6 @@
       "issue_url": "https://github.com/pgplex/pgschema/issues/401",
       "reviewed_at": "2026-06-05T07:18:38+00:00",
       "verdict": "covered"
-    },
-    "404": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-04-27T15:17:16Z\", \"pgdelta_sha\": \"b9b8b157c23e08e9d8a9c7573718edcc06f603c3\", \"pgschema_sha\": \"592c19c95b06830255b45bc4d80eeacd62e7e727\"}",
-      "issue_number": 404,
-      "issue_title": "DEFERRABLE INITIALLY DEFERRED on UNIQUE constraints is silently stripped during dump, plan, and apply",
-      "issue_updated_at": "2026-04-27T15:17:16Z",
-      "issue_url": "https://github.com/pgplex/pgschema/issues/404",
-      "reviewed_at": "2026-06-05T07:18:38+00:00",
-      "verdict": "tracked"
     },
     "407": {
       "fingerprint": "{\"issue_updated_at\": \"2026-04-22T02:10:52Z\", \"pgdelta_sha\": \"b9b8b157c23e08e9d8a9c7573718edcc06f603c3\", \"pgschema_sha\": \"592c19c95b06830255b45bc4d80eeacd62e7e727\"}",
@@ -162,24 +144,6 @@
       "reviewed_at": "2026-06-05T07:18:38+00:00",
       "verdict": "covered"
     },
-    "439": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-05-20T10:40:46Z\", \"pgdelta_sha\": \"b9b8b157c23e08e9d8a9c7573718edcc06f603c3\", \"pgschema_sha\": \"592c19c95b06830255b45bc4d80eeacd62e7e727\"}",
-      "issue_number": 439,
-      "issue_title": "Dropping constraint cascade",
-      "issue_updated_at": "2026-05-20T10:40:46Z",
-      "issue_url": "https://github.com/pgplex/pgschema/issues/439",
-      "reviewed_at": "2026-06-05T07:18:38+00:00",
-      "verdict": "not_covered"
-    },
-    "444": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-05-25T18:20:45Z\", \"pgdelta_sha\": \"b9b8b157c23e08e9d8a9c7573718edcc06f603c3\", \"pgschema_sha\": \"592c19c95b06830255b45bc4d80eeacd62e7e727\"}",
-      "issue_number": 444,
-      "issue_title": "Bug: DROP COLUMN ordered before dependent view's DROP within same group, apply fails",
-      "issue_updated_at": "2026-05-25T18:20:45Z",
-      "issue_url": "https://github.com/pgplex/pgschema/issues/444",
-      "reviewed_at": "2026-06-05T07:18:38+00:00",
-      "verdict": "not_covered"
-    },
     "447": {
       "fingerprint": "{\"issue_updated_at\": \"2026-06-02T13:32:48Z\", \"pgdelta_sha\": \"b9b8b157c23e08e9d8a9c7573718edcc06f603c3\", \"pgschema_sha\": \"592c19c95b06830255b45bc4d80eeacd62e7e727\"}",
       "issue_number": 447,
@@ -205,6 +169,33 @@
       "issue_updated_at": "2026-06-04T02:35:18Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/450",
       "reviewed_at": "2026-06-05T07:18:38+00:00",
+      "verdict": "not_parity"
+    },
+    "471": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-10T14:08:54Z\", \"pgdelta_sha\": \"c06f081208c067e9aab5a4f9b109cd2f5546bbc1\", \"pgschema_sha\": \"8b7a248ce08f155b43b31cdee9ea38751aff6d5d\"}",
+      "issue_number": 471,
+      "issue_title": "ENABLE ROW LEVEL SECURITY on partitioned tables is neither dumped nor diffed (policies are, so the gap is silent)",
+      "issue_updated_at": "2026-06-10T14:08:54Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/471",
+      "reviewed_at": "2026-06-17T07:24:15+00:00",
+      "verdict": "covered"
+    },
+    "472": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-10T14:09:06Z\", \"pgdelta_sha\": \"c06f081208c067e9aab5a4f9b109cd2f5546bbc1\", \"pgschema_sha\": \"8b7a248ce08f155b43b31cdee9ea38751aff6d5d\"}",
+      "issue_number": 472,
+      "issue_title": "Partition-clone child triggers (tgparentid != 0) are dumped even when child tables are ignored; qualified [triggers] patterns do not match",
+      "issue_updated_at": "2026-06-10T14:09:06Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/472",
+      "reviewed_at": "2026-06-17T07:24:15+00:00",
+      "verdict": "not_parity"
+    },
+    "473": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-10T14:09:16Z\", \"pgdelta_sha\": \"c06f081208c067e9aab5a4f9b109cd2f5546bbc1\", \"pgschema_sha\": \"8b7a248ce08f155b43b31cdee9ea38751aff6d5d\"}",
+      "issue_number": 473,
+      "issue_title": "Perpetual concurrent-rebuild diff for partial indexes with IN-list predicates (IN vs = ANY(ARRAY) normalization)",
+      "issue_updated_at": "2026-06-10T14:09:16Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/473",
+      "reviewed_at": "2026-06-17T07:24:15+00:00",
       "verdict": "not_parity"
     }
   },
@@ -380,6 +371,15 @@
       "reviewed_at": "2026-06-05T07:18:38+00:00",
       "verdict": "covered"
     },
+    "366": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-09T07:15:02Z\", \"pgdelta_sha\": \"c06f081208c067e9aab5a4f9b109cd2f5546bbc1\", \"pgschema_sha\": \"8b7a248ce08f155b43b31cdee9ea38751aff6d5d\"}",
+      "issue_number": 366,
+      "issue_title": "Bug: Changing privileges of functions with enums include the qualified name of the temporal schema",
+      "issue_updated_at": "2026-06-09T07:15:02Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/366",
+      "reviewed_at": "2026-06-17T07:24:15+00:00",
+      "verdict": "tracked"
+    },
     "373": {
       "fingerprint": "{\"issue_updated_at\": \"2026-03-27T07:20:56Z\", \"pgdelta_sha\": \"b9b8b157c23e08e9d8a9c7573718edcc06f603c3\", \"pgschema_sha\": \"592c19c95b06830255b45bc4d80eeacd62e7e727\"}",
       "issue_number": 373,
@@ -397,6 +397,15 @@
       "issue_url": "https://github.com/pgplex/pgschema/issues/386",
       "reviewed_at": "2026-06-05T07:18:38+00:00",
       "verdict": "covered"
+    },
+    "404": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-09T08:40:27Z\", \"pgdelta_sha\": \"c06f081208c067e9aab5a4f9b109cd2f5546bbc1\", \"pgschema_sha\": \"8b7a248ce08f155b43b31cdee9ea38751aff6d5d\"}",
+      "issue_number": 404,
+      "issue_title": "DEFERRABLE INITIALLY DEFERRED on UNIQUE constraints is silently stripped during dump, plan, and apply",
+      "issue_updated_at": "2026-06-09T08:40:27Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/404",
+      "reviewed_at": "2026-06-17T07:24:15+00:00",
+      "verdict": "tracked"
     },
     "406": {
       "fingerprint": "{\"issue_updated_at\": \"2026-05-30T05:18:24Z\", \"pgdelta_sha\": \"b9b8b157c23e08e9d8a9c7573718edcc06f603c3\", \"pgschema_sha\": \"592c19c95b06830255b45bc4d80eeacd62e7e727\"}",
@@ -426,12 +435,12 @@
       "verdict": "covered"
     },
     "412": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-04-29T02:24:27Z\", \"pgdelta_sha\": \"b9b8b157c23e08e9d8a9c7573718edcc06f603c3\", \"pgschema_sha\": \"592c19c95b06830255b45bc4d80eeacd62e7e727\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-04-29T02:24:27Z\", \"pgdelta_sha\": \"c06f081208c067e9aab5a4f9b109cd2f5546bbc1\", \"pgschema_sha\": \"8b7a248ce08f155b43b31cdee9ea38751aff6d5d\"}",
       "issue_number": 412,
       "issue_title": "`pgschema dump` drops `NULLS NOT DISTINCT` from `UNIQUE` table constraints",
       "issue_updated_at": "2026-04-29T02:24:27Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/412",
-      "reviewed_at": "2026-06-05T07:18:38+00:00",
+      "reviewed_at": "2026-06-17T07:24:15+00:00",
       "verdict": "not_covered"
     },
     "423": {
@@ -451,6 +460,24 @@
       "issue_url": "https://github.com/pgplex/pgschema/issues/426",
       "reviewed_at": "2026-06-05T07:18:38+00:00",
       "verdict": "not_parity"
+    },
+    "439": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-10T19:04:57Z\", \"pgdelta_sha\": \"c06f081208c067e9aab5a4f9b109cd2f5546bbc1\", \"pgschema_sha\": \"8b7a248ce08f155b43b31cdee9ea38751aff6d5d\"}",
+      "issue_number": 439,
+      "issue_title": "Dropping constraint cascade",
+      "issue_updated_at": "2026-06-10T19:04:57Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/439",
+      "reviewed_at": "2026-06-17T07:24:15+00:00",
+      "verdict": "not_covered"
+    },
+    "444": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-10T06:14:56Z\", \"pgdelta_sha\": \"c06f081208c067e9aab5a4f9b109cd2f5546bbc1\", \"pgschema_sha\": \"8b7a248ce08f155b43b31cdee9ea38751aff6d5d\"}",
+      "issue_number": 444,
+      "issue_title": "Bug: DROP COLUMN ordered before dependent view's DROP within same group, apply fails",
+      "issue_updated_at": "2026-06-10T06:14:56Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/444",
+      "reviewed_at": "2026-06-17T07:24:15+00:00",
+      "verdict": "not_covered"
     },
     "445": {
       "fingerprint": "{\"issue_updated_at\": \"2026-05-29T22:26:16Z\", \"pgdelta_sha\": \"b9b8b157c23e08e9d8a9c7573718edcc06f603c3\", \"pgschema_sha\": \"592c19c95b06830255b45bc4d80eeacd62e7e727\"}",
