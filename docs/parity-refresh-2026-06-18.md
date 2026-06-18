@@ -126,5 +126,49 @@ There is no benchmark-matrix parity delta versus the 2026-06-17 refresh.
 
 ## 5) Validation notes
 
-Validation commands and results were added after the post-edit verification
-step.
+- `python3 -m json.tool benchmark/review-memory.json >/dev/null` succeeded
+- `python3 -m unittest tests.test_review_memory tests.test_compare_resolved_benchmark`
+  passed
+- Focused Bun unit tests passed:
+  - `packages/pg-delta/src/core/objects/table/table.diff.test.ts`
+  - `packages/pg-delta/src/core/objects/trigger/trigger.diff.test.ts`
+  - `packages/pg-delta/src/core/objects/trigger/changes/trigger.alter.test.ts`
+  - `packages/pg-delta/src/core/objects/index/index.diff.test.ts`
+  - `packages/pg-delta/src/core/objects/index/changes/index.alter.test.ts`
+  - `packages/pg-delta/src/core/objects/rls-policy/changes/rls-policy.create.test.ts`
+- A focused one-off Bun probe for benchmark 020 still printed:
+
+  ```json
+  {
+    "changeCount": 0,
+    "sql": []
+  }
+  ```
+
+  when the only table-constraint difference was `UNIQUE (a, b)` versus
+  `UNIQUE NULLS NOT DISTINCT (a, b)`.
+- A focused one-off Bun probe for pgschema PR #479's remaining trigger-state
+  gap printed:
+
+  ```json
+  {
+    "changeTypes": [
+      "ReplaceTrigger"
+    ],
+    "sql": [
+      "CREATE OR REPLACE TRIGGER test_trigger AFTER UPDATE ON public.test_table EXECUTE FUNCTION public.test_function()"
+    ]
+  }
+  ```
+
+  That confirms current pg-delta detects `tgenabled` drift but still serializes
+  it as plain trigger replacement, without any `ALTER TABLE ...
+  ENABLE/DISABLE TRIGGER ...` statement.
+- `DRY_RUN=true python3 scripts/compare_issues.py` and
+  `DRY_RUN=true OUTPUT_MODE=benchmark python3 scripts/compare_resolved.py`
+  both returned zero items, which remains expected because most live pgschema
+  issues are unlabeled and those scripts still filter on `Bug` / `Feature`
+  labels
+- Docker-backed integration tests were not run in this runner because the
+  Docker CLI is unavailable here (`docker` exited with status 127), so this
+  refresh used local unit tests plus direct Bun probes for runtime evidence
