@@ -197,6 +197,60 @@
       "issue_url": "https://github.com/pgplex/pgschema/issues/473",
       "reviewed_at": "2026-06-17T07:24:15+00:00",
       "verdict": "not_parity"
+    },
+    "474": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-12T11:42:34Z\", \"pgdelta_sha\": \"c06f081208c067e9aab5a4f9b109cd2f5546bbc1\", \"pgschema_sha\": \"8b7a248ce08f155b43b31cdee9ea38751aff6d5d\"}",
+      "issue_number": 474,
+      "issue_title": "fix: avoid substring matches in policy table dependency detection",
+      "issue_updated_at": "2026-06-12T11:42:34Z",
+      "issue_url": "https://github.com/pgplex/pgschema/pull/474",
+      "reviewed_at": "2026-06-18T07:22:43+00:00",
+      "verdict": "covered"
+    },
+    "475": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-15T08:10:38Z\", \"pgdelta_sha\": \"c06f081208c067e9aab5a4f9b109cd2f5546bbc1\", \"pgschema_sha\": \"8b7a248ce08f155b43b31cdee9ea38751aff6d5d\"}",
+      "issue_number": 475,
+      "issue_title": "fix: order modified foreign keys after added unique constraints",
+      "issue_updated_at": "2026-06-15T08:10:38Z",
+      "issue_url": "https://github.com/pgplex/pgschema/pull/475",
+      "reviewed_at": "2026-06-18T07:22:43+00:00",
+      "verdict": "not_covered"
+    },
+    "477": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-16T22:09:52Z\", \"pgdelta_sha\": \"c06f081208c067e9aab5a4f9b109cd2f5546bbc1\", \"pgschema_sha\": \"8b7a248ce08f155b43b31cdee9ea38751aff6d5d\"}",
+      "issue_number": 477,
+      "issue_title": "Schema dump does not preserve AS RESTRICTIVE on CREATE POLICY",
+      "issue_updated_at": "2026-06-16T22:09:52Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/477",
+      "reviewed_at": "2026-06-18T07:22:43+00:00",
+      "verdict": "covered"
+    },
+    "478": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-18T02:50:48Z\", \"pgdelta_sha\": \"c06f081208c067e9aab5a4f9b109cd2f5546bbc1\", \"pgschema_sha\": \"8b7a248ce08f155b43b31cdee9ea38751aff6d5d\"}",
+      "issue_number": 478,
+      "issue_title": "feat: add support for index storage parameters (reloptions)",
+      "issue_updated_at": "2026-06-18T02:50:48Z",
+      "issue_url": "https://github.com/pgplex/pgschema/pull/478",
+      "reviewed_at": "2026-06-18T07:22:43+00:00",
+      "verdict": "covered"
+    },
+    "479": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-18T06:34:40Z\", \"pgdelta_sha\": \"c06f081208c067e9aab5a4f9b109cd2f5546bbc1\", \"pgschema_sha\": \"8b7a248ce08f155b43b31cdee9ea38751aff6d5d\"}",
+      "issue_number": 479,
+      "issue_title": "feat: add support for trigger comments, trigger enabled/disabled state, and sequence comments",
+      "issue_updated_at": "2026-06-18T06:34:40Z",
+      "issue_url": "https://github.com/pgplex/pgschema/pull/479",
+      "reviewed_at": "2026-06-18T07:22:43+00:00",
+      "verdict": "not_covered"
+    },
+    "480": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-17T14:40:24Z\", \"pgdelta_sha\": \"c06f081208c067e9aab5a4f9b109cd2f5546bbc1\", \"pgschema_sha\": \"8b7a248ce08f155b43b31cdee9ea38751aff6d5d\"}",
+      "issue_number": 480,
+      "issue_title": "Dependency ordering issue on views and functions",
+      "issue_updated_at": "2026-06-17T14:40:24Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/480",
+      "reviewed_at": "2026-06-18T07:22:43+00:00",
+      "verdict": "tracked"
     }
   },
   "resolved": {

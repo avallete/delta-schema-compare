@@ -4,7 +4,7 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-06-17)
+## Latest refresh snapshot (2026-06-18)
 
 Refreshed against:
 
@@ -35,10 +35,10 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-There is still no benchmark-matrix parity delta versus the 2026-06-07 refresh:
+There is still no benchmark-matrix parity delta versus the 2026-06-17 refresh:
 benchmark 020 remains the only active resolved-issue gap.
 
-The June 17 delta is in upstream issue state instead:
+The earlier June 17 state transitions remain true:
 
 - pgschema **#366** and **#404** are now closed upstream while the matching
   pg-toolbelt trackers [#219](https://github.com/supabase/pg-toolbelt/issues/219)
@@ -47,13 +47,12 @@ The June 17 delta is in upstream issue state instead:
   pg-toolbelt issue / PR duplicates, so they remain draft-only uncovered
   scenarios
 
-The only upstream code change in this refresh is advancing the checked-in
-submodules from `pgschema@592c19c95b06830255b45bc4d80eeacd62e7e727` and
-`pg-delta@f95e0a8b773539dfb60ebf541131ab9feba4a525` to
-`pgschema@8b7a248ce08f155b43b31cdee9ea38751aff6d5d` and
-`pg-delta@c06f081208c067e9aab5a4f9b109cd2f5546bbc1`. That newer upstream work
-does not close benchmark 020: the focused table-constraint diff probe still
-produces zero planned changes when only the definition changes from
+The checked-in submodule SHAs are unchanged from the 2026-06-17 refresh
+(`pgschema@8b7a248ce08f155b43b31cdee9ea38751aff6d5d` and
+`pg-delta@c06f081208c067e9aab5a4f9b109cd2f5546bbc1`), so this run revalidated
+live issue / PR state plus reran the focused benchmark 020 probe rather than
+advancing either upstream pointer. The current pg-delta table-constraint path
+still produces zero planned changes when only the definition changes from
 `UNIQUE (a, b)` to `UNIQUE NULLS NOT DISTINCT (a, b)`.
 
 ## Open pgschema issue screening (current state)
@@ -120,6 +119,17 @@ Screened candidates:
   `= ANY(ARRAY[...])`) — **not parity work for pg-delta**; pg-delta compares
   live catalog predicates via `pg_get_expr(i.indpred, i.indrelid)` rather than
   diffing rendered dump text
+- **#477** `AS RESTRICTIVE` on `CREATE POLICY` — **covered** in current
+  pg-delta; policy extraction persists `polpermissive`,
+  `rls-policy.create.ts` emits `AS RESTRICTIVE` for non-permissive policies,
+  and `rls-operations.test.ts` already roundtrips the exact clause
+- **#480** table -> view -> function dependency ordering around table
+  alterations — **tracked by broader pg-toolbelt dependency-replacement work**;
+  current open work in [#263](https://github.com/supabase/pg-toolbelt/issues/263),
+  [#285](https://github.com/supabase/pg-toolbelt/pull/285), and
+  [#291](https://github.com/supabase/pg-toolbelt/pull/291) overlaps the
+  reported drop / recreate ordering path, so no new duplicate tracker or draft
+  was added yet
 - **#49** explicit rename / refactor workflow proposal — **not parity work for pg-delta**; this is a pgschema-specific workflow design, not a current pg-delta diff or planning gap
 
 Historical draft text is recorded in markdown for both the older tracked
@@ -130,6 +140,7 @@ scenarios and the newly screened uncovered candidates:
 - [`docs/parity-issue-drafts-2026-05-27.md`](../docs/parity-issue-drafts-2026-05-27.md)
 - [`docs/parity-issue-drafts-2026-06-01.md`](../docs/parity-issue-drafts-2026-06-01.md)
 - [`docs/parity-issue-drafts-2026-06-17.md`](../docs/parity-issue-drafts-2026-06-17.md)
+- [`docs/parity-issue-drafts-2026-06-18.md`](../docs/parity-issue-drafts-2026-06-18.md)
 
 ## Recent closed-issue screening notes
 
@@ -176,8 +187,27 @@ scenarios and the newly screened uncovered candidates:
 
 ## Open upstream PR watch list
 
+- pgschema [#474](https://github.com/pgplex/pgschema/pull/474) (`fix: avoid
+  substring matches in policy table dependency detection`) is **covered** in
+  current pg-delta. Policy dependencies come from live `pg_depend` extraction
+  rather than substring scanning, and `policy-dependencies.test.ts` already
+  covers multi-table, function, and view dependency ordering
 - pgschema [#475](https://github.com/pgplex/pgschema/pull/475) (`fix: order
   modified foreign keys after added unique constraints`) is a **draft-only
   pg-delta parity candidate**. No exact pg-toolbelt issue / PR duplicate was
   found, so a candidate issue body is saved in
   [`docs/parity-issue-drafts-2026-06-17.md`](../docs/parity-issue-drafts-2026-06-17.md)
+- pgschema [#478](https://github.com/pgplex/pgschema/pull/478) (`feat: add
+  support for index storage parameters (reloptions)`) is **covered** in current
+  pg-delta's index path. `index.model.ts` reads `reloptions` into
+  `storage_params`, `index.diff.ts` emits `AlterIndexSetStorageParams`, and
+  `index.alter.ts` serializes `ALTER INDEX ... SET/RESET (...)`, so no
+  duplicate tracker or draft was added
+- pgschema [#479](https://github.com/pgplex/pgschema/pull/479) (`feat: add
+  support for trigger comments, trigger enabled/disabled state, and sequence
+  comments`) is **partially covered** in current pg-delta. Trigger comments and
+  sequence comments already roundtrip, but trigger enabled / disabled state
+  still lacks an apply path because `tgenabled` drift triggers replacement
+  while the generated SQL never emits `ALTER TABLE ... ENABLE/DISABLE TRIGGER`.
+  A draft-only issue body for that remaining gap is saved in
+  [`docs/parity-issue-drafts-2026-06-18.md`](../docs/parity-issue-drafts-2026-06-18.md)

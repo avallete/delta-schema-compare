@@ -21,16 +21,15 @@ This matters because the downgrade is silent. A migration plan that emits
 `UNIQUE (a, b)` instead of `UNIQUE NULLS NOT DISTINCT (a, b)` looks plausible,
 but it weakens uniqueness semantics for nullable columns.
 
-## Refresh note (2026-06-17)
+## Refresh note (2026-06-18)
 
-The checked-in upstreams advanced from
-`pgschema@592c19c95b06830255b45bc4d80eeacd62e7e727` and
-`pg-delta@f95e0a8b773539dfb60ebf541131ab9feba4a525` to
+The checked-in upstreams are unchanged since the 2026-06-17 refresh:
 `pgschema@8b7a248ce08f155b43b31cdee9ea38751aff6d5d` and
-`pg-delta@c06f081208c067e9aab5a4f9b109cd2f5546bbc1` during this refresh.
+`pg-delta@c06f081208c067e9aab5a4f9b109cd2f5546bbc1` remain current in this
+repo.
 
-That newer upstream work adds dependency, view/materialized-view, plan, and
-subscription changes, but it still does not change this benchmark's parity
+That means this refresh is a revalidation pass rather than a new upstream bump.
+The latest issue / PR screening still does not change this benchmark's parity
 state.
 
 A rerun of the focused unit-level diff probe against the current
@@ -90,7 +89,7 @@ The merged change added:
 | Constraint diff compares `NULLS NOT DISTINCT` on table constraints | No - `src/core/objects/table/table.diff.ts` compares structured fields but not the full rendered definition |
 | Constraint `definition` is captured from the catalog | Yes - `pg_get_constraintdef(c.oid, true)` is stored on the table constraint model |
 | Integration regression for `UNIQUE NULLS NOT DISTINCT` table constraints | No - `tests/integration/constraint-operations.test.ts` only covers plain `UNIQUE (...)` |
-| Existing pg-toolbelt issue / PR for this exact scenario | No - none found during the 2026-06-05 refresh |
+| Existing pg-toolbelt issue / PR for this exact scenario | No - none found during the 2026-06-18 refresh |
 
 ## Comparison of approaches
 
