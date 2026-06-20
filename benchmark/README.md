@@ -4,7 +4,7 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-06-19)
+## Latest refresh snapshot (2026-06-20)
 
 Refreshed against:
 
@@ -35,10 +35,12 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-There is still no benchmark-matrix parity delta versus the 2026-06-17 refresh:
+There is no benchmark-matrix parity delta versus the 2026-06-19 refresh:
 benchmark 020 remains the only active resolved-issue gap.
 
-The June 19 delta is in screening newer upstream issues / PRs instead:
+No new upstream issue, PR, or submodule-head activity landed after the
+2026-06-19 refresh. The June 19 screening conclusions therefore carry forward
+unchanged:
 
 - pgschema **#477** is already covered in pg-delta's current RLS policy path
 - pgschema PR **#478** is already covered in pg-delta's current index
@@ -51,19 +53,23 @@ The June 19 delta is in screening newer upstream issues / PRs instead:
   extraction and existing integration coverage, so no duplicate tracker was
   drafted in this refresh
 
-There is no upstream code-head delta in this refresh: the checked-in
+There is still no upstream code-head delta in this refresh: the checked-in
 submodules remain `pgschema@8b7a248ce08f155b43b31cdee9ea38751aff6d5d` and
-`pg-delta@c06f081208c067e9aab5a4f9b109cd2f5546bbc1`.
+`pg-delta@c06f081208c067e9aab5a4f9b109cd2f5546bbc1`, unchanged since
+2026-06-19.
 
-Focused unit-level revalidation still reproduces benchmark 020: the
+Focused unit-level revalidation on 2026-06-20 still reproduces benchmark 020: the
 table-constraint diff probe returns zero planned changes when only the
 definition changes from `UNIQUE (a, b)` to
-`UNIQUE NULLS NOT DISTINCT (a, b)`. The same refresh also confirms the new
+`UNIQUE NULLS NOT DISTINCT (a, b)`. The same refresh also confirms the
 draft-only #479 candidate: when a trigger's `enabled` state changes to
 `DISABLED`, pg-delta currently serializes only `CREATE OR REPLACE TRIGGER ...`
 with no `ALTER TABLE ... DISABLE TRIGGER ...` follow-up.
 
 ## Open pgschema issue screening (current state)
+
+No new open pgschema issues were filed after the 2026-06-19 refresh; the
+screened state below carries forward unchanged:
 
 Screened candidates:
 
@@ -142,7 +148,7 @@ Screened candidates:
 - **#49** explicit rename / refactor workflow proposal — **not parity work for pg-delta**; this is a pgschema-specific workflow design, not a current pg-delta diff or planning gap
 
 Historical draft text is recorded in markdown for both the older tracked
-scenarios and the newly screened uncovered candidates:
+scenarios and the current draft-only uncovered candidates:
 
 - [`docs/parity-issue-drafts-2026-04-22.md`](../docs/parity-issue-drafts-2026-04-22.md)
 - [`docs/parity-issue-drafts-2026-05-23.md`](../docs/parity-issue-drafts-2026-05-23.md)
@@ -195,6 +201,8 @@ scenarios and the newly screened uncovered candidates:
   normalizing redundant `UNIQUE` constraints away
 
 ## Open upstream PR watch list
+
+No new upstream PR activity landed after the 2026-06-19 refresh:
 
 - pgschema [#475](https://github.com/pgplex/pgschema/pull/475) (`fix: order
   modified foreign keys after added unique constraints`) remains a
