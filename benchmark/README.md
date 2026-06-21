@@ -58,7 +58,7 @@ submodules remain `pgschema@8b7a248ce08f155b43b31cdee9ea38751aff6d5d` and
 `pg-delta@c06f081208c067e9aab5a4f9b109cd2f5546bbc1`, unchanged since
 2026-06-20.
 
-The focused unit-level revalidation from 2026-06-20 still reproduces benchmark 020: the
+Focused unit-level revalidation on 2026-06-21 still reproduces benchmark 020: the
 table-constraint diff probe returns zero planned changes when only the
 definition changes from `UNIQUE (a, b)` to
 `UNIQUE NULLS NOT DISTINCT (a, b)`. The same refresh also confirms the
