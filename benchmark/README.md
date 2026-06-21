@@ -4,7 +4,7 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-06-20)
+## Latest refresh snapshot (2026-06-21)
 
 Refreshed against:
 
@@ -35,11 +35,11 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-There is no benchmark-matrix parity delta versus the 2026-06-19 refresh:
+There is no benchmark-matrix parity delta versus the 2026-06-20 refresh:
 benchmark 020 remains the only active resolved-issue gap.
 
 No new upstream issue, PR, or submodule-head activity landed after the
-2026-06-19 refresh. The June 19 screening conclusions therefore carry forward
+2026-06-20 refresh. The June 20 screening conclusions therefore carry forward
 unchanged:
 
 - pgschema **#477** is already covered in pg-delta's current RLS policy path
@@ -56,9 +56,9 @@ unchanged:
 There is still no upstream code-head delta in this refresh: the checked-in
 submodules remain `pgschema@8b7a248ce08f155b43b31cdee9ea38751aff6d5d` and
 `pg-delta@c06f081208c067e9aab5a4f9b109cd2f5546bbc1`, unchanged since
-2026-06-19.
+2026-06-20.
 
-Focused unit-level revalidation on 2026-06-20 still reproduces benchmark 020: the
+The focused unit-level revalidation from 2026-06-20 still reproduces benchmark 020: the
 table-constraint diff probe returns zero planned changes when only the
 definition changes from `UNIQUE (a, b)` to
 `UNIQUE NULLS NOT DISTINCT (a, b)`. The same refresh also confirms the
@@ -68,7 +68,7 @@ with no `ALTER TABLE ... DISABLE TRIGGER ...` follow-up.
 
 ## Open pgschema issue screening (current state)
 
-No new open pgschema issues were filed after the 2026-06-19 refresh; the
+No new open pgschema issues were filed after the 2026-06-20 refresh; the
 screened state below carries forward unchanged:
 
 Screened candidates:
@@ -185,10 +185,10 @@ scenarios and the current draft-only uncovered candidates:
   [`docs/parity-issue-drafts-2026-05-23.md`](../docs/parity-issue-drafts-2026-05-23.md)
 - **#444** drop-column ordering with dependent views — **resolved upstream and
   still not covered**; related pg-toolbelt work exists in
-  [#263](https://github.com/supabase/pg-toolbelt/issues/263),
-  [#273](https://github.com/supabase/pg-toolbelt/pull/273),
-  [#285](https://github.com/supabase/pg-toolbelt/pull/285), and
-  [#291](https://github.com/supabase/pg-toolbelt/pull/291), but there is still
+  [#263](https://github.com/supabase/pg-toolbelt/issues/263) (open),
+  [#273](https://github.com/supabase/pg-toolbelt/pull/273) (merged),
+  [#285](https://github.com/supabase/pg-toolbelt/pull/285) (open), and
+  [#291](https://github.com/supabase/pg-toolbelt/pull/291) (open), but there is still
   no exact tracker. The saved draft remains in
   [`docs/parity-issue-drafts-2026-06-01.md`](../docs/parity-issue-drafts-2026-06-01.md)
 - **#445** CHECK constraint qualifier drift for same-schema functions and types
@@ -202,7 +202,7 @@ scenarios and the current draft-only uncovered candidates:
 
 ## Open upstream PR watch list
 
-No new upstream PR activity landed after the 2026-06-19 refresh:
+No new upstream PR activity landed after the 2026-06-20 refresh:
 
 - pgschema [#475](https://github.com/pgplex/pgschema/pull/475) (`fix: order
   modified foreign keys after added unique constraints`) remains a
@@ -221,3 +221,10 @@ No new upstream PR activity landed after the 2026-06-19 refresh:
   disabled state still lacks an exact pg-delta tracker. A draft-only issue body
   is saved in
   [`docs/parity-issue-drafts-2026-06-19.md`](../docs/parity-issue-drafts-2026-06-19.md)
+
+During this refresh, newer pg-toolbelt issues
+[#286](https://github.com/supabase/pg-toolbelt/issues/286) and
+[#301](https://github.com/supabase/pg-toolbelt/issues/301) were also checked.
+They are adjacent dependency/materialized-view work, but neither is an exact
+duplicate of the current benchmark gap or draft-only parity candidates, so no
+benchmark state changed.
