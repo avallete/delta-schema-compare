@@ -22,8 +22,7 @@ There is no benchmark-matrix parity delta versus the 2026-06-20 refresh.
   - benchmark file:
     [`benchmark/020-unique-constraint-nulls-not-distinct.md`](../benchmark/020-unique-constraint-nulls-not-distinct.md)
   - no matching pg-toolbelt issue or PR was found through this refresh
-  - the June 20 focused diff probe remains the latest runtime evidence because
-    the checked-in upstream SHAs are unchanged in this refresh:
+  - the June 21 focused diff probe still reports:
 
     ```json
     {
@@ -108,10 +107,32 @@ refresh.
   an open draft rewrite and should not be used to change the current benchmark
   status yet
 
-## 5) Validation posture
+## 5) Validation notes
 
-- The checked-in submodules did not move between the 2026-06-20 and 2026-06-21
-  refreshes, so the June 20 runtime evidence for benchmark 020 and the draft-
-  only trigger enabled-state gap remains directly applicable in this refresh.
-- This refresh therefore focuses on live issue / PR state and duplicate
-  detection rather than introducing a new benchmark-status change.
+- `bun test packages/pg-delta/src/core/objects/index/index.diff.test.ts packages/pg-delta/src/core/objects/rls-policy/changes/rls-policy.alter.test.ts packages/pg-delta/src/core/objects/trigger/changes/trigger.alter.test.ts packages/pg-delta/src/core/objects/table/table.diff.test.ts`
+  passed (`39 pass`, `0 fail`)
+- a focused one-off Bun probe against the current source printed:
+
+  ```json
+  {
+    "nulls_not_distinct": {
+      "changeCount": 0,
+      "sql": []
+    },
+    "trigger_enabled_state": {
+      "changeCount": 1,
+      "sql": [
+        "CREATE OR REPLACE TRIGGER audit_log_touch_trigger BEFORE INSERT OR UPDATE ON test_schema.audit_log EXECUTE FUNCTION test_schema.audit_log_touch()"
+      ]
+    }
+  }
+  ```
+
+- `python3 -m unittest tests.test_review_memory tests.test_compare_resolved_benchmark`
+  passed
+- `python3 -m json.tool benchmark/review-memory.json >/dev/null` succeeded
+- `DRY_RUN=true python3 scripts/compare_issues.py` and
+  `DRY_RUN=true OUTPUT_MODE=benchmark python3 scripts/compare_resolved.py`
+  both returned zero items, which remains expected because the scripts still
+  filter on upstream `Bug` / `Feature` labels while the newest pgschema items
+  are unlabeled
