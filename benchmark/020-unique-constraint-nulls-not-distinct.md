@@ -33,7 +33,7 @@ PR, or submodule-head activity changes this table-constraint parity gap.
 There is still no exact pg-toolbelt issue or PR for this scenario through the
 2026-06-21 refresh.
 
-The 2026-06-20 rerun of the focused unit-level diff probe against the current
+The 2026-06-21 rerun of the focused unit-level diff probe against the current
 table-constraint path still reported zero planned changes when only the
 definition changed from `UNIQUE (a, b)` to
 `UNIQUE NULLS NOT DISTINCT (a, b)`, confirming that the modifier is still
