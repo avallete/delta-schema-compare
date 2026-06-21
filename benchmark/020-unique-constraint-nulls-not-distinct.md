@@ -21,14 +21,17 @@ This matters because the downgrade is silent. A migration plan that emits
 `UNIQUE (a, b)` instead of `UNIQUE NULLS NOT DISTINCT (a, b)` looks plausible,
 but it weakens uniqueness semantics for nullable columns.
 
-## Refresh note (2026-06-20)
+## Refresh note (2026-06-21)
 
 The checked-in upstreams remain
 `pgschema@8b7a248ce08f155b43b31cdee9ea38751aff6d5d` and
-`pg-delta@c06f081208c067e9aab5a4f9b109cd2f5546bbc1` in the 2026-06-20 refresh.
+`pg-delta@c06f081208c067e9aab5a4f9b109cd2f5546bbc1` in the 2026-06-21 refresh.
 
-There is no benchmark-state delta versus 2026-06-19: no newer upstream issue,
+There is no benchmark-state delta versus 2026-06-20: no newer upstream issue,
 PR, or submodule-head activity changes this table-constraint parity gap.
+
+There is still no exact pg-toolbelt issue or PR for this scenario through the
+2026-06-21 refresh.
 
 The 2026-06-20 rerun of the focused unit-level diff probe against the current
 table-constraint path still reported zero planned changes when only the
@@ -87,7 +90,7 @@ The merged change added:
 | Constraint diff compares `NULLS NOT DISTINCT` on table constraints | No - `src/core/objects/table/table.diff.ts` compares structured fields but not the full rendered definition |
 | Constraint `definition` is captured from the catalog | Yes - `pg_get_constraintdef(c.oid, true)` is stored on the table constraint model |
 | Integration regression for `UNIQUE NULLS NOT DISTINCT` table constraints | No - `tests/integration/constraint-operations.test.ts` only covers plain `UNIQUE (...)` |
-| Existing pg-toolbelt issue / PR for this exact scenario | No - none found during the 2026-06-20 refresh |
+| Existing pg-toolbelt issue / PR for this exact scenario | No - none found through the 2026-06-21 refresh |
 
 ## Comparison of approaches
 
