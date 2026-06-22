@@ -138,5 +138,30 @@ issue **#480**, or the trigger enabled-state slice of pgschema PR **#479**.
 
 ## 5) Validation notes
 
-Validation results are recorded in the follow-up validation commit for this
-refresh.
+- `bun test packages/pg-delta/src/core/objects/index/index.diff.test.ts packages/pg-delta/src/core/objects/rls-policy/changes/rls-policy.alter.test.ts packages/pg-delta/src/core/objects/trigger/changes/trigger.alter.test.ts packages/pg-delta/src/core/objects/table/table.diff.test.ts`
+  passed (`39 pass`, `0 fail`)
+- a focused one-off Bun probe against the current source printed:
+
+  ```json
+  {
+    "nulls_not_distinct": {
+      "changeCount": 0,
+      "sql": []
+    },
+    "trigger_enabled_state": {
+      "changeCount": 1,
+      "sql": [
+        "CREATE OR REPLACE TRIGGER audit_log_touch_trigger BEFORE INSERT OR UPDATE ON test_schema.audit_log EXECUTE FUNCTION test_schema.audit_log_touch()"
+      ]
+    }
+  }
+  ```
+
+- `python3 -m unittest tests.test_review_memory tests.test_compare_resolved_benchmark`
+  passed
+- `python3 -m json.tool benchmark/review-memory.json >/dev/null` succeeded
+- `DRY_RUN=true python3 scripts/compare_issues.py` and
+  `DRY_RUN=true OUTPUT_MODE=benchmark python3 scripts/compare_resolved.py`
+  both returned zero items, which remains expected because the scripts still
+  filter on upstream `Bug` / `Feature` labels while the surviving pgschema
+  items remain unlabeled
