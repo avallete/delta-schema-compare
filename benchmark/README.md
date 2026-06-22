@@ -4,7 +4,7 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-06-21)
+## Latest refresh snapshot (2026-06-22)
 
 Refreshed against:
 
@@ -35,30 +35,20 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-There is no benchmark-matrix parity delta versus the 2026-06-20 refresh:
+There is no benchmark-matrix parity delta versus the 2026-06-21 refresh:
 benchmark 020 remains the only active resolved-issue gap.
-
-No new upstream issue, PR, or submodule-head activity landed after the
-2026-06-20 refresh. The June 20 screening conclusions therefore carry forward
-unchanged:
-
-- pgschema **#477** is already covered in pg-delta's current RLS policy path
-- pgschema PR **#478** is already covered in pg-delta's current index
-  storage-parameter path
-- pgschema PR **#479** is only partially covered: trigger and sequence comments
-  already roundtrip, but trigger enabled / disabled state still lacks an exact
-  pg-delta tracker, so a draft-only issue body is saved in
-  [`docs/parity-issue-drafts-2026-06-19.md`](../docs/parity-issue-drafts-2026-06-19.md)
-- pgschema **#480** looks likely covered by current view / function dependency
-  extraction and existing integration coverage, so no duplicate tracker was
-  drafted in this refresh
 
 There is still no upstream code-head delta in this refresh: the checked-in
 submodules remain `pgschema@8b7a248ce08f155b43b31cdee9ea38751aff6d5d` and
 `pg-delta@c06f081208c067e9aab5a4f9b109cd2f5546bbc1`, unchanged since
-2026-06-20.
+2026-06-21.
 
-Focused unit-level revalidation on 2026-06-21 still reproduces benchmark 020: the
+The meaningful state change in this refresh is upstream issue bookkeeping
+rather than pg-delta coverage: several pgschema items that were previously
+listed under open screening are now closed upstream and have been moved to the
+closed-screening notes below.
+
+Focused unit-level revalidation on 2026-06-22 still reproduces benchmark 020: the
 table-constraint diff probe returns zero planned changes when only the
 definition changes from `UNIQUE (a, b)` to
 `UNIQUE NULLS NOT DISTINCT (a, b)`. The same refresh also confirms the
@@ -68,55 +58,14 @@ with no `ALTER TABLE ... DISABLE TRIGGER ...` follow-up.
 
 ## Open pgschema issue screening (current state)
 
-No new open pgschema issues were filed after the 2026-06-20 refresh; the
-screened state below carries forward unchanged:
+No newly-filed open pgschema issues landed after the 2026-06-21 refresh. The
+current still-open issue set is:
 
 Screened candidates:
 
-- **#362** numeric precision changes — **covered** in pg-delta integration tests
-- **#401** `RETURNS SETOF <table>` dependency ordering — **covered** in pg-delta integration tests
-- **#414** views created after `ADD COLUMN` changes — **covered** in pg-delta's
-  current sort path; pgschema fix PR [#417](https://github.com/pgplex/pgschema/pull/417)
-  remains open, while pg-delta already roundtrips `ADD COLUMN` plus view
-  creation in `mixed-objects.test.ts` and keeps table changes ahead of view
-  creation during sorting
-- **#415** materialized-view refactors — **covered** in pg-delta's dedicated
-  materialized-view replacement path; `materialized-view-operations.test.ts`
-  exercises replace flows and `materialized-view.drop.ts` emits
-  `DROP MATERIALIZED VIEW`
-- **#416** custom aggregates missing from dump output — **covered** in
-  pg-delta's aggregate model, export mapping, and
-  `aggregate-operations.test.ts`
-- **#427** schema-qualified functions in RLS policy expressions — **covered**
-  in current pg-delta; pgschema fix PR [#428](https://github.com/pgplex/pgschema/pull/428)
-  remains open, while `rls-operations.test.ts` roundtrips a policy that calls a
-  schema-qualified function, `policy-dependencies.test.ts` covers the related
-  policy/function ordering path, and policy extraction preserves expressions via
-  `pg_get_expr(...)`
-- **#436** required extensions in dump output — **covered** in pg-delta's extension model and integration coverage (`src/core/objects/extension/`, `tests/integration/extension-operations.test.ts`)
-- **#418** `CREATE INDEX CONCURRENTLY` on partitioned parents — **not parity
-  work for pg-delta**; this is specific to pgschema's online-DDL rewrite and
-  pg-delta does not synthesize `CONCURRENTLY`
-- **#419** `.pgschemaignore` behavior differs by GitHub Actions install path —
-  **not parity work for pg-delta**; this is packaging and install-surface
-  behavior in pgschema rather than a catalog diff gap
-- **#420** `varchar(n)[]` typmod preservation — **covered** in pg-delta's
-  current source path; pgschema fix PR [#438](https://github.com/pgplex/pgschema/pull/438)
-  is now merged, and pg-delta already preserves the typmod because column
-  extraction uses `format_type(a.atttypid, a.atttypmod)`, type diffs key off
-  `data_type_str`, and table create / alter SQL serialize `data_type_str`
-  verbatim
-- **#421 / #422** quoted-name dump edge cases — **not parity work for
-  pg-delta**; these are tied to pgschema's dump -> temp-schema -> plan
-  roundtrip path rather than pg-delta's catalog-diff workflow
-- **#407 / #409 / #429** `.pgschemaignore` follow-ups — **not parity work for pg-delta** (pgschema-specific ignore-file surface area)
-- **#447** `.pgschemaignore` constraints support — **not parity work for
-  pg-delta**; this is another ignore-file feature request specific to
-  pgschema's dump / plan surface area
-- **#449** repeat drift for same-schema policy / CHECK expressions after apply
-  — **not parity work for pg-delta**; this is a declarative-SQL vs live-catalog
-  normalization issue in pgschema, while pg-delta compares policy expressions
-  and CHECK definitions extracted from live catalogs on both sides
+- **#49** explicit rename / refactor workflow proposal — **not parity work for
+  pg-delta**; this is a pgschema-specific workflow design, not a current
+  pg-delta diff or planning gap
 - **#450** missing role blocks plan/apply — **not parity work for pg-delta**;
   this is specific to pgschema applying dumped SQL into a temporary planning
   schema, while pg-delta diffs live catalogs directly and already models roles
@@ -139,13 +88,12 @@ Screened candidates:
   when permissive vs restrictive changes, and `rls-operations.test.ts` already
   roundtrips a `CREATE POLICY ... AS RESTRICTIVE ...` case
 - **#480** dependency ordering on views and functions — **likely covered** in
-  current pg-delta; `depend.ts` extracts both view rewrite relation / procedure
-  edges, `table-function-dependency-ordering.test.ts` covers `RETURNS SETOF`
-  table ordering, `function-operations.test.ts` covers function / view
-  dependency ordering, and `view-operations.test.ts` covers drop / recreate
-  ordering when a view's column set changes. No duplicate tracker was drafted
-  in this refresh
-- **#49** explicit rename / refactor workflow proposal — **not parity work for pg-delta**; this is a pgschema-specific workflow design, not a current pg-delta diff or planning gap
+  current pg-delta; `depend.ts` extracts view rewrite relation / procedure
+  edges, `function-operations.test.ts` covers signature change cascades through
+  dependent views, and `view-operations.test.ts` covers drop / recreate
+  ordering when a view's shape changes. There is still no exact integration
+  repro for the `RETURNS vw_users` composite-rowtype case, so no duplicate
+  tracker was drafted in this refresh
 
 Historical draft text is recorded in markdown for both the older tracked
 scenarios and the current draft-only uncovered candidates:
@@ -158,6 +106,16 @@ scenarios and the current draft-only uncovered candidates:
 - [`docs/parity-issue-drafts-2026-06-19.md`](../docs/parity-issue-drafts-2026-06-19.md)
 
 ## Recent closed-issue screening notes
+
+Additional issues that were still carried under open screening in the previous
+snapshot are now closed upstream and keep the same pg-delta parity verdicts:
+
+- **#362**, **#401**, **#414**, **#415**, **#416**, **#420**, **#427**, and
+  **#436** — **covered** in current pg-delta
+- **#407**, **#409**, **#418**, **#419**, **#421**, **#422**, **#429**,
+  **#447**, and **#449** — **not parity work for pg-delta**; these are
+  ignore-file, packaging, or pgschema-specific normalization behaviors rather
+  than live-catalog diff gaps
 
 - **#366** function privilege signatures with enum argument types — **closed
   upstream as `not_planned` and still tracked** by
@@ -202,7 +160,8 @@ scenarios and the current draft-only uncovered candidates:
 
 ## Open upstream PR watch list
 
-No new upstream PR activity landed after the 2026-06-20 refresh:
+No new parity-relevant upstream PR activity landed after the 2026-06-21
+refresh:
 
 - pgschema [#475](https://github.com/pgplex/pgschema/pull/475) (`fix: order
   modified foreign keys after added unique constraints`) remains a
@@ -222,7 +181,7 @@ No new upstream PR activity landed after the 2026-06-20 refresh:
   is saved in
   [`docs/parity-issue-drafts-2026-06-19.md`](../docs/parity-issue-drafts-2026-06-19.md)
 
-During this refresh, newer pg-toolbelt issues
+During this refresh, pg-toolbelt issues
 [#286](https://github.com/supabase/pg-toolbelt/issues/286) and
 [#301](https://github.com/supabase/pg-toolbelt/issues/301) were also checked.
 They are adjacent dependency/materialized-view work, but neither is an exact
