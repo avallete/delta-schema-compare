@@ -180,3 +180,53 @@ Existing exact parity trackers remain unchanged:
 
 - pgschema #404 -> [pg-toolbelt#218](https://github.com/supabase/pg-toolbelt/issues/218)
 - pgschema #366 -> [pg-toolbelt#219](https://github.com/supabase/pg-toolbelt/issues/219)
+
+## 5) Validation notes
+
+- `bun test packages/pg-delta/src/core/objects/index/index.diff.test.ts packages/pg-delta/src/core/objects/rls-policy/changes/rls-policy.alter.test.ts packages/pg-delta/src/core/objects/trigger/changes/trigger.alter.test.ts packages/pg-delta/src/core/objects/table/table.diff.test.ts`
+  passed (`39 pass`, `0 fail`)
+- `python3 -m unittest tests.test_review_memory tests.test_compare_resolved_benchmark`
+  passed (`9` tests)
+- `python3 -m json.tool benchmark/review-memory.json >/dev/null` succeeded
+- focused 2026-06-23 pg-delta parity probes against live Postgres containers
+  produced:
+
+  ```json
+  {
+    "nulls_not_distinct": {
+      "changeCount": 0,
+      "sql": []
+    },
+    "trigger_enabled_state": {
+      "changeCount": 1,
+      "sql": [
+        "CREATE OR REPLACE TRIGGER audit_log_touch_trigger BEFORE INSERT OR UPDATE ON test_schema.audit_log FOR EACH ROW EXECUTE FUNCTION test_schema.audit_log_touch()"
+      ]
+    },
+    "view_function_recreate": {
+      "changeCount": 6,
+      "sql": [
+        "SET check_function_bodies = false",
+        "DROP FUNCTION public.fn_create_user(email text)",
+        "DROP VIEW public.vw_users",
+        "ALTER TABLE public.tb_users ADD COLUMN role text DEFAULT 'member'::text NOT NULL",
+        "CREATE VIEW public.vw_users AS SELECT id,\n    email,\n    role,\n    created_at\n   FROM tb_users\n  WHERE (is_deleted = false)",
+        "CREATE FUNCTION public.fn_create_user(email text, role text DEFAULT 'member'::text)\n RETURNS vw_users\n LANGUAGE plpgsql\n SECURITY DEFINER\nAS $function$\n    DECLARE\n        v_result vw_users;\n        v_new_id UUID;\n    BEGIN\n        INSERT INTO tb_users (email, role) VALUES (email, role) RETURNING id INTO v_new_id;\n        SELECT id, email, role, created_at INTO v_result FROM vw_users WHERE id = v_new_id;\n        RETURN v_result;\n    END;\n    $function$"
+      ]
+    },
+    "fk_to_new_unique": {
+      "changeCount": 3,
+      "sql": [
+        "ALTER TABLE test_schema.child_links DROP CONSTRAINT child_links_parent_variant_fkey",
+        "ALTER TABLE test_schema.parent_variants ADD CONSTRAINT parent_variants_parent_entity_id_id_key UNIQUE (parent_entity_id, id)",
+        "ALTER TABLE test_schema.child_links ADD CONSTRAINT child_links_parent_variant_fkey FOREIGN KEY (parent_entity_id, parent_variant_id) REFERENCES test_schema.parent_variants(parent_entity_id, id) ON DELETE CASCADE"
+      ]
+    }
+  }
+  ```
+
+- `DRY_RUN=true python3 scripts/compare_issues.py` returned zero items
+- `DRY_RUN=true OUTPUT_MODE=benchmark python3 scripts/compare_resolved.py`
+  returned zero items
+- both dry-run scripts still filter on upstream `Bug` / `Feature` labels, so the
+  manual unlabeled-issue sweep remains necessary for this repository
