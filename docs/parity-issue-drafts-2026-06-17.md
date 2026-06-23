@@ -7,6 +7,11 @@ No GitHub issues were opened as part of this refresh. This draft is saved so
 the finding can be reviewed in a PR first and then promoted to a real
 pg-toolbelt issue only if it still looks correct.
 
+> 2026-06-23 update: the saved MRE in Draft 1 now produces the correct order in
+> current pg-delta (`DROP child FK` -> `ADD parent UNIQUE` -> `ADD child FK`).
+> This file is retained as historical review context only; it is no longer
+> treated as an active parity gap.
+
 ## Duplicate-check summary (pg-toolbelt)
 
 Before writing the draft below, I checked the current open and closed
