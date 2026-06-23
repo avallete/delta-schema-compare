@@ -4,12 +4,12 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-06-22)
+## Latest refresh snapshot (2026-06-23)
 
 Refreshed against:
 
 - `repos/pg-toolbelt` @ `c06f081208c067e9aab5a4f9b109cd2f5546bbc1`
-- `repos/pgschema` @ `8b7a248ce08f155b43b31cdee9ea38751aff6d5d`
+- `repos/pgschema` @ `d6b89c26535938291a0512da59e3619aa6f2759f`
 
 ## Benchmark status matrix
 
@@ -35,20 +35,23 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-There is no benchmark-matrix parity delta versus the 2026-06-21 refresh:
+There is no benchmark-matrix parity delta versus the 2026-06-22 refresh:
 benchmark 020 remains the only active resolved-issue gap.
 
-There is still no upstream code-head delta in this refresh: the checked-in
-submodules remain `pgschema@8b7a248ce08f155b43b31cdee9ea38751aff6d5d` and
-`pg-delta@c06f081208c067e9aab5a4f9b109cd2f5546bbc1`, unchanged since
-2026-06-21.
+There is an upstream code-head delta in this refresh, but not a benchmark-matrix
+one: `pgschema` advanced to `d6b89c26535938291a0512da59e3619aa6f2759f` while
+the checked-in `pg-delta` submodule stayed on
+`c06f081208c067e9aab5a4f9b109cd2f5546bbc1`.
 
-The meaningful state change in this refresh is upstream issue bookkeeping
-rather than pg-delta coverage: several pgschema items that were previously
-listed under open screening are now closed upstream and have been moved to the
-closed-screening notes below.
+The meaningful state changes in this refresh are (a) upstream issue
+bookkeeping, with several recent pgschema items now closed upstream, and (b) a
+focused re-check of the newer dependency-ordering scenarios. That re-check kept
+benchmark 020 and the draft-only trigger enabled-state slice of pgschema PR
+#479 as real pg-delta gaps, while confirming that the previously ambiguous
+pgschema #480 view/function ordering case already converges correctly in the
+current pg-delta plan.
 
-Focused unit-level revalidation on 2026-06-22 still reproduces benchmark 020: the
+Focused unit-level revalidation on 2026-06-23 still reproduces benchmark 020: the
 table-constraint diff probe returns zero planned changes when only the
 definition changes from `UNIQUE (a, b)` to
 `UNIQUE NULLS NOT DISTINCT (a, b)`. The same refresh also confirms the
@@ -58,7 +61,7 @@ with no `ALTER TABLE ... DISABLE TRIGGER ...` follow-up.
 
 ## Open pgschema issue screening (current state)
 
-No newly-filed open pgschema issues landed after the 2026-06-21 refresh. The
+No newly-filed open pgschema issues landed after the 2026-06-22 refresh. The
 current still-open issue set is:
 
 Screened candidates:
@@ -74,26 +77,13 @@ Screened candidates:
   pg-delta's current table extraction / diff path; `table.model.ts` reads
   `relrowsecurity` for both regular and partitioned tables (`relkind in ('r',
   'p')`), `table.diff.ts` emits `ENABLE/DISABLE ROW LEVEL SECURITY`, and
-  `rls-operations.test.ts` covers the generic RLS roundtrip path
-- **#472** ignored child-trigger dumping with `.pgschemaignore` — **not parity
-  work for pg-delta**; this is specific to pgschema's ignore-file handling and
-  partition clone dumping
+  `rls-operations.test.ts` covers the generic RLS roundtrip path. There is
+  still no dedicated partitioned-parent RLS integration regression in pg-delta,
+  but the live extractor + diff path already covers the scenario
 - **#473** partial-index predicate normalization (`IN (...)` vs
   `= ANY(ARRAY[...])`) — **not parity work for pg-delta**; pg-delta compares
   live catalog predicates via `pg_get_expr(i.indpred, i.indrelid)` rather than
   diffing rendered dump text
-- **#477** restrictive RLS policies (`CREATE POLICY ... AS RESTRICTIVE`) —
-  **covered** in current pg-delta; `rls-policy.model.ts` extracts
-  `polpermissive`, `rls-policy.alter.test.ts` covers the drop + create path
-  when permissive vs restrictive changes, and `rls-operations.test.ts` already
-  roundtrips a `CREATE POLICY ... AS RESTRICTIVE ...` case
-- **#480** dependency ordering on views and functions — **likely covered** in
-  current pg-delta; `depend.ts` extracts view rewrite relation / procedure
-  edges, `function-operations.test.ts` covers signature change cascades through
-  dependent views, and `view-operations.test.ts` covers drop / recreate
-  ordering when a view's shape changes. There is still no exact integration
-  repro for the `RETURNS vw_users` composite-rowtype case, so no duplicate
-  tracker was drafted in this refresh
 
 Historical draft text is recorded in markdown for both the older tracked
 scenarios and the current draft-only uncovered candidates:
@@ -157,17 +147,36 @@ snapshot are now closed upstream and keep the same pg-delta parity verdicts:
   in pg-delta's current table-constraint path; `constraint_type` includes both
   `p` and `u`, and the diff path compares constraints directly instead of
   normalizing redundant `UNIQUE` constraints away
+- **#472** ignored child-trigger dumping with `.pgschemaignore` — **not parity
+  work for pg-delta**; this is specific to pgschema's ignore-file handling and
+  partition clone dumping
+- **#477** restrictive RLS policies (`CREATE POLICY ... AS RESTRICTIVE`) —
+  **covered** in current pg-delta; `rls-policy.model.ts` extracts
+  `polpermissive`, `rls-policy.alter.test.ts` covers the drop + create path
+  when permissive vs restrictive changes, and `rls-operations.test.ts` already
+  roundtrips a `CREATE POLICY ... AS RESTRICTIVE ...` case
+- **#480** dependency ordering on views and functions — **covered** in current
+  pg-delta. A focused 2026-06-23 plan probe for the exact
+  `RETURNS vw_users` composite-rowtype case produced the convergent order:
+  `DROP FUNCTION`, `DROP VIEW`, `ALTER TABLE`, `CREATE VIEW`, then
+  `CREATE FUNCTION`, so no duplicate tracker is needed
+- **#481** trigger `WHEN` enum-cast repeat-plan drift — **not parity work for
+  pg-delta**; this is specific to pgschema's dump-time trigger deparse path,
+  while pg-delta already diffs live catalog trigger definitions and
+  `when_condition` text
 
 ## Open upstream PR watch list
 
-No new parity-relevant upstream PR activity landed after the 2026-06-21
-refresh:
+No parity-relevant upstream PRs remain open after the 2026-06-22 refresh.
+Recent closures were rechecked as follows:
 
 - pgschema [#475](https://github.com/pgplex/pgschema/pull/475) (`fix: order
-  modified foreign keys after added unique constraints`) remains a
-  **draft-only pg-delta parity candidate**. No exact pg-toolbelt issue / PR
-  duplicate was found, so a candidate issue body remains saved in
+  modified foreign keys after added unique constraints`) now looks **covered**
+  in current pg-delta. A focused 2026-06-23 plan probe for the saved draft SQL
+  produced `DROP child FK` -> `ADD parent UNIQUE` -> `ADD child FK`, so the
+  older draft in
   [`docs/parity-issue-drafts-2026-06-17.md`](../docs/parity-issue-drafts-2026-06-17.md)
+  is retained as historical review context only
 - pgschema [#478](https://github.com/pgplex/pgschema/pull/478) (`feat: add
   support for index storage parameters (reloptions)`) is **covered** in current
   pg-delta; `index.model.ts` reads `reloptions`, `index.diff.ts` emits
@@ -178,7 +187,7 @@ refresh:
   comments`) is **partially covered** in current pg-delta: trigger comments and
   sequence comments already have integration coverage, but trigger enabled /
   disabled state still lacks an exact pg-delta tracker. A draft-only issue body
-  is saved in
+  remains saved in
   [`docs/parity-issue-drafts-2026-06-19.md`](../docs/parity-issue-drafts-2026-06-19.md)
 
 During this refresh, pg-toolbelt issues
