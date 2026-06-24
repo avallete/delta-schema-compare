@@ -1,39 +1,21 @@
 {
   "open": {
     "450": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-06-09T11:15:36Z\", \"pgdelta_sha\": \"c06f081208c067e9aab5a4f9b109cd2f5546bbc1\", \"pgschema_sha\": \"d6b89c26535938291a0512da59e3619aa6f2759f\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-09T11:15:36Z\", \"pgdelta_sha\": \"9284412d71635308ebb0c1537e0b0183d2cfa4da\", \"pgschema_sha\": \"c0e697343afc6116a393df68f14e9a4aee773365\"}",
       "issue_number": 450,
       "issue_title": "Missing role blocks plan and apply",
       "issue_updated_at": "2026-06-09T11:15:36Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/450",
-      "reviewed_at": "2026-06-23T07:51:46+00:00",
-      "verdict": "not_parity"
-    },
-    "471": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-06-10T14:08:54Z\", \"pgdelta_sha\": \"c06f081208c067e9aab5a4f9b109cd2f5546bbc1\", \"pgschema_sha\": \"d6b89c26535938291a0512da59e3619aa6f2759f\"}",
-      "issue_number": 471,
-      "issue_title": "ENABLE ROW LEVEL SECURITY on partitioned tables is neither dumped nor diffed (policies are, so the gap is silent)",
-      "issue_updated_at": "2026-06-10T14:08:54Z",
-      "issue_url": "https://github.com/pgplex/pgschema/issues/471",
-      "reviewed_at": "2026-06-23T07:51:46+00:00",
-      "verdict": "covered"
-    },
-    "473": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-06-10T14:09:16Z\", \"pgdelta_sha\": \"c06f081208c067e9aab5a4f9b109cd2f5546bbc1\", \"pgschema_sha\": \"d6b89c26535938291a0512da59e3619aa6f2759f\"}",
-      "issue_number": 473,
-      "issue_title": "Perpetual concurrent-rebuild diff for partial indexes with IN-list predicates (IN vs = ANY(ARRAY) normalization)",
-      "issue_updated_at": "2026-06-10T14:09:16Z",
-      "issue_url": "https://github.com/pgplex/pgschema/issues/473",
-      "reviewed_at": "2026-06-23T07:51:46+00:00",
+      "reviewed_at": "2026-06-24T07:34:07+00:00",
       "verdict": "not_parity"
     },
     "49": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-05-30T05:03:35Z\", \"pgdelta_sha\": \"c06f081208c067e9aab5a4f9b109cd2f5546bbc1\", \"pgschema_sha\": \"d6b89c26535938291a0512da59e3619aa6f2759f\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-05-30T05:03:35Z\", \"pgdelta_sha\": \"9284412d71635308ebb0c1537e0b0183d2cfa4da\", \"pgschema_sha\": \"c0e697343afc6116a393df68f14e9a4aee773365\"}",
       "issue_number": 49,
       "issue_title": "Introduce an Explicit Workflow for Renaming Schema Objects",
       "issue_updated_at": "2026-05-30T05:03:35Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/49",
-      "reviewed_at": "2026-06-23T07:51:46+00:00",
+      "reviewed_at": "2026-06-24T07:34:07+00:00",
       "verdict": "not_parity"
     }
   },
@@ -488,6 +470,15 @@
       "reviewed_at": "2026-06-22T07:13:09.190239+00:00",
       "verdict": "not_parity"
     },
+    "471": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-23T11:01:57Z\", \"pgdelta_sha\": \"9284412d71635308ebb0c1537e0b0183d2cfa4da\", \"pgschema_sha\": \"c0e697343afc6116a393df68f14e9a4aee773365\"}",
+      "issue_number": 471,
+      "issue_title": "ENABLE ROW LEVEL SECURITY on partitioned tables is neither dumped nor diffed (policies are, so the gap is silent)",
+      "issue_updated_at": "2026-06-23T11:01:57Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/471",
+      "reviewed_at": "2026-06-24T07:34:07+00:00",
+      "verdict": "covered"
+    },
     "472": {
       "fingerprint": "{\"issue_updated_at\": \"2026-06-22T17:29:07Z\", \"pgdelta_sha\": \"c06f081208c067e9aab5a4f9b109cd2f5546bbc1\", \"pgschema_sha\": \"d6b89c26535938291a0512da59e3619aa6f2759f\"}",
       "issue_number": 472,
@@ -495,6 +486,15 @@
       "issue_updated_at": "2026-06-22T17:29:07Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/472",
       "reviewed_at": "2026-06-23T07:51:46+00:00",
+      "verdict": "not_parity"
+    },
+    "473": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-23T11:55:15Z\", \"pgdelta_sha\": \"9284412d71635308ebb0c1537e0b0183d2cfa4da\", \"pgschema_sha\": \"c0e697343afc6116a393df68f14e9a4aee773365\"}",
+      "issue_number": 473,
+      "issue_title": "Perpetual concurrent-rebuild diff for partial indexes with IN-list predicates (IN vs = ANY(ARRAY) normalization)",
+      "issue_updated_at": "2026-06-23T11:55:15Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/473",
+      "reviewed_at": "2026-06-24T07:34:07+00:00",
       "verdict": "not_parity"
     },
     "477": {

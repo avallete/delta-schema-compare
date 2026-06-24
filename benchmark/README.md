@@ -4,12 +4,12 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-06-23)
+## Latest refresh snapshot (2026-06-24)
 
 Refreshed against:
 
-- `repos/pg-toolbelt` @ `c06f081208c067e9aab5a4f9b109cd2f5546bbc1`
-- `repos/pgschema` @ `d6b89c26535938291a0512da59e3619aa6f2759f`
+- `repos/pg-toolbelt` @ `9284412d71635308ebb0c1537e0b0183d2cfa4da`
+- `repos/pgschema` @ `c0e697343afc6116a393df68f14e9a4aee773365`
 
 ## Benchmark status matrix
 
@@ -35,23 +35,26 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-There is no benchmark-matrix parity delta versus the 2026-06-22 refresh:
+There is no benchmark-matrix parity delta versus the 2026-06-23 refresh:
 benchmark 020 remains the only active resolved-issue gap.
 
 There is an upstream code-head delta in this refresh, but not a benchmark-matrix
-one: `pgschema` advanced to `d6b89c26535938291a0512da59e3619aa6f2759f` while
-the checked-in `pg-delta` submodule stayed on
-`c06f081208c067e9aab5a4f9b109cd2f5546bbc1`.
+one: `pgschema` advanced to `c0e697343afc6116a393df68f14e9a4aee773365` with the
+upstream fixes that closed issues #471 and #473, while `pg-delta` advanced to
+`9284412d71635308ebb0c1537e0b0183d2cfa4da` with trigger quoted-name formatter
+coverage. Neither head change altered the active parity-gap set.
 
 The meaningful state changes in this refresh are (a) upstream issue
-bookkeeping, with several recent pgschema items now closed upstream, and (b) a
-focused re-check of the newer dependency-ordering scenarios. That re-check kept
-benchmark 020 and the draft-only trigger enabled-state slice of pgschema PR
-#479 as real pg-delta gaps, while confirming that the previously ambiguous
-pgschema #480 view/function ordering case already converges correctly in the
-current pg-delta plan.
+bookkeeping, with pgschema #471 and #473 now closed upstream and moved from the
+open-screening set into resolved notes, and (b) a focused rerun of the
+previously ambiguous live pg-delta probes against the new upstream heads. That
+rerun kept benchmark 020 and the draft-only trigger enabled-state slice of
+pgschema PR #479 as real pg-delta gaps, while confirming again that the
+previously ambiguous pgschema #480 view/function ordering case and PR #475
+foreign-key-to-new-unique case still converge correctly in the current
+pg-delta plan.
 
-Focused unit-level revalidation on 2026-06-23 still reproduces benchmark 020: the
+Focused unit-level revalidation on 2026-06-24 still reproduces benchmark 020: the
 table-constraint diff probe returns zero planned changes when only the
 definition changes from `UNIQUE (a, b)` to
 `UNIQUE NULLS NOT DISTINCT (a, b)`. The same refresh also confirms the
@@ -61,8 +64,8 @@ with no `ALTER TABLE ... DISABLE TRIGGER ...` follow-up.
 
 ## Open pgschema issue screening (current state)
 
-No newly-filed open pgschema issues landed after the 2026-06-22 refresh. The
-current still-open issue set is:
+No newly-filed open pgschema issues landed after the 2026-06-23 refresh. The
+current still-open reviewed issue set is:
 
 Screened candidates:
 
@@ -73,17 +76,6 @@ Screened candidates:
   this is specific to pgschema applying dumped SQL into a temporary planning
   schema, while pg-delta diffs live catalogs directly and already models roles
   plus privilege dependencies
-- **#471** partitioned-table `ENABLE ROW LEVEL SECURITY` — **covered** in
-  pg-delta's current table extraction / diff path; `table.model.ts` reads
-  `relrowsecurity` for both regular and partitioned tables (`relkind in ('r',
-  'p')`), `table.diff.ts` emits `ENABLE/DISABLE ROW LEVEL SECURITY`, and
-  `rls-operations.test.ts` covers the generic RLS roundtrip path. There is
-  still no dedicated partitioned-parent RLS integration regression in pg-delta,
-  but the live extractor + diff path already covers the scenario
-- **#473** partial-index predicate normalization (`IN (...)` vs
-  `= ANY(ARRAY[...])`) — **not parity work for pg-delta**; pg-delta compares
-  live catalog predicates via `pg_get_expr(i.indpred, i.indrelid)` rather than
-  diffing rendered dump text
 
 Historical draft text is recorded in markdown for both the older tracked
 scenarios and the current draft-only uncovered candidates:
@@ -147,6 +139,14 @@ snapshot are now closed upstream and keep the same pg-delta parity verdicts:
   in pg-delta's current table-constraint path; `constraint_type` includes both
   `p` and `u`, and the diff path compares constraints directly instead of
   normalizing redundant `UNIQUE` constraints away
+- **#471** partitioned-table `ENABLE ROW LEVEL SECURITY` — **covered** in
+  current pg-delta and now **closed upstream**. The current table extraction /
+  diff path already handles `relrowsecurity` for partitioned tables, and the
+  reviewed item has been moved from `review-memory.open` to `review-memory.resolved`
+- **#473** partial-index predicate normalization (`IN (...)` vs
+  `= ANY(ARRAY[...])`) — **not parity work for pg-delta** and now **closed
+  upstream**; pg-delta compares live catalog predicates via
+  `pg_get_expr(i.indpred, i.indrelid)` rather than diffing rendered dump text
 - **#472** ignored child-trigger dumping with `.pgschemaignore` — **not parity
   work for pg-delta**; this is specific to pgschema's ignore-file handling and
   partition clone dumping
@@ -167,7 +167,7 @@ snapshot are now closed upstream and keep the same pg-delta parity verdicts:
 
 ## Open upstream PR watch list
 
-No parity-relevant upstream PRs remain open after the 2026-06-22 refresh.
+No parity-relevant upstream PRs remain open after the 2026-06-24 refresh.
 Recent closures were rechecked as follows:
 
 - pgschema [#475](https://github.com/pgplex/pgschema/pull/475) (`fix: order
@@ -189,6 +189,13 @@ Recent closures were rechecked as follows:
   disabled state still lacks an exact pg-delta tracker. A draft-only issue body
   remains saved in
   [`docs/parity-issue-drafts-2026-06-19.md`](../docs/parity-issue-drafts-2026-06-19.md)
+
+The new pg-delta head in this refresh (`9284412d71635308ebb0c1537e0b0183d2cfa4da`)
+adds trigger quoted-name formatter coverage and a matching integration
+regression, but it does not change the active parity verdicts above: benchmark
+020 remains unresolved, and the draft-only trigger enabled-state gap from
+pgschema PR #479 still lacks `ALTER TABLE ... ENABLE/DISABLE TRIGGER ...`
+support.
 
 During this refresh, pg-toolbelt issues
 [#286](https://github.com/supabase/pg-toolbelt/issues/286) and
