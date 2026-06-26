@@ -4,7 +4,7 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-06-24)
+## Latest refresh snapshot (2026-06-26)
 
 Refreshed against:
 
@@ -35,42 +35,46 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-There is no benchmark-matrix parity delta versus the 2026-06-23 refresh:
+There is no benchmark-matrix parity delta versus the 2026-06-24 refresh:
 benchmark 020 remains the only active resolved-issue gap.
 
-There is an upstream code-head delta in this refresh, but not a benchmark-matrix
-one: `pgschema` advanced to `c0e697343afc6116a393df68f14e9a4aee773365` with the
-upstream fixes that closed issues #471 and #473, while `pg-delta` advanced to
-`9284412d71635308ebb0c1537e0b0183d2cfa4da` with trigger quoted-name formatter
-coverage. Neither head change altered the active parity-gap set.
+There is also no upstream code-head delta versus the 2026-06-24 refresh:
+`pgschema` remains at `c0e697343afc6116a393df68f14e9a4aee773365`, and
+`pg-delta` remains at `9284412d71635308ebb0c1537e0b0183d2cfa4da`. This
+2026-06-26 refresh is therefore a pure issue-state reconciliation rather than a
+new code snapshot.
 
-The meaningful state changes in this refresh are (a) upstream issue
-bookkeeping, with pgschema #471 and #473 now closed upstream and moved from the
-open-screening set into resolved notes, and (b) a focused rerun of the
-previously ambiguous live pg-delta probes against the new upstream heads. That
-rerun kept benchmark 020 and the draft-only trigger enabled-state slice of
-pgschema PR #479 as real pg-delta gaps, while confirming again that the
-previously ambiguous pgschema #480 view/function ordering case and PR #475
-foreign-key-to-new-unique case still converge correctly in the current
-pg-delta plan.
+The meaningful state changes in this refresh are issue bookkeeping only:
+pgschema #52, #84, and #321 are now explicitly screened as `not_parity`, and
+the new adjacent pg-toolbelt function-privilege work (#308 / #310) is recorded
+as non-duplicate context for the still-open enum-signature parity tracker
+#219. No benchmark or parity labels changed.
 
-Focused unit-level revalidation on 2026-06-24 still reproduces benchmark 020: the
-table-constraint diff probe returns zero planned changes when only the
-definition changes from `UNIQUE (a, b)` to
-`UNIQUE NULLS NOT DISTINCT (a, b)`. The same refresh also confirms the
-draft-only #479 candidate: when a trigger's `enabled` state changes to
-`DISABLED`, pg-delta currently serializes only `CREATE OR REPLACE TRIGGER ...`
-with no `ALTER TABLE ... DISABLE TRIGGER ...` follow-up.
+Because the checked-in upstream heads are unchanged from the 2026-06-24
+refresh, the latest focused runtime evidence for the active gaps stays the same:
+benchmark 020 still reproduced as a zero-change table-constraint diff, and the
+draft-only #479 candidate still lacked an `ALTER TABLE ... ENABLE/DISABLE
+TRIGGER ...` follow-up.
 
 ## Open pgschema issue screening (current state)
 
-No newly-filed open pgschema issues landed after the 2026-06-23 refresh. The
-current still-open reviewed issue set is:
+No newly-filed open pgschema issues landed after the 2026-06-24 refresh. This
+pass closes the remaining open-screening gap by explicitly classifying the
+other still-open upstream issues that are not pg-delta parity work. The current
+still-open reviewed issue set is:
 
 Screened candidates:
 
 - **#49** explicit rename / refactor workflow proposal — **not parity work for
   pg-delta**; this is a pgschema-specific workflow design, not a current
+  pg-delta diff or planning gap
+- **#52** explicit before / after SQL file execution in plan output — **not
+  parity work for pg-delta**; this is a pgschema-specific escape-hatch /
+  workflow request rather than a live-catalog diff gap
+- **#84** feedback / testimonial collection thread — **not parity work for
+  pg-delta**; this is community outreach rather than schema-diff behavior
+- **#321** dump without schema-qualifier shortening — **not parity work for
+  pg-delta**; this is a pgschema dump-format / CLI feature, not a current
   pg-delta diff or planning gap
 - **#450** missing role blocks plan/apply — **not parity work for pg-delta**;
   this is specific to pgschema applying dumped SQL into a temporary planning
@@ -102,6 +106,11 @@ snapshot are now closed upstream and keep the same pg-delta parity verdicts:
 - **#366** function privilege signatures with enum argument types — **closed
   upstream as `not_planned` and still tracked** by
   [pg-toolbelt#219](https://github.com/supabase/pg-toolbelt/issues/219)
+- new adjacent pg-toolbelt work now exists in
+  [#308](https://github.com/supabase/pg-toolbelt/issues/308) and
+  [#310](https://github.com/supabase/pg-toolbelt/pull/310), but it covers
+  `REVOKE EXECUTE ... FROM PUBLIC` on functions rather than the enum-typed
+  signature drift from pgschema #366, so the parity label remains `tracked`
 - **#404** deferrable unique constraints — **resolved upstream and still
   tracked** by
   [pg-toolbelt#218](https://github.com/supabase/pg-toolbelt/issues/218)
@@ -203,3 +212,11 @@ During this refresh, pg-toolbelt issues
 They are adjacent dependency/materialized-view work, but neither is an exact
 duplicate of the current benchmark gap or draft-only parity candidates, so no
 benchmark state changed.
+
+Separately, pg-toolbelt
+[#308](https://github.com/supabase/pg-toolbelt/issues/308) and
+[#310](https://github.com/supabase/pg-toolbelt/pull/310) were checked as
+adjacent function-privilege work. They are useful current context, but they do
+not replace [#219](https://github.com/supabase/pg-toolbelt/issues/219): their
+scope is `REVOKE EXECUTE ... FROM PUBLIC`, not the enum-typed function
+signature drift from pgschema #366.
