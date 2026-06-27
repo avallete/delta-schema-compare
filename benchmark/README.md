@@ -4,7 +4,7 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-06-26)
+## Latest refresh snapshot (2026-06-27)
 
 Refreshed against:
 
@@ -35,20 +35,26 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-There is no benchmark-matrix parity delta versus the 2026-06-24 refresh:
+There is no benchmark-matrix parity delta versus the 2026-06-26 refresh:
 benchmark 020 remains the only active resolved-issue gap.
 
-There is also no upstream code-head delta versus the 2026-06-24 refresh:
+There is also no upstream code-head delta versus the 2026-06-26 refresh:
 `pgschema` remains at `c0e697343afc6116a393df68f14e9a4aee773365`, and
 `pg-delta` remains at `9284412d71635308ebb0c1537e0b0183d2cfa4da`. This
-2026-06-26 refresh is therefore a pure issue-state reconciliation rather than a
-new code snapshot.
+2026-06-27 refresh is therefore a pure no-delta recheck rather than a new code
+snapshot.
 
-The meaningful state changes in this refresh are issue bookkeeping only:
-pgschema #52, #84, and #321 are now explicitly screened as `not_parity`, and
-the new adjacent pg-toolbelt function-privilege work (#308 / #310) is recorded
-as non-duplicate context for the still-open enum-signature parity tracker
-#219. No benchmark or parity labels changed.
+No pgschema issue or upstream code-head state changed after the 2026-06-26
+refresh. The only latest-state delta worth recording here is on the adjacent
+pg-toolbelt side: issue [#301](https://github.com/supabase/pg-toolbelt/issues/301)
+now has an open fix PR,
+[#305](https://github.com/supabase/pg-toolbelt/pull/305), but it is still not
+an exact duplicate of benchmark 020 or the saved draft-only dependency-ordering
+gaps. The adjacent function-privilege work
+[#308](https://github.com/supabase/pg-toolbelt/issues/308) /
+[#310](https://github.com/supabase/pg-toolbelt/pull/310) also remains
+non-duplicate context for the still-open enum-signature parity tracker #219.
+No benchmark or parity labels changed.
 
 Because the checked-in upstream heads are unchanged from the 2026-06-24
 refresh, the latest focused runtime evidence for the active gaps stays the same:
@@ -58,10 +64,8 @@ TRIGGER ...` follow-up.
 
 ## Open pgschema issue screening (current state)
 
-No newly-filed open pgschema issues landed after the 2026-06-24 refresh. This
-pass closes the remaining open-screening gap by explicitly classifying the
-other still-open upstream issues that are not pg-delta parity work. The current
-still-open reviewed issue set is:
+No newly-filed open pgschema issues landed after the 2026-06-26 refresh. The
+current still-open reviewed issue set is unchanged:
 
 Screened candidates:
 
@@ -176,8 +180,9 @@ snapshot are now closed upstream and keep the same pg-delta parity verdicts:
 
 ## Open upstream PR watch list
 
-No parity-relevant upstream PRs remain open after the 2026-06-24 refresh.
-Recent closures were rechecked as follows:
+No new parity-relevant upstream pgschema PRs landed after the 2026-06-26
+refresh. The current pgschema-side watch list is unchanged; recent closures
+were rechecked as follows:
 
 - pgschema [#475](https://github.com/pgplex/pgschema/pull/475) (`fix: order
   modified foreign keys after added unique constraints`) now looks **covered**
@@ -199,24 +204,24 @@ Recent closures were rechecked as follows:
   remains saved in
   [`docs/parity-issue-drafts-2026-06-19.md`](../docs/parity-issue-drafts-2026-06-19.md)
 
-The new pg-delta head in this refresh (`9284412d71635308ebb0c1537e0b0183d2cfa4da`)
-adds trigger quoted-name formatter coverage and a matching integration
-regression, but it does not change the active parity verdicts above: benchmark
-020 remains unresolved, and the draft-only trigger enabled-state gap from
-pgschema PR #479 still lacks `ALTER TABLE ... ENABLE/DISABLE TRIGGER ...`
-support.
+The current pg-delta head in this refresh (`9284412d71635308ebb0c1537e0b0183d2cfa4da`)
+does not change the active parity verdicts above: benchmark 020 remains
+unresolved, and the draft-only trigger enabled-state gap from pgschema PR #479
+still lacks `ALTER TABLE ... ENABLE/DISABLE TRIGGER ...` support.
 
-During this refresh, pg-toolbelt issues
-[#286](https://github.com/supabase/pg-toolbelt/issues/286) and
-[#301](https://github.com/supabase/pg-toolbelt/issues/301) were also checked.
-They are adjacent dependency/materialized-view work, but neither is an exact
-duplicate of the current benchmark gap or draft-only parity candidates, so no
-benchmark state changed.
+During this refresh, pg-toolbelt issue
+[#286](https://github.com/supabase/pg-toolbelt/issues/286) and the
+[#301](https://github.com/supabase/pg-toolbelt/issues/301) /
+[#305](https://github.com/supabase/pg-toolbelt/pull/305) pair were also
+checked. They are adjacent dependency/materialized-view work, but none is an
+exact duplicate of the current benchmark gap or draft-only parity candidates,
+so no benchmark state changed.
 
 Separately, pg-toolbelt
 [#308](https://github.com/supabase/pg-toolbelt/issues/308) and
 [#310](https://github.com/supabase/pg-toolbelt/pull/310) were checked as
-adjacent function-privilege work. They are useful current context, but they do
-not replace [#219](https://github.com/supabase/pg-toolbelt/issues/219): their
-scope is `REVOKE EXECUTE ... FROM PUBLIC`, not the enum-typed function
-signature drift from pgschema #366.
+adjacent function-privilege work. Both remain open and are useful current
+context, but they do not replace
+[#219](https://github.com/supabase/pg-toolbelt/issues/219): their scope is
+`REVOKE EXECUTE ... FROM PUBLIC`, not the enum-typed function signature drift
+from pgschema #366.

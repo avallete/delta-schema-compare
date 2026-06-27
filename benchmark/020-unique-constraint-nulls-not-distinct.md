@@ -21,12 +21,12 @@ This matters because the downgrade is silent. A migration plan that emits
 `UNIQUE (a, b)` instead of `UNIQUE NULLS NOT DISTINCT (a, b)` looks plausible,
 but it weakens uniqueness semantics for nullable columns.
 
-## Refresh note (2026-06-26)
+## Refresh note (2026-06-27)
 
 The checked-in upstreams are still
 `pgschema@c0e697343afc6116a393df68f14e9a4aee773365` and
 `pg-delta@9284412d71635308ebb0c1537e0b0183d2cfa4da`; there is no code-head
-delta versus the 2026-06-24 refresh.
+delta versus the 2026-06-26 refresh.
 
 There is likewise no benchmark-state delta: no exact pg-toolbelt issue or PR
 exists yet for this table-constraint parity gap, and benchmark 020 remains the
@@ -42,6 +42,13 @@ This refresh also keeps the same asymmetric-support conclusion: creating a
 brand-new table constraint with `UNIQUE NULLS NOT DISTINCT` works, but changing
 an existing plain `UNIQUE` table constraint to the `NULLS NOT DISTINCT` form is
 still treated as a no-op by the diff path.
+
+The 2026-06-27 tracker sweep likewise found no new exact pg-toolbelt issue or
+PR for this table-constraint scenario. Recent adjacent work in
+[#301](https://github.com/supabase/pg-toolbelt/issues/301) /
+[#305](https://github.com/supabase/pg-toolbelt/pull/305) is about avoiding
+recreation of identical materialized views, not table-constraint
+`NULLS NOT DISTINCT` handling.
 
 ## Reproduction SQL
 
