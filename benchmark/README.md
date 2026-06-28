@@ -4,7 +4,7 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-06-26)
+## Latest refresh snapshot (2026-06-28)
 
 Refreshed against:
 
@@ -35,20 +35,20 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-There is no benchmark-matrix parity delta versus the 2026-06-24 refresh:
+There is no benchmark-matrix parity delta versus the 2026-06-26 refresh:
 benchmark 020 remains the only active resolved-issue gap.
 
-There is also no upstream code-head delta versus the 2026-06-24 refresh:
+There is also no upstream code-head delta versus the 2026-06-26 refresh:
 `pgschema` remains at `c0e697343afc6116a393df68f14e9a4aee773365`, and
 `pg-delta` remains at `9284412d71635308ebb0c1537e0b0183d2cfa4da`. This
-2026-06-26 refresh is therefore a pure issue-state reconciliation rather than a
-new code snapshot.
+2026-06-28 refresh is therefore a pure issue-state recheck rather than a new
+code snapshot.
 
-The meaningful state changes in this refresh are issue bookkeeping only:
-pgschema #52, #84, and #321 are now explicitly screened as `not_parity`, and
-the new adjacent pg-toolbelt function-privilege work (#308 / #310) is recorded
-as non-duplicate context for the still-open enum-signature parity tracker
-#219. No benchmark or parity labels changed.
+No pgschema issues or PRs were updated after the 2026-06-26 refresh, so the
+review-memory fingerprints and verdicts remain unchanged in this pass. The only
+fresh upstream movement came from new pg-toolbelt PR activity, and those PRs
+were checked as non-duplicate adjacent work rather than new benchmark or
+tracked-parity items.
 
 Because the checked-in upstream heads are unchanged from the 2026-06-24
 refresh, the latest focused runtime evidence for the active gaps stays the same:
@@ -58,10 +58,8 @@ TRIGGER ...` follow-up.
 
 ## Open pgschema issue screening (current state)
 
-No newly-filed open pgschema issues landed after the 2026-06-24 refresh. This
-pass closes the remaining open-screening gap by explicitly classifying the
-other still-open upstream issues that are not pg-delta parity work. The current
-still-open reviewed issue set is:
+No newly-filed or newly-updated open pgschema issues landed after the
+2026-06-26 refresh. This pass keeps the same still-open reviewed issue set:
 
 Screened candidates:
 
@@ -176,8 +174,8 @@ snapshot are now closed upstream and keep the same pg-delta parity verdicts:
 
 ## Open upstream PR watch list
 
-No parity-relevant upstream PRs remain open after the 2026-06-24 refresh.
-Recent closures were rechecked as follows:
+No parity-relevant pgschema PRs remain open after the 2026-06-26 refresh.
+Recent closures remain as follows:
 
 - pgschema [#475](https://github.com/pgplex/pgschema/pull/475) (`fix: order
   modified foreign keys after added unique constraints`) now looks **covered**
@@ -199,19 +197,35 @@ Recent closures were rechecked as follows:
   remains saved in
   [`docs/parity-issue-drafts-2026-06-19.md`](../docs/parity-issue-drafts-2026-06-19.md)
 
-The new pg-delta head in this refresh (`9284412d71635308ebb0c1537e0b0183d2cfa4da`)
-adds trigger quoted-name formatter coverage and a matching integration
-regression, but it does not change the active parity verdicts above: benchmark
-020 remains unresolved, and the draft-only trigger enabled-state gap from
-pgschema PR #479 still lacks `ALTER TABLE ... ENABLE/DISABLE TRIGGER ...`
-support.
+The new pg-delta head in this refresh
+(`9284412d71635308ebb0c1537e0b0183d2cfa4da`) already includes the trigger
+quoted-name formatter coverage and matching integration regression checked in
+the 2026-06-26 pass, but it does not change the active parity verdicts above:
+benchmark 020 remains unresolved, and the draft-only trigger enabled-state gap
+from pgschema PR #479 still lacks
+`ALTER TABLE ... ENABLE/DISABLE TRIGGER ...` support.
 
-During this refresh, pg-toolbelt issues
-[#286](https://github.com/supabase/pg-toolbelt/issues/286) and
-[#301](https://github.com/supabase/pg-toolbelt/issues/301) were also checked.
-They are adjacent dependency/materialized-view work, but neither is an exact
-duplicate of the current benchmark gap or draft-only parity candidates, so no
-benchmark state changed.
+Fresh pg-toolbelt PR activity was also checked during this refresh:
+
+- [#301](https://github.com/supabase/pg-toolbelt/issues/301) /
+  [#305](https://github.com/supabase/pg-toolbelt/pull/305) now cover
+  materialized-view definition stability under differing `search_path` values.
+  This is adjacent to historical materialized-view parity work, but it is not
+  an exact duplicate of benchmark 008, benchmark 020, or the current draft-only
+  candidates
+- [#304](https://github.com/supabase/pg-toolbelt/issues/304) /
+  [#313](https://github.com/supabase/pg-toolbelt/pull/313) cover leading enum
+  value insert ordering. No matching pgschema benchmark or screened issue
+  currently maps to this exact scenario
+- [#311](https://github.com/supabase/pg-toolbelt/issues/311) /
+  [#314](https://github.com/supabase/pg-toolbelt/pull/314) cover mutual inline
+  foreign-key cycles in declarative apply. This is useful adjacent dependency
+  work, but it is not an exact duplicate of benchmark 020 or the current
+  draft-only items #439 / #444 / #479
+- [#315](https://github.com/supabase/pg-toolbelt/pull/315) is the RED,
+  pg-delta-next test companion to
+  [#307](https://github.com/supabase/pg-toolbelt/pull/307); it does not affect
+  the current-engine parity benchmark state
 
 Separately, pg-toolbelt
 [#308](https://github.com/supabase/pg-toolbelt/issues/308) and
