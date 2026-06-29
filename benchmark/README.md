@@ -4,7 +4,7 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-06-28)
+## Latest refresh snapshot (2026-06-29)
 
 Refreshed against:
 
@@ -35,31 +35,34 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-There is no benchmark-matrix parity delta versus the 2026-06-26 refresh:
+There is no benchmark-matrix parity delta versus the 2026-06-28 refresh:
 benchmark 020 remains the only active resolved-issue gap.
 
-There is also no upstream code-head delta versus the 2026-06-26 refresh:
+There is also no upstream code-head delta versus the 2026-06-28 refresh:
 `pgschema` remains at `c0e697343afc6116a393df68f14e9a4aee773365`, and
 `pg-delta` remains at `9284412d71635308ebb0c1537e0b0183d2cfa4da`. This
-2026-06-28 refresh is therefore a pure issue-state recheck rather than a new
+2026-06-29 refresh is therefore a pure issue / PR state recheck rather than a new
 code snapshot.
 
-No pgschema issues or PRs were updated after the 2026-06-26 refresh, so the
-review-memory fingerprints and verdicts remain unchanged in this pass. The only
-fresh upstream movement came from new pg-toolbelt PR activity, and those PRs
-were checked as non-duplicate adjacent work rather than new benchmark or
-tracked-parity items.
+No pgschema issues or PRs were updated after the 2026-06-28 refresh, and no
+pg-toolbelt issues or PRs were updated after that point either. The only
+substantive latest-state change in this pass came from re-reading existing open
+pg-toolbelt PRs: the trigger enabled / disabled state slice from pgschema
+PR #479 is no longer treated as an untracked draft-only candidate, because open
+pg-toolbelt PR #285 now contains direct trigger-state regressions and
+implementation work for `ALTER TABLE ... ENABLE/DISABLE TRIGGER ...`.
 
 Because the checked-in upstream heads are unchanged from the 2026-06-24
 refresh, the latest focused runtime evidence for the active gaps stays the same:
-benchmark 020 still reproduced as a zero-change table-constraint diff, and the
-draft-only #479 candidate still lacked an `ALTER TABLE ... ENABLE/DISABLE
-TRIGGER ...` follow-up.
+benchmark 020 still reproduced as a zero-change table-constraint diff. Current
+`main` still lacks merged trigger enabled-state support, but the remaining #479
+slice is now tracked in-flight by pg-toolbelt PR #285 rather than lacking any
+exact tracker.
 
 ## Open pgschema issue screening (current state)
 
 No newly-filed or newly-updated open pgschema issues landed after the
-2026-06-26 refresh. This pass keeps the same still-open reviewed issue set:
+2026-06-28 refresh. This pass keeps the same still-open reviewed issue set:
 
 Screened candidates:
 
@@ -135,8 +138,9 @@ snapshot are now closed upstream and keep the same pg-delta parity verdicts:
   [#263](https://github.com/supabase/pg-toolbelt/issues/263) (open),
   [#273](https://github.com/supabase/pg-toolbelt/pull/273) (merged),
   [#285](https://github.com/supabase/pg-toolbelt/pull/285) (open), and
-  [#291](https://github.com/supabase/pg-toolbelt/pull/291) (open), but there is still
-  no exact tracker. The saved draft remains in
+  [#291](https://github.com/supabase/pg-toolbelt/pull/291) (open), but the
+  current pg-delta suite still has no exact `DROP COLUMN` / dependent-view
+  regression and there is still no exact tracker. The saved draft remains in
   [`docs/parity-issue-drafts-2026-06-01.md`](../docs/parity-issue-drafts-2026-06-01.md)
 - **#445** CHECK constraint qualifier drift for same-schema functions and types
   — **not parity work for pg-delta**; this is specific to pgschema's
@@ -192,20 +196,25 @@ Recent closures remain as follows:
 - pgschema [#479](https://github.com/pgplex/pgschema/pull/479) (`feat: add
   support for trigger comments, trigger enabled/disabled state, and sequence
   comments`) is **partially covered** in current pg-delta: trigger comments and
-  sequence comments already have integration coverage, but trigger enabled /
-  disabled state still lacks an exact pg-delta tracker. A draft-only issue body
-  remains saved in
+  sequence comments already have integration coverage, and the remaining
+  trigger enabled / disabled state slice is now **tracked in-flight** by open
+  [pg-toolbelt#285](https://github.com/supabase/pg-toolbelt/pull/285). That PR
+  includes explicit trigger-state regressions plus
+  `ALTER TABLE ... DISABLE TRIGGER ...` implementation work, so the older draft
+  in
   [`docs/parity-issue-drafts-2026-06-19.md`](../docs/parity-issue-drafts-2026-06-19.md)
+  is retained as historical review context only
 
 The new pg-delta head in this refresh
 (`9284412d71635308ebb0c1537e0b0183d2cfa4da`) already includes the trigger
 quoted-name formatter coverage and matching integration regression checked in
-the 2026-06-26 pass, but it does not change the active parity verdicts above:
-benchmark 020 remains unresolved, and the draft-only trigger enabled-state gap
-from pgschema PR #479 still lacks
-`ALTER TABLE ... ENABLE/DISABLE TRIGGER ...` support.
+the 2026-06-26 pass, but it still does not include the unmerged trigger
+enabled-state work from pg-toolbelt PR #285. Benchmark 020 therefore remains
+the only active resolved-issue benchmark gap, while the remaining trigger-state
+slice from pgschema PR #479 is now tracked by an exact in-flight pg-toolbelt
+PR rather than an untracked draft-only gap.
 
-Fresh pg-toolbelt PR activity was also checked during this refresh:
+Existing pg-toolbelt PR activity was also rechecked during this refresh:
 
 - [#301](https://github.com/supabase/pg-toolbelt/issues/301) /
   [#305](https://github.com/supabase/pg-toolbelt/pull/305) now cover

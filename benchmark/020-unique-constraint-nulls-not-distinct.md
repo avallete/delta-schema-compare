@@ -21,20 +21,22 @@ This matters because the downgrade is silent. A migration plan that emits
 `UNIQUE (a, b)` instead of `UNIQUE NULLS NOT DISTINCT (a, b)` looks plausible,
 but it weakens uniqueness semantics for nullable columns.
 
-## Refresh note (2026-06-28)
+## Refresh note (2026-06-29)
 
 The checked-in upstreams are still
 `pgschema@c0e697343afc6116a393df68f14e9a4aee773365` and
 `pg-delta@9284412d71635308ebb0c1537e0b0183d2cfa4da`; there is no code-head
-delta versus the 2026-06-26 refresh.
+delta versus the 2026-06-28 refresh.
 
 There is likewise no benchmark-state delta: no exact pg-toolbelt issue or PR
 exists yet for this table-constraint parity gap, and benchmark 020 remains the
 only active resolved-issue gap in the matrix.
 
-No pgschema issues or PRs moved after the 2026-06-26 refresh, and a fresh
-pg-toolbelt PR sweep only surfaced adjacent work (#305, #313, #314, and #315)
-rather than an exact tracker for this table-constraint scenario.
+No pgschema issues or PRs moved after the 2026-06-28 refresh, and the
+pg-toolbelt issue / PR state also stayed unchanged. A focused recheck of the
+open pg-toolbelt work confirms that the trigger-state work in PR #285 is not an
+exact duplicate of this table-constraint scenario, so benchmark 020 still has
+no matching pg-toolbelt issue or PR.
 
 Because the upstream heads are unchanged, the focused 2026-06-24 diff probe
 remains the latest runtime verification for this scenario. It still reported

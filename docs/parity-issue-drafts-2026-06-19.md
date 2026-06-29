@@ -7,6 +7,14 @@ No GitHub issues were opened as part of this refresh. This draft is saved so
 the finding can be reviewed in a PR first and then promoted to a real
 pg-toolbelt issue only if it still looks correct.
 
+> 2026-06-29 update: open
+> [pg-toolbelt#285](https://github.com/supabase/pg-toolbelt/pull/285) is now
+> exact in-flight work for the trigger enabled / disabled-state slice. Its
+> commit series includes `test(pg-delta): add trigger enabled state
+> regressions` and `fix(pg-delta): preserve trigger enabled state in diffs`.
+> This file is retained as historical review context only; do not draft a new
+> tracker unless #285 closes without merging.
+
 ## Duplicate-check summary (pg-toolbelt)
 
 Before writing the draft below, I checked the current open and closed
@@ -16,11 +24,12 @@ pg-toolbelt issues and PRs for overlapping work:
   - pgschema #404 -> [pg-toolbelt#218](https://github.com/supabase/pg-toolbelt/issues/218)
   - pgschema #366 -> [pg-toolbelt#219](https://github.com/supabase/pg-toolbelt/issues/219)
 - Related but not duplicate work:
-  - [pg-toolbelt#285](https://github.com/supabase/pg-toolbelt/pull/285)
-    and [#291](https://github.com/supabase/pg-toolbelt/pull/291) are adjacent
-    dependency-ordering work, but not about trigger enabled state
-- No matching pg-toolbelt issue or PR was found for:
-  - pgschema PR #479 trigger enabled / disabled state parity
+  - [pg-toolbelt#291](https://github.com/supabase/pg-toolbelt/pull/291) is
+    still adjacent procedure-expression dependency work rather than an exact
+    trigger-state tracker
+- Exact in-flight work now exists for:
+  - pgschema PR #479 trigger enabled / disabled state parity ->
+    [pg-toolbelt#285](https://github.com/supabase/pg-toolbelt/pull/285)
 
 ---
 
