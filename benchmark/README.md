@@ -4,12 +4,12 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-06-29)
+## Latest refresh snapshot (2026-06-30)
 
 Refreshed against:
 
 - `repos/pg-toolbelt` @ `9284412d71635308ebb0c1537e0b0183d2cfa4da`
-- `repos/pgschema` @ `c0e697343afc6116a393df68f14e9a4aee773365`
+- `repos/pgschema` @ `c281905f82d91a9bcf6c764ac4b1792cdf42ba04`
 
 ## Benchmark status matrix
 
@@ -35,22 +35,22 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-There is no benchmark-matrix parity delta versus the 2026-06-28 refresh:
+There is no benchmark-matrix parity delta versus the 2026-06-29 refresh:
 benchmark 020 remains the only active resolved-issue gap.
 
-There is also no upstream code-head delta versus the 2026-06-28 refresh:
-`pgschema` remains at `c0e697343afc6116a393df68f14e9a4aee773365`, and
-`pg-delta` remains at `9284412d71635308ebb0c1537e0b0183d2cfa4da`. This
-2026-06-29 refresh is therefore a pure issue / PR state recheck rather than a new
-code snapshot.
+There is no pg-delta code-head delta versus the 2026-06-29 refresh:
+`pg-delta` remains at `9284412d71635308ebb0c1537e0b0183d2cfa4da`. `pgschema`
+did advance to `c281905f82d91a9bcf6c764ac4b1792cdf42ba04`, but only because
+merged PRs [#492](https://github.com/pgplex/pgschema/pull/492) and
+[#494](https://github.com/pgplex/pgschema/pull/494) added and documented the
+new `dump --qualify-schema` flag for
+[#321](https://github.com/pgplex/pgschema/issues/321). That upstream movement
+changed the screening set, not the current pg-delta parity matrix.
 
-No pgschema issues or PRs were updated after the 2026-06-28 refresh, and no
-pg-toolbelt issues or PRs were updated after that point either. The only
-substantive latest-state change in this pass came from re-reading existing open
-pg-toolbelt PRs: the trigger enabled / disabled state slice from pgschema
-PR #479 is no longer treated as an untracked draft-only candidate, because open
-pg-toolbelt PR #285 now contains direct trigger-state regressions and
-implementation work for `ALTER TABLE ... ENABLE/DISABLE TRIGGER ...`.
+The substantive June 30 delta is therefore issue-state reconciliation only:
+pgschema #321 moved out of the still-open reviewed set after its fix merged,
+and new follow-up issue #493 was screened as another non-parity dump-format
+item.
 
 Because the checked-in upstream heads are unchanged from the 2026-06-24
 refresh, the latest focused runtime evidence for the active gaps stays the same:
@@ -61,8 +61,10 @@ exact tracker.
 
 ## Open pgschema issue screening (current state)
 
-No newly-filed or newly-updated open pgschema issues landed after the
-2026-06-28 refresh. This pass keeps the same still-open reviewed issue set:
+This pass changes only the non-parity dump-format subset of the open-screening
+list: pgschema #321 moved to resolved after its `--qualify-schema` work merged,
+and new follow-up issue #493 was screened as another `not_parity` item. The
+current still-open reviewed issue set is now:
 
 Screened candidates:
 
@@ -74,13 +76,14 @@ Screened candidates:
   workflow request rather than a live-catalog diff gap
 - **#84** feedback / testimonial collection thread — **not parity work for
   pg-delta**; this is community outreach rather than schema-diff behavior
-- **#321** dump without schema-qualifier shortening — **not parity work for
-  pg-delta**; this is a pgschema dump-format / CLI feature, not a current
-  pg-delta diff or planning gap
 - **#450** missing role blocks plan/apply — **not parity work for pg-delta**;
   this is specific to pgschema applying dumped SQL into a temporary planning
   schema, while pg-delta diffs live catalogs directly and already models roles
   plus privilege dependencies
+- **#493** inspector / IR should preserve schema identity for type references
+  under `--qualify-schema` — **not parity work for pg-delta**; this is a
+  follow-up on pgschema's dump-only schema-qualification flag rather than a
+  live-catalog diff or migration-planning gap
 
 Historical draft text is recorded in markdown for both the older tracked
 scenarios and the current draft-only uncovered candidates:
@@ -129,6 +132,9 @@ snapshot are now closed upstream and keep the same pg-delta parity verdicts:
   extraction and diff logic (`relpersistence`, `SET UNLOGGED`, `SET LOGGED`)
 - **#426** Docker Hub image lag versus GitHub releases — **not parity work for
   pg-delta**; this is release packaging only
+- **#321** `dump --qualify-schema` — **not parity work for pg-delta**; this is
+  a pgschema dump-format / CLI feature rather than a live-catalog diff gap.
+  The new open follow-up #493 keeps the same non-parity classification
 - **#439** constraint replacement with dependents — **resolved upstream and
   still not covered**; no exact pg-toolbelt issue / PR exists yet, and the
   saved draft remains in
