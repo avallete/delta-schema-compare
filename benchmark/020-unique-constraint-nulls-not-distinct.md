@@ -21,22 +21,26 @@ This matters because the downgrade is silent. A migration plan that emits
 `UNIQUE (a, b)` instead of `UNIQUE NULLS NOT DISTINCT (a, b)` looks plausible,
 but it weakens uniqueness semantics for nullable columns.
 
-## Refresh note (2026-06-29)
+## Refresh note (2026-06-30)
 
-The checked-in upstreams are still
-`pgschema@c0e697343afc6116a393df68f14e9a4aee773365` and
-`pg-delta@9284412d71635308ebb0c1537e0b0183d2cfa4da`; there is no code-head
-delta versus the 2026-06-28 refresh.
+The checked-in pg-delta upstream is still
+`pg-delta@9284412d71635308ebb0c1537e0b0183d2cfa4da`; there is no pg-delta
+code-head delta versus the 2026-06-29 refresh. `pgschema` did advance to
+`c281905f82d91a9bcf6c764ac4b1792cdf42ba04`, but that delta only reflects the
+merged `dump --qualify-schema` work for
+[#321](https://github.com/pgplex/pgschema/issues/321) plus follow-up docs. It
+does not change the current table-constraint parity result for #412.
 
 There is likewise no benchmark-state delta: no exact pg-toolbelt issue or PR
 exists yet for this table-constraint parity gap, and benchmark 020 remains the
 only active resolved-issue gap in the matrix.
 
-No pgschema issues or PRs moved after the 2026-06-28 refresh, and the
-pg-toolbelt issue / PR state also stayed unchanged. A focused recheck of the
-open pg-toolbelt work confirms that the trigger-state work in PR #285 is not an
-exact duplicate of this table-constraint scenario, so benchmark 020 still has
-no matching pg-toolbelt issue or PR.
+The only June 30 issue-state delta came from the pgschema dump-format side:
+#321 closed upstream, and new follow-up issue #493 opened for same-schema type
+qualification under `--qualify-schema`. Neither item maps to this table
+constraint diff path, and a focused recheck confirms that open pg-toolbelt
+PR #285 is still not an exact duplicate of this scenario. Benchmark 020
+therefore still has no matching pg-toolbelt issue or PR.
 
 Because the upstream heads are unchanged, the focused 2026-06-24 diff probe
 remains the latest runtime verification for this scenario. It still reported
@@ -100,7 +104,7 @@ The merged change added:
 | Constraint diff compares `NULLS NOT DISTINCT` on table constraints | No - `src/core/objects/table/table.diff.ts` compares structured fields but not the full rendered definition |
 | Constraint `definition` is captured from the catalog | Yes - `pg_get_constraintdef(c.oid, true)` is stored on the table constraint model |
 | Integration regression for `UNIQUE NULLS NOT DISTINCT` table constraints | No - `tests/integration/constraint-operations.test.ts` only covers plain `UNIQUE (...)` |
-| Existing pg-toolbelt issue / PR for this exact scenario | No - none found through the 2026-06-28 refresh |
+| Existing pg-toolbelt issue / PR for this exact scenario | No - none found through the 2026-06-30 refresh |
 
 ## Comparison of approaches
 
