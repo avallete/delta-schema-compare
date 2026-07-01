@@ -21,30 +21,25 @@ This matters because the downgrade is silent. A migration plan that emits
 `UNIQUE (a, b)` instead of `UNIQUE NULLS NOT DISTINCT (a, b)` looks plausible,
 but it weakens uniqueness semantics for nullable columns.
 
-## Refresh note (2026-06-30)
+## Refresh note (2026-07-01)
 
-The checked-in pg-delta upstream is still
-`pg-delta@9284412d71635308ebb0c1537e0b0183d2cfa4da`; there is no pg-delta
-code-head delta versus the 2026-06-29 refresh. `pgschema` did advance to
-`c281905f82d91a9bcf6c764ac4b1792cdf42ba04`, but that delta only reflects the
-merged `dump --qualify-schema` work for
-[#321](https://github.com/pgplex/pgschema/issues/321) plus follow-up docs. It
-does not change the current table-constraint parity result for #412.
+The checked-in upstream heads are unchanged from the 2026-06-30 refresh:
+`pg-delta@9284412d71635308ebb0c1537e0b0183d2cfa4da` and
+`pgschema@c281905f82d91a9bcf6c764ac4b1792cdf42ba04`.
 
-There is likewise no benchmark-state delta: no exact pg-toolbelt issue or PR
-exists yet for this table-constraint parity gap, and benchmark 020 remains the
+A targeted GitHub sweep for updates after the 2026-06-30 refresh found no newer
+pgschema issue or PR movement. The only newer pg-toolbelt PR activity is open
+[#307](https://github.com/supabase/pg-toolbelt/pull/307), which is adjacent
+`pg-delta-next` work rather than an exact duplicate of this table-constraint
+parity gap.
+
+There is therefore no benchmark-state delta: no exact pg-toolbelt issue or PR
+exists yet for this table-constraint scenario, and benchmark 020 remains the
 only active resolved-issue gap in the matrix.
 
-The only June 30 issue-state delta came from the pgschema dump-format side:
-#321 closed upstream, and new follow-up issue #493 opened for same-schema type
-qualification under `--qualify-schema`. Neither item maps to this table
-constraint diff path, and a focused recheck confirms that open pg-toolbelt
-PR #285 is still not an exact duplicate of this scenario. Benchmark 020
-therefore still has no matching pg-toolbelt issue or PR.
-
-Because the upstream heads are unchanged, the focused 2026-06-24 diff probe
-remains the latest runtime verification for this scenario. It still reported
-zero planned changes when only the definition changed from `UNIQUE (a, b)` to
+Because neither upstream head moved, the focused 2026-06-24 diff probe remains
+the latest exact runtime verification for this scenario. It still reported zero
+planned changes when only the definition changed from `UNIQUE (a, b)` to
 `UNIQUE NULLS NOT DISTINCT (a, b)`, confirming that the modifier is still
 ignored in the table-constraint diff logic.
 

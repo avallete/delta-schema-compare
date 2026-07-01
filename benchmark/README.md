@@ -4,7 +4,7 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-06-30)
+## Latest refresh snapshot (2026-07-01)
 
 Refreshed against:
 
@@ -35,36 +35,32 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-There is no benchmark-matrix parity delta versus the 2026-06-29 refresh:
+There is no benchmark-matrix parity delta versus the 2026-06-30 refresh:
 benchmark 020 remains the only active resolved-issue gap.
 
-There is no pg-delta code-head delta versus the 2026-06-29 refresh:
-`pg-delta` remains at `9284412d71635308ebb0c1537e0b0183d2cfa4da`. `pgschema`
-did advance to `c281905f82d91a9bcf6c764ac4b1792cdf42ba04`, but only because
-merged PRs [#492](https://github.com/pgplex/pgschema/pull/492) and
-[#494](https://github.com/pgplex/pgschema/pull/494) added and documented the
-new `dump --qualify-schema` flag for
-[#321](https://github.com/pgplex/pgschema/issues/321). That upstream movement
-changed the screening set, not the current pg-delta parity matrix.
+There is also no upstream code-head delta versus the 2026-06-30 refresh:
+`pg-delta` remains at `9284412d71635308ebb0c1537e0b0183d2cfa4da`, and
+`pgschema` remains at `c281905f82d91a9bcf6c764ac4b1792cdf42ba04`.
 
-The substantive June 30 delta is therefore issue-state reconciliation only:
-pgschema #321 moved out of the still-open reviewed set after its fix merged,
-and new follow-up issue #493 was screened as another non-parity dump-format
-item.
+A targeted GitHub sweep for updates after the 2026-06-30 refresh found no newer
+pgschema issue or PR activity. On the pg-toolbelt side, the only newer PR
+activity is open
+[#307](https://github.com/supabase/pg-toolbelt/pull/307)
+(`pg-delta-next` orderless declarative apply work), which is adjacent next
+engine work rather than an exact duplicate of any current benchmark or
+draft-only parity item.
 
-Because the checked-in upstream heads are unchanged from the 2026-06-24
-refresh, the latest focused runtime evidence for the active gaps stays the same:
-benchmark 020 still reproduced as a zero-change table-constraint diff. Current
-`main` still lacks merged trigger enabled-state support, but the remaining #479
-slice is now tracked in-flight by pg-toolbelt PR #285 rather than lacking any
-exact tracker.
+Because the checked-in upstream heads and the parity-relevant issue set are
+unchanged, the latest focused runtime evidence for the active gaps also stays
+the same: benchmark 020 still reproduces as a zero-change table-constraint
+diff, and the remaining trigger enabled-state slice from pgschema PR #479
+remains exact in-flight work under pg-toolbelt PR #285 rather than an
+untracked draft-only gap.
 
 ## Open pgschema issue screening (current state)
 
-This pass changes only the non-parity dump-format subset of the open-screening
-list: pgschema #321 moved to resolved after its `--qualify-schema` work merged,
-and new follow-up issue #493 was screened as another `not_parity` item. The
-current still-open reviewed issue set is now:
+This pass does not change the screened open-issue set. The current still-open
+reviewed issue set remains:
 
 Screened candidates:
 
@@ -237,10 +233,10 @@ Existing pg-toolbelt PR activity was also rechecked during this refresh:
   foreign-key cycles in declarative apply. This is useful adjacent dependency
   work, but it is not an exact duplicate of benchmark 020 or the current
   draft-only items #439 / #444 / #479
-- [#315](https://github.com/supabase/pg-toolbelt/pull/315) is the RED,
-  pg-delta-next test companion to
-  [#307](https://github.com/supabase/pg-toolbelt/pull/307); it does not affect
-  the current-engine parity benchmark state
+- [#307](https://github.com/supabase/pg-toolbelt/pull/307) remains open as
+  adjacent `pg-delta-next` work, and
+  [#315](https://github.com/supabase/pg-toolbelt/pull/315) is its RED test
+  companion. Neither PR affects the current-engine parity benchmark state
 
 Separately, pg-toolbelt
 [#308](https://github.com/supabase/pg-toolbelt/issues/308) and
