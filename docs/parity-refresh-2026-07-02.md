@@ -114,3 +114,54 @@ This is a latest-state reconciliation pass rather than a parity-state change:
 - add this dated report
 
 No benchmark verdicts changed in this refresh.
+
+## 5) Validation notes
+
+This refresh validated the state using:
+
+- `python3 -m pip install -r requirements.txt`
+- `git submodule update --init --recursive`
+- `cd repos/pg-toolbelt && export PATH="$HOME/.bun/bin:$PATH" && bun install --frozen-lockfile`
+- focused pg-delta unit coverage:
+
+```bash
+cd repos/pg-toolbelt
+export PATH="$HOME/.bun/bin:$PATH"
+bun test \
+  packages/pg-delta/src/core/objects/index/index.diff.test.ts \
+  packages/pg-delta/src/core/objects/rls-policy/changes/rls-policy.alter.test.ts \
+  packages/pg-delta/src/core/objects/trigger/changes/trigger.alter.test.ts \
+  packages/pg-delta/src/core/objects/table/table.diff.test.ts \
+  packages/pg-delta/src/core/plan/sql-format/format-trigger-quoted-name.test.ts
+```
+
+Result: **41 pass / 0 fail**.
+
+- repository-local validation:
+
+```bash
+python3 -m unittest tests.test_review_memory tests.test_compare_resolved_benchmark
+python3 -m json.tool benchmark/review-memory.json >/dev/null
+TOKEN="$(env -u GITHUB_TOKEN gh auth token)"
+GITHUB_TOKEN="$TOKEN" DRY_RUN=true python3 scripts/compare_issues.py
+GITHUB_TOKEN="$TOKEN" DRY_RUN=true OUTPUT_MODE=benchmark python3 scripts/compare_resolved.py
+```
+
+Results:
+
+- `tests.test_review_memory` + `tests.test_compare_resolved_benchmark`:
+  **9 tests passed**
+- `benchmark/review-memory.json` parsed cleanly
+- `compare_issues.py` dry-run returned **0 issues**
+- `compare_resolved.py` dry-run returned **0 resolved issues**
+
+As in prior refreshes, the two dry-run scripts still report zero because they
+filter on upstream `Bug` / `Feature` labels while the parity-relevant pgschema
+items remain mostly unlabeled. The manual unlabeled-issue sweep remains
+necessary.
+
+Because both checked-in upstream heads were unchanged versus the 2026-07-01
+refresh, this pass reused the prior exact benchmark-020 runtime conclusion
+instead of re-running the heavier live diff probe: the most recent exact
+table-constraint repro remains the 2026-06-24 zero-change result already
+recorded in benchmark 020 and the prior dated refresh reports.
