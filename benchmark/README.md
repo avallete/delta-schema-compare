@@ -4,7 +4,7 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-07-01)
+## Latest refresh snapshot (2026-07-02)
 
 Refreshed against:
 
@@ -35,22 +35,28 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-There is no benchmark-matrix parity delta versus the 2026-06-30 refresh:
+There is no benchmark-matrix parity delta versus the 2026-07-01 refresh:
 benchmark 020 remains the only active resolved-issue gap.
 
-There is also no upstream code-head delta versus the 2026-06-30 refresh:
+There is also no upstream code-head delta versus the 2026-07-01 refresh:
 `pg-delta` remains at `9284412d71635308ebb0c1537e0b0183d2cfa4da`, and
 `pgschema` remains at `c281905f82d91a9bcf6c764ac4b1792cdf42ba04`.
 
-A targeted GitHub sweep for updates after the 2026-06-30 refresh found no newer
-pgschema issue or PR activity. On the pg-toolbelt side, the only newer PR
-activity is open
-[#307](https://github.com/supabase/pg-toolbelt/pull/307)
-(`pg-delta-next` orderless declarative apply work), which is adjacent next
-engine work rather than an exact duplicate of any current benchmark or
-draft-only parity item.
+A targeted GitHub sweep for updates after `2026-07-01T07:35:00Z` again found
+no newer pgschema issue or PR activity. On the pg-toolbelt side, newer open PR
+activity now includes
+[#285](https://github.com/supabase/pg-toolbelt/pull/285),
+[#288](https://github.com/supabase/pg-toolbelt/pull/288),
+[#291](https://github.com/supabase/pg-toolbelt/pull/291),
+[#307](https://github.com/supabase/pg-toolbelt/pull/307), and
+[#316](https://github.com/supabase/pg-toolbelt/pull/316). PR #285 still covers
+the remaining trigger enabled-state slice from pgschema PR #479, while #288
+(range-type creation dependencies), #291 (procedure expression dependents),
+#307 (`pg-delta-next` work), and #316 (leading enum additions) remain adjacent
+rather than exact duplicates of benchmark 020 or the current draft-only parity
+items.
 
-Because the checked-in upstream heads and the parity-relevant issue set are
+Because the checked-in upstream heads and the benchmark verdict set are
 unchanged, the latest focused runtime evidence for the active gaps also stays
 the same: benchmark 020 still reproduces as a zero-change table-constraint
 diff, and the remaining trigger enabled-state slice from pgschema PR #479
@@ -224,8 +230,9 @@ Existing pg-toolbelt PR activity was also rechecked during this refresh:
   This is adjacent to historical materialized-view parity work, but it is not
   an exact duplicate of benchmark 008, benchmark 020, or the current draft-only
   candidates
-- [#304](https://github.com/supabase/pg-toolbelt/issues/304) /
-  [#313](https://github.com/supabase/pg-toolbelt/pull/313) cover leading enum
+- [#304](https://github.com/supabase/pg-toolbelt/issues/304),
+  [#313](https://github.com/supabase/pg-toolbelt/pull/313), and
+  [#316](https://github.com/supabase/pg-toolbelt/pull/316) cover leading enum
   value insert ordering. No matching pgschema benchmark or screened issue
   currently maps to this exact scenario
 - [#311](https://github.com/supabase/pg-toolbelt/issues/311) /
@@ -233,6 +240,9 @@ Existing pg-toolbelt PR activity was also rechecked during this refresh:
   foreign-key cycles in declarative apply. This is useful adjacent dependency
   work, but it is not an exact duplicate of benchmark 020 or the current
   draft-only items #439 / #444 / #479
+- [#288](https://github.com/supabase/pg-toolbelt/pull/288) covers range-type
+  creation dependencies in `pg-topo`. This is useful topology work, but it
+  does not map to a current pgschema benchmark or draft-only parity item
 - [#307](https://github.com/supabase/pg-toolbelt/pull/307) remains open as
   adjacent `pg-delta-next` work, and
   [#315](https://github.com/supabase/pg-toolbelt/pull/315) is its RED test

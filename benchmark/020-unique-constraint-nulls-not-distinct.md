@@ -21,17 +21,24 @@ This matters because the downgrade is silent. A migration plan that emits
 `UNIQUE (a, b)` instead of `UNIQUE NULLS NOT DISTINCT (a, b)` looks plausible,
 but it weakens uniqueness semantics for nullable columns.
 
-## Refresh note (2026-07-01)
+## Refresh note (2026-07-02)
 
-The checked-in upstream heads are unchanged from the 2026-06-30 refresh:
+The checked-in upstream heads are unchanged from the 2026-07-01 refresh:
 `pg-delta@9284412d71635308ebb0c1537e0b0183d2cfa4da` and
 `pgschema@c281905f82d91a9bcf6c764ac4b1792cdf42ba04`.
 
-A targeted GitHub sweep for updates after the 2026-06-30 refresh found no newer
-pgschema issue or PR movement. The only newer pg-toolbelt PR activity is open
-[#307](https://github.com/supabase/pg-toolbelt/pull/307), which is adjacent
-`pg-delta-next` work rather than an exact duplicate of this table-constraint
-parity gap.
+A targeted GitHub sweep for updates after `2026-07-01T07:35:00Z` again found
+no newer pgschema issue or PR movement. On the pg-toolbelt side, newer open PR
+activity now includes
+[#285](https://github.com/supabase/pg-toolbelt/pull/285),
+[#288](https://github.com/supabase/pg-toolbelt/pull/288),
+[#291](https://github.com/supabase/pg-toolbelt/pull/291),
+[#307](https://github.com/supabase/pg-toolbelt/pull/307), and
+[#316](https://github.com/supabase/pg-toolbelt/pull/316). PR #285 still covers
+the remaining trigger enabled-state slice from pgschema PR #479, while #288
+(range-type creation dependencies), #291 (procedure expression dependents),
+#307 (`pg-delta-next` work), and #316 (leading enum additions) remain adjacent
+rather than exact duplicates of this table-constraint parity gap.
 
 There is therefore no benchmark-state delta: no exact pg-toolbelt issue or PR
 exists yet for this table-constraint scenario, and benchmark 020 remains the
@@ -99,7 +106,7 @@ The merged change added:
 | Constraint diff compares `NULLS NOT DISTINCT` on table constraints | No - `src/core/objects/table/table.diff.ts` compares structured fields but not the full rendered definition |
 | Constraint `definition` is captured from the catalog | Yes - `pg_get_constraintdef(c.oid, true)` is stored on the table constraint model |
 | Integration regression for `UNIQUE NULLS NOT DISTINCT` table constraints | No - `tests/integration/constraint-operations.test.ts` only covers plain `UNIQUE (...)` |
-| Existing pg-toolbelt issue / PR for this exact scenario | No - none found through the 2026-06-30 refresh |
+| Existing pg-toolbelt issue / PR for this exact scenario | No - none found through the 2026-07-02 refresh |
 
 ## Comparison of approaches
 
