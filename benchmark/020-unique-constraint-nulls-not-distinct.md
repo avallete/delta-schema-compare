@@ -21,34 +21,35 @@ This matters because the downgrade is silent. A migration plan that emits
 `UNIQUE (a, b)` instead of `UNIQUE NULLS NOT DISTINCT (a, b)` looks plausible,
 but it weakens uniqueness semantics for nullable columns.
 
-## Refresh note (2026-07-02)
+## Refresh note (2026-07-03)
 
-The checked-in upstream heads are unchanged from the 2026-07-01 refresh:
-`pg-delta@9284412d71635308ebb0c1537e0b0183d2cfa4da` and
-`pgschema@c281905f82d91a9bcf6c764ac4b1792cdf42ba04`.
+The checked-in pg-delta head is unchanged from the 2026-07-02 refresh:
+`pg-delta@9284412d71635308ebb0c1537e0b0183d2cfa4da`.
 
-A targeted GitHub sweep for updates after `2026-07-01T07:35:00Z` again found
-no newer pgschema issue or PR movement. On the pg-toolbelt side, newer open PR
-activity now includes
-[#285](https://github.com/supabase/pg-toolbelt/pull/285),
-[#288](https://github.com/supabase/pg-toolbelt/pull/288),
-[#291](https://github.com/supabase/pg-toolbelt/pull/291),
-[#307](https://github.com/supabase/pg-toolbelt/pull/307), and
-[#316](https://github.com/supabase/pg-toolbelt/pull/316). PR #285 still covers
-the remaining trigger enabled-state slice from pgschema PR #479, while #288
-(range-type creation dependencies), #291 (procedure expression dependents),
-#307 (`pg-delta-next` work), and #316 (leading enum additions) remain adjacent
-rather than exact duplicates of this table-constraint parity gap.
+`pgschema` advanced to `20e272b2364a0d79ba400f35f2fb59aa1fbf7714` via merged
+[pgschema#497](https://github.com/pgplex/pgschema/pull/497), and the targeted
+GitHub sweep after `2026-07-02T07:00:33Z` found new partitioning-related
+activity in pgschema issues [#495](https://github.com/pgplex/pgschema/issues/495),
+[#496](https://github.com/pgplex/pgschema/issues/496), and
+[#499](https://github.com/pgplex/pgschema/issues/499). Those findings do not
+change this benchmark:
 
-There is therefore no benchmark-state delta: no exact pg-toolbelt issue or PR
-exists yet for this table-constraint scenario, and benchmark 020 remains the
-only active resolved-issue gap in the matrix.
+- **#495** is already covered in current pg-delta's partition-clone constraint
+  handling
+- **#496** is already covered in current pg-delta's `PARTITION OF` create path
+- **#499** is a new draft-only open parity gap for child-specific column
+  elements on `PARTITION OF` create, not a table-constraint
+  `NULLS NOT DISTINCT` scenario
 
-Because neither upstream head moved, the focused 2026-06-24 diff probe remains
-the latest exact runtime verification for this scenario. It still reported zero
-planned changes when only the definition changed from `UNIQUE (a, b)` to
-`UNIQUE NULLS NOT DISTINCT (a, b)`, confirming that the modifier is still
-ignored in the table-constraint diff logic.
+There is therefore still no benchmark-state delta: no exact pg-toolbelt issue
+or PR exists yet for this table-constraint scenario, and benchmark 020 remains
+the only active resolved-issue gap in the matrix.
+
+Because the pg-delta head did not move, the focused 2026-06-24 diff probe
+remains the latest exact runtime verification for this scenario. It still
+reported zero planned changes when only the definition changed from
+`UNIQUE (a, b)` to `UNIQUE NULLS NOT DISTINCT (a, b)`, confirming that the
+modifier is still ignored in the table-constraint diff logic.
 
 This refresh also keeps the same asymmetric-support conclusion: creating a
 brand-new table constraint with `UNIQUE NULLS NOT DISTINCT` works, but changing

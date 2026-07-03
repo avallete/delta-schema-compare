@@ -4,12 +4,12 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-07-02)
+## Latest refresh snapshot (2026-07-03)
 
 Refreshed against:
 
 - `repos/pg-toolbelt` @ `9284412d71635308ebb0c1537e0b0183d2cfa4da`
-- `repos/pgschema` @ `c281905f82d91a9bcf6c764ac4b1792cdf42ba04`
+- `repos/pgschema` @ `20e272b2364a0d79ba400f35f2fb59aa1fbf7714`
 
 ## Benchmark status matrix
 
@@ -35,38 +35,45 @@ Only this resolved-issue benchmark scenario remains active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 
-There is no benchmark-matrix parity delta versus the 2026-07-01 refresh:
+There is no benchmark-matrix parity delta versus the 2026-07-02 refresh:
 benchmark 020 remains the only active resolved-issue gap.
 
-There is also no upstream code-head delta versus the 2026-07-01 refresh:
-`pg-delta` remains at `9284412d71635308ebb0c1537e0b0183d2cfa4da`, and
-`pgschema` remains at `c281905f82d91a9bcf6c764ac4b1792cdf42ba04`.
+There is a pgschema code-head delta in this refresh:
+`pgschema` advanced to `20e272b2364a0d79ba400f35f2fb59aa1fbf7714` via merged
+[pgschema#497](https://github.com/pgplex/pgschema/pull/497), while
+`pg-delta` remains at `9284412d71635308ebb0c1537e0b0183d2cfa4da`.
 
-A targeted GitHub sweep for updates after `2026-07-01T07:35:00Z` again found
-no newer pgschema issue or PR activity. On the pg-toolbelt side, newer open PR
-activity now includes
-[#285](https://github.com/supabase/pg-toolbelt/pull/285),
-[#288](https://github.com/supabase/pg-toolbelt/pull/288),
-[#291](https://github.com/supabase/pg-toolbelt/pull/291),
-[#307](https://github.com/supabase/pg-toolbelt/pull/307), and
-[#316](https://github.com/supabase/pg-toolbelt/pull/316). PR #285 still covers
-the remaining trigger enabled-state slice from pgschema PR #479, while #288
-(range-type creation dependencies), #291 (procedure expression dependents),
-#307 (`pg-delta-next` work), and #316 (leading enum additions) remain adjacent
-rather than exact duplicates of benchmark 020 or the current draft-only parity
-items.
+A targeted GitHub sweep for updates after `2026-07-02T07:00:33Z` found three
+new partitioning-related pgschema updates:
 
-Because the checked-in upstream heads and the benchmark verdict set are
-unchanged, the latest focused runtime evidence for the active gaps also stays
-the same: benchmark 020 still reproduces as a zero-change table-constraint
-diff, and the remaining trigger enabled-state slice from pgschema PR #479
-remains exact in-flight work under pg-toolbelt PR #285 rather than an
-untracked draft-only gap.
+- **#495** partition-child PK / UNIQUE constraints created as local instead of
+  inherited clones — **covered** in current pg-delta. A focused local
+  `diffTables(...)` probe returned `0` changes between a child-local `UNIQUE`
+  constraint and the inherited partition-clone form, matching current
+  `coninhcount`-based clone handling
+- **#496** detached standalone partition children on create — **covered** in
+  current pg-delta. A focused local `CreateTable` probe emitted
+  `CREATE TABLE ... PARTITION OF ... FOR VALUES ...`, and open
+  [pgschema#498](https://github.com/pgplex/pgschema/pull/498) is upstream
+  in-flight work for pgschema's create path rather than a new pg-delta gap
+- **#499** child-specific column elements on `PARTITION OF` create —
+  **not covered** in current pg-delta. There is still no exact pg-toolbelt
+  issue or PR for this narrow case, so draft-only tracker text is now saved in
+  [`docs/parity-issue-drafts-2026-07-03.md`](../docs/parity-issue-drafts-2026-07-03.md)
+
+No new pg-toolbelt issue or PR activity was found for benchmark 020, pgschema
+#366, #404, #439, #444, or the trigger enabled-state slice from pgschema
+PR #479. Open [pg-toolbelt#285](https://github.com/supabase/pg-toolbelt/pull/285)
+remains the exact in-flight tracker for trigger enabled / disabled state, while
+the newer partitioning findings do not introduce a duplicate tracker.
+
+Benchmark 020 still reproduces as a zero-change table-constraint diff, so it
+remains the only active benchmarked gap after this partitioning refresh.
 
 ## Open pgschema issue screening (current state)
 
-This pass does not change the screened open-issue set. The current still-open
-reviewed issue set remains:
+This pass expands the screened open-issue set with the new partitioning issues
+#496 and #499. The current still-open reviewed issue set is:
 
 Screened candidates:
 
@@ -86,6 +93,16 @@ Screened candidates:
   under `--qualify-schema` — **not parity work for pg-delta**; this is a
   follow-up on pgschema's dump-only schema-qualification flag rather than a
   live-catalog diff or migration-planning gap
+- **#496** detached standalone partition children on create — **covered** in
+  current pg-delta; `table.model.ts` extracts `parent_schema` /
+  `partition_bound`, `table.create.ts` emits `CREATE TABLE ... PARTITION OF ...`,
+  and existing roundtrip coverage lives in `table-operations.test.ts`
+- **#499** child-specific column elements on `PARTITION OF` create —
+  **not covered** in current pg-delta; `table.create.ts` short-circuits
+  partition children to a bare `PARTITION OF ... <bound>` statement and the
+  created-table diff adds no follow-up column alters. No exact pg-toolbelt
+  issue or PR exists yet, and the saved draft now lives in
+  [`docs/parity-issue-drafts-2026-07-03.md`](../docs/parity-issue-drafts-2026-07-03.md)
 
 Historical draft text is recorded in markdown for both the older tracked
 scenarios and the current draft-only uncovered candidates:
@@ -96,12 +113,17 @@ scenarios and the current draft-only uncovered candidates:
 - [`docs/parity-issue-drafts-2026-06-01.md`](../docs/parity-issue-drafts-2026-06-01.md)
 - [`docs/parity-issue-drafts-2026-06-17.md`](../docs/parity-issue-drafts-2026-06-17.md)
 - [`docs/parity-issue-drafts-2026-06-19.md`](../docs/parity-issue-drafts-2026-06-19.md)
+- [`docs/parity-issue-drafts-2026-07-03.md`](../docs/parity-issue-drafts-2026-07-03.md)
 
 ## Recent closed-issue screening notes
 
 Additional issues that were still carried under open screening in the previous
 snapshot are now closed upstream and keep the same pg-delta parity verdicts:
 
+- **#495** partition-child PK / UNIQUE local-vs-inherited convergence —
+  **covered** in current pg-delta; `table.model.ts` uses `coninhcount > 0` to
+  detect partition clones and `table.diff.ts` skips clone/local churn when the
+  constraint name and definition already match
 - **#362**, **#401**, **#414**, **#415**, **#416**, **#420**, **#427**, and
   **#436** — **covered** in current pg-delta
 - **#407**, **#409**, **#418**, **#419**, **#421**, **#422**, **#429**,
@@ -186,9 +208,20 @@ snapshot are now closed upstream and keep the same pg-delta parity verdicts:
 
 ## Open upstream PR watch list
 
-No parity-relevant pgschema PRs remain open after the 2026-06-26 refresh.
-Recent closures remain as follows:
+Recent parity-relevant pgschema PR activity is now:
 
+- pgschema [#497](https://github.com/pgplex/pgschema/pull/497) (`fix:
+  partition child PK/UNIQUE constraints cause perpetual plan drift`) is now
+  **covered** in current pg-delta. A focused local diff probe returned `0`
+  planned changes between a child-local `UNIQUE` constraint and the inherited
+  partition-clone form, matching the current `coninhcount`-based clone
+  handling in `table.model.ts` and `table.diff.ts`
+- pgschema [#498](https://github.com/pgplex/pgschema/pull/498) (`fix: emit
+  PARTITION OF for partition children on create path`) is still **open**
+  upstream, but the corresponding detached-partition create path is already
+  **covered** in current pg-delta. The remaining follow-up gap is open issue
+  [#499](https://github.com/pgplex/pgschema/issues/499) for child-specific
+  column elements, not the base `PARTITION OF` attachment itself
 - pgschema [#475](https://github.com/pgplex/pgschema/pull/475) (`fix: order
   modified foreign keys after added unique constraints`) now looks **covered**
   in current pg-delta. A focused 2026-06-23 plan probe for the saved draft SQL
@@ -213,7 +246,7 @@ Recent closures remain as follows:
   [`docs/parity-issue-drafts-2026-06-19.md`](../docs/parity-issue-drafts-2026-06-19.md)
   is retained as historical review context only
 
-The new pg-delta head in this refresh
+The checked-in pg-delta head in this refresh
 (`9284412d71635308ebb0c1537e0b0183d2cfa4da`) already includes the trigger
 quoted-name formatter coverage and matching integration regression checked in
 the 2026-06-26 pass, but it still does not include the unmerged trigger
