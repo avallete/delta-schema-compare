@@ -21,29 +21,34 @@ This matters because the downgrade is silent. A migration plan that emits
 `UNIQUE (a, b)` instead of `UNIQUE NULLS NOT DISTINCT (a, b)` looks plausible,
 but it weakens uniqueness semantics for nullable columns.
 
-## Refresh note (2026-07-03)
+## Refresh note (2026-07-04)
 
-The checked-in pg-delta head is unchanged from the 2026-07-02 refresh:
+The checked-in pg-delta head is unchanged from the 2026-07-03 refresh:
 `pg-delta@9284412d71635308ebb0c1537e0b0183d2cfa4da`.
 
-`pgschema` advanced to `20e272b2364a0d79ba400f35f2fb59aa1fbf7714` via merged
-[pgschema#497](https://github.com/pgplex/pgschema/pull/497), and the targeted
-GitHub sweep after `2026-07-02T07:00:33Z` found new partitioning-related
-activity in pgschema issues [#495](https://github.com/pgplex/pgschema/issues/495),
-[#496](https://github.com/pgplex/pgschema/issues/496), and
-[#499](https://github.com/pgplex/pgschema/issues/499). Those findings do not
-change this benchmark:
+`pgschema` advanced to `7011b0a78cdd292ec24b9ddb775dc1c6ec84abe2` via merged
+[pgschema#498](https://github.com/pgplex/pgschema/pull/498) and
+[pgschema#500](https://github.com/pgplex/pgschema/pull/500), and the targeted
+GitHub sweep after `2026-07-03T07:17:17Z` found one newly promoted benchmark
+gap plus two new open issues. Those findings do not change this benchmark:
 
-- **#495** is already covered in current pg-delta's partition-clone constraint
-  handling
 - **#496** is already covered in current pg-delta's `PARTITION OF` create path
-- **#499** is a new draft-only open parity gap for child-specific column
-  elements on `PARTITION OF` create, not a table-constraint
+  and is now closed upstream by merged
+  [pgschema#498](https://github.com/pgplex/pgschema/pull/498)
+- **#499** is now closed upstream by merged
+  [pgschema#500](https://github.com/pgplex/pgschema/pull/500) and promoted into
+  the benchmark matrix as [021](021-partition-child-column-overrides.md); it is
+  a partition-child column-override scenario, not a table-constraint
   `NULLS NOT DISTINCT` scenario
+- **#501** is a new draft-only open parity gap for PostgreSQL 18 `VIRTUAL`
+  generated columns, not a table-constraint `NULLS NOT DISTINCT` scenario
+- **#502** is a new open pgschema-only SQL rewrite issue and is not parity work
+  for pg-delta
 
-There is therefore still no benchmark-state delta: no exact pg-toolbelt issue
-or PR exists yet for this table-constraint scenario, and benchmark 020 remains
-the only active resolved-issue gap in the matrix.
+There is therefore still no benchmark-state delta for this exact scenario: no
+exact pg-toolbelt issue or PR exists yet for the table-constraint path, and
+benchmark 020 remains active in the matrix alongside the newly added
+benchmark 021.
 
 Because the pg-delta head did not move, the focused 2026-06-24 diff probe
 remains the latest exact runtime verification for this scenario. It still

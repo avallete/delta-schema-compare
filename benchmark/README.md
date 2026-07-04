@@ -4,12 +4,12 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-07-03)
+## Latest refresh snapshot (2026-07-04)
 
 Refreshed against:
 
 - `repos/pg-toolbelt` @ `9284412d71635308ebb0c1537e0b0183d2cfa4da`
-- `repos/pgschema` @ `20e272b2364a0d79ba400f35f2fb59aa1fbf7714`
+- `repos/pgschema` @ `7011b0a78cdd292ec24b9ddb775dc1c6ec84abe2`
 
 ## Benchmark status matrix
 
@@ -25,55 +25,70 @@ Refreshed against:
 | 018 | [Cross-table RLS policy ordering](018-cross-table-rls-policy-ordering.md) | [#373](https://github.com/pgplex/pgschema/issues/373) | [#184](https://github.com/supabase/pg-toolbelt/issues/184) (closed) | [#187](https://github.com/supabase/pg-toolbelt/pull/187) (merged) | **Solved in pg-delta** |
 | 019 | [Column-less CHECK NO INHERIT](019-columnless-check-no-inherit.md) | [#386](https://github.com/pgplex/pgschema/issues/386) | [#198](https://github.com/supabase/pg-toolbelt/issues/198) (closed) | [#212](https://github.com/supabase/pg-toolbelt/pull/212) (merged) | **Solved in pg-delta** |
 | 020 | [UNIQUE constraint NULLS NOT DISTINCT](020-unique-constraint-nulls-not-distinct.md) | [#412](https://github.com/pgplex/pgschema/issues/412) | none found | none found | **Not covered** |
+| 021 | [Partition child column overrides](021-partition-child-column-overrides.md) | [#499](https://github.com/pgplex/pgschema/issues/499) | none found | none found | **Not covered** |
 
 > Historical benchmark files are retained even after pg-delta fixes land. The
 > status matrix above is the current source of truth for parity state.
 
 ## Active benchmarked gaps after refresh
 
-Only this resolved-issue benchmark scenario remains active as unresolved:
+Two resolved-issue benchmark scenarios remain active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
+- **021** — child-specific `DEFAULT` / `NOT NULL` column overrides in
+  `CREATE TABLE ... PARTITION OF ...`
 
-There is no benchmark-matrix parity delta versus the 2026-07-02 refresh:
-benchmark 020 remains the only active resolved-issue gap.
+There **is** a benchmark-matrix parity delta versus the 2026-07-03 refresh:
+benchmark 021 is newly promoted from the prior draft-only open finding after
+pgschema issue #499 closed in merged
+[pgschema#500](https://github.com/pgplex/pgschema/pull/500).
 
 There is a pgschema code-head delta in this refresh:
-`pgschema` advanced to `20e272b2364a0d79ba400f35f2fb59aa1fbf7714` via merged
-[pgschema#497](https://github.com/pgplex/pgschema/pull/497), while
+`pgschema` advanced to `7011b0a78cdd292ec24b9ddb775dc1c6ec84abe2` via merged
+[pgschema#498](https://github.com/pgplex/pgschema/pull/498) and
+[pgschema#500](https://github.com/pgplex/pgschema/pull/500), while
 `pg-delta` remains at `9284412d71635308ebb0c1537e0b0183d2cfa4da`.
 
-A targeted GitHub sweep for updates after `2026-07-02T07:00:33Z` found three
-new partitioning-related pgschema updates:
+A targeted GitHub sweep for updates after `2026-07-03T07:17:17Z` found four
+new or newly-closed pgschema updates relevant to the current parity view:
 
-- **#495** partition-child PK / UNIQUE constraints created as local instead of
-  inherited clones — **covered** in current pg-delta. A focused local
-  `diffTables(...)` probe returned `0` changes between a child-local `UNIQUE`
-  constraint and the inherited partition-clone form, matching current
-  `coninhcount`-based clone handling
 - **#496** detached standalone partition children on create — **covered** in
-  current pg-delta. A focused local `CreateTable` probe emitted
-  `CREATE TABLE ... PARTITION OF ... FOR VALUES ...`, and open
-  [pgschema#498](https://github.com/pgplex/pgschema/pull/498) is upstream
-  in-flight work for pgschema's create path rather than a new pg-delta gap
+  current pg-delta. The upstream issue is now closed by merged
+  [pgschema#498](https://github.com/pgplex/pgschema/pull/498), and a focused
+  local `CreateTable` probe still emits
+  `CREATE TABLE ... PARTITION OF ... FOR VALUES ...`
 - **#499** child-specific column elements on `PARTITION OF` create —
-  **not covered** in current pg-delta. There is still no exact pg-toolbelt
-  issue or PR for this narrow case, so draft-only tracker text is now saved in
-  [`docs/parity-issue-drafts-2026-07-03.md`](../docs/parity-issue-drafts-2026-07-03.md)
+  **not covered** in current pg-delta. The upstream issue is now closed by
+  merged [pgschema#500](https://github.com/pgplex/pgschema/pull/500), so this
+  scenario is now benchmarked as [021](021-partition-child-column-overrides.md)
+- **#501** PostgreSQL 18 `VIRTUAL` generated columns — **not covered** in
+  current pg-delta. The table model collapses `attgenerated` to a boolean and
+  current serialization hard-codes generated columns as `... STORED`, so a
+  draft-only tracker note is now saved in
+  [`docs/parity-issue-drafts-2026-07-04.md`](../docs/parity-issue-drafts-2026-07-04.md)
+- **#502** `COMMENT ON COLUMN` misresolution when table name equals schema name
+  — **not parity work for pg-delta**; this is specific to pgschema's
+  desired-state SQL rewrite path rather than pg-delta's live-catalog diff
+  model
 
-No new pg-toolbelt issue or PR activity was found for benchmark 020, pgschema
-#366, #404, #439, #444, or the trigger enabled-state slice from pgschema
-PR #479. Open [pg-toolbelt#285](https://github.com/supabase/pg-toolbelt/pull/285)
-remains the exact in-flight tracker for trigger enabled / disabled state, while
-the newer partitioning findings do not introduce a duplicate tracker.
+No new exact pg-toolbelt issue or PR activity was found for benchmark 020,
+benchmark 021, pgschema #366, #404, #439, #444, or the trigger enabled-state
+slice from pgschema PR #479. Open
+[pg-toolbelt#285](https://github.com/supabase/pg-toolbelt/pull/285) remains
+the exact in-flight tracker for trigger enabled / disabled state, while the new
+partitioning and generated-column findings do not introduce a duplicate
+tracker.
 
-Benchmark 020 still reproduces as a zero-change table-constraint diff, so it
-remains the only active benchmarked gap after this partitioning refresh.
+Benchmark 020 still reproduces as a zero-change table-constraint diff, and the
+focused partition-child probe still emits a bare `PARTITION OF ... FOR VALUES`
+statement with no child-specific column overrides. Those two executed checks
+leave benchmarks 020 and 021 as the active benchmarked gaps after this refresh.
 
 ## Open pgschema issue screening (current state)
 
-This pass expands the screened open-issue set with the new partitioning issues
-#496 and #499. The current still-open reviewed issue set is:
+This pass removes the now-closed partitioning issues #496 / #499 from open
+screening and adds the new open issues #501 / #502. The current still-open
+reviewed issue set is:
 
 Screened candidates:
 
@@ -93,16 +108,17 @@ Screened candidates:
   under `--qualify-schema` — **not parity work for pg-delta**; this is a
   follow-up on pgschema's dump-only schema-qualification flag rather than a
   live-catalog diff or migration-planning gap
-- **#496** detached standalone partition children on create — **covered** in
-  current pg-delta; `table.model.ts` extracts `parent_schema` /
-  `partition_bound`, `table.create.ts` emits `CREATE TABLE ... PARTITION OF ...`,
-  and existing roundtrip coverage lives in `table-operations.test.ts`
-- **#499** child-specific column elements on `PARTITION OF` create —
-  **not covered** in current pg-delta; `table.create.ts` short-circuits
-  partition children to a bare `PARTITION OF ... <bound>` statement and the
-  created-table diff adds no follow-up column alters. No exact pg-toolbelt
-  issue or PR exists yet, and the saved draft now lives in
-  [`docs/parity-issue-drafts-2026-07-03.md`](../docs/parity-issue-drafts-2026-07-03.md)
+- **#501** PostgreSQL 18 `VIRTUAL` generated columns — **not covered** in
+  current pg-delta; `table.model.ts` collapses `attgenerated` to
+  `is_generated: boolean`, `table.create.ts` / `table.alter.ts` serialize
+  generated columns as `... STORED`, and no integration regression currently
+  covers `VIRTUAL`. No exact pg-toolbelt issue or PR exists yet, and the saved
+  draft now lives in
+  [`docs/parity-issue-drafts-2026-07-04.md`](../docs/parity-issue-drafts-2026-07-04.md)
+- **#502** `COMMENT ON COLUMN` misresolved when table name equals schema name —
+  **not parity work for pg-delta**; pg-delta extracts column comments directly
+  from the live catalog and serializes fully qualified comment DDL instead of
+  replaying desired-state SQL through a rewrite step
 
 Historical draft text is recorded in markdown for both the older tracked
 scenarios and the current draft-only uncovered candidates:
@@ -114,6 +130,7 @@ scenarios and the current draft-only uncovered candidates:
 - [`docs/parity-issue-drafts-2026-06-17.md`](../docs/parity-issue-drafts-2026-06-17.md)
 - [`docs/parity-issue-drafts-2026-06-19.md`](../docs/parity-issue-drafts-2026-06-19.md)
 - [`docs/parity-issue-drafts-2026-07-03.md`](../docs/parity-issue-drafts-2026-07-03.md)
+- [`docs/parity-issue-drafts-2026-07-04.md`](../docs/parity-issue-drafts-2026-07-04.md)
 
 ## Recent closed-issue screening notes
 
@@ -124,6 +141,16 @@ snapshot are now closed upstream and keep the same pg-delta parity verdicts:
   **covered** in current pg-delta; `table.model.ts` uses `coninhcount > 0` to
   detect partition clones and `table.diff.ts` skips clone/local churn when the
   constraint name and definition already match
+- **#496** detached standalone partition children on create — **covered** in
+  current pg-delta; `table.model.ts` extracts `parent_schema` /
+  `partition_bound`, `table.create.ts` emits `CREATE TABLE ... PARTITION OF ...`,
+  and merged [pgschema#498](https://github.com/pgplex/pgschema/pull/498) closes
+  the upstream parity gap
+- **#499** child-specific column elements on `PARTITION OF` create —
+  **not covered** in current pg-delta; merged
+  [pgschema#500](https://github.com/pgplex/pgschema/pull/500) closes the
+  upstream issue, and the remaining pg-delta gap is now benchmarked as
+  [021](021-partition-child-column-overrides.md)
 - **#362**, **#401**, **#414**, **#415**, **#416**, **#420**, **#427**, and
   **#436** — **covered** in current pg-delta
 - **#407**, **#409**, **#418**, **#419**, **#421**, **#422**, **#429**,
@@ -217,11 +244,14 @@ Recent parity-relevant pgschema PR activity is now:
   partition-clone form, matching the current `coninhcount`-based clone
   handling in `table.model.ts` and `table.diff.ts`
 - pgschema [#498](https://github.com/pgplex/pgschema/pull/498) (`fix: emit
-  PARTITION OF for partition children on create path`) is still **open**
-  upstream, but the corresponding detached-partition create path is already
-  **covered** in current pg-delta. The remaining follow-up gap is open issue
-  [#499](https://github.com/pgplex/pgschema/issues/499) for child-specific
-  column elements, not the base `PARTITION OF` attachment itself
+  PARTITION OF for partition children on create path`) is now **merged**, and
+  the corresponding detached-partition create path remains **covered** in
+  current pg-delta
+- pgschema [#500](https://github.com/pgplex/pgschema/pull/500) (`fix: emit
+  per-child column overrides in PARTITION OF`) is now **merged**, but the exact
+  child-specific `DEFAULT` / `NOT NULL` override path is still **not covered**
+  in current pg-delta and is now benchmarked as
+  [021](021-partition-child-column-overrides.md)
 - pgschema [#475](https://github.com/pgplex/pgschema/pull/475) (`fix: order
   modified foreign keys after added unique constraints`) now looks **covered**
   in current pg-delta. A focused 2026-06-23 plan probe for the saved draft SQL
@@ -250,10 +280,10 @@ The checked-in pg-delta head in this refresh
 (`9284412d71635308ebb0c1537e0b0183d2cfa4da`) already includes the trigger
 quoted-name formatter coverage and matching integration regression checked in
 the 2026-06-26 pass, but it still does not include the unmerged trigger
-enabled-state work from pg-toolbelt PR #285. Benchmark 020 therefore remains
-the only active resolved-issue benchmark gap, while the remaining trigger-state
-slice from pgschema PR #479 is now tracked by an exact in-flight pg-toolbelt
-PR rather than an untracked draft-only gap.
+enabled-state work from pg-toolbelt PR #285. Benchmarks 020 and 021 therefore
+remain the active resolved-issue benchmark gaps, while the remaining
+trigger-state slice from pgschema PR #479 is now tracked by an exact in-flight
+pg-toolbelt PR rather than an untracked draft-only gap.
 
 Existing pg-toolbelt PR activity was also rechecked during this refresh:
 
