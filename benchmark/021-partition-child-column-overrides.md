@@ -1,0 +1,133 @@
+# Partition child column overrides in `PARTITION OF` create path
+
+> pgschema issue [#499](https://github.com/pgplex/pgschema/issues/499) (closed), fixed by [pgschema#500](https://github.com/pgplex/pgschema/pull/500)
+
+## Context
+
+pgschema issue #499 is the follow-up to the earlier partition-child create-path
+bug from issue #496. After pgschema learned to emit
+`CREATE TABLE ... PARTITION OF ... FOR VALUES ...` for new partition children,
+it still omitted the optional typed table element list that PostgreSQL allows on
+partition children for per-child column overrides.
+
+That remaining slice matters when a partition child needs metadata that differs
+from its parent, such as a child-specific `DEFAULT` or `NOT NULL`. In the
+upstream fix, pgschema only needed `DEFAULT` and `NOT NULL` overrides, but the
+gap is still real for pg-delta because the current serializer returns early for
+partition children and emits only the bare `PARTITION OF ... <bound>` form.
+
+Current pg-delta already covers the base attach path from pgschema #496, so
+this benchmark is intentionally narrower. The missing behavior is not partition
+creation itself; it is preserving child-specific column overrides when a new
+partition child is created.
+
+## Refresh note (2026-07-06)
+
+The checked-in pg-delta head is unchanged from the 2026-07-04 and 2026-07-05
+refreshes: `pg-delta@9284412d71635308ebb0c1537e0b0183d2cfa4da`.
+
+`pgschema` advanced from `7011b0a78cdd292ec24b9ddb775dc1c6ec84abe2` to
+`d2410fc47267a5c623e62ad4f78edeeee0106e71` via merged
+[pgschema#503](https://github.com/pgplex/pgschema/pull/503).
+
+That upstream delta does not change this exact partition-child column-override
+gap. During this refresh, a focused local `CreateTable` probe against current
+pg-delta still emitted:
+
+```sql
+CREATE TABLE test_schema.orders_us PARTITION OF test_schema.orders FOR VALUES IN ('us')
+```
+
+The child-specific overrides were omitted entirely, so this scenario remains
+not covered. The new benchmark-state delta in this refresh is upstream
+pgschema #501 being promoted into
+[022](022-virtual-generated-columns.md); there is still no exact pg-toolbelt
+issue or PR for this narrow partition-child override case.
+
+## Reproduction SQL
+
+```sql
+CREATE SCHEMA test_schema;
+
+CREATE TABLE test_schema.orders (
+    id bigint NOT NULL,
+    region text NOT NULL,
+    priority integer DEFAULT 0,
+    notes text
+) PARTITION BY LIST (region);
+
+CREATE TABLE test_schema.orders_eu PARTITION OF test_schema.orders
+FOR VALUES IN ('eu');
+```
+
+**Change to diff:**
+
+```sql
+CREATE TABLE test_schema.orders_us PARTITION OF test_schema.orders (
+    priority DEFAULT 10,
+    notes NOT NULL
+) FOR VALUES IN ('us');
+```
+
+**Expected:** pg-delta emits either the inline `PARTITION OF (...)` element list
+or equivalent follow-up DDL that converges to the same catalog state, preserving
+the child-specific `priority DEFAULT 10` and `notes NOT NULL` overrides.
+
+**Actual:** current pg-delta emits only the bare
+`CREATE TABLE ... PARTITION OF ... FOR VALUES ...` statement and drops the
+child-specific column overrides entirely.
+
+## How pgschema handled it
+
+pgschema fixed the issue in PR #500 by comparing child columns to the parent
+table during partition-child creation and emitting per-child `DEFAULT` and
+`NOT NULL` overrides inside the `PARTITION OF (...)` element list when they
+differ from the inherited parent definition.
+
+The merged fix added regression data under:
+
+- `repos/pgschema/testdata/diff/create_table/issue_499_partition_column_overrides/`
+
+It also updated the diff path so the parent table can be looked up from the
+full target IR, not just the current creation batch, which lets the fix work
+for incremental "add one new child partition" plans.
+
+## Current pg-delta status
+
+| Aspect | Status |
+|---|---|
+| Base `PARTITION OF ... FOR VALUES ...` create support | Yes - covered in `src/core/objects/table/changes/table.create.ts` and integration tests |
+| Child-specific `DEFAULT` / `NOT NULL` overrides on partition children | No - the serializer returns early for partition children before column metadata is emitted |
+| Follow-up column alters for created partition children | No - `table.diff.ts` adds constraints/comments/privileges on create, but no column override recovery path |
+| Integration regression for child partition column overrides | No - no roundtrip test covers `PARTITION OF (...)` typed table elements |
+| Existing exact pg-toolbelt issue / PR | No - none found through the 2026-07-04 refresh |
+
+## Comparison of approaches
+
+| | pgschema | pg-delta |
+|---|---|---|
+| **Partition-child create path** | Emits `PARTITION OF ... FOR VALUES ...` | Emits `PARTITION OF ... FOR VALUES ...` |
+| **Per-child column overrides** | Compares child columns to parent and emits `DEFAULT` / `NOT NULL` overrides | Drops overrides by returning early for partition children |
+| **Coverage** | Regression fixture for incremental partition-child creation | No exact integration regression |
+| **Current parity state** | Fixed | Not covered |
+
+## Plan to handle it in pg-delta
+
+1. Extend
+   `repos/pg-toolbelt/packages/pg-delta/src/core/objects/table/changes/table.create.ts`
+   so partition children can optionally serialize PostgreSQL's typed table
+   element list before `FOR VALUES ...` when child columns differ from the
+   parent.
+2. Teach the create path which child column properties are safely expressible in
+   that element list, starting with `DEFAULT` and `NOT NULL`.
+3. If inline serialization is too invasive for some properties, teach the
+   created-table branch in
+   `repos/pg-toolbelt/packages/pg-delta/src/core/objects/table/table.diff.ts`
+   to emit equivalent follow-up column alters immediately after `CreateTable`
+   where PostgreSQL supports them.
+4. Add focused roundtrip coverage in
+   `repos/pg-toolbelt/packages/pg-delta/tests/integration/partitioned-table-operations.test.ts`
+   for a child partition with `DEFAULT` and `NOT NULL` overrides.
+5. Decide separately whether identity, generated-expression, or other future
+   child-specific column metadata should be handled in the same fix or tracked
+   as follow-up scope.
