@@ -21,16 +21,17 @@ this benchmark is intentionally narrower. The missing behavior is not partition
 creation itself; it is preserving child-specific column overrides when a new
 partition child is created.
 
-## Refresh note (2026-07-04)
+## Refresh note (2026-07-06)
 
-The checked-in pg-delta head is unchanged in this refresh:
-`pg-delta@9284412d71635308ebb0c1537e0b0183d2cfa4da`.
+The checked-in pg-delta head is unchanged from the 2026-07-04 and 2026-07-05
+refreshes: `pg-delta@9284412d71635308ebb0c1537e0b0183d2cfa4da`.
 
-`pgschema` advanced to `7011b0a78cdd292ec24b9ddb775dc1c6ec84abe2` via merged
-[pgschema#498](https://github.com/pgplex/pgschema/pull/498) and
-[pgschema#500](https://github.com/pgplex/pgschema/pull/500).
+`pgschema` advanced from `7011b0a78cdd292ec24b9ddb775dc1c6ec84abe2` to
+`d2410fc47267a5c623e62ad4f78edeeee0106e71` via merged
+[pgschema#503](https://github.com/pgplex/pgschema/pull/503).
 
-During this refresh, a focused local `CreateTable` probe against current
+That upstream delta does not change this exact partition-child column-override
+gap. During this refresh, a focused local `CreateTable` probe against current
 pg-delta still emitted:
 
 ```sql
@@ -38,8 +39,10 @@ CREATE TABLE test_schema.orders_us PARTITION OF test_schema.orders FOR VALUES IN
 ```
 
 The child-specific overrides were omitted entirely, so this scenario remains
-not covered. There is still no exact pg-toolbelt issue or PR for this narrow
-case.
+not covered. The new benchmark-state delta in this refresh is upstream
+pgschema #501 being promoted into
+[022](022-virtual-generated-columns.md); there is still no exact pg-toolbelt
+issue or PR for this narrow partition-child override case.
 
 ## Reproduction SQL
 

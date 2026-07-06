@@ -7,6 +7,13 @@ No GitHub issues were opened as part of this refresh. These drafts are saved so
 the findings can be reviewed in a PR first and then promoted to real
 pg-toolbelt issues only if they still look correct.
 
+Update (2026-07-06): pgschema issue #501 was fixed upstream by merged
+[pgschema#503](https://github.com/pgplex/pgschema/pull/503), and the remaining
+pg-delta gap is now benchmarked as
+[`benchmark/022-virtual-generated-columns.md`](../benchmark/022-virtual-generated-columns.md)
+instead of being filed immediately as a new pg-toolbelt issue. The draft below
+is retained as historical pre-promotion context.
+
 ## Duplicate-check summary (pg-toolbelt)
 
 Before writing the draft below, I checked the current open and closed
@@ -32,7 +39,7 @@ No exact open or closed pg-toolbelt issue / PR was found for pgschema #501.
 
 ---
 
-## Draft 1 - pgschema #501 (PostgreSQL 18 `VIRTUAL` generated columns)
+## Historical draft 1 - pgschema #501 (PostgreSQL 18 `VIRTUAL` generated columns)
 
 Relates to pgschema issue #501:
 https://github.com/pgplex/pgschema/issues/501

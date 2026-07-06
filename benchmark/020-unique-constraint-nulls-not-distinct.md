@@ -21,34 +21,32 @@ This matters because the downgrade is silent. A migration plan that emits
 `UNIQUE (a, b)` instead of `UNIQUE NULLS NOT DISTINCT (a, b)` looks plausible,
 but it weakens uniqueness semantics for nullable columns.
 
-## Refresh note (2026-07-04)
+## Refresh note (2026-07-06)
 
-The checked-in pg-delta head is unchanged from the 2026-07-03 refresh:
-`pg-delta@9284412d71635308ebb0c1537e0b0183d2cfa4da`.
+The checked-in pg-delta head is unchanged from the 2026-07-04 and 2026-07-05
+refreshes: `pg-delta@9284412d71635308ebb0c1537e0b0183d2cfa4da`.
 
-`pgschema` advanced to `7011b0a78cdd292ec24b9ddb775dc1c6ec84abe2` via merged
-[pgschema#498](https://github.com/pgplex/pgschema/pull/498) and
-[pgschema#500](https://github.com/pgplex/pgschema/pull/500), and the targeted
-GitHub sweep after `2026-07-03T07:17:17Z` found one newly promoted benchmark
-gap plus two new open issues. Those findings do not change this benchmark:
+`pgschema` advanced from `7011b0a78cdd292ec24b9ddb775dc1c6ec84abe2` to
+`d2410fc47267a5c623e62ad4f78edeeee0106e71` via merged
+[pgschema#503](https://github.com/pgplex/pgschema/pull/503). That upstream
+delta promotes pgschema #501 into benchmark
+[022](022-virtual-generated-columns.md), but it does not change this exact
+table-constraint scenario:
 
-- **#496** is already covered in current pg-delta's `PARTITION OF` create path
-  and is now closed upstream by merged
-  [pgschema#498](https://github.com/pgplex/pgschema/pull/498)
-- **#499** is now closed upstream by merged
-  [pgschema#500](https://github.com/pgplex/pgschema/pull/500) and promoted into
-  the benchmark matrix as [021](021-partition-child-column-overrides.md); it is
-  a partition-child column-override scenario, not a table-constraint
-  `NULLS NOT DISTINCT` scenario
-- **#501** is a new draft-only open parity gap for PostgreSQL 18 `VIRTUAL`
-  generated columns, not a table-constraint `NULLS NOT DISTINCT` scenario
-- **#502** is a new open pgschema-only SQL rewrite issue and is not parity work
-  for pg-delta
+- **#499** remains benchmarked as
+  [021](021-partition-child-column-overrides.md); it is a partition-child
+  column-override scenario, not a table-constraint `NULLS NOT DISTINCT`
+  scenario
+- **#501** is now closed upstream by merged
+  [pgschema#503](https://github.com/pgplex/pgschema/pull/503) and promoted into
+  [022](022-virtual-generated-columns.md); it is a generated-column-kind
+  scenario, not a table-constraint `NULLS NOT DISTINCT` scenario
+- **#502** remains an open pgschema-only SQL rewrite issue and is not parity
+  work for pg-delta
 
 There is therefore still no benchmark-state delta for this exact scenario: no
 exact pg-toolbelt issue or PR exists yet for the table-constraint path, and
-benchmark 020 remains active in the matrix alongside the newly added
-benchmark 021.
+benchmark 020 remains active in the matrix alongside benchmarks 021 and 022.
 
 Because the pg-delta head did not move, the focused 2026-06-24 diff probe
 remains the latest exact runtime verification for this scenario. It still
