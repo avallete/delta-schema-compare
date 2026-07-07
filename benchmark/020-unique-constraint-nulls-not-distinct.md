@@ -21,17 +21,16 @@ This matters because the downgrade is silent. A migration plan that emits
 `UNIQUE (a, b)` instead of `UNIQUE NULLS NOT DISTINCT (a, b)` looks plausible,
 but it weakens uniqueness semantics for nullable columns.
 
-## Refresh note (2026-07-06)
+## Refresh note (2026-07-07)
 
-The checked-in pg-delta head is unchanged from the 2026-07-04 and 2026-07-05
-refreshes: `pg-delta@9284412d71635308ebb0c1537e0b0183d2cfa4da`.
+The checked-in pg-delta head is unchanged from the 2026-07-06 refresh:
+`pg-delta@9284412d71635308ebb0c1537e0b0183d2cfa4da`.
 
-`pgschema` advanced from `7011b0a78cdd292ec24b9ddb775dc1c6ec84abe2` to
-`d2410fc47267a5c623e62ad4f78edeeee0106e71` via merged
-[pgschema#503](https://github.com/pgplex/pgschema/pull/503). That upstream
-delta promotes pgschema #501 into benchmark
-[022](022-virtual-generated-columns.md), but it does not change this exact
-table-constraint scenario:
+`pgschema` advanced from `d2410fc47267a5c623e62ad4f78edeeee0106e71` to
+`62d09975eaac726f055aa62a5baa2961ef7e5a83` via merged
+[pgschema#504](https://github.com/pgplex/pgschema/pull/504). That upstream
+delta closes pgschema #502, but it does not change this exact table-constraint
+scenario:
 
 - **#499** remains benchmarked as
   [021](021-partition-child-column-overrides.md); it is a partition-child
@@ -41,18 +40,18 @@ table-constraint scenario:
   [pgschema#503](https://github.com/pgplex/pgschema/pull/503) and promoted into
   [022](022-virtual-generated-columns.md); it is a generated-column-kind
   scenario, not a table-constraint `NULLS NOT DISTINCT` scenario
-- **#502** remains an open pgschema-only SQL rewrite issue and is not parity
-  work for pg-delta
+- **#502** is now closed upstream by merged
+  [pgschema#504](https://github.com/pgplex/pgschema/pull/504) and remains **not
+  parity work for pg-delta**
 
 There is therefore still no benchmark-state delta for this exact scenario: no
 exact pg-toolbelt issue or PR exists yet for the table-constraint path, and
 benchmark 020 remains active in the matrix alongside benchmarks 021 and 022.
 
-Because the pg-delta head did not move, the focused 2026-06-24 diff probe
-remains the latest exact runtime verification for this scenario. It still
-reported zero planned changes when only the definition changed from
-`UNIQUE (a, b)` to `UNIQUE NULLS NOT DISTINCT (a, b)`, confirming that the
-modifier is still ignored in the table-constraint diff logic.
+During this refresh, a focused local diff probe again reported zero planned
+changes when only the definition changed from `UNIQUE (a, b)` to
+`UNIQUE NULLS NOT DISTINCT (a, b)`, confirming that the modifier is still
+ignored in the table-constraint diff logic.
 
 This refresh also keeps the same asymmetric-support conclusion: creating a
 brand-new table constraint with `UNIQUE NULLS NOT DISTINCT` works, but changing

@@ -17,15 +17,15 @@ mechanism. This benchmark tracks the now-resolved upstream scenario after
 pgschema merged its fix on `main`, while pg-delta's checked-in default-branch
 engine still lacks exact coverage.
 
-## Refresh note (2026-07-06)
+## Refresh note (2026-07-07)
 
-The checked-in pg-delta head is unchanged from the 2026-07-04 and 2026-07-05
-refreshes: `pg-delta@9284412d71635308ebb0c1537e0b0183d2cfa4da`.
+The checked-in pg-delta head is unchanged from the 2026-07-06 refresh:
+`pg-delta@9284412d71635308ebb0c1537e0b0183d2cfa4da`.
 
-`pgschema` advanced from `7011b0a78cdd292ec24b9ddb775dc1c6ec84abe2` to
-`d2410fc47267a5c623e62ad4f78edeeee0106e71` via merged
-[pgschema#503](https://github.com/pgplex/pgschema/pull/503), which closes
-issue #501 upstream.
+`pgschema` advanced from `d2410fc47267a5c623e62ad4f78edeeee0106e71` to
+`62d09975eaac726f055aa62a5baa2961ef7e5a83` via merged
+[pgschema#504](https://github.com/pgplex/pgschema/pull/504). That upstream
+delta does not change this exact generated-column-kind scenario.
 
 During this refresh, a focused local pg-delta probe against the current create
 and alter paths still serialized the PostgreSQL 18 case as:
@@ -36,8 +36,7 @@ CREATE TABLE test_schema.users (first_name text, last_name text, full_name text 
 
 The `VIRTUAL` keyword was lost and replaced by `STORED`, so this scenario
 remains not covered. No exact open or closed pg-toolbelt issue / PR was found
-for this narrow generated-column-kind gap, so the prior 2026-07-04 draft has
-now been promoted into benchmark 022 instead of opening a duplicate tracker.
+for this narrow generated-column-kind gap through the 2026-07-07 refresh.
 
 ## Reproduction SQL
 
@@ -88,7 +87,7 @@ the resolved scenario.
 | `CREATE TABLE` serialization preserves `VIRTUAL` | No - `table.create.ts` hard-codes `... STORED` |
 | `ALTER TABLE ... ADD COLUMN` serialization preserves `VIRTUAL` | No - `table.alter.ts` hard-codes `... STORED` |
 | Integration regression for PostgreSQL 18 `VIRTUAL` generated columns | No - `alter-table-operations.test.ts` covers only `STORED` cases |
-| Existing exact pg-toolbelt issue / PR | No - none found through the 2026-07-06 refresh |
+| Existing exact pg-toolbelt issue / PR | No - none found through the 2026-07-07 refresh |
 
 ## Comparison of approaches
 
