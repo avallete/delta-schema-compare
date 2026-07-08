@@ -21,42 +21,30 @@ This matters because the downgrade is silent. A migration plan that emits
 `UNIQUE (a, b)` instead of `UNIQUE NULLS NOT DISTINCT (a, b)` looks plausible,
 but it weakens uniqueness semantics for nullable columns.
 
-## Refresh note (2026-07-07)
+## Refresh note (2026-07-08)
 
-The checked-in pg-delta head is unchanged from the 2026-07-06 refresh:
-`pg-delta@9284412d71635308ebb0c1537e0b0183d2cfa4da`.
+This refresh advanced both checked-in submodules:
 
-`pgschema` advanced from `d2410fc47267a5c623e62ad4f78edeeee0106e71` to
-`62d09975eaac726f055aa62a5baa2961ef7e5a83` via merged
-[pgschema#504](https://github.com/pgplex/pgschema/pull/504). That upstream
-delta closes pgschema #502, but it does not change this exact table-constraint
-scenario:
+- `pg-delta` from `9284412d71635308ebb0c1537e0b0183d2cfa4da` to
+  `ee285b51bcfdeba4e7139b2b20d6e8192b606a0e`
+- `pgschema` from `62d09975eaac726f055aa62a5baa2961ef7e5a83` to
+  `e18d9ede7973537919c02f25eced5c97271af1dc`
 
-- **#499** remains benchmarked as
-  [021](021-partition-child-column-overrides.md); it is a partition-child
-  column-override scenario, not a table-constraint `NULLS NOT DISTINCT`
-  scenario
-- **#501** is now closed upstream by merged
-  [pgschema#503](https://github.com/pgplex/pgschema/pull/503) and promoted into
-  [022](022-virtual-generated-columns.md); it is a generated-column-kind
-  scenario, not a table-constraint `NULLS NOT DISTINCT` scenario
-- **#502** is now closed upstream by merged
-  [pgschema#504](https://github.com/pgplex/pgschema/pull/504) and remains **not
-  parity work for pg-delta**
+The newer upstream pgschema head adds merged fixes for issues #505, #506, #508,
+and #509, but none of those change this exact table-constraint scenario.
 
-There is therefore still no benchmark-state delta for this exact scenario: no
-exact pg-toolbelt issue or PR exists yet for the table-constraint path, and
-benchmark 020 remains active in the matrix alongside benchmarks 021 and 022.
+During this refresh, a focused local diff probe against the new pg-delta head
+showed the same asymmetric behavior more clearly:
 
-During this refresh, a focused local diff probe again reported zero planned
-changes when only the definition changed from `UNIQUE (a, b)` to
-`UNIQUE NULLS NOT DISTINCT (a, b)`, confirming that the modifier is still
-ignored in the table-constraint diff logic.
+- creating a brand-new `UNIQUE NULLS NOT DISTINCT` table constraint still works
+- toggling an existing plain `UNIQUE (a, b)` constraint to
+  `UNIQUE NULLS NOT DISTINCT (a, b)` still produces **zero planned changes**
 
-This refresh also keeps the same asymmetric-support conclusion: creating a
-brand-new table constraint with `UNIQUE NULLS NOT DISTINCT` works, but changing
-an existing plain `UNIQUE` table constraint to the `NULLS NOT DISTINCT` form is
-still treated as a no-op by the diff path.
+That means the active parity gap is specifically the **alter / replacement**
+path for table constraints, not initial creation. There is still no exact
+pg-toolbelt issue or PR for this table-constraint toggle scenario, so benchmark
+020 remains active alongside benchmarks 021, 022, and the newly promoted
+[023](023-fk-before-standalone-unique-index.md).
 
 ## Reproduction SQL
 
@@ -65,7 +53,9 @@ CREATE SCHEMA test_schema;
 
 CREATE TABLE test_schema.pgschema_repro_nulls (
     a integer,
-    b integer
+    b integer,
+    CONSTRAINT pgschema_repro_nulls_uniq
+      UNIQUE (a, b)
 );
 ```
 
@@ -73,19 +63,21 @@ CREATE TABLE test_schema.pgschema_repro_nulls (
 
 ```sql
 ALTER TABLE test_schema.pgschema_repro_nulls
+  DROP CONSTRAINT pgschema_repro_nulls_uniq;
+
+ALTER TABLE test_schema.pgschema_repro_nulls
   ADD CONSTRAINT pgschema_repro_nulls_uniq
   UNIQUE NULLS NOT DISTINCT (a, b);
 ```
 
-**Expected:** pg-delta emits
-`ALTER TABLE ... ADD CONSTRAINT ... UNIQUE NULLS NOT DISTINCT (a, b)` and the
-roundtrip converges.
+**Expected:** pg-delta plans a drop + recreate for the changed table
+constraint definition so the roundtrip converges on
+`UNIQUE NULLS NOT DISTINCT (a, b)`.
 
-**Actual:** current pg-delta has explicit coverage only for the standalone
-unique-index form. The table-constraint model does not expose a dedicated
-`nulls_not_distinct` field, `table.diff.ts` does not compare the full rendered
-constraint definition, and `constraint-operations.test.ts` has no regression
-for this exact scenario.
+**Actual:** current pg-delta treats the existing plain `UNIQUE` and the target
+`UNIQUE NULLS NOT DISTINCT` constraint as equivalent and emits **no changes**.
+The initial-create path is fine, but the diff path still ignores the modifier
+when the constraint already exists.
 
 ## How pgschema handled it
 
@@ -105,11 +97,12 @@ The merged change added:
 | Aspect | Status |
 |---|---|
 | Standalone unique index `NULLS NOT DISTINCT` support | Yes - covered in `src/core/objects/index/` and `tests/integration/index-operations.test.ts` |
+| Create a brand-new `UNIQUE NULLS NOT DISTINCT` table constraint | Yes - `AlterTableAddConstraint.serialize()` preserves the modifier when the branch-side constraint already has it |
 | Table constraint extraction exposes `nulls_not_distinct` | No - the table constraint JSON in `src/core/objects/table/table.model.ts` does not include it |
 | Constraint diff compares `NULLS NOT DISTINCT` on table constraints | No - `src/core/objects/table/table.diff.ts` compares structured fields but not the full rendered definition |
 | Constraint `definition` is captured from the catalog | Yes - `pg_get_constraintdef(c.oid, true)` is stored on the table constraint model |
 | Integration regression for `UNIQUE NULLS NOT DISTINCT` table constraints | No - `tests/integration/constraint-operations.test.ts` only covers plain `UNIQUE (...)` |
-| Existing pg-toolbelt issue / PR for this exact scenario | No - none found through the 2026-07-02 refresh |
+| Existing pg-toolbelt issue / PR for this exact scenario | No - none found through the 2026-07-08 refresh |
 
 ## Comparison of approaches
 
@@ -117,7 +110,7 @@ The merged change added:
 |---|---|---|
 | **Catalog extraction** | Reads `NULLS NOT DISTINCT` for table constraints | Reads it for standalone indexes only |
 | **Internal representation** | Tracks the modifier through constraint inspection | Table constraint model does not expose the modifier |
-| **Coverage** | Dump + diff fixtures for the table-constraint scenario | Integration tests only for the standalone index scenario |
+| **Coverage** | Dump + diff fixtures for the table-constraint scenario | Initial create path works, but there is still no regression for the existing-constraint toggle |
 | **Current parity state** | Fixed | Not covered |
 
 ## Plan to handle it in pg-delta

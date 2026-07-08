@@ -17,18 +17,21 @@ mechanism. This benchmark tracks the now-resolved upstream scenario after
 pgschema merged its fix on `main`, while pg-delta's checked-in default-branch
 engine still lacks exact coverage.
 
-## Refresh note (2026-07-07)
+## Refresh note (2026-07-08)
 
-The checked-in pg-delta head is unchanged from the 2026-07-06 refresh:
-`pg-delta@9284412d71635308ebb0c1537e0b0183d2cfa4da`.
+This refresh advanced both checked-in submodules:
 
-`pgschema` advanced from `d2410fc47267a5c623e62ad4f78edeeee0106e71` to
-`62d09975eaac726f055aa62a5baa2961ef7e5a83` via merged
-[pgschema#504](https://github.com/pgplex/pgschema/pull/504). That upstream
-delta does not change this exact generated-column-kind scenario.
+- `pg-delta` from `9284412d71635308ebb0c1537e0b0183d2cfa4da` to
+  `ee285b51bcfdeba4e7139b2b20d6e8192b606a0e`
+- `pgschema` from `62d09975eaac726f055aa62a5baa2961ef7e5a83` to
+  `e18d9ede7973537919c02f25eced5c97271af1dc`
+
+The newer upstream pgschema head merges follow-up fixes for issues #505, #506,
+#508, and #509, but none of that changes this exact generated-column-kind
+scenario.
 
 During this refresh, a focused local pg-delta probe against the current create
-and alter paths still serialized the PostgreSQL 18 case as:
+path still serialized the PostgreSQL 18 case as:
 
 ```sql
 CREATE TABLE test_schema.users (first_name text, last_name text, full_name text GENERATED ALWAYS AS (first_name || ' ' || last_name) STORED)
@@ -36,7 +39,7 @@ CREATE TABLE test_schema.users (first_name text, last_name text, full_name text 
 
 The `VIRTUAL` keyword was lost and replaced by `STORED`, so this scenario
 remains not covered. No exact open or closed pg-toolbelt issue / PR was found
-for this narrow generated-column-kind gap through the 2026-07-07 refresh.
+for this narrow generated-column-kind gap through the 2026-07-08 refresh.
 
 ## Reproduction SQL
 
@@ -87,7 +90,7 @@ the resolved scenario.
 | `CREATE TABLE` serialization preserves `VIRTUAL` | No - `table.create.ts` hard-codes `... STORED` |
 | `ALTER TABLE ... ADD COLUMN` serialization preserves `VIRTUAL` | No - `table.alter.ts` hard-codes `... STORED` |
 | Integration regression for PostgreSQL 18 `VIRTUAL` generated columns | No - `alter-table-operations.test.ts` covers only `STORED` cases |
-| Existing exact pg-toolbelt issue / PR | No - none found through the 2026-07-07 refresh |
+| Existing exact pg-toolbelt issue / PR | No - none found through the 2026-07-08 refresh |
 
 ## Comparison of approaches
 

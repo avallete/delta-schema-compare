@@ -4,12 +4,12 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-07-07)
+## Latest refresh snapshot (2026-07-08)
 
 Refreshed against:
 
-- `repos/pg-toolbelt` @ `9284412d71635308ebb0c1537e0b0183d2cfa4da`
-- `repos/pgschema` @ `62d09975eaac726f055aa62a5baa2961ef7e5a83`
+- `repos/pg-toolbelt` @ `ee285b51bcfdeba4e7139b2b20d6e8192b606a0e`
+- `repos/pgschema` @ `e18d9ede7973537919c02f25eced5c97271af1dc`
 
 ## Benchmark status matrix
 
@@ -27,88 +27,90 @@ Refreshed against:
 | 020 | [UNIQUE constraint NULLS NOT DISTINCT](020-unique-constraint-nulls-not-distinct.md) | [#412](https://github.com/pgplex/pgschema/issues/412) | none found | none found | **Not covered** |
 | 021 | [Partition child column overrides](021-partition-child-column-overrides.md) | [#499](https://github.com/pgplex/pgschema/issues/499) | none found | none found | **Not covered** |
 | 022 | [VIRTUAL generated columns](022-virtual-generated-columns.md) | [#501](https://github.com/pgplex/pgschema/issues/501) | none found | none found | **Not covered** |
+| 023 | [FK before standalone unique index](023-fk-before-standalone-unique-index.md) | [#506](https://github.com/pgplex/pgschema/issues/506) | none found | none found | **Not covered** |
 
 > Historical benchmark files are retained even after pg-delta fixes land. The
 > status matrix above is the current source of truth for parity state.
 
 ## Active benchmarked gaps after refresh
 
-Three resolved-issue benchmark scenarios remain active as unresolved:
+Four resolved-issue benchmark scenarios remain active as unresolved:
 
 - **020** — `UNIQUE NULLS NOT DISTINCT` on table constraints
 - **021** — child-specific `DEFAULT` / `NOT NULL` column overrides in
   `CREATE TABLE ... PARTITION OF ...`
 - **022** — PostgreSQL 18 `VIRTUAL` generated columns
+- **023** — new-table foreign key sorted before a standalone unique index on the
+  referenced table
 
-There is **no benchmark-matrix parity delta** versus the 2026-07-06 refresh:
-benchmarks 020, 021, and 022 all remain active, and no previously benchmarked
-gap changed state in current pg-delta.
+There **is** a benchmark-matrix delta versus the 2026-07-07 refresh: the
+standalone unique-index slice of resolved pgschema issue #506 is now promoted
+into [023](023-fk-before-standalone-unique-index.md) after upstream merged
+[pgschema#507](https://github.com/pgplex/pgschema/pull/507). Benchmarks 020,
+021, and 022 remain active with unchanged parity status.
 
-There is a pgschema code-head delta in this refresh:
-`pgschema` advanced from `d2410fc47267a5c623e62ad4f78edeeee0106e71` to
-`62d09975eaac726f055aa62a5baa2961ef7e5a83` via merged
-[pgschema#504](https://github.com/pgplex/pgschema/pull/504), while
-`pg-delta` remains at `9284412d71635308ebb0c1537e0b0183d2cfa4da`.
+There is also a code-head delta in both submodules for this refresh:
 
-A targeted GitHub sweep for updates after `2026-07-06T07:02:34Z` found one
-newly closed non-parity issue plus four newly relevant open issues, and the
-highest live pgschema issue number is now **#509**:
+- `pg-delta` advanced from `9284412d71635308ebb0c1537e0b0183d2cfa4da` to
+  `ee285b51bcfdeba4e7139b2b20d6e8192b606a0e`
+- `pgschema` advanced from `62d09975eaac726f055aa62a5baa2961ef7e5a83` to
+  `e18d9ede7973537919c02f25eced5c97271af1dc`
 
-- **#502** `COMMENT ON COLUMN` misresolution when table name equals schema name
-  — now **closed** by merged
-  [pgschema#504](https://github.com/pgplex/pgschema/pull/504) and remains **not
-  parity work for pg-delta**. A focused serializer probe still emits the fully
-  qualified `COMMENT ON COLUMN catalog.catalog.title IS 'kept'`
-- **#505** `Can't drop trigger function` — **covered** in current pg-delta.
-  Existing trigger integration coverage already exercises dropping triggers
-  before dropping the trigger function they call
+A targeted GitHub sweep for the latest upstream issue state now shows:
+
+- **#505** `Can't drop trigger function` — **closed upstream** by merged
+  [pgschema#511](https://github.com/pgplex/pgschema/pull/511) and still
+  **covered** in current pg-delta. Existing trigger integration coverage already
+  exercises dropping triggers before dropping the trigger function they call
 - **#506** new table inline FK before new `UNIQUE` constraint / unique index on
-  a pre-existing referenced table — **partially covered**. Current pg-delta
-  already orders the table-constraint variant as `CREATE TABLE child` -> `ADD
-  parent UNIQUE` -> `ADD child FK`, but it still orders the standalone
-  unique-index variant as `CREATE TABLE child` -> `ADD child FK` -> `CREATE
-  UNIQUE INDEX`, so the unique-index slice remains **not covered**
+  a pre-existing referenced table — **closed upstream** by merged
+  [pgschema#507](https://github.com/pgplex/pgschema/pull/507). Current
+  pg-delta still splits the scenario:
+  - the new-`UNIQUE` table-constraint variant is already **covered**
+  - the standalone unique-index variant remains **not covered** and is now
+    benchmarked as [023](023-fk-before-standalone-unique-index.md)
 - **#508** `INCLUDE` columns dropped when adding or rebuilding an index via
-  `CREATE INDEX CONCURRENTLY` — **covered** in current pg-delta. A focused
-  `CreateIndex` probe preserved `INCLUDE (tenant)` in serialized SQL
+  `CREATE INDEX CONCURRENTLY` — **closed upstream** by merged
+  [pgschema#512](https://github.com/pgplex/pgschema/pull/512) and remains
+  **covered** in current pg-delta. A focused `CreateIndex` probe still
+  preserved `INCLUDE (tenant)` in serialized SQL
 - **#509** online index rebuild emits bare `DROP INDEX` after `DROP COLUMN`
-  already removed the index — **not parity work for pg-delta's current
-  default-branch planner**. pg-delta does not use pgschema's concurrent rebuild
-  choreography, and a focused ordering probe produced `DROP INDEX` -> `ALTER
-  TABLE ... DROP COLUMN` -> `CREATE INDEX`
+  already removed the index — **closed upstream** by merged
+  [pgschema#510](https://github.com/pgplex/pgschema/pull/510) and remains **not
+  parity work for pg-delta's current default-branch planner**. pg-delta does
+  not use pgschema's concurrent rebuild choreography, and a focused ordering
+  probe still produced `DROP INDEX` -> `ALTER TABLE ... DROP COLUMN` ->
+  `CREATE INDEX`
+- the highest live pgschema issue number remains **#509**; newer numbers
+  **#510**, **#511**, and **#512** are PRs, not issues
 
-The prior benchmarked gaps are otherwise unchanged in this refresh:
+No new exact pg-toolbelt issue or PR was found for benchmarks 020, 021, 022,
+or 023. Exact open pg-toolbelt trackers still exist only for:
 
-- **#412** remains benchmarked as [020](020-unique-constraint-nulls-not-distinct.md)
-- **#499** remains benchmarked as [021](021-partition-child-column-overrides.md)
-- **#501** remains benchmarked as [022](022-virtual-generated-columns.md)
+- pgschema [#404](https://github.com/pgplex/pgschema/issues/404) ->
+  [pg-toolbelt#218](https://github.com/supabase/pg-toolbelt/issues/218)
+- pgschema [#366](https://github.com/pgplex/pgschema/issues/366) ->
+  [pg-toolbelt#219](https://github.com/supabase/pg-toolbelt/issues/219)
 
-No new exact pg-toolbelt issue or PR activity was found for benchmark 020,
-benchmark 021, benchmark 022, pgschema #366, #404, #439, #444, the new open
-pgschema #506 standalone-unique-index slice, or the trigger enabled-state slice
-from pgschema PR #479. Open
-[pg-toolbelt#285](https://github.com/supabase/pg-toolbelt/pull/285) remains
-the exact in-flight tracker for trigger enabled / disabled state, while the new
-partitioning and generated-column findings do not introduce a duplicate
-tracker.
+The active benchmark probes were rerun against the new pg-delta head in this
+refresh:
 
-The active benchmark probes were rerun against the unchanged pg-delta head in
-this refresh:
-
-- benchmark 020 still reproduces as a **zero-change** table-constraint diff
+- benchmark 020 still reproduces as a **zero-change** diff when toggling an
+  existing plain `UNIQUE` table constraint to `UNIQUE NULLS NOT DISTINCT`,
+  while creating a brand-new `NULLS NOT DISTINCT` table constraint still works
 - benchmark 021 still emits only the bare `PARTITION OF ... FOR VALUES ...`
   statement with no child-specific column overrides
 - benchmark 022 still serializes the PostgreSQL 18 case as `... STORED` rather
   than `... VIRTUAL`
+- benchmark 023 newly reproduces as `CREATE TABLE child` -> `ADD child FK` ->
+  `CREATE UNIQUE INDEX` for the standalone unique-index slice
 
-Those executed checks leave benchmarks 020, 021, and 022 as the active
+Those executed checks leave benchmarks 020, 021, 022, and 023 as the active
 benchmarked gaps after this refresh.
 
 ## Open pgschema issue screening (current state)
 
-This pass removes #502 from open screening because it is now closed upstream in
-merged [pgschema#504](https://github.com/pgplex/pgschema/pull/504). The
-current still-open reviewed issue set is:
+The currently still-open reviewed issue set is:
 
 Screened candidates:
 
@@ -128,28 +130,11 @@ Screened candidates:
   under `--qualify-schema` — **not parity work for pg-delta**; this is a
   follow-up on pgschema's dump-only schema-qualification flag rather than a
   live-catalog diff or migration-planning gap
-- **#505** `Can't drop trigger function` — **covered** in current pg-delta;
-  existing `trigger-operations.test.ts` coverage already exercises dropping
-  triggers before dropping the trigger function they call
-- **#506** new table inline FK before a new `UNIQUE` constraint / unique index
-  on a pre-existing referenced table — **partially covered**. The new-`UNIQUE`
-  table-constraint variant is already ordered correctly in current pg-delta,
-  but the standalone unique-index variant remains **not covered** and is now
-  saved as a draft-only tracker in
-  [`docs/parity-issue-drafts-2026-07-07.md`](../docs/parity-issue-drafts-2026-07-07.md)
-- **#508** `INCLUDE` columns dropped when adding or rebuilding an index via
-  `CREATE INDEX CONCURRENTLY` — **covered** in current pg-delta;
-  `CreateIndex.serialize()` preserves the `INCLUDE` clause and no exact tracker
-  is needed
-- **#509** online index rebuild emits bare `DROP INDEX` after `DROP COLUMN`
-  already removed the index — **not parity work for pg-delta's current
-  default-branch planner**; the analogous pg-delta order is `DROP INDEX` ->
-  `ALTER TABLE ... DROP COLUMN` -> `CREATE INDEX`
-
-Historical draft text is recorded in markdown for both the older tracked
-scenarios and the current draft-only uncovered candidates. The 2026-07-04 note
-for #501 is retained as pre-promotion context even though the gap is now
-benchmarked as [022](022-virtual-generated-columns.md):
+Historical draft text is recorded in markdown for the older tracked scenarios
+and the remaining draft-only uncovered candidates. The 2026-07-04 note for
+#501 and the 2026-07-07 note for #506 are retained as pre-promotion context
+even though those gaps are now benchmarked as [022](022-virtual-generated-columns.md)
+and [023](023-fk-before-standalone-unique-index.md):
 
 - [`docs/parity-issue-drafts-2026-04-22.md`](../docs/parity-issue-drafts-2026-04-22.md)
 - [`docs/parity-issue-drafts-2026-05-23.md`](../docs/parity-issue-drafts-2026-05-23.md)
@@ -190,6 +175,26 @@ snapshot are now closed upstream and keep the same pg-delta parity verdicts:
   [pgschema#504](https://github.com/pgplex/pgschema/pull/504) and still **not
   parity work for pg-delta**; current column-comment serialization fully
   qualifies `schema.table.column`
+- **#505** `Can't drop trigger function` — **closed upstream** by merged
+  [pgschema#511](https://github.com/pgplex/pgschema/pull/511) and still
+  **covered** in current pg-delta; existing `trigger-operations.test.ts`
+  coverage already exercises dropping triggers before dropping the trigger
+  function they call
+- **#506** new table inline FK before a new `UNIQUE` constraint / unique index
+  on a pre-existing referenced table — **closed upstream** by merged
+  [pgschema#507](https://github.com/pgplex/pgschema/pull/507). The
+  table-constraint slice is already covered, while the remaining standalone
+  unique-index slice is now benchmarked as
+  [023](023-fk-before-standalone-unique-index.md)
+- **#508** `INCLUDE` columns dropped when adding or rebuilding an index via
+  `CREATE INDEX CONCURRENTLY` — **closed upstream** by merged
+  [pgschema#512](https://github.com/pgplex/pgschema/pull/512) and still
+  **covered** in current pg-delta; `CreateIndex.serialize()` preserves the
+  `INCLUDE` clause
+- **#509** online index rebuild emits bare `DROP INDEX` after `DROP COLUMN`
+  already removed the index — **closed upstream** by merged
+  [pgschema#510](https://github.com/pgplex/pgschema/pull/510) and still **not
+  parity work for pg-delta's current default-branch planner**
 - **#362**, **#401**, **#414**, **#415**, **#416**, **#420**, **#427**, and
   **#436** — **covered** in current pg-delta
 - **#407**, **#409**, **#418**, **#419**, **#421**, **#422**, **#429**,
@@ -225,12 +230,13 @@ snapshot are now closed upstream and keep the same pg-delta parity verdicts:
 - **#321** `dump --qualify-schema` — **not parity work for pg-delta**; this is
   a pgschema dump-format / CLI feature rather than a live-catalog diff gap.
   The new open follow-up #493 keeps the same non-parity classification
-- **#439** constraint replacement with dependents — **resolved upstream and
-  still not covered**; no exact pg-toolbelt issue / PR exists yet, and the
-  saved draft remains in
+- **#439** constraint replacement with dependents — **resolved upstream** and
+  still carried as a draft-only uncovered finding from earlier refreshes; no
+  exact pg-toolbelt issue / PR exists yet, and the saved draft remains in
   [`docs/parity-issue-drafts-2026-05-23.md`](../docs/parity-issue-drafts-2026-05-23.md)
-- **#444** drop-column ordering with dependent views — **resolved upstream and
-  still not covered**; related pg-toolbelt work exists in
+- **#444** drop-column ordering with dependent views — **resolved upstream** and
+  still carried as a draft-only uncovered finding from earlier refreshes;
+  related pg-toolbelt work exists in
   [#263](https://github.com/supabase/pg-toolbelt/issues/263) (open),
   [#273](https://github.com/supabase/pg-toolbelt/pull/273) (merged),
   [#285](https://github.com/supabase/pg-toolbelt/pull/285) (open), and
@@ -281,15 +287,21 @@ Recent parity-relevant pgschema PR activity is now:
   remains **not parity work for pg-delta**
 - pgschema [#507](https://github.com/pgplex/pgschema/pull/507) (`fix: defer new
   table inline FK when it depends on a new unique constraint (#506)`) is now
-  **open**. Current pg-delta already covers the new-`UNIQUE` table-constraint
-  slice, but the standalone unique-index slice remains **not covered** and is
-  saved as a draft-only tracker in
-  [`docs/parity-issue-drafts-2026-07-07.md`](../docs/parity-issue-drafts-2026-07-07.md)
+  **merged**. Current pg-delta already covers the new-`UNIQUE`
+  table-constraint slice, but the standalone unique-index slice remains **not
+  covered** and is now benchmarked as
+  [023](023-fk-before-standalone-unique-index.md)
 - pgschema [#510](https://github.com/pgplex/pgschema/pull/510) (`fix: use DROP
-  INDEX IF EXISTS in online index rebuild (#509)`) is now **open**. This is
+  INDEX IF EXISTS in online index rebuild (#509)`) is now **merged**. This is
   useful pgschema context, but it does not map to an exact current pg-delta
   tracker because the default-branch pg-delta planner already orders the
   analogous non-online steps safely
+- pgschema [#511](https://github.com/pgplex/pgschema/pull/511) (`fix: drop
+  triggers on dropped tables before their functions (#505)`) is now **merged**
+  and remains **covered** in current pg-delta
+- pgschema [#512](https://github.com/pgplex/pgschema/pull/512) (`fix: preserve
+  INCLUDE columns in CREATE INDEX CONCURRENTLY (#508)`) is now **merged** and
+  remains **covered** in current pg-delta
 - pgschema [#497](https://github.com/pgplex/pgschema/pull/497) (`fix:
   partition child PK/UNIQUE constraints cause perpetual plan drift`) is now
   **covered** in current pg-delta. A focused local diff probe returned `0`
@@ -334,10 +346,10 @@ Recent parity-relevant pgschema PR activity is now:
   is retained as historical review context only
 
 The checked-in pg-delta head in this refresh
-(`9284412d71635308ebb0c1537e0b0183d2cfa4da`) already includes the trigger
+(`ee285b51bcfdeba4e7139b2b20d6e8192b606a0e`) already includes the trigger
 quoted-name formatter coverage and matching integration regression checked in
 the 2026-06-26 pass, but it still does not include the unmerged trigger
-enabled-state work from pg-toolbelt PR #285. Benchmarks 020, 021, and 022
+enabled-state work from pg-toolbelt PR #285. Benchmarks 020, 021, 022, and 023
 therefore remain the active resolved-issue benchmark gaps, while the remaining
 trigger-state slice from pgschema PR #479 is now tracked by an exact in-flight
 pg-toolbelt PR rather than an untracked draft-only gap.
@@ -358,8 +370,8 @@ Existing pg-toolbelt PR activity was also rechecked during this refresh:
 - [#311](https://github.com/supabase/pg-toolbelt/issues/311) /
   [#314](https://github.com/supabase/pg-toolbelt/pull/314) cover mutual inline
   foreign-key cycles in declarative apply. This is useful adjacent dependency
-  work, but it is not an exact duplicate of benchmark 020 or the current
-  draft-only items #439 / #444 / #479
+  work, but it is not an exact duplicate of benchmark 020, benchmark 023, or
+  the current draft-only items #439 / #444 / #479
 - [#288](https://github.com/supabase/pg-toolbelt/pull/288) covers range-type
   creation dependencies in `pg-topo`. This is useful topology work, but it
   does not map to a current pgschema benchmark or draft-only parity item

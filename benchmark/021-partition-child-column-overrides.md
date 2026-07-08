@@ -21,18 +21,22 @@ this benchmark is intentionally narrower. The missing behavior is not partition
 creation itself; it is preserving child-specific column overrides when a new
 partition child is created.
 
-## Refresh note (2026-07-07)
+## Refresh note (2026-07-08)
 
-The checked-in pg-delta head is unchanged from the 2026-07-06 refresh:
-`pg-delta@9284412d71635308ebb0c1537e0b0183d2cfa4da`.
+This refresh advanced both checked-in submodules:
 
-`pgschema` advanced from `d2410fc47267a5c623e62ad4f78edeeee0106e71` to
-`62d09975eaac726f055aa62a5baa2961ef7e5a83` via merged
-[pgschema#504](https://github.com/pgplex/pgschema/pull/504).
+- `pg-delta` from `9284412d71635308ebb0c1537e0b0183d2cfa4da` to
+  `ee285b51bcfdeba4e7139b2b20d6e8192b606a0e`
+- `pgschema` from `62d09975eaac726f055aa62a5baa2961ef7e5a83` to
+  `e18d9ede7973537919c02f25eced5c97271af1dc`
 
-That upstream delta does not change this exact partition-child column-override
-gap. During this refresh, a focused local `CreateTable` probe against current
-pg-delta still emitted:
+The newer upstream pgschema head merges follow-up fixes for issues #505, #506,
+#508, and #509 and closes issue #506 via
+[pgschema#507](https://github.com/pgplex/pgschema/pull/507), but none of that
+changes this exact partition-child column-override gap.
+
+During this refresh, a focused local `CreateTable` probe against the new
+pg-delta head still emitted:
 
 ```sql
 CREATE TABLE test_schema.orders_us PARTITION OF test_schema.orders FOR VALUES IN ('us')
@@ -98,7 +102,7 @@ for incremental "add one new child partition" plans.
 | Child-specific `DEFAULT` / `NOT NULL` overrides on partition children | No - the serializer returns early for partition children before column metadata is emitted |
 | Follow-up column alters for created partition children | No - `table.diff.ts` adds constraints/comments/privileges on create, but no column override recovery path |
 | Integration regression for child partition column overrides | No - no roundtrip test covers `PARTITION OF (...)` typed table elements |
-| Existing exact pg-toolbelt issue / PR | No - none found through the 2026-07-04 refresh |
+| Existing exact pg-toolbelt issue / PR | No - none found through the 2026-07-08 refresh |
 
 ## Comparison of approaches
 
