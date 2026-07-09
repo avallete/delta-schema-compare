@@ -11,6 +11,11 @@ Refreshed against:
 - `repos/pg-toolbelt` @ `ee285b51bcfdeba4e7139b2b20d6e8192b606a0e`
 - `repos/pgschema` @ `e18d9ede7973537919c02f25eced5c97271af1dc`
 
+> 2026-07-09 follow-up validation found **no benchmark-matrix or submodule-head
+> delta** versus this 2026-07-08 snapshot. See
+> [`docs/parity-refresh-2026-07-09.md`](../docs/parity-refresh-2026-07-09.md)
+> for the latest no-change sweep.
+
 ## Benchmark status matrix
 
 | # | File | pgschema | pg-toolbelt issue | pg-toolbelt PR | Current status |
