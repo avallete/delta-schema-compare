@@ -12,9 +12,15 @@ Refreshed against:
 - `repos/pgschema` @ `e18d9ede7973537919c02f25eced5c97271af1dc`
 
 > 2026-07-09 follow-up validation found **no benchmark-matrix or submodule-head
-> delta** versus this 2026-07-08 snapshot. See
+> delta** versus this 2026-07-08 snapshot. A 2026-07-10 follow-up then found
+> **no benchmark-matrix delta** again; `pgschema` `main` remained at
+> `e18d9ede7973537919c02f25eced5c97271af1dc`, while `pg-toolbelt` `main`
+> advanced to `d3b3c8b6b7f5e9a85c765284a2a5e9f69cbb97f5` with a CI-only
+> `.github/**` diff and no `packages/pg-delta/**` changes. See
 > [`docs/parity-refresh-2026-07-09.md`](../docs/parity-refresh-2026-07-09.md)
-> for the latest no-change sweep.
+> and
+> [`docs/parity-refresh-2026-07-10.md`](../docs/parity-refresh-2026-07-10.md)
+> for the latest no-change sweeps.
 
 ## Benchmark status matrix
 
