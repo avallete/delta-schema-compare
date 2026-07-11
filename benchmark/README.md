@@ -12,14 +12,19 @@ Refreshed against:
 - `repos/pgschema` @ `e18d9ede7973537919c02f25eced5c97271af1dc`
 
 > 2026-07-09 follow-up validation found **no benchmark-matrix or submodule-head
-> delta** versus this 2026-07-08 snapshot. A 2026-07-10 follow-up then found
-> **no benchmark-matrix delta** again; `pgschema` `main` remained at
-> `e18d9ede7973537919c02f25eced5c97271af1dc`, while `pg-toolbelt` `main`
-> advanced to `d3b3c8b6b7f5e9a85c765284a2a5e9f69cbb97f5` with a CI-only
-> `.github/**` diff and no `packages/pg-delta/**` changes. See
-> [`docs/parity-refresh-2026-07-09.md`](../docs/parity-refresh-2026-07-09.md)
+> delta** versus this 2026-07-08 snapshot. The 2026-07-10 and 2026-07-11
+> follow-ups again found **no benchmark-matrix delta**. The only fresh upstream
+> movement since the 2026-07-10 sweep was a non-parity update on open pgschema
+> issue [#450](https://github.com/pgplex/pgschema/issues/450); exact
+> pg-toolbelt trackers still remain only
+> [#218](https://github.com/supabase/pg-toolbelt/issues/218) and
+> [#219](https://github.com/supabase/pg-toolbelt/issues/219), and the newer
+> pg-toolbelt PR [#329](https://github.com/supabase/pg-toolbelt/pull/329) is
+> unrelated to the current benchmark set. See
+> [`docs/parity-refresh-2026-07-09.md`](../docs/parity-refresh-2026-07-09.md),
+> [`docs/parity-refresh-2026-07-10.md`](../docs/parity-refresh-2026-07-10.md),
 > and
-> [`docs/parity-refresh-2026-07-10.md`](../docs/parity-refresh-2026-07-10.md)
+> [`docs/parity-refresh-2026-07-11.md`](../docs/parity-refresh-2026-07-11.md)
 > for the latest no-change sweeps.
 
 ## Benchmark status matrix
@@ -133,10 +138,11 @@ Screened candidates:
   workflow request rather than a live-catalog diff gap
 - **#84** feedback / testimonial collection thread — **not parity work for
   pg-delta**; this is community outreach rather than schema-diff behavior
-- **#450** missing role blocks plan/apply — **not parity work for pg-delta**;
-  this is specific to pgschema applying dumped SQL into a temporary planning
-  schema, while pg-delta diffs live catalogs directly and already models roles
-  plus privilege dependencies
+- **#450** missing role blocks plan/apply — **still not parity work for
+  pg-delta** after its 2026-07-11 upstream update; this is specific to
+  pgschema applying dumped SQL into a temporary planning schema, while pg-delta
+  diffs live catalogs directly and already models roles plus privilege
+  dependencies
 - **#493** inspector / IR should preserve schema identity for type references
   under `--qualify-schema` — **not parity work for pg-delta**; this is a
   follow-up on pgschema's dump-only schema-qualification flag rather than a
@@ -386,10 +392,10 @@ Existing pg-toolbelt PR activity was also rechecked during this refresh:
 - [#288](https://github.com/supabase/pg-toolbelt/pull/288) covers range-type
   creation dependencies in `pg-topo`. This is useful topology work, but it
   does not map to a current pgschema benchmark or draft-only parity item
-- [#307](https://github.com/supabase/pg-toolbelt/pull/307) remains open as
-  adjacent `pg-delta-next` work, and
-  [#315](https://github.com/supabase/pg-toolbelt/pull/315) is its RED test
-  companion. Neither PR affects the current-engine parity benchmark state
+- [#307](https://github.com/supabase/pg-toolbelt/pull/307) and
+  [#315](https://github.com/supabase/pg-toolbelt/pull/315) are now
+  closed/merged as adjacent `pg-delta-next` work. Neither PR affects the
+  current-engine parity benchmark state
 
 Separately, pg-toolbelt
 [#308](https://github.com/supabase/pg-toolbelt/issues/308) and
