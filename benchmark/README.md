@@ -12,19 +12,25 @@ Refreshed against:
 - `repos/pgschema` @ `e18d9ede7973537919c02f25eced5c97271af1dc`
 
 > 2026-07-09 follow-up validation found **no benchmark-matrix or submodule-head
-> delta** versus this 2026-07-08 snapshot. The 2026-07-10 and 2026-07-11
-> follow-ups again found **no benchmark-matrix delta**. The only fresh upstream
-> movement since the 2026-07-10 sweep was a non-parity update on open pgschema
-> issue [#450](https://github.com/pgplex/pgschema/issues/450); exact
-> pg-toolbelt trackers still remain only
+> delta** versus this 2026-07-08 snapshot. The 2026-07-10, 2026-07-11, and
+> 2026-07-12 follow-ups again found **no benchmark-matrix delta**, and the
+> 2026-07-12 sweep found **no new upstream parity movement** beyond the
+> already-recorded non-parity update on open pgschema issue
+> [#450](https://github.com/pgplex/pgschema/issues/450). Exact pg-toolbelt
+> trackers still remain only
 > [#218](https://github.com/supabase/pg-toolbelt/issues/218) and
-> [#219](https://github.com/supabase/pg-toolbelt/issues/219), and the newer
-> pg-toolbelt PR [#329](https://github.com/supabase/pg-toolbelt/pull/329) is
-> unrelated to the current benchmark set. See
+> [#219](https://github.com/supabase/pg-toolbelt/issues/219); live
+> `pg-toolbelt` `main` still differs from the checked-in baseline only under
+> `.github/**`; and the open rewrite PR
+> [#299](https://github.com/supabase/pg-toolbelt/pull/299) plus follow-up PR
+> [#329](https://github.com/supabase/pg-toolbelt/pull/329) remain
+> `pg-delta-next` work rather than current default-branch parity. See
 > [`docs/parity-refresh-2026-07-09.md`](../docs/parity-refresh-2026-07-09.md),
 > [`docs/parity-refresh-2026-07-10.md`](../docs/parity-refresh-2026-07-10.md),
 > and
-> [`docs/parity-refresh-2026-07-11.md`](../docs/parity-refresh-2026-07-11.md)
+> [`docs/parity-refresh-2026-07-11.md`](../docs/parity-refresh-2026-07-11.md),
+> and
+> [`docs/parity-refresh-2026-07-12.md`](../docs/parity-refresh-2026-07-12.md)
 > for the latest no-change sweeps.
 
 ## Benchmark status matrix
