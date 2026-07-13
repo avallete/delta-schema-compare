@@ -119,12 +119,19 @@ This refresh was validated with:
   - `bun test packages/pg-delta/src/core/objects/table/changes/table.create.test.ts`
   - `bun test packages/pg-delta/src/core/sort/sort-changes.test.ts`
   - `bun test packages/pg-delta/src/core/objects/index/index.diff.test.ts`
+  - result: **37 pass / 0 fail**
 - repository maintenance checks:
   - `python3 -m json.tool benchmark/review-memory.json >/dev/null`
   - `python3 -m unittest tests.test_review_memory tests.test_compare_resolved_benchmark`
   - `DRY_RUN=true python3 scripts/compare_issues.py`
   - `DRY_RUN=true OUTPUT_MODE=benchmark python3 scripts/compare_resolved.py`
   - `git diff --check`
+  - results:
+    - `benchmark/review-memory.json` parsed successfully
+    - Python tests: **9 pass / 0 fail**
+    - `compare_issues.py`: **0** open issues processed
+    - `compare_resolved.py`: **0** resolved issues processed
+    - working tree remained clean after validation
 
 The unlabeled-issue caveat still applies: the parity-relevant pgschema issues
 remain mostly unlabeled, so `compare_issues.py` and `compare_resolved.py` can
