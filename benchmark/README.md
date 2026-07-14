@@ -12,12 +12,15 @@ Refreshed against:
 - `repos/pgschema` @ `e18d9ede7973537919c02f25eced5c97271af1dc`
 
 > 2026-07-09 follow-up validation found **no benchmark-matrix or submodule-head
-> delta** versus this 2026-07-08 snapshot. The 2026-07-10, 2026-07-11,
-> 2026-07-12, and 2026-07-13 follow-ups again found **no benchmark-matrix
-> delta**, and the 2026-07-12 / 2026-07-13 sweeps found **no new upstream
-> parity movement** beyond the already-recorded non-parity update on open
-> pgschema issue
-> [#450](https://github.com/pgplex/pgschema/issues/450). Exact pg-toolbelt
+> delta** versus this 2026-07-08 snapshot. The 2026-07-10 through 2026-07-14
+> follow-ups again found **no benchmark-matrix delta**, and the 2026-07-12
+> through 2026-07-14 sweeps found **no new upstream parity movement**. The open
+> pgschema issue set still remains
+> [#49](https://github.com/pgplex/pgschema/issues/49),
+> [#52](https://github.com/pgplex/pgschema/issues/52),
+> [#84](https://github.com/pgplex/pgschema/issues/84),
+> [#450](https://github.com/pgplex/pgschema/issues/450), and
+> [#493](https://github.com/pgplex/pgschema/issues/493). Exact pg-toolbelt
 > trackers still remain only
 > [#218](https://github.com/supabase/pg-toolbelt/issues/218) and
 > [#219](https://github.com/supabase/pg-toolbelt/issues/219); live
@@ -33,7 +36,9 @@ Refreshed against:
 > and
 > [`docs/parity-refresh-2026-07-12.md`](../docs/parity-refresh-2026-07-12.md),
 > and
-> [`docs/parity-refresh-2026-07-13.md`](../docs/parity-refresh-2026-07-13.md)
+> [`docs/parity-refresh-2026-07-13.md`](../docs/parity-refresh-2026-07-13.md),
+> and
+> [`docs/parity-refresh-2026-07-14.md`](../docs/parity-refresh-2026-07-14.md)
 > for the latest no-change sweeps.
 
 ## Benchmark status matrix
