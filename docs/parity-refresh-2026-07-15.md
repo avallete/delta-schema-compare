@@ -125,4 +125,37 @@ result as another dated no-delta report:
 
 ## 4) Validation notes
 
-Validation results are appended after the targeted checks complete.
+This refresh was validated with:
+
+- live GitHub issue-page checks for pgschema **#49**, **#52**, **#84**,
+  **#366**, **#404**, **#412**, **#439**, **#444**, **#450**, **#493**,
+  **#499**, **#501**, **#505**, **#506**, **#508**, and **#509**
+- live GitHub issue / PR checks for pg-toolbelt **#218**, **#219**, **#263**,
+  **#299**, **#308**, **#310**, and **#329**
+- direct git diff of live pg-toolbelt `main` versus the checked-in baseline,
+  confirming the same CI-only `.github/**` delta as the 2026-07-14 sweep
+- targeted pg-delta unit tests:
+  - after submodule initialization, `bun install --frozen-lockfile` restored
+    the missing workspace dependencies required by Bun
+  - `bun test packages/pg-delta/src/core/objects/table/table.diff.test.ts`
+    `packages/pg-delta/src/core/objects/table/changes/table.create.test.ts`
+    `packages/pg-delta/src/core/sort/sort-changes.test.ts`
+    `packages/pg-delta/src/core/objects/index/index.diff.test.ts`
+  - result: **37 pass / 0 fail**
+- repository maintenance checks:
+  - `python3 -m json.tool benchmark/review-memory.json >/dev/null`
+  - `python3 -m unittest tests.test_review_memory tests.test_compare_resolved_benchmark`
+  - `DRY_RUN=true python3 scripts/compare_issues.py`
+  - `DRY_RUN=true OUTPUT_MODE=benchmark python3 scripts/compare_resolved.py`
+  - `git diff --check HEAD^ HEAD`
+  - `git diff --check`
+  - results:
+    - `benchmark/review-memory.json` parsed successfully
+    - Python tests: **9 pass / 0 fail**
+    - `compare_issues.py`: **0** open issues processed
+    - `compare_resolved.py`: **0** resolved issues processed
+
+The unlabeled-issue caveat still applies: the parity-relevant pgschema issues
+remain mostly unlabeled, so `compare_issues.py` and `compare_resolved.py` can
+still return zero candidates even when the manual latest-state sweep finds
+useful parity updates.
