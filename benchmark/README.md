@@ -12,10 +12,10 @@ Refreshed against:
 - `repos/pgschema` @ `e18d9ede7973537919c02f25eced5c97271af1dc`
 
 > 2026-07-09 follow-up validation found **no benchmark-matrix or submodule-head
-> delta** versus this 2026-07-08 snapshot. The 2026-07-10 through 2026-07-14
+> delta** versus this 2026-07-08 snapshot. The 2026-07-10 through 2026-07-15
 > follow-ups again found **no benchmark-matrix delta**, and the 2026-07-12
-> through 2026-07-14 sweeps found **no new upstream parity movement**. The open
-> pgschema issue set still remains
+> through 2026-07-15 sweeps again found **no new upstream parity movement** in
+> pgschema or `packages/pg-delta/**`. The open pgschema issue set still remains
 > [#49](https://github.com/pgplex/pgschema/issues/49),
 > [#52](https://github.com/pgplex/pgschema/issues/52),
 > [#84](https://github.com/pgplex/pgschema/issues/84),
@@ -25,10 +25,11 @@ Refreshed against:
 > [#218](https://github.com/supabase/pg-toolbelt/issues/218) and
 > [#219](https://github.com/supabase/pg-toolbelt/issues/219); live
 > `pg-toolbelt` `main` still differs from the checked-in baseline only under
-> `.github/**`; and the open rewrite PR
-> [#299](https://github.com/supabase/pg-toolbelt/pull/299) plus follow-up PR
-> [#329](https://github.com/supabase/pg-toolbelt/pull/329) remain
-> `pg-delta-next` work rather than current default-branch parity. See
+> `.github/**`; the open rewrite PR
+> [#299](https://github.com/supabase/pg-toolbelt/pull/299) still remains
+> `pg-delta-next` work rather than current default-branch parity; and adjacent
+> PR [#329](https://github.com/supabase/pg-toolbelt/pull/329) is now closed
+> without affecting any active or draft-only parity gap. See
 > [`docs/parity-refresh-2026-07-09.md`](../docs/parity-refresh-2026-07-09.md),
 > [`docs/parity-refresh-2026-07-10.md`](../docs/parity-refresh-2026-07-10.md),
 > and
@@ -38,7 +39,9 @@ Refreshed against:
 > and
 > [`docs/parity-refresh-2026-07-13.md`](../docs/parity-refresh-2026-07-13.md),
 > and
-> [`docs/parity-refresh-2026-07-14.md`](../docs/parity-refresh-2026-07-14.md)
+> [`docs/parity-refresh-2026-07-14.md`](../docs/parity-refresh-2026-07-14.md),
+> and
+> [`docs/parity-refresh-2026-07-15.md`](../docs/parity-refresh-2026-07-15.md)
 > for the latest no-change sweeps.
 
 ## Benchmark status matrix
