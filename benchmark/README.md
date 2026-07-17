@@ -12,23 +12,28 @@ Refreshed against:
 - `repos/pgschema` @ `e18d9ede7973537919c02f25eced5c97271af1dc`
 
 > 2026-07-09 follow-up validation found **no benchmark-matrix or submodule-head
-> delta** versus this 2026-07-08 snapshot. The 2026-07-10 through 2026-07-16
+> delta** versus this 2026-07-08 snapshot. The 2026-07-10 through 2026-07-17
 > follow-ups again found **no benchmark-matrix delta**, and the 2026-07-12
-> through 2026-07-16 sweeps again found **no new upstream parity movement** in
-> pgschema or `packages/pg-delta/**`. The open pgschema issue set still remains
-> [#49](https://github.com/pgplex/pgschema/issues/49),
+> through 2026-07-17 sweeps again found **no new upstream parity movement** in
+> pgschema `main` or `packages/pg-delta/**`. The open pgschema issue set now
+> includes [#49](https://github.com/pgplex/pgschema/issues/49),
 > [#52](https://github.com/pgplex/pgschema/issues/52),
 > [#84](https://github.com/pgplex/pgschema/issues/84),
-> [#450](https://github.com/pgplex/pgschema/issues/450), and
-> [#493](https://github.com/pgplex/pgschema/issues/493). Exact pg-toolbelt
-> trackers still remain only
+> [#450](https://github.com/pgplex/pgschema/issues/450),
+> [#493](https://github.com/pgplex/pgschema/issues/493), and
+> [#513](https://github.com/pgplex/pgschema/issues/513); new open issue #513 is
+> still **not parity work** for pg-delta. Exact pg-toolbelt trackers still
+> remain only
 > [#218](https://github.com/supabase/pg-toolbelt/issues/218) and
 > [#219](https://github.com/supabase/pg-toolbelt/issues/219); live
 > `pg-toolbelt` `main` still differs from the checked-in baseline only under
 > `.github/**` even after a later 2026-07-15 repository push; the open rewrite PR
 > [#299](https://github.com/supabase/pg-toolbelt/pull/299) still remains
-> `pg-delta-next` work rather than current default-branch parity; and adjacent
-> PR [#329](https://github.com/supabase/pg-toolbelt/pull/329) is now closed
+> `pg-delta-next` work rather than current default-branch parity; adjacent
+> issue [#334](https://github.com/supabase/pg-toolbelt/issues/334) and merged
+> PR [#335](https://github.com/supabase/pg-toolbelt/pull/335) still do not
+> exactly cover the active or draft-only parity gaps; and adjacent PR
+> [#329](https://github.com/supabase/pg-toolbelt/pull/329) remains closed
 > without affecting any active or draft-only parity gap. See
 > [`docs/parity-refresh-2026-07-09.md`](../docs/parity-refresh-2026-07-09.md),
 > [`docs/parity-refresh-2026-07-10.md`](../docs/parity-refresh-2026-07-10.md),
@@ -43,7 +48,9 @@ Refreshed against:
 > and
 > [`docs/parity-refresh-2026-07-15.md`](../docs/parity-refresh-2026-07-15.md),
 > and
-> [`docs/parity-refresh-2026-07-16.md`](../docs/parity-refresh-2026-07-16.md)
+> [`docs/parity-refresh-2026-07-16.md`](../docs/parity-refresh-2026-07-16.md),
+> and
+> [`docs/parity-refresh-2026-07-17.md`](../docs/parity-refresh-2026-07-17.md)
 > for the latest no-change sweeps.
 
 ## Benchmark status matrix
@@ -166,6 +173,9 @@ Screened candidates:
   under `--qualify-schema` — **not parity work for pg-delta**; this is a
   follow-up on pgschema's dump-only schema-qualification flag rather than a
   live-catalog diff or migration-planning gap
+- **#513** full migration handling workflow — **not parity work for pg-delta**;
+  this is workflow / migration-history orchestration rather than a live-catalog
+  diff or current pg-delta planning gap
 Historical draft text is recorded in markdown for the older tracked scenarios
 and the remaining draft-only uncovered candidates. The 2026-07-04 note for
 #501 and the 2026-07-07 note for #506 are retained as pre-promotion context
