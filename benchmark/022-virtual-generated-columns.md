@@ -17,6 +17,19 @@ mechanism. This benchmark tracks the now-resolved upstream scenario after
 pgschema merged its fix on `main`, while pg-delta's checked-in default-branch
 engine still lacks exact coverage.
 
+## Refresh note (2026-07-18)
+
+This refresh advanced the checked-in `pg-delta` baseline from
+`ee285b51bcfdeba4e7139b2b20d6e8192b606a0e` to
+`c0decd173d191bc470bf7b8c8dd3e862f08ae398`, while `pgschema` remained at
+`e18d9ede7973537919c02f25eced5c97271af1dc`.
+
+The new pg-delta delta is the alpha.32 non-superuser extraction fix, so it
+does not touch the generated-column representation or serialization path behind
+this benchmark. Targeted duplicate searches still found no exact pg-toolbelt
+issue or PR for this generated-column-kind gap, so benchmark 022 remains
+**Not covered**.
+
 ## Refresh note (2026-07-08)
 
 This refresh advanced both checked-in submodules:
@@ -90,7 +103,7 @@ the resolved scenario.
 | `CREATE TABLE` serialization preserves `VIRTUAL` | No - `table.create.ts` hard-codes `... STORED` |
 | `ALTER TABLE ... ADD COLUMN` serialization preserves `VIRTUAL` | No - `table.alter.ts` hard-codes `... STORED` |
 | Integration regression for PostgreSQL 18 `VIRTUAL` generated columns | No - `alter-table-operations.test.ts` covers only `STORED` cases |
-| Existing exact pg-toolbelt issue / PR | No - none found through the 2026-07-08 refresh |
+| Existing exact pg-toolbelt issue / PR | No - none found through the 2026-07-18 refresh |
 
 ## Comparison of approaches
 

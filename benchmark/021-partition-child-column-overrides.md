@@ -21,6 +21,19 @@ this benchmark is intentionally narrower. The missing behavior is not partition
 creation itself; it is preserving child-specific column overrides when a new
 partition child is created.
 
+## Refresh note (2026-07-18)
+
+This refresh advanced the checked-in `pg-delta` baseline from
+`ee285b51bcfdeba4e7139b2b20d6e8192b606a0e` to
+`c0decd173d191bc470bf7b8c8dd3e862f08ae398`, while `pgschema` remained at
+`e18d9ede7973537919c02f25eced5c97271af1dc`.
+
+The new pg-delta delta is the alpha.32 non-superuser extraction fix, so it
+does not touch `table.create.ts` or the partition-child create path behind this
+benchmark. Targeted duplicate searches still found no exact pg-toolbelt issue
+or PR for this narrow partition-child override case, so benchmark 021 remains
+**Not covered**.
+
 ## Refresh note (2026-07-08)
 
 This refresh advanced both checked-in submodules:
@@ -102,7 +115,7 @@ for incremental "add one new child partition" plans.
 | Child-specific `DEFAULT` / `NOT NULL` overrides on partition children | No - the serializer returns early for partition children before column metadata is emitted |
 | Follow-up column alters for created partition children | No - `table.diff.ts` adds constraints/comments/privileges on create, but no column override recovery path |
 | Integration regression for child partition column overrides | No - no roundtrip test covers `PARTITION OF (...)` typed table elements |
-| Existing exact pg-toolbelt issue / PR | No - none found through the 2026-07-08 refresh |
+| Existing exact pg-toolbelt issue / PR | No - none found through the 2026-07-18 refresh |
 
 ## Comparison of approaches
 

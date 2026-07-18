@@ -27,6 +27,20 @@ foreign key before the unique index create. PostgreSQL can reject that order
 with `SQLSTATE 42830` because the referenced `(id, tenant)` uniqueness does not
 exist yet when the foreign key is applied.
 
+## Refresh note (2026-07-18)
+
+This refresh advanced the checked-in `pg-delta` baseline from
+`ee285b51bcfdeba4e7139b2b20d6e8192b606a0e` to
+`c0decd173d191bc470bf7b8c8dd3e862f08ae398`, while `pgschema` remained at
+`e18d9ede7973537919c02f25eced5c97271af1dc`.
+
+The new pg-delta delta is the alpha.32 non-superuser extraction fix. Its only
+`depend.ts` edits are in the `pg_user_mapping` extraction queries, so it does
+not change the foreign-key-versus-standalone-unique-index dependency path
+behind this benchmark. Targeted duplicate searches still found no exact
+pg-toolbelt issue or PR for this standalone-index slice, so benchmark 023
+remains **Not covered**.
+
 ## Refresh note (2026-07-08)
 
 This benchmark is newly promoted from the draft note saved in
@@ -109,7 +123,7 @@ uniqueness may need to be deferred until after the create / modify phase.
 | Dependency edge from FK to referenced PK / `UNIQUE` constraint | Yes - `src/core/depend.ts` emits `constraint_deps` for referenced constraints |
 | Dependency edge from FK to referenced standalone unique index | No - there is no equivalent dependency extraction for a brand-new standalone unique index |
 | Integration regression for the standalone unique-index slice | No - `tests/integration/fk-constraint-ordering.test.ts` has no exact case for this scenario |
-| Existing exact pg-toolbelt issue / PR | No - none found through the 2026-07-08 refresh |
+| Existing exact pg-toolbelt issue / PR | No - none found through the 2026-07-18 refresh |
 
 ## Comparison of approaches
 
