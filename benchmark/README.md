@@ -4,41 +4,41 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-07-18)
+## Latest refresh snapshot (2026-07-19)
 
 Refreshed against:
 
 - `repos/pg-toolbelt` @ `c0decd173d191bc470bf7b8c8dd3e862f08ae398`
 - `repos/pgschema` @ `e18d9ede7973537919c02f25eced5c97271af1dc`
 
-> The 2026-07-18 refresh advanced the checked-in `pg-toolbelt` submodule from
-> `ee285b51bcfdeba4e7139b2b20d6e8192b606a0e` to
-> `c0decd173d191bc470bf7b8c8dd3e862f08ae398` after `pg-toolbelt/main` picked up
-> the alpha.32 non-superuser extraction fix
-> ([#337](https://github.com/supabase/pg-toolbelt/pull/337)) and release
-> ([#341](https://github.com/supabase/pg-toolbelt/pull/341)). The changed
-> pg-delta files are limited to catalog extraction for user mappings and
-> subscriptions (`catalog.model.ts`, `depend.ts`,
-> `user-mapping.model.ts`, `subscription.model.ts`, and the new
-> `non-superuser-extraction.test.ts`), so there is **no benchmark-matrix
-> delta** versus the 2026-07-17 sweep. The open pgschema issue set remains
-> [#49](https://github.com/pgplex/pgschema/issues/49),
+> The 2026-07-19 refresh found **no benchmark-matrix delta** and **no
+> code-head delta** versus the 2026-07-18 sweep: checked-in and live
+> `pg-toolbelt` both remain
+> `c0decd173d191bc470bf7b8c8dd3e862f08ae398`, while `pgschema/main` remains
+> `e18d9ede7973537919c02f25eced5c97271af1dc`. The open pgschema issue set still
+> consists of [#49](https://github.com/pgplex/pgschema/issues/49),
 > [#52](https://github.com/pgplex/pgschema/issues/52),
 > [#84](https://github.com/pgplex/pgschema/issues/84),
 > [#450](https://github.com/pgplex/pgschema/issues/450),
 > [#493](https://github.com/pgplex/pgschema/issues/493), and
-> [#513](https://github.com/pgplex/pgschema/issues/513); #513 remains **not
-> parity work** for pg-delta. Exact pg-toolbelt trackers still remain only
+> [#513](https://github.com/pgplex/pgschema/issues/513), with the same
+> non-parity / tracked classification as the previous sweep. Exact pg-toolbelt
+> trackers still remain only
 > [#218](https://github.com/supabase/pg-toolbelt/issues/218) and
-> [#219](https://github.com/supabase/pg-toolbelt/issues/219), while targeted
-> duplicate searches still found no exact tracker for benchmarks **020**,
-> **021**, **022**, or **023**, or for the older draft-only gaps
-> [#439](https://github.com/pgplex/pgschema/issues/439) and
-> [#444](https://github.com/pgplex/pgschema/issues/444). See
-> [`docs/parity-refresh-2026-07-17.md`](../docs/parity-refresh-2026-07-17.md)
-> and
+> [#219](https://github.com/supabase/pg-toolbelt/issues/219). The only fresh
+> pg-toolbelt activity is statement-level apply-debugging PR
+> [#343](https://github.com/supabase/pg-toolbelt/pull/343), while broader open
+> backlog issues [#332](https://github.com/supabase/pg-toolbelt/issues/332),
+> [#333](https://github.com/supabase/pg-toolbelt/issues/333),
+> [#339](https://github.com/supabase/pg-toolbelt/issues/339), and
+> [#340](https://github.com/supabase/pg-toolbelt/issues/340) remain adjacent
+> rather than exact duplicates for benchmarks **020** through **023** or the
+> older draft-only gaps [#439](https://github.com/pgplex/pgschema/issues/439)
+> and [#444](https://github.com/pgplex/pgschema/issues/444). See
 > [`docs/parity-refresh-2026-07-18.md`](../docs/parity-refresh-2026-07-18.md)
-> for the latest no-matrix-delta sweeps.
+> and
+> [`docs/parity-refresh-2026-07-19.md`](../docs/parity-refresh-2026-07-19.md)
+> for the latest no-delta sweeps.
 
 ## Benchmark status matrix
 
