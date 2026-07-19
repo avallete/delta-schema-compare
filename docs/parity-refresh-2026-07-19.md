@@ -122,6 +122,18 @@ This refresh was validated with:
   returned no exact tracker
 - `git submodule update --init --recursive`
 - `git submodule update --remote --merge`
-
-Repository-local validation after the doc refresh is listed in the final PR
-diff and was rerun before commit.
+- `python3 -m json.tool benchmark/review-memory.json >/dev/null`
+- `python3 -m unittest tests.test_review_memory tests.test_compare_resolved_benchmark`
+  (**9 tests**, pass)
+- `bun install --frozen-lockfile`
+- `bun test packages/pg-delta/src/core/objects/table/table.diff.test.ts`
+  `packages/pg-delta/src/core/objects/table/changes/table.create.test.ts`
+  `packages/pg-delta/src/core/objects/index/index.diff.test.ts`
+  `packages/pg-delta/src/core/sort/sort-changes.test.ts`
+  (**37 tests**, pass)
+- `DRY_RUN=true python3 scripts/compare_issues.py` (**0 issues found** because
+  the upstream `Bug` / `Feature` label filter still misses the relevant
+  unlabeled parity issues)
+- `DRY_RUN=true OUTPUT_MODE=benchmark python3 scripts/compare_resolved.py`
+  (**0 issues found** for the same label-filter reason)
+- `git diff --check`
