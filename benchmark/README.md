@@ -4,15 +4,15 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-07-19)
+## Latest refresh snapshot (2026-07-20)
 
 Refreshed against:
 
 - `repos/pg-toolbelt` @ `c0decd173d191bc470bf7b8c8dd3e862f08ae398`
 - `repos/pgschema` @ `e18d9ede7973537919c02f25eced5c97271af1dc`
 
-> The 2026-07-19 refresh found **no benchmark-matrix delta** and **no
-> code-head delta** versus the 2026-07-18 sweep: checked-in and live
+> The 2026-07-20 refresh found **no benchmark-matrix delta** and **no
+> code-head delta** versus the 2026-07-19 sweep: checked-in and live
 > `pg-toolbelt` both remain
 > `c0decd173d191bc470bf7b8c8dd3e862f08ae398`, while `pgschema/main` remains
 > `e18d9ede7973537919c02f25eced5c97271af1dc`. The open pgschema issue set still
@@ -35,9 +35,9 @@ Refreshed against:
 > rather than exact duplicates for benchmarks **020** through **023** or the
 > older draft-only gaps [#439](https://github.com/pgplex/pgschema/issues/439)
 > and [#444](https://github.com/pgplex/pgschema/issues/444). See
-> [`docs/parity-refresh-2026-07-18.md`](../docs/parity-refresh-2026-07-18.md)
-> and
 > [`docs/parity-refresh-2026-07-19.md`](../docs/parity-refresh-2026-07-19.md)
+> and
+> [`docs/parity-refresh-2026-07-20.md`](../docs/parity-refresh-2026-07-20.md)
 > for the latest no-delta sweeps.
 
 ## Benchmark status matrix
