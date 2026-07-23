@@ -4,59 +4,54 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-07-22)
+## Latest refresh snapshot (2026-07-23)
 
 Refreshed against:
 
 - `repos/pg-toolbelt` @ `c0decd173d191bc470bf7b8c8dd3e862f08ae398`
-- `repos/pgschema` @ `5f2b37bae6d51068b3a3b05fec3185c4219f8968`
+- `repos/pgschema` @ `a0acf0b9590a6bd7b3455d795f7e547490aa9699`
 
-> The 2026-07-22 refresh found **no benchmark-matrix delta** and **no
-> pg-delta code-head delta** versus the 2026-07-21 sweep: checked-in and live
-> `pg-toolbelt` both remain
+> The 2026-07-23 refresh found **no benchmark-matrix delta** and **no
+> pg-delta code-head delta** versus the 2026-07-22 sweep: checked-in and live
+> `pg-toolbelt` both still remain
 > `c0decd173d191bc470bf7b8c8dd3e862f08ae398`, while `pgschema/main` advanced
-> from `e18d9ede7973537919c02f25eced5c97271af1dc` to
-> `5f2b37bae6d51068b3a3b05fec3185c4219f8968` via merged
-> [pgschema#516](https://github.com/pgplex/pgschema/pull/516) for issue
-> [#515](https://github.com/pgplex/pgschema/issues/515). The current open
-> pgschema issue set still consists of
-> [#49](https://github.com/pgplex/pgschema/issues/49),
+> from `5f2b37bae6d51068b3a3b05fec3185c4219f8968` to
+> `a0acf0b9590a6bd7b3455d795f7e547490aa9699` via merged
+> [pgschema#514](https://github.com/pgplex/pgschema/pull/514) for still-open
+> issue [#493](https://github.com/pgplex/pgschema/issues/493). That merged PR
+> extends dump-side `--qualify-schema` handling for same-schema type
+> references, but the upstream issue remains open for the still-outstanding
+> function / procedure parameter and return-type slices, so it remains **not
+> parity work** for pg-delta. The current open pgschema issue set still
+> consists of [#49](https://github.com/pgplex/pgschema/issues/49),
 > [#52](https://github.com/pgplex/pgschema/issues/52),
 > [#84](https://github.com/pgplex/pgschema/issues/84),
 > [#450](https://github.com/pgplex/pgschema/issues/450), and
-> [#493](https://github.com/pgplex/pgschema/issues/493); issue
-> [#493](https://github.com/pgplex/pgschema/issues/493) now also has open
-> [pgschema#514](https://github.com/pgplex/pgschema/pull/514), but it still
-> remains **not parity work** for pg-delta because it is a dump-only
-> `--qualify-schema` follow-up rather than a live-catalog diff or planning
-> gap. Newly closed issue
-> [#515](https://github.com/pgplex/pgschema/issues/515) is already **covered**
-> in current pg-delta for the reported trigger-comment-on-create scenario, so
-> it does not promote a new benchmark gap or duplicate tracker. Exact
-> pg-toolbelt trackers still remain only
+> [#493](https://github.com/pgplex/pgschema/issues/493). Exact pg-toolbelt
+> trackers still remain only
 > [#218](https://github.com/supabase/pg-toolbelt/issues/218) and
 > [#219](https://github.com/supabase/pg-toolbelt/issues/219). New pg-toolbelt
-> activity since the previous sweep is open PR
-> [#355](https://github.com/supabase/pg-toolbelt/pull/355) and open PR
-> [#356](https://github.com/supabase/pg-toolbelt/pull/356); yesterday's PRs
-> [#350](https://github.com/supabase/pg-toolbelt/pull/350) and
-> [#354](https://github.com/supabase/pg-toolbelt/pull/354) are now merged,
-> while issues [#344](https://github.com/supabase/pg-toolbelt/issues/344) and
-> [#346](https://github.com/supabase/pg-toolbelt/issues/346) remain open.
-> Their current title/body scope is adjacent rather than an exact duplicate
-> for benchmarks **020** through **023** or the older draft-only gaps
-> [#439](https://github.com/pgplex/pgschema/issues/439) and
-> [#444](https://github.com/pgplex/pgschema/issues/444). Broader open backlog
+> movement since the previous sweep is that
+> [#356](https://github.com/supabase/pg-toolbelt/pull/356) is now merged while
+> [#355](https://github.com/supabase/pg-toolbelt/pull/355) remains open;
+> issues [#344](https://github.com/supabase/pg-toolbelt/issues/344) and
+> [#346](https://github.com/supabase/pg-toolbelt/issues/346) also remain open,
+> and open issue [#286](https://github.com/supabase/pg-toolbelt/issues/286)
+> remains adjacent rather than an exact duplicate for the older draft-only gap
+> [#439](https://github.com/pgplex/pgschema/issues/439). Broader open backlog
 > issues [#332](https://github.com/supabase/pg-toolbelt/issues/332),
 > [#333](https://github.com/supabase/pg-toolbelt/issues/333),
 > [#339](https://github.com/supabase/pg-toolbelt/issues/339), and
-> [#340](https://github.com/supabase/pg-toolbelt/issues/340), plus open
-> [pg-toolbelt#285](https://github.com/supabase/pg-toolbelt/pull/285), also
-> remain adjacent rather than exact duplicates. See
+> [#340](https://github.com/supabase/pg-toolbelt/issues/340) likewise remain
+> adjacent rather than exact duplicates for benchmarks **020** through **023**
+> or the older draft-only gaps
+> [#439](https://github.com/pgplex/pgschema/issues/439) and
+> [#444](https://github.com/pgplex/pgschema/issues/444). See
 > [`docs/parity-refresh-2026-07-19.md`](../docs/parity-refresh-2026-07-19.md),
 > [`docs/parity-refresh-2026-07-20.md`](../docs/parity-refresh-2026-07-20.md),
 > [`docs/parity-refresh-2026-07-21.md`](../docs/parity-refresh-2026-07-21.md),
-> and [`docs/parity-refresh-2026-07-22.md`](../docs/parity-refresh-2026-07-22.md)
+> [`docs/parity-refresh-2026-07-22.md`](../docs/parity-refresh-2026-07-22.md),
+> and [`docs/parity-refresh-2026-07-23.md`](../docs/parity-refresh-2026-07-23.md)
 > for the latest sweeps.
 
 ## Benchmark status matrix
@@ -91,21 +86,19 @@ Four resolved-issue benchmark scenarios remain active as unresolved:
 - **023** — new-table foreign key sorted before a standalone unique index on the
   referenced table
 
-There **is** a benchmark-matrix delta versus the 2026-07-07 refresh: the
-standalone unique-index slice of resolved pgschema issue #506 is now promoted
-into [023](023-fk-before-standalone-unique-index.md) after upstream merged
-[pgschema#507](https://github.com/pgplex/pgschema/pull/507). Benchmarks 020,
-021, and 022 remain active with unchanged parity status.
+There is **no** benchmark-matrix delta versus the 2026-07-22 refresh.
+Benchmarks 020, 021, 022, and 023 remain active with unchanged parity status.
 
-There is a code-head delta in pg-delta for this refresh:
+There is **no** code-head delta in pg-delta for this refresh:
 
-- `pg-delta` advanced from `ee285b51bcfdeba4e7139b2b20d6e8192b606a0e` to
-  `c0decd173d191bc470bf7b8c8dd3e862f08ae398`
-- `pgschema` remains `e18d9ede7973537919c02f25eced5c97271af1dc`
-- the new pg-delta delta is the alpha.32 non-superuser extraction fix:
-  `pg_user_mapping` extraction now reads from `pg_user_mappings`,
-  subscription extraction no longer touches `subconninfo` without privilege,
-  and the new integration regression is limited to that extraction path
+- `pg-delta` remains `c0decd173d191bc470bf7b8c8dd3e862f08ae398`
+- `pgschema` advanced from `5f2b37bae6d51068b3a3b05fec3185c4219f8968` to
+  `a0acf0b9590a6bd7b3455d795f7e547490aa9699`
+- the pgschema delta is merged
+  [pgschema#514](https://github.com/pgplex/pgschema/pull/514) for still-open
+  issue [#493](https://github.com/pgplex/pgschema/issues/493), which extends
+  dump-side same-schema type qualification under `--qualify-schema` without
+  changing pg-delta's current parity classification
 
 A targeted GitHub sweep for the latest upstream issue state now shows:
 
@@ -179,10 +172,12 @@ Screened candidates:
   diffs live catalogs directly and already models roles plus privilege
   dependencies
 - **#493** inspector / IR should preserve schema identity for type references
-  under `--qualify-schema` — **not parity work for pg-delta**; open
+  under `--qualify-schema` — **not parity work for pg-delta**; merged
   [pgschema#514](https://github.com/pgplex/pgschema/pull/514) now implements
-  more of pgschema's dump-only schema-qualification follow-up, but it still
-  does not change pg-delta parity classification
+  same-schema type-reference qualification for columns, domains, aggregates,
+  and composites, but the issue remains open for function / procedure
+  parameter and return types and still does not change pg-delta parity
+  classification
 Issue [#513](https://github.com/pgplex/pgschema/issues/513) is no longer in
 the open-screening set because it closed upstream on 2026-07-20 as completed
 and still remains **not parity work for pg-delta**; see the closed-issue notes
@@ -351,10 +346,12 @@ snapshot are now closed upstream and keep the same pg-delta parity verdicts:
 Recent parity-relevant pgschema PR activity is now:
 
 - pgschema [#514](https://github.com/pgplex/pgschema/pull/514) (`feat(dump):
-  qualify same-schema type references under --qualify-schema (#493)`) is
-  **open** and remains **not parity work** for pg-delta; it extends
-  pgschema's dump-only qualification mode rather than changing live-catalog
-  diff or planner behavior
+  qualify same-schema type references under --qualify-schema (#493)`) is now
+  **merged** and remains **not parity work** for pg-delta; it extends
+  pgschema's dump-only qualification mode for columns/domains/aggregates/
+  composites, while issue #493 stays open for the remaining function /
+  procedure signature slices rather than changing live-catalog diff or planner
+  behavior
 - pgschema [#504](https://github.com/pgplex/pgschema/pull/504) (`fix: always
   schema-qualify table in COMMENT ON COLUMN (#502)`) is now **merged** and
   remains **not parity work for pg-delta**
@@ -450,6 +447,10 @@ Existing pg-toolbelt PR activity was also rechecked during this refresh:
   foreign-key cycles in declarative apply. This is useful adjacent dependency
   work, but it is not an exact duplicate of benchmark 020, benchmark 023, or
   the current draft-only items #439 / #444 / #479
+- [#286](https://github.com/supabase/pg-toolbelt/issues/286) remains open for
+  domain CHECK replacement expansion. This is useful adjacent dependency
+  work, but it is not an exact duplicate of the draft-only
+  `UNIQUE -> PRIMARY KEY` replacement gap from pgschema #439
 - [#288](https://github.com/supabase/pg-toolbelt/pull/288) covers range-type
   creation dependencies in `pg-topo`. This is useful topology work, but it
   does not map to a current pgschema benchmark or draft-only parity item
@@ -462,12 +463,13 @@ Existing pg-toolbelt PR activity was also rechecked during this refresh:
   adjacent corpus-seeding / proof work. They remain useful current context,
   but neither PR maps to benchmarks 020 through 023 or the older draft-only
   items
-- [#355](https://github.com/supabase/pg-toolbelt/pull/355) and
-  [#356](https://github.com/supabase/pg-toolbelt/pull/356) are new open
-  projection-audit / corpus-proof PRs tied to issue
+- [#355](https://github.com/supabase/pg-toolbelt/pull/355) remains open and
+  [#356](https://github.com/supabase/pg-toolbelt/pull/356) is now merged as
+  adjacent projection-audit / corpus-proof work tied to issue
   [#333](https://github.com/supabase/pg-toolbelt/issues/333). They improve
-  plan-artifact visibility and test coverage, but they do not map to benchmarks
-  020 through 023, tracked issues #218 / #219, or the older draft-only items
+  plan-artifact visibility and test coverage, but they do not map to
+  benchmarks 020 through 023, tracked issues #218 / #219, or the older
+  draft-only items
 
 Separately, pg-toolbelt
 [#308](https://github.com/supabase/pg-toolbelt/issues/308) and
