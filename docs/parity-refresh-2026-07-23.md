@@ -99,5 +99,42 @@ reconciliation around the latest upstream merges:
 
 ## 4) Validation notes
 
-- Repo-local validation results will be recorded after the focused branch
-  checks run for this refresh.
+This refresh was validated with:
+
+- rendered GitHub issue / PR list checks for:
+  - pgschema open issues
+  - pg-toolbelt open issues
+  - pg-toolbelt open PRs
+- direct rendered GitHub issue / PR detail checks for:
+  - pgschema issues **#49**, **#52**, **#84**, **#450**, and **#493**
+  - pgschema PR **#514**
+  - pg-toolbelt issue / PR pages **#218**, **#219**, **#286**, **#344**,
+    **#346**, **#355**, and **#356**
+- `git submodule update --init --recursive`
+- `git submodule update --remote --merge`
+- `python3 -m json.tool benchmark/review-memory.json >/dev/null`
+- `python3 -m unittest tests.test_review_memory tests.test_compare_resolved_benchmark`
+  (**9 tests**, pass)
+- `cd repos/pg-toolbelt && export PATH="$HOME/.bun/bin:$PATH" && bun install --frozen-lockfile`
+- targeted pg-delta unit coverage:
+
+  ```bash
+  cd repos/pg-toolbelt
+  export PATH="$HOME/.bun/bin:$PATH"
+  bun test \
+    packages/pg-delta/src/core/objects/table/table.diff.test.ts \
+    packages/pg-delta/src/core/objects/table/changes/table.create.test.ts \
+    packages/pg-delta/src/core/objects/index/index.diff.test.ts \
+    packages/pg-delta/src/core/sort/sort-changes.test.ts
+  ```
+
+  Result: **37 pass / 0 fail**.
+
+- `GITHUB_TOKEN="<remote-token>" DRY_RUN=true python3 scripts/compare_issues.py`
+  returned **0 issues found**
+- `GITHUB_TOKEN="<remote-token>" DRY_RUN=true OUTPUT_MODE=benchmark python3 scripts/compare_resolved.py`
+  returned **0 resolved issues found**
+- those dry-run script results remain expected because the parity-relevant
+  pgschema items are still mostly missing the upstream `Bug` / `Feature`
+  labels that the automation filters on
+- `git diff --check`
