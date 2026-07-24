@@ -100,3 +100,31 @@ state-reconciliation around the latest pg-toolbelt issue / PR churn:
   pgschema issue fingerprints moved: `issue_updated_at`, checked-in `pg-delta`
   SHA, and checked-in `pgschema` SHA are all unchanged versus the 2026-07-23
   sweep
+
+## 4) Validation notes
+
+This refresh was validated with:
+
+- `git submodule update --init --recursive`
+- `git submodule update --remote --merge`
+- direct GitHub issue / PR checks for:
+  - the current open pgschema issue set
+  - recent merged pgschema PRs
+  - pg-toolbelt issues **#218**, **#219**, **#286**, **#308**, **#332**,
+    **#333**, **#339**, **#340**, **#344**, and **#346**
+  - pg-toolbelt PRs **#285**, **#305**, **#310**, **#313**, **#355**,
+    **#356**, **#357**, and **#358**
+- direct submodule-head checks confirming:
+  - checked-in `repos/pgschema` == live `origin/main`
+  - checked-in `repos/pg-toolbelt` == live `origin/main`
+- `python3 -m json.tool benchmark/review-memory.json >/dev/null`
+- `python3 -m unittest tests.test_review_memory tests.test_compare_resolved_benchmark`
+  (**9 tests**, pass)
+- `GITHUB_TOKEN="<remote-token>" DRY_RUN=true python3 scripts/compare_issues.py`
+  returned **0 issues found**
+- `GITHUB_TOKEN="<remote-token>" DRY_RUN=true OUTPUT_MODE=benchmark python3 scripts/compare_resolved.py`
+  returned **0 resolved issues found**
+- those dry-run script results remain expected because the parity-relevant
+  pgschema items are still mostly missing the upstream `Bug` / `Feature`
+  labels that the automation filters on
+- `git diff --check`
