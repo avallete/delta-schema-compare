@@ -4,26 +4,19 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-07-23)
+## Latest refresh snapshot (2026-07-24)
 
 Refreshed against:
 
 - `repos/pg-toolbelt` @ `c0decd173d191bc470bf7b8c8dd3e862f08ae398`
 - `repos/pgschema` @ `a0acf0b9590a6bd7b3455d795f7e547490aa9699`
 
-> The 2026-07-23 refresh found **no benchmark-matrix delta** and **no
-> pg-delta code-head delta** versus the 2026-07-22 sweep: checked-in and live
-> `pg-toolbelt` both still remain
-> `c0decd173d191bc470bf7b8c8dd3e862f08ae398`, while `pgschema/main` advanced
-> from `5f2b37bae6d51068b3a3b05fec3185c4219f8968` to
-> `a0acf0b9590a6bd7b3455d795f7e547490aa9699` via merged
-> [pgschema#514](https://github.com/pgplex/pgschema/pull/514) for still-open
-> issue [#493](https://github.com/pgplex/pgschema/issues/493). That merged PR
-> extends dump-side `--qualify-schema` handling for same-schema type
-> references, but the upstream issue remains open for the still-outstanding
-> function / procedure parameter and return-type slices, so it remains **not
-> parity work** for pg-delta. The current open pgschema issue set still
-> consists of [#49](https://github.com/pgplex/pgschema/issues/49),
+> The 2026-07-24 refresh found **no benchmark-matrix delta** and **no
+> code-head delta in either upstream repo** versus the 2026-07-23 sweep:
+> checked-in and live `pg-toolbelt` still remain
+> `c0decd173d191bc470bf7b8c8dd3e862f08ae398`, and `pgschema/main` still remains
+> `a0acf0b9590a6bd7b3455d795f7e547490aa9699`. The current open pgschema issue
+> set is unchanged at [#49](https://github.com/pgplex/pgschema/issues/49),
 > [#52](https://github.com/pgplex/pgschema/issues/52),
 > [#84](https://github.com/pgplex/pgschema/issues/84),
 > [#450](https://github.com/pgplex/pgschema/issues/450), and
@@ -32,14 +25,14 @@ Refreshed against:
 > [#218](https://github.com/supabase/pg-toolbelt/issues/218) and
 > [#219](https://github.com/supabase/pg-toolbelt/issues/219). New pg-toolbelt
 > movement since the previous sweep is that
-> [#356](https://github.com/supabase/pg-toolbelt/pull/356) is now merged while
-> [#355](https://github.com/supabase/pg-toolbelt/pull/355) remains open;
+> [#355](https://github.com/supabase/pg-toolbelt/pull/355) and
+> [#358](https://github.com/supabase/pg-toolbelt/pull/358) are now merged,
+> [#357](https://github.com/supabase/pg-toolbelt/pull/357) is open, and issue
+> [#308](https://github.com/supabase/pg-toolbelt/issues/308) was updated while
 > issues [#344](https://github.com/supabase/pg-toolbelt/issues/344) and
-> [#346](https://github.com/supabase/pg-toolbelt/issues/346) also remain open,
-> and open issue [#286](https://github.com/supabase/pg-toolbelt/issues/286)
-> remains adjacent rather than an exact duplicate for the older draft-only gap
-> [#439](https://github.com/pgplex/pgschema/issues/439). Broader open backlog
-> issues [#332](https://github.com/supabase/pg-toolbelt/issues/332),
+> [#346](https://github.com/supabase/pg-toolbelt/issues/346) remain open.
+> Issue [#286](https://github.com/supabase/pg-toolbelt/issues/286) and broader
+> backlog issues [#332](https://github.com/supabase/pg-toolbelt/issues/332),
 > [#333](https://github.com/supabase/pg-toolbelt/issues/333),
 > [#339](https://github.com/supabase/pg-toolbelt/issues/339), and
 > [#340](https://github.com/supabase/pg-toolbelt/issues/340) likewise remain
@@ -51,7 +44,8 @@ Refreshed against:
 > [`docs/parity-refresh-2026-07-20.md`](../docs/parity-refresh-2026-07-20.md),
 > [`docs/parity-refresh-2026-07-21.md`](../docs/parity-refresh-2026-07-21.md),
 > [`docs/parity-refresh-2026-07-22.md`](../docs/parity-refresh-2026-07-22.md),
-> and [`docs/parity-refresh-2026-07-23.md`](../docs/parity-refresh-2026-07-23.md)
+> [`docs/parity-refresh-2026-07-23.md`](../docs/parity-refresh-2026-07-23.md),
+> and [`docs/parity-refresh-2026-07-24.md`](../docs/parity-refresh-2026-07-24.md)
 > for the latest sweeps.
 
 ## Benchmark status matrix
@@ -86,19 +80,24 @@ Four resolved-issue benchmark scenarios remain active as unresolved:
 - **023** — new-table foreign key sorted before a standalone unique index on the
   referenced table
 
-There is **no** benchmark-matrix delta versus the 2026-07-22 refresh.
+There is **no** benchmark-matrix delta versus the 2026-07-23 refresh.
 Benchmarks 020, 021, 022, and 023 remain active with unchanged parity status.
 
-There is **no** code-head delta in pg-delta for this refresh:
+There is **no** code-head delta in either upstream repo for this refresh:
 
 - `pg-delta` remains `c0decd173d191bc470bf7b8c8dd3e862f08ae398`
-- `pgschema` advanced from `5f2b37bae6d51068b3a3b05fec3185c4219f8968` to
-  `a0acf0b9590a6bd7b3455d795f7e547490aa9699`
-- the pgschema delta is merged
-  [pgschema#514](https://github.com/pgplex/pgschema/pull/514) for still-open
-  issue [#493](https://github.com/pgplex/pgschema/issues/493), which extends
-  dump-side same-schema type qualification under `--qualify-schema` without
-  changing pg-delta's current parity classification
+- `pgschema` remains `a0acf0b9590a6bd7b3455d795f7e547490aa9699`
+- the open pgschema issue set is unchanged at
+  [#49](https://github.com/pgplex/pgschema/issues/49),
+  [#52](https://github.com/pgplex/pgschema/issues/52),
+  [#84](https://github.com/pgplex/pgschema/issues/84),
+  [#450](https://github.com/pgplex/pgschema/issues/450), and
+  [#493](https://github.com/pgplex/pgschema/issues/493)
+- pgschema [#493](https://github.com/pgplex/pgschema/issues/493) remains open
+  and still **not parity work** for pg-delta; merged
+  [pgschema#514](https://github.com/pgplex/pgschema/pull/514) only extends
+  dump-side same-schema type qualification under `--qualify-schema`, and the
+  remaining function / procedure signature slices are still upstream-only work
 
 A targeted GitHub sweep for the latest upstream issue state now shows:
 
@@ -125,8 +124,10 @@ A targeted GitHub sweep for the latest upstream issue state now shows:
   not use pgschema's concurrent rebuild choreography, and a focused ordering
   probe still produced `DROP INDEX` -> `ALTER TABLE ... DROP COLUMN` ->
   `CREATE INDEX`
-- the highest live pgschema issue number remains **#509**; newer numbers
-  **#510**, **#511**, and **#512** are PRs, not issues
+- no newer pgschema issue or merged-PR movement was found beyond the
+  already-recorded [#514](https://github.com/pgplex/pgschema/pull/514) /
+  [#516](https://github.com/pgplex/pgschema/pull/516) activity from the prior
+  sweep
 
 No new exact pg-toolbelt issue or PR was found for benchmarks 020, 021, 022,
 or 023. Exact open pg-toolbelt trackers still exist only for:
@@ -463,8 +464,8 @@ Existing pg-toolbelt PR activity was also rechecked during this refresh:
   adjacent corpus-seeding / proof work. They remain useful current context,
   but neither PR maps to benchmarks 020 through 023 or the older draft-only
   items
-- [#355](https://github.com/supabase/pg-toolbelt/pull/355) remains open and
-  [#356](https://github.com/supabase/pg-toolbelt/pull/356) is now merged as
+- [#355](https://github.com/supabase/pg-toolbelt/pull/355) and
+  [#356](https://github.com/supabase/pg-toolbelt/pull/356) are now merged as
   adjacent projection-audit / corpus-proof work tied to issue
   [#333](https://github.com/supabase/pg-toolbelt/issues/333). They improve
   plan-artifact visibility and test coverage, but they do not map to
@@ -472,8 +473,10 @@ Existing pg-toolbelt PR activity was also rechecked during this refresh:
   draft-only items
 
 Separately, pg-toolbelt
-[#308](https://github.com/supabase/pg-toolbelt/issues/308) and
-[#310](https://github.com/supabase/pg-toolbelt/pull/310) were checked as
+[#308](https://github.com/supabase/pg-toolbelt/issues/308),
+[#310](https://github.com/supabase/pg-toolbelt/pull/310),
+[#357](https://github.com/supabase/pg-toolbelt/pull/357), and
+[#358](https://github.com/supabase/pg-toolbelt/pull/358) were checked as
 adjacent function-privilege work. They are useful current context, but they do
 not replace [#219](https://github.com/supabase/pg-toolbelt/issues/219): their
 scope is `REVOKE EXECUTE ... FROM PUBLIC`, not the enum-typed function
