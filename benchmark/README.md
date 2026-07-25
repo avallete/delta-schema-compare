@@ -4,40 +4,55 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-07-24)
+## Latest refresh snapshot (2026-07-25)
 
 Refreshed against:
 
-- `repos/pg-toolbelt` @ `c0decd173d191bc470bf7b8c8dd3e862f08ae398`
+- checked-in `repos/pg-toolbelt` @ `c0decd173d191bc470bf7b8c8dd3e862f08ae398`
+- live `pg-toolbelt` `main` @ `b732ce6b45eb9f3344ba3fc531ee28822730362e`
 - `repos/pgschema` @ `a0acf0b9590a6bd7b3455d795f7e547490aa9699`
 
-> The 2026-07-24 refresh found **no benchmark-matrix delta** and **no
-> code-head delta in either upstream repo** versus the 2026-07-23 sweep:
-> checked-in and live `pg-toolbelt` still remain
-> `c0decd173d191bc470bf7b8c8dd3e862f08ae398`, and `pgschema/main` still remains
+> The 2026-07-25 refresh found **no benchmark-matrix delta** versus the
+> 2026-07-24 sweep, but it did find a **live pg-delta code-head delta** and a
+> **new unlabeled open pgschema issue**. Checked-in `repos/pg-toolbelt` still
+> remains `c0decd173d191bc470bf7b8c8dd3e862f08ae398`, live
+> `pg-toolbelt/main` advanced to `b732ce6b45eb9f3344ba3fc531ee28822730362e`,
+> and `pgschema/main` still remains
 > `a0acf0b9590a6bd7b3455d795f7e547490aa9699`. The current open pgschema issue
-> set is unchanged at [#49](https://github.com/pgplex/pgschema/issues/49),
+> set is now [#49](https://github.com/pgplex/pgschema/issues/49),
 > [#52](https://github.com/pgplex/pgschema/issues/52),
 > [#84](https://github.com/pgplex/pgschema/issues/84),
-> [#450](https://github.com/pgplex/pgschema/issues/450), and
-> [#493](https://github.com/pgplex/pgschema/issues/493). Exact pg-toolbelt
-> trackers still remain only
+> [#450](https://github.com/pgplex/pgschema/issues/450),
+> [#493](https://github.com/pgplex/pgschema/issues/493), and
+> [#518](https://github.com/pgplex/pgschema/issues/518). Issue
+> [#518](https://github.com/pgplex/pgschema/issues/518) is still **not parity
+> work** for pg-delta because it stems from pgschema's temp comparison
+> environment resolving extension-owned types under a different schema than the
+> real target, while pg-delta diffs live catalogs directly and already
+> roundtrips extension-owned types in non-public schemas. Exact open
+> pg-toolbelt trackers still remain only
 > [#218](https://github.com/supabase/pg-toolbelt/issues/218) and
 > [#219](https://github.com/supabase/pg-toolbelt/issues/219). New pg-toolbelt
 > movement since the previous sweep is that
-> [#355](https://github.com/supabase/pg-toolbelt/pull/355) and
-> [#358](https://github.com/supabase/pg-toolbelt/pull/358) are now merged,
-> [#357](https://github.com/supabase/pg-toolbelt/pull/357) is open, and issue
-> [#308](https://github.com/supabase/pg-toolbelt/issues/308) was updated while
-> issues [#344](https://github.com/supabase/pg-toolbelt/issues/344) and
-> [#346](https://github.com/supabase/pg-toolbelt/issues/346) remain open.
-> Issue [#286](https://github.com/supabase/pg-toolbelt/issues/286) and broader
+> [#308](https://github.com/supabase/pg-toolbelt/issues/308) is now closed by
+> merged [#357](https://github.com/supabase/pg-toolbelt/pull/357),
+> [#358](https://github.com/supabase/pg-toolbelt/pull/358) is also merged, open
+> [#310](https://github.com/supabase/pg-toolbelt/pull/310) remains redundant
+> adjacent function-privilege work, and issue
+> [#286](https://github.com/supabase/pg-toolbelt/issues/286) plus broader
 > backlog issues [#332](https://github.com/supabase/pg-toolbelt/issues/332),
 > [#333](https://github.com/supabase/pg-toolbelt/issues/333),
-> [#339](https://github.com/supabase/pg-toolbelt/issues/339), and
-> [#340](https://github.com/supabase/pg-toolbelt/issues/340) likewise remain
-> adjacent rather than exact duplicates for benchmarks **020** through **023**
-> or the older draft-only gaps
+> [#339](https://github.com/supabase/pg-toolbelt/issues/339),
+> [#340](https://github.com/supabase/pg-toolbelt/issues/340),
+> [#344](https://github.com/supabase/pg-toolbelt/issues/344), and
+> [#346](https://github.com/supabase/pg-toolbelt/issues/346) plus open PRs
+> [#299](https://github.com/supabase/pg-toolbelt/pull/299),
+> [#305](https://github.com/supabase/pg-toolbelt/pull/305),
+> [#313](https://github.com/supabase/pg-toolbelt/pull/313),
+> [#314](https://github.com/supabase/pg-toolbelt/pull/314), and
+> [#316](https://github.com/supabase/pg-toolbelt/pull/316) remain adjacent
+> rather than exact duplicates for benchmarks **020** through **023** or the
+> older draft-only gaps
 > [#439](https://github.com/pgplex/pgschema/issues/439) and
 > [#444](https://github.com/pgplex/pgschema/issues/444). See
 > [`docs/parity-refresh-2026-07-19.md`](../docs/parity-refresh-2026-07-19.md),
@@ -45,7 +60,8 @@ Refreshed against:
 > [`docs/parity-refresh-2026-07-21.md`](../docs/parity-refresh-2026-07-21.md),
 > [`docs/parity-refresh-2026-07-22.md`](../docs/parity-refresh-2026-07-22.md),
 > [`docs/parity-refresh-2026-07-23.md`](../docs/parity-refresh-2026-07-23.md),
-> and [`docs/parity-refresh-2026-07-24.md`](../docs/parity-refresh-2026-07-24.md)
+> [`docs/parity-refresh-2026-07-24.md`](../docs/parity-refresh-2026-07-24.md),
+> and [`docs/parity-refresh-2026-07-25.md`](../docs/parity-refresh-2026-07-25.md)
 > for the latest sweeps.
 
 ## Benchmark status matrix
@@ -80,27 +96,44 @@ Four resolved-issue benchmark scenarios remain active as unresolved:
 - **023** — new-table foreign key sorted before a standalone unique index on the
   referenced table
 
-There is **no** benchmark-matrix delta versus the 2026-07-23 refresh.
+There is **no** benchmark-matrix delta versus the 2026-07-24 refresh.
 Benchmarks 020, 021, 022, and 023 remain active with unchanged parity status.
 
-There is **no** code-head delta in either upstream repo for this refresh:
+There is **no** pgschema code-head delta in this refresh, but there is a
+**live pg-delta code-head delta**:
 
-- `pg-delta` remains `c0decd173d191bc470bf7b8c8dd3e862f08ae398`
+- checked-in `pg-delta` remains `c0decd173d191bc470bf7b8c8dd3e862f08ae398`
+- live `pg-toolbelt/main` advanced to
+  `b732ce6b45eb9f3344ba3fc531ee28822730362e`
 - `pgschema` remains `a0acf0b9590a6bd7b3455d795f7e547490aa9699`
-- the open pgschema issue set is unchanged at
+- the open pgschema issue set now includes
   [#49](https://github.com/pgplex/pgschema/issues/49),
   [#52](https://github.com/pgplex/pgschema/issues/52),
   [#84](https://github.com/pgplex/pgschema/issues/84),
-  [#450](https://github.com/pgplex/pgschema/issues/450), and
-  [#493](https://github.com/pgplex/pgschema/issues/493)
+  [#450](https://github.com/pgplex/pgschema/issues/450),
+  [#493](https://github.com/pgplex/pgschema/issues/493), and
+  [#518](https://github.com/pgplex/pgschema/issues/518)
 - pgschema [#493](https://github.com/pgplex/pgschema/issues/493) remains open
   and still **not parity work** for pg-delta; merged
   [pgschema#514](https://github.com/pgplex/pgschema/pull/514) only extends
   dump-side same-schema type qualification under `--qualify-schema`, and the
   remaining function / procedure signature slices are still upstream-only work
+- new open pgschema
+  [#518](https://github.com/pgplex/pgschema/issues/518) (extension-owned type
+  schema mismatch) is **not parity work** for pg-delta; the reported false diff
+  depends on pgschema's temp comparison database resolving extension-owned types
+  under a different schema than the real target, while pg-delta diffs live
+  catalogs directly, can emit `ALTER EXTENSION ... SET SCHEMA`, and already
+  roundtrips non-public pgvector types in
+  `packages/pg-delta/tests/integration/extension-operations.test.ts`
 
 A targeted GitHub sweep for the latest upstream issue state now shows:
 
+- **#518** extension-owned type schema mismatch for extension-owned types such
+  as `vector` — **still not parity work for pg-delta**; the reported false diff
+  depends on pgschema's temp comparison database, while pg-delta diffs live
+  catalogs directly and already roundtrips extension-owned types installed into
+  non-public schemas
 - **#505** `Can't drop trigger function` — **closed upstream** by merged
   [pgschema#511](https://github.com/pgplex/pgschema/pull/511) and still
   **covered** in current pg-delta. Existing trigger integration coverage already
@@ -124,10 +157,12 @@ A targeted GitHub sweep for the latest upstream issue state now shows:
   not use pgschema's concurrent rebuild choreography, and a focused ordering
   probe still produced `DROP INDEX` -> `ALTER TABLE ... DROP COLUMN` ->
   `CREATE INDEX`
-- no newer pgschema issue or merged-PR movement was found beyond the
-  already-recorded [#514](https://github.com/pgplex/pgschema/pull/514) /
+- no newer merged pgschema PR movement was found beyond the already-recorded
+  [#514](https://github.com/pgplex/pgschema/pull/514) /
   [#516](https://github.com/pgplex/pgschema/pull/516) activity from the prior
-  sweep
+  sweep; the net-new upstream delta here is the still-open unlabeled issue
+  [#518](https://github.com/pgplex/pgschema/issues/518) plus pg-toolbelt's
+  adjacent privilege-diff and topo-ordering movement
 
 No new exact pg-toolbelt issue or PR was found for benchmarks 020, 021, 022,
 or 023. Exact open pg-toolbelt trackers still exist only for:
@@ -137,8 +172,10 @@ or 023. Exact open pg-toolbelt trackers still exist only for:
 - pgschema [#366](https://github.com/pgplex/pgschema/issues/366) ->
   [pg-toolbelt#219](https://github.com/supabase/pg-toolbelt/issues/219)
 
-The active benchmark probes were rerun against the new pg-delta head in this
-refresh:
+The standing benchmark repro notes remain unchanged in this refresh. The live
+pg-delta delta in `b732ce6b45eb9f3344ba3fc531ee28822730362e` is adjacent
+privilege-diff / topo work rather than code targeting benchmarks 020 through
+023, and there is still no exact pg-toolbelt issue or PR for those four gaps:
 
 - benchmark 020 still reproduces as a **zero-change** diff when toggling an
   existing plain `UNIQUE` table constraint to `UNIQUE NULLS NOT DISTINCT`,
@@ -147,11 +184,11 @@ refresh:
   statement with no child-specific column overrides
 - benchmark 022 still serializes the PostgreSQL 18 case as `... STORED` rather
   than `... VIRTUAL`
-- benchmark 023 newly reproduces as `CREATE TABLE child` -> `ADD child FK` ->
+- benchmark 023 still reproduces as `CREATE TABLE child` -> `ADD child FK` ->
   `CREATE UNIQUE INDEX` for the standalone unique-index slice
 
-Those executed checks leave benchmarks 020, 021, 022, and 023 as the active
-benchmarked gaps after this refresh.
+Those unchanged repro notes still leave benchmarks 020, 021, 022, and 023 as
+the active benchmarked gaps after this refresh.
 
 ## Open pgschema issue screening (current state)
 
@@ -179,6 +216,12 @@ Screened candidates:
   and composites, but the issue remains open for function / procedure
   parameter and return types and still does not change pg-delta parity
   classification
+- **#518** extension-owned type schema mismatch causes false-positive diffs
+  when pgschema's temp comparison database resolves an extension-owned type into
+  a different schema than the real target — **not parity work for pg-delta**;
+  pg-delta diffs live catalogs directly, already preserves non-public
+  extension-owned types such as `test_schema.vector(768)`, and can model real
+  extension schema moves via `ALTER EXTENSION ... SET SCHEMA`
 Issue [#513](https://github.com/pgplex/pgschema/issues/513) is no longer in
 the open-screening set because it closed upstream on 2026-07-20 as completed
 and still remains **not parity work for pg-delta**; see the closed-issue notes
@@ -269,11 +312,14 @@ snapshot are now closed upstream and keep the same pg-delta parity verdicts:
 - **#366** function privilege signatures with enum argument types — **closed
   upstream as `not_planned` and still tracked** by
   [pg-toolbelt#219](https://github.com/supabase/pg-toolbelt/issues/219)
-- new adjacent pg-toolbelt work now exists in
-  [#308](https://github.com/supabase/pg-toolbelt/issues/308) and
-  [#310](https://github.com/supabase/pg-toolbelt/pull/310), but it covers
-  `REVOKE EXECUTE ... FROM PUBLIC` on functions rather than the enum-typed
-  signature drift from pgschema #366, so the parity label remains `tracked`
+- new adjacent pg-toolbelt work now includes closed
+  [#308](https://github.com/supabase/pg-toolbelt/issues/308) plus merged
+  [#357](https://github.com/supabase/pg-toolbelt/pull/357) /
+  [#358](https://github.com/supabase/pg-toolbelt/pull/358), while open
+  [#310](https://github.com/supabase/pg-toolbelt/pull/310) remains redundant
+  follow-up work. That scope covers `REVOKE EXECUTE ... FROM PUBLIC` on
+  functions rather than the enum-typed signature drift from pgschema #366, so
+  the parity label remains `tracked`
 - **#404** deferrable unique constraints — **resolved upstream and still
   tracked** by
   [pg-toolbelt#218](https://github.com/supabase/pg-toolbelt/issues/218)
@@ -473,11 +519,11 @@ Existing pg-toolbelt PR activity was also rechecked during this refresh:
   draft-only items
 
 Separately, pg-toolbelt
-[#308](https://github.com/supabase/pg-toolbelt/issues/308),
-[#310](https://github.com/supabase/pg-toolbelt/pull/310),
-[#357](https://github.com/supabase/pg-toolbelt/pull/357), and
-[#358](https://github.com/supabase/pg-toolbelt/pull/358) were checked as
-adjacent function-privilege work. They are useful current context, but they do
-not replace [#219](https://github.com/supabase/pg-toolbelt/issues/219): their
-scope is `REVOKE EXECUTE ... FROM PUBLIC`, not the enum-typed function
-signature drift from pgschema #366.
+[#308](https://github.com/supabase/pg-toolbelt/issues/308) is now closed by
+merged [#357](https://github.com/supabase/pg-toolbelt/pull/357), and merged
+[#358](https://github.com/supabase/pg-toolbelt/pull/358) plus still-open
+[#310](https://github.com/supabase/pg-toolbelt/pull/310) remain adjacent
+function-privilege work. They are useful current context, but they do not
+replace [#219](https://github.com/supabase/pg-toolbelt/issues/219): their scope
+is `REVOKE EXECUTE ... FROM PUBLIC`, not the enum-typed function signature
+drift from pgschema #366.

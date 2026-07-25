@@ -27,6 +27,15 @@
       "reviewed_at": "2026-07-23T07:06:46+00:00",
       "verdict": "not_parity"
     },
+    "518": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-07-24T09:36:41Z\", \"pgdelta_sha\": \"c0decd173d191bc470bf7b8c8dd3e862f08ae398\", \"pgschema_sha\": \"a0acf0b9590a6bd7b3455d795f7e547490aa9699\"}",
+      "issue_number": 518,
+      "issue_title": "Extension-owned type schema mismatch causes false-positive diffs (pgvector, etc.)",
+      "issue_updated_at": "2026-07-24T09:36:41Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/518",
+      "reviewed_at": "2026-07-25T07:08:03+00:00",
+      "verdict": "not_parity"
+    },
     "52": {
       "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"c0decd173d191bc470bf7b8c8dd3e862f08ae398\", \"pgschema_sha\": \"a0acf0b9590a6bd7b3455d795f7e547490aa9699\"}",
       "issue_number": 52,
