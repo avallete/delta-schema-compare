@@ -36,6 +36,15 @@
       "reviewed_at": "2026-07-25T07:08:03+00:00",
       "verdict": "not_parity"
     },
+    "519": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-07-25T12:47:07Z\", \"pgdelta_sha\": \"c0decd173d191bc470bf7b8c8dd3e862f08ae398\", \"pgschema_sha\": \"a0acf0b9590a6bd7b3455d795f7e547490aa9699\"}",
+      "issue_number": 519,
+      "issue_title": "View normalization from #316 does not converge through the temporary plan schema",
+      "issue_updated_at": "2026-07-25T12:47:07Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/519",
+      "reviewed_at": "2026-07-26T07:29:00+00:00",
+      "verdict": "not_parity"
+    },
     "52": {
       "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"c0decd173d191bc470bf7b8c8dd3e862f08ae398\", \"pgschema_sha\": \"a0acf0b9590a6bd7b3455d795f7e547490aa9699\"}",
       "issue_number": 52,

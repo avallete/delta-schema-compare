@@ -4,7 +4,7 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-07-25)
+## Latest refresh snapshot (2026-07-26)
 
 Refreshed against:
 
@@ -12,28 +12,34 @@ Refreshed against:
 - live `pg-toolbelt` `main` @ `b732ce6b45eb9f3344ba3fc531ee28822730362e`
 - `repos/pgschema` @ `a0acf0b9590a6bd7b3455d795f7e547490aa9699`
 
-> The 2026-07-25 refresh found **no benchmark-matrix delta** versus the
-> 2026-07-24 sweep, but it did find a **live pg-delta code-head delta** and a
+> The 2026-07-26 refresh found **no benchmark-matrix delta** versus the
+> 2026-07-25 sweep and **no new upstream code-head delta**, but it did find one
 > **new unlabeled open pgschema issue**. Checked-in `repos/pg-toolbelt` still
 > remains `c0decd173d191bc470bf7b8c8dd3e862f08ae398`, live
-> `pg-toolbelt/main` advanced to `b732ce6b45eb9f3344ba3fc531ee28822730362e`,
+> `pg-toolbelt/main` still remains `b732ce6b45eb9f3344ba3fc531ee28822730362e`,
 > and `pgschema/main` still remains
 > `a0acf0b9590a6bd7b3455d795f7e547490aa9699`. The current open pgschema issue
 > set is now [#49](https://github.com/pgplex/pgschema/issues/49),
 > [#52](https://github.com/pgplex/pgschema/issues/52),
 > [#84](https://github.com/pgplex/pgschema/issues/84),
 > [#450](https://github.com/pgplex/pgschema/issues/450),
-> [#493](https://github.com/pgplex/pgschema/issues/493), and
-> [#518](https://github.com/pgplex/pgschema/issues/518). Issue
+> [#493](https://github.com/pgplex/pgschema/issues/493),
+> [#518](https://github.com/pgplex/pgschema/issues/518), and
+> [#519](https://github.com/pgplex/pgschema/issues/519). Issue
 > [#518](https://github.com/pgplex/pgschema/issues/518) is still **not parity
 > work** for pg-delta because it stems from pgschema's temp comparison
 > environment resolving extension-owned types under a different schema than the
 > real target, while pg-delta diffs live catalogs directly and already
-> roundtrips extension-owned types in non-public schemas. Exact open
+> roundtrips extension-owned types in non-public schemas. New issue
+> [#519](https://github.com/pgplex/pgschema/issues/519) is also **not parity
+> work** for pg-delta because the repeated view diff depends on pgschema's
+> temporary desired-state schema and qualifier normalization path, while
+> pg-delta extracts live view definitions via `pg_get_viewdef(...)`, isolates
+> `search_path`, and does not compare against a temp planning schema. Exact open
 > pg-toolbelt trackers still remain only
 > [#218](https://github.com/supabase/pg-toolbelt/issues/218) and
 > [#219](https://github.com/supabase/pg-toolbelt/issues/219). New pg-toolbelt
-> movement since the previous sweep is that
+> movement carried forward from the previous sweep is that
 > [#308](https://github.com/supabase/pg-toolbelt/issues/308) is now closed by
 > merged [#357](https://github.com/supabase/pg-toolbelt/pull/357),
 > [#358](https://github.com/supabase/pg-toolbelt/pull/358) is also merged, open
@@ -54,14 +60,18 @@ Refreshed against:
 > rather than exact duplicates for benchmarks **020** through **023** or the
 > older draft-only gaps
 > [#439](https://github.com/pgplex/pgschema/issues/439) and
-> [#444](https://github.com/pgplex/pgschema/issues/444). See
+> [#444](https://github.com/pgplex/pgschema/issues/444), and the newer open
+> pgschema view-normalization issue
+> [#519](https://github.com/pgplex/pgschema/issues/519). See
 > [`docs/parity-refresh-2026-07-19.md`](../docs/parity-refresh-2026-07-19.md),
 > [`docs/parity-refresh-2026-07-20.md`](../docs/parity-refresh-2026-07-20.md),
 > [`docs/parity-refresh-2026-07-21.md`](../docs/parity-refresh-2026-07-21.md),
 > [`docs/parity-refresh-2026-07-22.md`](../docs/parity-refresh-2026-07-22.md),
 > [`docs/parity-refresh-2026-07-23.md`](../docs/parity-refresh-2026-07-23.md),
 > [`docs/parity-refresh-2026-07-24.md`](../docs/parity-refresh-2026-07-24.md),
-> and [`docs/parity-refresh-2026-07-25.md`](../docs/parity-refresh-2026-07-25.md)
+> [`docs/parity-refresh-2026-07-25.md`](../docs/parity-refresh-2026-07-25.md),
+> and
+> [`docs/parity-refresh-2026-07-26.md`](../docs/parity-refresh-2026-07-26.md)
 > for the latest sweeps.
 
 ## Benchmark status matrix
@@ -96,14 +106,14 @@ Four resolved-issue benchmark scenarios remain active as unresolved:
 - **023** — new-table foreign key sorted before a standalone unique index on the
   referenced table
 
-There is **no** benchmark-matrix delta versus the 2026-07-24 refresh.
+There is **no** benchmark-matrix delta versus the 2026-07-25 refresh.
 Benchmarks 020, 021, 022, and 023 remain active with unchanged parity status.
 
-There is **no** pgschema code-head delta in this refresh, but there is a
-**live pg-delta code-head delta**:
+There is **no new upstream code-head delta** in this refresh. The standing
+checked-in/live pg-delta delta is unchanged from the 2026-07-25 sweep:
 
 - checked-in `pg-delta` remains `c0decd173d191bc470bf7b8c8dd3e862f08ae398`
-- live `pg-toolbelt/main` advanced to
+- live `pg-toolbelt/main` still remains
   `b732ce6b45eb9f3344ba3fc531ee28822730362e`
 - `pgschema` remains `a0acf0b9590a6bd7b3455d795f7e547490aa9699`
 - the open pgschema issue set now includes
@@ -111,8 +121,9 @@ There is **no** pgschema code-head delta in this refresh, but there is a
   [#52](https://github.com/pgplex/pgschema/issues/52),
   [#84](https://github.com/pgplex/pgschema/issues/84),
   [#450](https://github.com/pgplex/pgschema/issues/450),
-  [#493](https://github.com/pgplex/pgschema/issues/493), and
-  [#518](https://github.com/pgplex/pgschema/issues/518)
+  [#493](https://github.com/pgplex/pgschema/issues/493),
+  [#518](https://github.com/pgplex/pgschema/issues/518), and
+  [#519](https://github.com/pgplex/pgschema/issues/519)
 - pgschema [#493](https://github.com/pgplex/pgschema/issues/493) remains open
   and still **not parity work** for pg-delta; merged
   [pgschema#514](https://github.com/pgplex/pgschema/pull/514) only extends
@@ -126,6 +137,14 @@ There is **no** pgschema code-head delta in this refresh, but there is a
   catalogs directly, can emit `ALTER EXTENSION ... SET SCHEMA`, and already
   roundtrips non-public pgvector types in
   `packages/pg-delta/tests/integration/extension-operations.test.ts`
+- new open pgschema
+  [#519](https://github.com/pgplex/pgschema/issues/519) (view normalization
+  with `public.nlevel(...)` still drifting through the temporary plan schema) is
+  **not parity work** for pg-delta; the repeated diff depends on pgschema's
+  desired-state temp schema plus post-normalization qualifier handling, while
+  pg-delta extracts live view definitions via `pg_get_viewdef(...)`, isolates
+  `search_path` on connect, and a focused pg17 `ltree` roundtrip probe on live
+  `pg-toolbelt/main` converged with no remaining changes
 
 A targeted GitHub sweep for the latest upstream issue state now shows:
 
@@ -134,6 +153,12 @@ A targeted GitHub sweep for the latest upstream issue state now shows:
   depends on pgschema's temp comparison database, while pg-delta diffs live
   catalogs directly and already roundtrips extension-owned types installed into
   non-public schemas
+- **#519** view normalization from #316 does not converge through the temporary
+  plan schema — **still not parity work for pg-delta**; the repeated diff
+  depends on pgschema's desired-state temp schema plus qualifier normalization,
+  while pg-delta extracts live view definitions from live catalogs, isolates
+  `search_path`, and a focused pg17 `ltree` roundtrip probe with
+  `public.nlevel(path)` converged cleanly without a repeated diff
 - **#505** `Can't drop trigger function` — **closed upstream** by merged
   [pgschema#511](https://github.com/pgplex/pgschema/pull/511) and still
   **covered** in current pg-delta. Existing trigger integration coverage already
@@ -161,8 +186,9 @@ A targeted GitHub sweep for the latest upstream issue state now shows:
   [#514](https://github.com/pgplex/pgschema/pull/514) /
   [#516](https://github.com/pgplex/pgschema/pull/516) activity from the prior
   sweep; the net-new upstream delta here is the still-open unlabeled issue
-  [#518](https://github.com/pgplex/pgschema/issues/518) plus pg-toolbelt's
-  adjacent privilege-diff and topo-ordering movement
+  [#519](https://github.com/pgplex/pgschema/issues/519), while
+  [#518](https://github.com/pgplex/pgschema/issues/518) and pg-toolbelt's
+  adjacent privilege-diff / topo-ordering movement remain unchanged
 
 No new exact pg-toolbelt issue or PR was found for benchmarks 020, 021, 022,
 or 023. Exact open pg-toolbelt trackers still exist only for:
@@ -222,6 +248,12 @@ Screened candidates:
   pg-delta diffs live catalogs directly, already preserves non-public
   extension-owned types such as `test_schema.vector(768)`, and can model real
   extension schema moves via `ALTER EXTENSION ... SET SCHEMA`
+- **#519** view normalization from #316 does not converge through the temporary
+  plan schema — **not parity work for pg-delta**; the repeated diff depends on
+  pgschema's desired-state temp schema plus qualifier normalization, while
+  pg-delta extracts live view definitions from live catalogs, isolates
+  `search_path`, and a focused pg17 `ltree` roundtrip probe with
+  `public.nlevel(path)` converged cleanly without a repeated diff
 Issue [#513](https://github.com/pgplex/pgschema/issues/513) is no longer in
 the open-screening set because it closed upstream on 2026-07-20 as completed
 and still remains **not parity work for pg-delta**; see the closed-issue notes
@@ -482,8 +514,11 @@ Existing pg-toolbelt PR activity was also rechecked during this refresh:
   [#305](https://github.com/supabase/pg-toolbelt/pull/305) now cover
   materialized-view definition stability under differing `search_path` values.
   This is adjacent to historical materialized-view parity work, but it is not
-  an exact duplicate of benchmark 008, benchmark 020, or the current draft-only
-  candidates
+  an exact duplicate of benchmark 008, benchmark 020, the current draft-only
+  candidates, or open pgschema issue
+  [#519](https://github.com/pgplex/pgschema/issues/519), which is about regular
+  view normalization through pgschema's temporary desired-state schema rather
+  than live materialized-view extraction
 - [#304](https://github.com/supabase/pg-toolbelt/issues/304),
   [#313](https://github.com/supabase/pg-toolbelt/pull/313), and
   [#316](https://github.com/supabase/pg-toolbelt/pull/316) cover leading enum
