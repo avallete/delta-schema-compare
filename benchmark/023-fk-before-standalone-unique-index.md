@@ -21,11 +21,35 @@ ALTER TABLE public.parent ADD CONSTRAINT parent_id_tenant_key UNIQUE (id, tenant
 ALTER TABLE public.child ADD CONSTRAINT child_parent_id_tenant_fkey FOREIGN KEY (...)
 ```
 
-The remaining parity gap is narrower and more precise: when the referenced
-uniqueness is a standalone unique index, current pg-delta still sorts the child
-foreign key before the unique index create. PostgreSQL can reject that order
-with `SQLSTATE 42830` because the referenced `(id, tenant)` uniqueness does not
-exist yet when the foreign key is applied.
+The remaining parity gap was narrower and more precise: when the referenced
+uniqueness was a standalone unique index, older pg-delta builds sorted the
+child foreign key before the unique index create. PostgreSQL could reject that
+order with `SQLSTATE 42830` because the referenced `(id, tenant)` uniqueness did
+not exist yet when the foreign key was applied.
+
+## Refresh note (2026-07-28)
+
+This refresh advanced the checked-in `pg-delta` baseline from
+`c0decd173d191bc470bf7b8c8dd3e862f08ae398` to
+`a974b83fc044788caa4ca538d112b62d1873843b`, while `pgschema` remained at
+`a0acf0b9590a6bd7b3455d795f7e547490aa9699`.
+
+The new checked-in/live pg-delta state now includes the adjacent pg-topo
+ordering fix from [pg-toolbelt#361](https://github.com/supabase/pg-toolbelt/pull/361).
+A focused local pg17 plan probe for this exact benchmark now emits:
+
+```text
+CREATE TABLE test_schema.child (id uuid NOT NULL, parent_id uuid, tenant text NOT NULL)
+ALTER TABLE test_schema.child ADD CONSTRAINT child_pkey PRIMARY KEY (id)
+CREATE UNIQUE INDEX parent_id_tenant_key ON test_schema.parent (id, tenant)
+ALTER TABLE test_schema.child ADD CONSTRAINT child_parent_id_tenant_fkey FOREIGN KEY (parent_id, tenant) REFERENCES test_schema.parent(id, tenant)
+```
+
+A matching pg17 roundtrip probe also converged successfully. The exact
+standalone unique-index slice is therefore now **covered** in current
+pg-delta even though no exact pg-toolbelt issue was ever opened for it. This
+benchmark file is retained as a historical record, but benchmark 023 now moves
+to **Solved in pg-delta**.
 
 ## Refresh note (2026-07-18)
 
@@ -34,12 +58,12 @@ This refresh advanced the checked-in `pg-delta` baseline from
 `c0decd173d191bc470bf7b8c8dd3e862f08ae398`, while `pgschema` remained at
 `e18d9ede7973537919c02f25eced5c97271af1dc`.
 
-The new pg-delta delta is the alpha.32 non-superuser extraction fix. Its only
-`depend.ts` edits are in the `pg_user_mapping` extraction queries, so it does
+The new pg-delta delta was the alpha.32 non-superuser extraction fix. Its only
+`depend.ts` edits were in the `pg_user_mapping` extraction queries, so it did
 not change the foreign-key-versus-standalone-unique-index dependency path
 behind this benchmark. Targeted duplicate searches still found no exact
 pg-toolbelt issue or PR for this standalone-index slice, so benchmark 023
-remains **Not covered**.
+still remained **Not covered** at that time.
 
 ## Refresh note (2026-07-08)
 
@@ -98,17 +122,16 @@ CREATE TABLE test_schema.child (
 **Expected:** pg-delta defers the child foreign key until after the standalone
 unique index exists, or otherwise emits an equivalent dependency-safe plan.
 
-**Actual:** current pg-delta sorts the child foreign key before the standalone
-unique index create. The broader issue is partially covered because the
-table-constraint variant already orders correctly, but the standalone
-unique-index variant is still not covered.
+**Actual on current pg-delta:** this scenario now converges. The generated plan
+creates the standalone unique index before adding the child foreign key, and a
+focused pg17 roundtrip probe succeeded end-to-end.
 
 ## How pgschema handled it
 
 pgschema closed issue #506 in PR #507 by deferring the problematic new-table
-foreign key until the referenced uniqueness exists later in the same plan. The
-upstream fix resolves the ordering failure on the pgschema side, so the
-remaining parity gap is now entirely on pg-delta's default-branch planner.
+foreign key until the referenced uniqueness exists later in the same plan. That
+upstream fix originally left the remaining standalone-unique-index parity gap on
+pg-delta's side, but current pg-delta now covers the same exact slice as well.
 
 The updated pgschema source also keeps comments in `internal/diff/table.go`
 explaining that foreign keys depending on replacement or newly introduced
@@ -119,35 +142,29 @@ uniqueness may need to be deferred until after the create / modify phase.
 | Aspect | Status |
 |---|---|
 | New-table FK depending on a new `UNIQUE` table constraint | Yes - covered by current dependency extraction and sort behavior |
-| New-table FK depending on a new standalone unique index | No - the FK still sorts before the index create |
-| Dependency edge from FK to referenced PK / `UNIQUE` constraint | Yes - `src/core/depend.ts` emits `constraint_deps` for referenced constraints |
-| Dependency edge from FK to referenced standalone unique index | No - there is no equivalent dependency extraction for a brand-new standalone unique index |
-| Integration regression for the standalone unique-index slice | No - `tests/integration/fk-constraint-ordering.test.ts` has no exact case for this scenario |
-| Existing exact pg-toolbelt issue / PR | No - none found through the 2026-07-18 refresh |
+| New-table FK depending on a new standalone unique index | Yes - focused 2026-07-28 pg17 plan + roundtrip probes converge on the exact scenario |
+| Dependency edge from FK to referenced PK / `UNIQUE` constraint | Yes - current plan ordering already handles this case |
+| Dependency edge from FK to referenced standalone unique index | Covered in behavior - current plan ordering now places `CREATE UNIQUE INDEX` before `ADD child FK` on the exact benchmark SQL |
+| Integration regression for the standalone unique-index slice | No exact committed regression yet - coverage was revalidated with focused 2026-07-28 local probes |
+| Existing exact pg-toolbelt issue / PR | No exact issue; current behavior is covered after adjacent merged pg-topo fix [#361](https://github.com/supabase/pg-toolbelt/pull/361) |
 
 ## Comparison of approaches
 
 | | pgschema | pg-delta |
 |---|---|---|
-| **Planner representation** | Detects that the FK must wait for the referenced uniqueness | Treats the FK like a normal post-create table constraint |
+| **Planner representation** | Detects that the FK must wait for the referenced uniqueness | Current checked-in/live planner now also emits the safe order on the exact benchmark SQL |
 | **Constraint-backed uniqueness** | Defers correctly | Already covered |
-| **Standalone unique-index-backed uniqueness** | Fixed upstream in the resolved issue | Still missing an exact dependency edge |
-| **Current parity state** | Fixed | Not covered |
+| **Standalone unique-index-backed uniqueness** | Fixed upstream in the resolved issue | Now covered on current pg-delta |
+| **Current parity state** | Fixed | Covered |
 
 ## Plan to handle it in pg-delta
 
-1. Extend `repos/pg-toolbelt/packages/pg-delta/src/core/depend.ts` so branch
-   dependency extraction can map a foreign key to a newly created standalone
-   unique index when that index is what satisfies the reference.
-2. If catalog dependency extraction alone is awkward, teach the created-table
-   path in
-   `repos/pg-toolbelt/packages/pg-delta/src/core/objects/table/table.diff.ts`
-   to defer just the affected foreign key out of the immediate post-create
-   batch when the referenced uniqueness is created later in the same plan.
-3. Add focused regression coverage in
+1. No additional planner change is currently needed for the exact
+   standalone-unique-index slice; current pg-delta now emits the dependency-safe
+   order on the benchmark SQL.
+2. Promote the focused 2026-07-28 probe into a permanent committed regression
+   in
    `repos/pg-toolbelt/packages/pg-delta/tests/integration/fk-constraint-ordering.test.ts`
-   (or a nearby dependency-ordering test file) for both variants:
-   - new `UNIQUE` table constraint on existing parent -> stays covered
-   - new standalone unique index on existing parent -> fixed by the new logic
-4. Assert the final order explicitly so the standalone unique-index slice
-   cannot regress back to `ADD child FK` before `CREATE UNIQUE INDEX`.
+   if the pg-toolbelt maintainers want this exact slice locked in explicitly.
+3. Retain this benchmark file as historical parity evidence that the slice used
+   to be uncovered and is now solved.
