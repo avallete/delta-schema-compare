@@ -4,23 +4,24 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-07-28)
+## Latest refresh snapshot (2026-07-29)
 
 Refreshed against:
 
 - checked-in `repos/pg-toolbelt` @ `a974b83fc044788caa4ca538d112b62d1873843b`
 - live `pg-toolbelt` `main` @ `a974b83fc044788caa4ca538d112b62d1873843b`
-- `repos/pgschema` @ `a0acf0b9590a6bd7b3455d795f7e547490aa9699`
+- `repos/pgschema` @ `2d864f3282ea3f0ba4cfa749e366cfdff1ae4fb7`
 
-> The 2026-07-28 refresh found **one benchmark-matrix delta** versus the
-> 2026-07-27 sweep: benchmark **023** is now **Solved in pg-delta**, so the
-> active benchmarked gap set shrinks to **020**, **021**, and **022**.
-> Checked-in `repos/pg-toolbelt` now advances from
-> `c0decd173d191bc470bf7b8c8dd3e862f08ae398` to
-> `a974b83fc044788caa4ca538d112b62d1873843b`, matching live
-> `pg-toolbelt/main`, while `pgschema/main` remains
-> `a0acf0b9590a6bd7b3455d795f7e547490aa9699`. The current open pgschema issue
-> set still remains [#49](https://github.com/pgplex/pgschema/issues/49),
+> The 2026-07-29 refresh found **no benchmark-matrix delta** versus the
+> 2026-07-28 sweep. The active benchmarked gap set therefore remains **020**,
+> **021**, and **022**.
+> Checked-in and live `pg-toolbelt/main` still both remain
+> `a974b83fc044788caa4ca538d112b62d1873843b`, while `pgschema/main` advances
+> from `a0acf0b9590a6bd7b3455d795f7e547490aa9699` to
+> `2d864f3282ea3f0ba4cfa749e366cfdff1ae4fb7` via the `v1.12.1` release-bump
+> commit with no new parity-relevant issue or PR state.
+> The current open pgschema issue set still remains
+> [#49](https://github.com/pgplex/pgschema/issues/49),
 > [#52](https://github.com/pgplex/pgschema/issues/52),
 > [#84](https://github.com/pgplex/pgschema/issues/84),
 > [#450](https://github.com/pgplex/pgschema/issues/450),
@@ -43,13 +44,17 @@ Refreshed against:
 > pg-delta parity. Exact open pg-toolbelt trackers still remain only
 > [#218](https://github.com/supabase/pg-toolbelt/issues/218) and
 > [#219](https://github.com/supabase/pg-toolbelt/issues/219). Focused pg17
-> runtime probes for both tracked scenarios still converged on current pg-delta,
+> runtime probes from 2026-07-28 still converged on unchanged `pg-toolbelt/main`,
 > so they remain tracked **coverage** issues rather than benchmark promotions.
 > There were no newly closed pgschema issues or newly merged pgschema PRs since
-> 2026-07-27. The only pg-toolbelt update since then is CI-only merged PR
-> [#364](https://github.com/supabase/pg-toolbelt/pull/364), while the parity-
-> relevant checked-in/live pg-delta delta now includes the already-merged
-> privilege-diff work from [#357](https://github.com/supabase/pg-toolbelt/pull/357) /
+> 2026-07-28. On the pg-toolbelt side, `main` still stops at merged PR
+> [#364](https://github.com/supabase/pg-toolbelt/pull/364). The only newer
+> activity is open issue [#365](https://github.com/supabase/pg-toolbelt/issues/365)
+> plus closed-unmerged PR [#366](https://github.com/supabase/pg-toolbelt/pull/366)
+> for case-colliding schema export paths on the `feat/pg-delta-next` / [#299](https://github.com/supabase/pg-toolbelt/pull/299)
+> line, while the parity-relevant checked-in/live pg-delta delta still consists
+> of the already-merged privilege-diff work from
+> [#357](https://github.com/supabase/pg-toolbelt/pull/357) /
 > [#358](https://github.com/supabase/pg-toolbelt/pull/358) plus the adjacent
 > pg-topo ordering fix from [#361](https://github.com/supabase/pg-toolbelt/pull/361).
 > Issue
@@ -71,9 +76,9 @@ Refreshed against:
 > [#444](https://github.com/pgplex/pgschema/issues/444), and the newer open
 > pgschema view-normalization issue
 > [#519](https://github.com/pgplex/pgschema/issues/519). See
-> [`docs/parity-refresh-2026-07-27.md`](../docs/parity-refresh-2026-07-27.md)
-> and
 > [`docs/parity-refresh-2026-07-28.md`](../docs/parity-refresh-2026-07-28.md)
+> and
+> [`docs/parity-refresh-2026-07-29.md`](../docs/parity-refresh-2026-07-29.md)
 > for the latest sweeps.
 
 ## Benchmark status matrix
@@ -106,19 +111,13 @@ Three resolved-issue benchmark scenarios remain active as unresolved:
   `CREATE TABLE ... PARTITION OF ...`
 - **022** — PostgreSQL 18 `VIRTUAL` generated columns
 
-There is **one** benchmark-matrix delta versus the 2026-07-27 refresh:
-benchmark **023** moves from **Not covered** to **Solved in pg-delta**.
-
-Beyond the benchmark delta, this refresh also records one upstream issue-state
-update worth carrying forward: pgschema issue
-[#519](https://github.com/pgplex/pgschema/issues/519) now links to open
-candidate fix [pgschema#520](https://github.com/pgplex/pgschema/pull/520), while
-the checked-in/live pg-delta heads are now aligned at the latest reviewed main
-commit:
+There is **no** benchmark-matrix delta versus the 2026-07-28 refresh.
+This refresh is a latest-state rollforward onto the new checked-in
+`pgschema/main` release head plus today's upstream issue / PR state:
 
 - checked-in and live `pg-delta` now both remain
   `a974b83fc044788caa4ca538d112b62d1873843b`
-- `pgschema` remains `a0acf0b9590a6bd7b3455d795f7e547490aa9699`
+- `pgschema` now advances to `2d864f3282ea3f0ba4cfa749e366cfdff1ae4fb7`
 - the open pgschema issue set remains
   [#49](https://github.com/pgplex/pgschema/issues/49),
   [#52](https://github.com/pgplex/pgschema/issues/52),
@@ -165,10 +164,16 @@ A targeted GitHub sweep for the latest upstream issue state now shows:
   `search_path`, and a focused pg17 `ltree` roundtrip probe with
   `public.nlevel(path)` converged cleanly without a repeated diff. The issue now
   links to open candidate fix [pgschema#520](https://github.com/pgplex/pgschema/pull/520)
-- no pgschema issues closed upstream since the 2026-07-27 refresh
-- no pgschema PRs merged upstream since the 2026-07-27 refresh
-- no pg-toolbelt issues updated since the 2026-07-27 refresh; only CI-only PR
-  [#364](https://github.com/supabase/pg-toolbelt/pull/364) merged upstream
+- no pgschema issues closed upstream since the 2026-07-28 refresh
+- no pgschema PRs merged upstream since the 2026-07-28 refresh
+- `pgschema/main` advanced to `v1.12.1`, but the delta is release-version churn
+  rather than a new parity bugfix or classification change
+- `pg-toolbelt/main` remains at
+  `a974b83fc044788caa4ca538d112b62d1873843b`; the only newer pg-toolbelt
+  activity is open issue [#365](https://github.com/supabase/pg-toolbelt/issues/365)
+  and closed-unmerged PR [#366](https://github.com/supabase/pg-toolbelt/pull/366)
+  around case-colliding schema export paths on `feat/pg-delta-next`, not an
+  exact duplicate for the active benchmarks or older draft-only parity gaps
 
 No new exact pg-toolbelt issue or PR was found for benchmarks 020, 021, or 022.
 Direct duplicate probes also still found no exact pg-toolbelt issue or PR for
@@ -182,22 +187,30 @@ trackers still exist only for:
 - pgschema [#366](https://github.com/pgplex/pgschema/issues/366) ->
   [pg-toolbelt#219](https://github.com/supabase/pg-toolbelt/issues/219)
 
-Focused latest-state runtime checks now show the active benchmark repro notes
-remain unchanged for 020 through 022, while benchmark 023 no longer reproduces:
+The current checked-in/live pg-delta source and test sweep still shows the
+active benchmark evidence as unchanged for 020 through 022, while benchmark 023
+remains the last solved historical case:
 
-- benchmark 020 still reproduces as a **zero-change** diff when toggling an
-  existing plain `UNIQUE` table constraint to `UNIQUE NULLS NOT DISTINCT`,
-  while creating a brand-new `NULLS NOT DISTINCT` table constraint still works
-- benchmark 021 still emits only the bare `PARTITION OF ... FOR VALUES ...`
-  statement with no child-specific column overrides
-- benchmark 022 still serializes the PostgreSQL 18 case as `... STORED` rather
-  than `... VIRTUAL`
-- benchmark 023 now plans `CREATE UNIQUE INDEX parent_id_tenant_key` before
-  `ADD child FK`, and a focused pg17 roundtrip probe converged cleanly for the
-  standalone unique-index slice
+- benchmark 020 still has `NULLS NOT DISTINCT` coverage only for unique indexes
+  in `tests/integration/index-operations.test.ts`; there is still no matching
+  table-constraint coverage or exact pg-toolbelt tracker for issue
+  [#412](https://github.com/pgplex/pgschema/issues/412)
+- benchmark 021 still has no exact child-override coverage: `table.create.ts`
+  returns the bare `PARTITION OF ... FOR VALUES ...` statement as soon as a
+  partition child has `parent_schema`, `parent_name`, and `partition_bound`,
+  leaving no serialization path for child-specific `DEFAULT` / `NOT NULL`
+  column overrides
+- benchmark 022 still serializes generated columns as
+  `GENERATED ALWAYS AS (...) STORED` in both `table.create.ts` and
+  `table.alter.ts`, with no current `VIRTUAL` handling in the pg-delta source
+  or integration suite
+- benchmark 023 remains solved from the focused 2026-07-28 pg17 plan +
+  roundtrip probes on unchanged `pg-toolbelt/main`, which ordered
+  `CREATE UNIQUE INDEX parent_id_tenant_key` before `ADD child FK`
 
-Those updated repro notes leave benchmarks 020, 021, and 022 as the active
-benchmarked gaps after this refresh, while benchmark 023 moves to solved.
+Those updated source/test notes still leave benchmarks 020, 021, and 022 as
+the active benchmarked gaps after this refresh, while benchmark 023 remains
+solved.
 
 ## Open pgschema issue screening (current state)
 
