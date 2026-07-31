@@ -4,22 +4,24 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-07-29)
+## Latest refresh snapshot (2026-07-31)
 
 Refreshed against:
 
 - checked-in `repos/pg-toolbelt` @ `a974b83fc044788caa4ca538d112b62d1873843b`
 - live `pg-toolbelt` `main` @ `a974b83fc044788caa4ca538d112b62d1873843b`
-- `repos/pgschema` @ `2d864f3282ea3f0ba4cfa749e366cfdff1ae4fb7`
+- `repos/pgschema` @ `325dac205047a7850a52ee9f9ff35ec18c145dcc`
 
-> The 2026-07-29 refresh found **no benchmark-matrix delta** versus the
-> 2026-07-28 sweep. The active benchmarked gap set therefore remains **020**,
+> The 2026-07-31 refresh found **no benchmark-matrix delta** versus the
+> 2026-07-29 sweep. The active benchmarked gap set therefore remains **020**,
 > **021**, and **022**.
 > Checked-in and live `pg-toolbelt/main` still both remain
 > `a974b83fc044788caa4ca538d112b62d1873843b`, while `pgschema/main` advances
-> from `a0acf0b9590a6bd7b3455d795f7e547490aa9699` to
-> `2d864f3282ea3f0ba4cfa749e366cfdff1ae4fb7` via the `v1.12.1` release-bump
-> commit with no new parity-relevant issue or PR state.
+> from `2d864f3282ea3f0ba4cfa749e366cfdff1ae4fb7` to
+> `325dac205047a7850a52ee9f9ff35ec18c145dcc` via merged
+> [pgschema#522](https://github.com/pgplex/pgschema/pull/522), which closes
+> [#521](https://github.com/pgplex/pgschema/issues/521) without creating a new
+> pg-delta parity gap.
 > The current open pgschema issue set still remains
 > [#49](https://github.com/pgplex/pgschema/issues/49),
 > [#52](https://github.com/pgplex/pgschema/issues/52),
@@ -41,19 +43,22 @@ Refreshed against:
 > was updated on 2026-07-27 and now has an open upstream candidate fix,
 > [pgschema#520](https://github.com/pgplex/pgschema/pull/520), but that PR is
 > still specific to pgschema's temporary-schema normalization path rather than
-> pg-delta parity. Exact open pg-toolbelt trackers still remain only
+> pg-delta parity. Newly closed issue
+> [#521](https://github.com/pgplex/pgschema/issues/521) is also **not parity
+> work** for pg-delta: the upstream bug came from pgschema's temporary-schema
+> type-resolution `CASE` expressions resolving to PostgreSQL's `name` type and
+> truncating long schema-qualified enum names, while pg-delta reads live column
+> types with `format_type(...)` and does not build temporary-schema-qualified
+> type names in this path. Exact open pg-toolbelt trackers still remain only
 > [#218](https://github.com/supabase/pg-toolbelt/issues/218) and
 > [#219](https://github.com/supabase/pg-toolbelt/issues/219). Focused pg17
 > runtime probes from 2026-07-28 still converged on unchanged `pg-toolbelt/main`,
 > so they remain tracked **coverage** issues rather than benchmark promotions.
-> There were no newly closed pgschema issues or newly merged pgschema PRs since
-> 2026-07-28. On the pg-toolbelt side, `main` still stops at merged PR
-> [#364](https://github.com/supabase/pg-toolbelt/pull/364). The only newer
-> activity is open issue [#365](https://github.com/supabase/pg-toolbelt/issues/365)
-> plus closed-unmerged PR [#366](https://github.com/supabase/pg-toolbelt/pull/366)
-> for case-colliding schema export paths on the `feat/pg-delta-next` / [#299](https://github.com/supabase/pg-toolbelt/pull/299)
-> line, while the parity-relevant checked-in/live pg-delta delta still consists
-> of the already-merged privilege-diff work from
+> On the pg-toolbelt side, `main` still stops at merged PR
+> [#364](https://github.com/supabase/pg-toolbelt/pull/364), and there were no
+> new pg-toolbelt issues or PRs updated after the 2026-07-29 refresh. The
+> parity-relevant checked-in/live pg-delta delta therefore still consists of
+> the already-merged privilege-diff work from
 > [#357](https://github.com/supabase/pg-toolbelt/pull/357) /
 > [#358](https://github.com/supabase/pg-toolbelt/pull/358) plus the adjacent
 > pg-topo ordering fix from [#361](https://github.com/supabase/pg-toolbelt/pull/361).
@@ -76,9 +81,9 @@ Refreshed against:
 > [#444](https://github.com/pgplex/pgschema/issues/444), and the newer open
 > pgschema view-normalization issue
 > [#519](https://github.com/pgplex/pgschema/issues/519). See
-> [`docs/parity-refresh-2026-07-28.md`](../docs/parity-refresh-2026-07-28.md)
-> and
 > [`docs/parity-refresh-2026-07-29.md`](../docs/parity-refresh-2026-07-29.md)
+> and
+> [`docs/parity-refresh-2026-07-31.md`](../docs/parity-refresh-2026-07-31.md)
 > for the latest sweeps.
 
 ## Benchmark status matrix
@@ -111,13 +116,13 @@ Three resolved-issue benchmark scenarios remain active as unresolved:
   `CREATE TABLE ... PARTITION OF ...`
 - **022** — PostgreSQL 18 `VIRTUAL` generated columns
 
-There is **no** benchmark-matrix delta versus the 2026-07-28 refresh.
+There is **no** benchmark-matrix delta versus the 2026-07-29 refresh.
 This refresh is a latest-state rollforward onto the new checked-in
-`pgschema/main` release head plus today's upstream issue / PR state:
+`pgschema/main` head plus today's upstream issue / PR state:
 
 - checked-in and live `pg-delta` now both remain
   `a974b83fc044788caa4ca538d112b62d1873843b`
-- `pgschema` now advances to `2d864f3282ea3f0ba4cfa749e366cfdff1ae4fb7`
+- `pgschema` now advances to `325dac205047a7850a52ee9f9ff35ec18c145dcc`
 - the open pgschema issue set remains
   [#49](https://github.com/pgplex/pgschema/issues/49),
   [#52](https://github.com/pgplex/pgschema/issues/52),
@@ -126,6 +131,14 @@ This refresh is a latest-state rollforward onto the new checked-in
   [#493](https://github.com/pgplex/pgschema/issues/493),
   [#518](https://github.com/pgplex/pgschema/issues/518), and
   [#519](https://github.com/pgplex/pgschema/issues/519)
+- pgschema [#521](https://github.com/pgplex/pgschema/issues/521) is newly
+  closed upstream by merged
+  [pgschema#522](https://github.com/pgplex/pgschema/pull/522) and still **not
+  parity work** for pg-delta; the upstream failure came from temporary-schema
+  type-resolution `CASE` expressions resolving to `name` and truncating long
+  schema-qualified enum names, while pg-delta reads live column types with
+  `format_type(...)` in `table.model.ts` and does not construct temporary
+  schema-qualified type names in this path
 - pgschema [#493](https://github.com/pgplex/pgschema/issues/493) remains open
   and still **not parity work** for pg-delta; merged
   [pgschema#514](https://github.com/pgplex/pgschema/pull/514) only extends
@@ -164,22 +177,29 @@ A targeted GitHub sweep for the latest upstream issue state now shows:
   `search_path`, and a focused pg17 `ltree` roundtrip probe with
   `public.nlevel(path)` converged cleanly without a repeated diff. The issue now
   links to open candidate fix [pgschema#520](https://github.com/pgplex/pgschema/pull/520)
-- no pgschema issues closed upstream since the 2026-07-28 refresh
-- no pgschema PRs merged upstream since the 2026-07-28 refresh
-- `pgschema/main` advanced to `v1.12.1`, but the delta is release-version churn
-  rather than a new parity bugfix or classification change
+- **#521** enum names being truncated in 1.12.1 — **closed upstream** by
+  merged [pgschema#522](https://github.com/pgplex/pgschema/pull/522) and still
+  **not parity work for pg-delta**; the bug came from pgschema's
+  temporary-schema type-resolution `CASE` expressions resolving to `name` and
+  truncating long schema-qualified enum names before the outer cast, while
+  pg-delta reads live column types with `format_type(a.atttypid, a.atttypmod)`
+  and does not build temporary-schema-qualified type names here
+- `pgschema/main` advanced to `325dac205047a7850a52ee9f9ff35ec18c145dcc`; this
+  brings in the #521 / #522 fix, but it does not change the benchmark matrix
 - `pg-toolbelt/main` remains at
-  `a974b83fc044788caa4ca538d112b62d1873843b`; the only newer pg-toolbelt
-  activity is open issue [#365](https://github.com/supabase/pg-toolbelt/issues/365)
-  and closed-unmerged PR [#366](https://github.com/supabase/pg-toolbelt/pull/366)
+  `a974b83fc044788caa4ca538d112b62d1873843b`; no newer pg-toolbelt activity
+  was found, and adjacent older work still includes open issue
+  [#365](https://github.com/supabase/pg-toolbelt/issues/365) and
+  closed-unmerged PR [#366](https://github.com/supabase/pg-toolbelt/pull/366)
   around case-colliding schema export paths on `feat/pg-delta-next`, not an
   exact duplicate for the active benchmarks or older draft-only parity gaps
 
 No new exact pg-toolbelt issue or PR was found for benchmarks 020, 021, or 022.
 Direct duplicate probes also still found no exact pg-toolbelt issue or PR for
 the older draft-only gaps [#439](https://github.com/pgplex/pgschema/issues/439)
-/ [#444](https://github.com/pgplex/pgschema/issues/444) or open pgschema issue
-[#519](https://github.com/pgplex/pgschema/issues/519). Exact open pg-toolbelt
+/ [#444](https://github.com/pgplex/pgschema/issues/444), newly closed pgschema
+issue [#521](https://github.com/pgplex/pgschema/issues/521), or open pgschema
+issue [#519](https://github.com/pgplex/pgschema/issues/519). Exact open pg-toolbelt
 trackers still exist only for:
 
 - pgschema [#404](https://github.com/pgplex/pgschema/issues/404) ->
@@ -332,6 +352,14 @@ snapshot are now closed upstream and keep the same pg-delta parity verdicts:
   already emits `CreateTrigger` plus `CreateCommentOnTrigger` when a newly
   created trigger carries a comment, so no new benchmark file or duplicate
   pg-toolbelt tracker is needed
+- **#521** enum names being truncated in 1.12.1 — **closed upstream** by
+  merged [pgschema#522](https://github.com/pgplex/pgschema/pull/522) and still
+  **not parity work for pg-delta**; the failure came from pgschema's
+  temporary-schema type-resolution `CASE` expressions resolving to
+  PostgreSQL's `name` type and truncating long schema-qualified enum names,
+  while pg-delta reads live column types with `format_type(a.atttypid,
+  a.atttypmod)` and does not build temporary-schema-qualified type names in
+  this path
 - **#362**, **#401**, **#414**, **#415**, **#416**, **#420**, **#427**, and
   **#436** — **covered** in current pg-delta
 - **#407**, **#409**, **#418**, **#419**, **#421**, **#422**, **#429**,
@@ -429,6 +457,13 @@ snapshot are now closed upstream and keep the same pg-delta parity verdicts:
 
 Recent parity-relevant pgschema PR activity is now:
 
+- pgschema [#522](https://github.com/pgplex/pgschema/pull/522) (`fix: prevent
+  enum name truncation in schema-qualified type resolution (#521)`) is now
+  **merged** and remains **not parity work** for pg-delta; the fix is specific
+  to pgschema's temporary-schema type-resolution `CASE` expressions resolving
+  to PostgreSQL's `name` type, while pg-delta reads live catalog types with
+  `format_type(...)` and does not construct temporary-schema-qualified type
+  names in this path
 - pgschema [#520](https://github.com/pgplex/pgschema/pull/520) (`fix:
   normalize views after temporary schema rename`) is now **open** against issue
   [#519](https://github.com/pgplex/pgschema/issues/519) and remains **not
