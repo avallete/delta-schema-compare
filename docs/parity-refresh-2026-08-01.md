@@ -136,3 +136,15 @@ This refresh was validated with:
     and generated columns are still serialized as
     `GENERATED ALWAYS AS (...) STORED` in both `table.create.ts` and
     `table.alter.ts`, leaving benchmark **022** unresolved
+- `python3 -m json.tool benchmark/review-memory.json >/dev/null`
+- `python3 -m unittest tests.test_review_memory tests.test_compare_resolved_benchmark`
+  (**9 tests**, pass)
+- `GITHUB_TOKEN="<remote-token>" DRY_RUN=true python3 scripts/compare_issues.py`
+- `GITHUB_TOKEN="<remote-token>" DRY_RUN=true OUTPUT_MODE=benchmark python3 scripts/compare_resolved.py`
+- those dry-run script runs still returned **0** parity items, which remains
+  expected because the current parity-relevant pgschema items are still mostly
+  missing the upstream `Bug` / `Feature` labels that the automation filters on,
+  including open issues
+  [#518](https://github.com/pgplex/pgschema/issues/518) and
+  [#519](https://github.com/pgplex/pgschema/issues/519)
+- `git diff --check`
