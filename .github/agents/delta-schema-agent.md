@@ -55,7 +55,7 @@ scripts/
   compare_resolved.py            Resolved-issue (historical gap) comparison script
 benchmark/
   005-alter-column-type-using-clause.md and peers
-                                 10 documented gap analyses (005, 007, 008, 013, 015–020)
+                                 13 documented gap analyses (005, 007, 008, 013, 015–023)
   README.md                      Summary table of benchmarked gaps
 requirements.txt                 Python dependencies (Python 3.11+)
 ```

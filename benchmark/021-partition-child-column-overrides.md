@@ -21,6 +21,27 @@ this benchmark is intentionally narrower. The missing behavior is not partition
 creation itself; it is preserving child-specific column overrides when a new
 partition child is created.
 
+## Refresh note (2026-08-04)
+
+This refresh kept the checked-in `pg-delta` baseline at
+`a974b83fc044788caa4ca538d112b62d1873843b` while live
+`pg-toolbelt/main` advanced to `2929e83981fee139772cc1c60255f1b2592a6f3a`;
+`pgschema` remained at `325dac205047a7850a52ee9f9ff35ec18c145dcc`.
+
+The new live pg-delta delta is the alpha.5 `pg-topo` byte-offset parser fix
+from [pg-toolbelt#372](https://github.com/supabase/pg-toolbelt/pull/372),
+released by [pg-toolbelt#374](https://github.com/supabase/pg-toolbelt/pull/374).
+A focused live pg17 plan probe still emitted only:
+
+```sql
+CREATE TABLE test_schema.orders_us PARTITION OF test_schema.orders FOR VALUES IN ('us')
+```
+
+The child-specific `priority DEFAULT 10` and `notes NOT NULL` overrides were
+still omitted, so the partition-child override gap remains unresolved. Direct
+duplicate searches still found no exact pg-toolbelt issue or PR for this narrow
+case, so benchmark 021 remains **Not covered**.
+
 ## Refresh note (2026-07-18)
 
 This refresh advanced the checked-in `pg-delta` baseline from

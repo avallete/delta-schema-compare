@@ -27,6 +27,29 @@ child foreign key before the unique index create. PostgreSQL could reject that
 order with `SQLSTATE 42830` because the referenced `(id, tenant)` uniqueness did
 not exist yet when the foreign key was applied.
 
+## Refresh note (2026-08-04)
+
+This refresh kept the checked-in `pg-delta` baseline at
+`a974b83fc044788caa4ca538d112b62d1873843b` while live
+`pg-toolbelt/main` advanced to `2929e83981fee139772cc1c60255f1b2592a6f3a`;
+`pgschema` remained at `325dac205047a7850a52ee9f9ff35ec18c145dcc`.
+
+The new live pg-delta delta is the alpha.5 `pg-topo` byte-offset parser fix
+from [pg-toolbelt#372](https://github.com/supabase/pg-toolbelt/pull/372),
+released by [pg-toolbelt#374](https://github.com/supabase/pg-toolbelt/pull/374).
+A focused live pg17 plan + apply probe for this exact benchmark still emitted
+the dependency-safe order:
+
+```text
+CREATE TABLE test_schema.child (id uuid NOT NULL, parent_id uuid, tenant text NOT NULL)
+ALTER TABLE test_schema.child ADD CONSTRAINT child_pkey PRIMARY KEY (id)
+CREATE UNIQUE INDEX parent_id_tenant_key ON test_schema.parent (id, tenant)
+ALTER TABLE test_schema.child ADD CONSTRAINT child_parent_id_tenant_fkey FOREIGN KEY (parent_id, tenant) REFERENCES test_schema.parent(id, tenant)
+```
+
+The plan still applied cleanly with no remaining changes, so the exact
+standalone unique-index slice remains **Solved in pg-delta**.
+
 ## Refresh note (2026-07-28)
 
 This refresh advanced the checked-in `pg-delta` baseline from
