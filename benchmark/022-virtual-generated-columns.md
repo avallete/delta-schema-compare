@@ -17,6 +17,29 @@ mechanism. This benchmark tracks the now-resolved upstream scenario after
 pgschema merged its fix on `main`, while pg-delta's checked-in default-branch
 engine still lacks exact coverage.
 
+## Refresh note (2026-08-05)
+
+This refresh advanced checked-in `pgschema` from
+`325dac205047a7850a52ee9f9ff35ec18c145dcc` to
+`b1d60e8d95cfc95508956e4c1e89572269410501` via merged
+[pgschema#529](https://github.com/pgplex/pgschema/pull/529), while checked-in
+`pg-delta` remained `a974b83fc044788caa4ca538d112b62d1873843b` and live
+`pg-toolbelt/main` remained `2929e83981fee139772cc1c60255f1b2592a6f3a`.
+
+The new upstream pgschema delta is the function `SET`-clause fix for issue
+[#526](https://github.com/pgplex/pgschema/issues/526), which is already
+covered in pg-delta rather than a new parity gap. A focused 2026-08-05 pg18
+runtime probe for this benchmark still serialized the generated column as:
+
+```sql
+ALTER TABLE test_schema.users ADD COLUMN full_name text GENERATED ALWAYS AS (((first_name || ' '::text) || last_name)) STORED
+```
+
+The `VIRTUAL` keyword is still collapsed back to `STORED`, so the
+generated-column-kind gap remains unresolved. Direct duplicate searches still
+found no exact pg-toolbelt issue or PR for this scenario, so benchmark 022
+remains **Not covered**.
+
 ## Refresh note (2026-08-04)
 
 This refresh kept the checked-in `pg-delta` baseline at

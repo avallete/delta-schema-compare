@@ -21,6 +21,24 @@ This matters because the downgrade is silent. A migration plan that emits
 `UNIQUE (a, b)` instead of `UNIQUE NULLS NOT DISTINCT (a, b)` looks plausible,
 but it weakens uniqueness semantics for nullable columns.
 
+## Refresh note (2026-08-05)
+
+This refresh advanced checked-in `pgschema` from
+`325dac205047a7850a52ee9f9ff35ec18c145dcc` to
+`b1d60e8d95cfc95508956e4c1e89572269410501` via merged
+[pgschema#529](https://github.com/pgplex/pgschema/pull/529), while checked-in
+`pg-delta` remained `a974b83fc044788caa4ca538d112b62d1873843b` and live
+`pg-toolbelt/main` remained `2929e83981fee139772cc1c60255f1b2592a6f3a`.
+
+The new upstream pgschema delta is the function `SET`-clause fix for issue
+[#526](https://github.com/pgplex/pgschema/issues/526), which is already
+covered in pg-delta rather than a new parity gap. A focused 2026-08-05 pg17
+runtime probe for this benchmark still produced **zero planned changes** when
+toggling an existing plain `UNIQUE` table constraint to
+`UNIQUE NULLS NOT DISTINCT`, so the table-constraint diff gap remains
+unresolved. Direct duplicate searches still found no exact pg-toolbelt issue or
+PR for this scenario, so benchmark 020 remains **Not covered**.
+
 ## Refresh note (2026-08-04)
 
 This refresh kept the checked-in `pg-delta` baseline at
