@@ -4,104 +4,71 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-08-05)
+## Latest refresh snapshot (2026-08-06)
 
 Refreshed against:
 
-- checked-in `repos/pg-toolbelt` @ `a974b83fc044788caa4ca538d112b62d1873843b`
+- checked-in `repos/pg-toolbelt` @ `2929e83981fee139772cc1c60255f1b2592a6f3a`
 - live `pg-toolbelt` `main` @ `2929e83981fee139772cc1c60255f1b2592a6f3a`
 - `repos/pgschema` @ `b1d60e8d95cfc95508956e4c1e89572269410501`
 
-> The 2026-08-05 refresh found **no benchmark-matrix delta** versus the
-> 2026-08-04 sweep. The active benchmarked gap set therefore remains **020**,
+> The 2026-08-06 refresh found **no benchmark-matrix delta** versus the
+> 2026-08-05 sweep. The active benchmarked gap set therefore remains **020**,
 > **021**, and **022**.
-> Checked-in and live `pg-delta` remain on the same SHAs as the 2026-08-04
-> refresh:
-> checked-in `pg-toolbelt` remains
-> `a974b83fc044788caa4ca538d112b62d1873843b`, while live
-> `pg-toolbelt/main` remains `2929e83981fee139772cc1c60255f1b2592a6f3a`.
-> Focused runtime probes still show benchmark **020** planning zero statements,
-> benchmark **021** omitting child overrides, and benchmark **022**
-> collapsing `VIRTUAL` back to `STORED`.
-> `pgschema/main` advanced from `325dac205047a7850a52ee9f9ff35ec18c145dcc` to
-> `b1d60e8d95cfc95508956e4c1e89572269410501` via merged
-> [pgschema#529](https://github.com/pgplex/pgschema/pull/529), which closed
-> [#526](https://github.com/pgplex/pgschema/issues/526) without creating a new
-> pg-delta parity gap because current pg-delta already extracts
-> `pg_proc.proconfig`, emits function `SET` / `RESET` config changes, and
-> today’s focused pg17 runtime probe emitted both `SET search_path TO 'public'`
-> and `SET "TimeZone" TO 'UTC'` before roundtripping cleanly.
-> The current open pgschema issue set still remains
+> The checked-in `pg-delta` pointer now advances to the already-screened live
+> `pg-toolbelt/main` head `2929e83981fee139772cc1c60255f1b2592a6f3a`, and
+> focused runtime probes still show benchmark **020** planning zero
+> statements, benchmark **021** omitting child overrides, and benchmark
+> **022** collapsing `VIRTUAL` back to `STORED`.
+> `pgschema/main` remains `b1d60e8d95cfc95508956e4c1e89572269410501`; the
+> newest upstream changes are open issue
+> [#530](https://github.com/pgplex/pgschema/issues/530) with open fix PR
+> [#531](https://github.com/pgplex/pgschema/pull/531), plus newly closed issues
+> [#528](https://github.com/pgplex/pgschema/issues/528),
+> [#527](https://github.com/pgplex/pgschema/issues/527),
+> [#525](https://github.com/pgplex/pgschema/issues/525), and
+> [#523](https://github.com/pgplex/pgschema/issues/523).
+> Current pg-delta already **covers** both
+> [#530](https://github.com/pgplex/pgschema/issues/530) and
+> [#528](https://github.com/pgplex/pgschema/issues/528): the exact `#530`
+> roundtrip converges by prefixing the plan with
+> `SET check_function_bodies = false`, and the exact `#528` probe preserves the
+> full enum type name in `CREATE TABLE`.
+> Closed issues [#527](https://github.com/pgplex/pgschema/issues/527),
+> [#525](https://github.com/pgplex/pgschema/issues/525), and
+> [#523](https://github.com/pgplex/pgschema/issues/523) remain **not parity
+> work** for pg-delta because they are embedded-plan-db, workflow, or
+> plan-JSON metadata concerns rather than current catalog-diff behavior.
+> The current open pgschema issue set is now
 > [#49](https://github.com/pgplex/pgschema/issues/49),
 > [#52](https://github.com/pgplex/pgschema/issues/52),
 > [#84](https://github.com/pgplex/pgschema/issues/84),
 > [#450](https://github.com/pgplex/pgschema/issues/450),
 > [#493](https://github.com/pgplex/pgschema/issues/493),
-> [#518](https://github.com/pgplex/pgschema/issues/518), and
-> [#519](https://github.com/pgplex/pgschema/issues/519). Issue
-> [#518](https://github.com/pgplex/pgschema/issues/518) is still **not parity
-> work** for pg-delta and now has an open upstream candidate fix,
-> [pgschema#517](https://github.com/pgplex/pgschema/pull/517), because it
-> stems from pgschema's temp comparison environment resolving extension-owned
-> types under a different schema than the real target, while pg-delta diffs
-> live catalogs directly and already roundtrips extension-owned types in
-> non-public schemas. Issue
-> [#519](https://github.com/pgplex/pgschema/issues/519) also remains **not parity
-> work** for pg-delta because the repeated view diff depends on pgschema's
-> temporary desired-state schema and qualifier normalization path, while
-> pg-delta extracts live view definitions via `pg_get_viewdef(...)`, isolates
-> `search_path`, and does not compare against a temp planning schema. The issue
-> was updated on 2026-07-27 and now has an open upstream candidate fix,
-> [pgschema#520](https://github.com/pgplex/pgschema/pull/520), but that PR is
-> still specific to pgschema's temporary-schema normalization path rather than
-> pg-delta parity. Closed issue
-> [#521](https://github.com/pgplex/pgschema/issues/521) is also **not parity
-> work** for pg-delta: the upstream bug came from pgschema's temporary-schema
-> type-resolution `CASE` expressions resolving to PostgreSQL's `name` type and
-> truncating long schema-qualified enum names, while pg-delta reads live column
-> types with `format_type(...)` and does not build temporary-schema-qualified
-> type names in this path. Exact open pg-toolbelt trackers still remain only
+> [#518](https://github.com/pgplex/pgschema/issues/518),
+> [#519](https://github.com/pgplex/pgschema/issues/519), and
+> [#530](https://github.com/pgplex/pgschema/issues/530).
+> Exact open pg-toolbelt parity trackers still remain only
 > [#218](https://github.com/supabase/pg-toolbelt/issues/218) and
-> [#219](https://github.com/supabase/pg-toolbelt/issues/219). Focused pg17
-> runtime probes still converge for the exact tracked coverage scenarios, so
-> they remain tracked **coverage** issues rather than benchmark promotions.
-> On the pg-toolbelt side, the only newer activity since 2026-08-04 is still
-> adjacent rather than exact parity work: open `feat/pg-delta-next` cutover PR
-> [#299](https://github.com/supabase/pg-toolbelt/pull/299) plus merged
-> `feat/pg-delta-next` PRs
+> [#219](https://github.com/supabase/pg-toolbelt/issues/219).
+> Adjacent pg-toolbelt work also remains unchanged in parity terms: open
+> [#299](https://github.com/supabase/pg-toolbelt/pull/299) is still the
+> `feat/pg-delta-next` cutover PR, while merged
 > [#379](https://github.com/supabase/pg-toolbelt/pull/379),
 > [#380](https://github.com/supabase/pg-toolbelt/pull/380), and
-> [#381](https://github.com/supabase/pg-toolbelt/pull/381). None is an exact
-> duplicate of the active benchmarks or the draft-only parity gaps, and none
-> changes the current default-branch engine because they did not land on
-> `main`.
-> Issue
-> [#286](https://github.com/supabase/pg-toolbelt/issues/286) plus broader
-> backlog issues [#332](https://github.com/supabase/pg-toolbelt/issues/332),
-> [#333](https://github.com/supabase/pg-toolbelt/issues/333),
-> [#339](https://github.com/supabase/pg-toolbelt/issues/339),
-> [#340](https://github.com/supabase/pg-toolbelt/issues/340),
-> [#344](https://github.com/supabase/pg-toolbelt/issues/344), and
-> [#346](https://github.com/supabase/pg-toolbelt/issues/346) plus open PRs
-> [#299](https://github.com/supabase/pg-toolbelt/pull/299),
-> [#305](https://github.com/supabase/pg-toolbelt/pull/305),
-> [#313](https://github.com/supabase/pg-toolbelt/pull/313),
-> [#314](https://github.com/supabase/pg-toolbelt/pull/314), and
-> [#316](https://github.com/supabase/pg-toolbelt/pull/316) remain adjacent
-> rather than exact duplicates for benchmarks **020** through **022** or the
-> older draft-only gaps
+> [#381](https://github.com/supabase/pg-toolbelt/pull/381) still remain on
+> `feat/pg-delta-next`, not on the current default-branch engine.
+> Direct duplicate searches still found **no exact pg-toolbelt issue or PR**
+> for active benchmarks **020** through **022**, the older draft-only gaps
 > [#439](https://github.com/pgplex/pgschema/issues/439) and
-> [#444](https://github.com/pgplex/pgschema/issues/444), the newer open
-> pgschema view-normalization issue
-> [#519](https://github.com/pgplex/pgschema/issues/519), and newly closed
-> pgschema issue [#526](https://github.com/pgplex/pgschema/issues/526). See
-> [`docs/parity-refresh-2026-08-01.md`](../docs/parity-refresh-2026-08-01.md)
-> and
-> [`docs/parity-refresh-2026-08-03.md`](../docs/parity-refresh-2026-08-03.md)
-> and
-> [`docs/parity-refresh-2026-08-04.md`](../docs/parity-refresh-2026-08-04.md)
-> and
-> [`docs/parity-refresh-2026-08-05.md`](../docs/parity-refresh-2026-08-05.md)
+> [#444](https://github.com/pgplex/pgschema/issues/444), the new open issue
+> [#530](https://github.com/pgplex/pgschema/issues/530), or the newly closed
+> long-enum issue [#528](https://github.com/pgplex/pgschema/issues/528). See
+> [`docs/parity-refresh-2026-08-01.md`](../docs/parity-refresh-2026-08-01.md),
+> [`docs/parity-refresh-2026-08-03.md`](../docs/parity-refresh-2026-08-03.md),
+> [`docs/parity-refresh-2026-08-04.md`](../docs/parity-refresh-2026-08-04.md),
+> [`docs/parity-refresh-2026-08-05.md`](../docs/parity-refresh-2026-08-05.md),
+> and [`docs/parity-refresh-2026-08-06.md`](../docs/parity-refresh-2026-08-06.md)
 > for the latest sweeps.
 
 ## Benchmark status matrix
@@ -134,74 +101,58 @@ Three resolved-issue benchmark scenarios remain active as unresolved:
   `CREATE TABLE ... PARTITION OF ...`
 - **022** — PostgreSQL 18 `VIRTUAL` generated columns
 
-There is **no** benchmark-matrix delta versus the 2026-08-03 refresh.
-This refresh is a latest-state revalidation on an unchanged checked-in/live
-pg-delta baseline plus a newer checked-in/live `pgschema` head:
+There is **no** benchmark-matrix delta versus the 2026-08-05 refresh.
+This refresh advances the checked-in pg-delta baseline to the already-screened
+live `main` head while `pgschema` remains unchanged:
 
-- checked-in `pg-delta` remains
-  `a974b83fc044788caa4ca538d112b62d1873843b`
-- live `pg-delta/main` still remains
+- checked-in and live `pg-delta` now both remain
   `2929e83981fee139772cc1c60255f1b2592a6f3a`
-- checked-in and live `pgschema` now both remain at
-  `b1d60e8d95cfc95508956e4c1e89572269410501` after merged
-  [pgschema#529](https://github.com/pgplex/pgschema/pull/529) closed
-  [#526](https://github.com/pgplex/pgschema/issues/526)
-- pgschema [#526](https://github.com/pgplex/pgschema/issues/526) is now
-  **covered** in current pg-delta rather than a new benchmark promotion; the
-  current procedure extraction path already reads `pg_proc.proconfig`, the diff
-  path already emits function `SET` / `RESET` config changes, and a focused
-  2026-08-05 pg17 runtime probe emitted both `SET search_path TO 'public'`
-  and `SET "TimeZone" TO 'UTC'` before roundtripping cleanly
-- the open pgschema issue set remains
+- checked-in and live `pgschema` both remain at
+  `b1d60e8d95cfc95508956e4c1e89572269410501`
+- new open pgschema issue [#530](https://github.com/pgplex/pgschema/issues/530)
+  is already **covered** in current pg-delta rather than a new benchmark
+  promotion; the exact 2026-08-06 pg17 roundtrip converged cleanly by
+  prefixing the plan with `SET check_function_bodies = false`
+- newly closed pgschema issue
+  [#528](https://github.com/pgplex/pgschema/issues/528) is already **covered**
+  in current pg-delta; the exact 2026-08-06 pg17 probe preserved the full enum
+  type name in `CREATE TABLE`
+- newly closed pgschema issues
+  [#523](https://github.com/pgplex/pgschema/issues/523),
+  [#525](https://github.com/pgplex/pgschema/issues/525), and
+  [#527](https://github.com/pgplex/pgschema/issues/527) remain **not parity
+  work** for pg-delta
+- the open pgschema issue set is now
   [#49](https://github.com/pgplex/pgschema/issues/49),
   [#52](https://github.com/pgplex/pgschema/issues/52),
   [#84](https://github.com/pgplex/pgschema/issues/84),
   [#450](https://github.com/pgplex/pgschema/issues/450),
   [#493](https://github.com/pgplex/pgschema/issues/493),
-  [#518](https://github.com/pgplex/pgschema/issues/518), and
-  [#519](https://github.com/pgplex/pgschema/issues/519)
-- pgschema [#521](https://github.com/pgplex/pgschema/issues/521) remains
-  closed upstream by merged
-  [pgschema#522](https://github.com/pgplex/pgschema/pull/522) and still **not
-  parity work** for pg-delta; the upstream failure came from temporary-schema
-  type-resolution `CASE` expressions resolving to `name`, while pg-delta reads
-  live column types with `format_type(...)`
-- pgschema [#493](https://github.com/pgplex/pgschema/issues/493) remains open
-  and still **not parity work** for pg-delta; merged
-  [pgschema#514](https://github.com/pgplex/pgschema/pull/514) only extends
-  dump-side same-schema type qualification under `--qualify-schema`
-- pgschema [#518](https://github.com/pgplex/pgschema/issues/518) remains
-  **not parity work** for pg-delta; open
-  [pgschema#517](https://github.com/pgplex/pgschema/pull/517) was updated on
-  2026-08-04 but still remains temporary comparison-environment work rather
-  than a pg-delta parity match
-- pgschema [#519](https://github.com/pgplex/pgschema/issues/519) remains
-  **not parity work** for pg-delta; open
-  [pgschema#520](https://github.com/pgplex/pgschema/pull/520) still remains
-  temporary-schema view-normalization work rather than a pg-delta parity match
+  [#518](https://github.com/pgplex/pgschema/issues/518),
+  [#519](https://github.com/pgplex/pgschema/issues/519), and
+  [#530](https://github.com/pgplex/pgschema/issues/530)
 - exact open pg-toolbelt parity trackers still exist only for:
   - pgschema [#404](https://github.com/pgplex/pgschema/issues/404) ->
     [pg-toolbelt#218](https://github.com/supabase/pg-toolbelt/issues/218)
   - pgschema [#366](https://github.com/pgplex/pgschema/issues/366) ->
     [pg-toolbelt#219](https://github.com/supabase/pg-toolbelt/issues/219)
-- adjacent pg-toolbelt work changed state:
+- adjacent pg-toolbelt work remains unchanged in parity terms:
   [#299](https://github.com/supabase/pg-toolbelt/pull/299) remains the open
   `feat/pg-delta-next` cutover PR, while
   [#379](https://github.com/supabase/pg-toolbelt/pull/379),
   [#380](https://github.com/supabase/pg-toolbelt/pull/380), and
-  [#381](https://github.com/supabase/pg-toolbelt/pull/381) are now merged on
-  `feat/pg-delta-next`; all remain adjacent rather than exact parity matches
+  [#381](https://github.com/supabase/pg-toolbelt/pull/381) remain merged on
+  `feat/pg-delta-next` rather than `main`
 
-A targeted GitHub + runtime sweep for the new pgschema head now shows:
+A targeted GitHub + runtime sweep for the current heads now shows:
 
 - no new exact pg-toolbelt issue or PR for benchmarks **020**, **021**, or
   **022**
 - direct duplicate probes still found no exact pg-toolbelt issue or PR for the
   older draft-only gaps [#439](https://github.com/pgplex/pgschema/issues/439)
-  / [#444](https://github.com/pgplex/pgschema/issues/444), open pgschema issue
-  [#519](https://github.com/pgplex/pgschema/issues/519), or closed pgschema
-  issues [#521](https://github.com/pgplex/pgschema/issues/521) /
-  [#526](https://github.com/pgplex/pgschema/issues/526)
+  / [#444](https://github.com/pgplex/pgschema/issues/444), the new open issue
+  [#530](https://github.com/pgplex/pgschema/issues/530), or the newly closed
+  long-enum issue [#528](https://github.com/pgplex/pgschema/issues/528)
 - benchmark **020** still plans **zero statements** when toggling an existing
   `UNIQUE` table constraint to `UNIQUE NULLS NOT DISTINCT`
 - benchmark **021** still emits only
@@ -252,6 +203,12 @@ Screened candidates:
   pg-delta extracts live view definitions from live catalogs, isolates
   `search_path`, and a focused pg17 `ltree` roundtrip probe with
   `public.nlevel(path)` converged cleanly without a repeated diff
+- **#530** function -> table -> function ordering chain (`random_id()` ->
+  `x` -> `x_is_flagged()`) — **covered** in current pg-delta; a focused
+  2026-08-06 pg17 roundtrip for the exact SQL converged cleanly because
+  current pg-delta prefixes the plan with `SET check_function_bodies = false`,
+  so no duplicate tracker is needed even though upstream now has open
+  [pgschema#531](https://github.com/pgplex/pgschema/pull/531)
 Issue [#513](https://github.com/pgplex/pgschema/issues/513) is no longer in
 the open-screening set because it closed upstream on 2026-07-20 as completed
 and still remains **not parity work for pg-delta**; see the closed-issue notes
@@ -338,6 +295,21 @@ snapshot are now closed upstream and keep the same pg-delta parity verdicts:
   already emits `CreateTrigger` plus `CreateCommentOnTrigger` when a newly
   created trigger carries a comment, so no new benchmark file or duplicate
   pg-toolbelt tracker is needed
+- **#523** expose `can_run_in_transaction` on plan JSON steps — **closed
+  upstream** and still **not parity work for pg-delta**; this is planner JSON
+  metadata for downstream migration tooling rather than a live-catalog diff gap
+- **#525** close the gap of state-based workflow — **closed upstream** and
+  still **not parity work for pg-delta**; this is workflow scope rather than a
+  current pg-delta catalog-diff bug
+- **#527** embedded PostgreSQL 17 plan artifact availability — **closed
+  upstream** and still **not parity work for pg-delta**; this is embedded plan
+  database packaging / availability rather than current diff behavior
+- **#528** long enum type names truncated in generated column definitions —
+  **closed upstream** and **covered** in current pg-delta; a focused
+  2026-08-06 pg17 roundtrip emitted
+  `CREATE TABLE repro.deal_area_market_info (... type repro.enum_deal_area_market_info_type NOT NULL)`
+  with the full enum type name preserved, so no benchmark promotion or
+  duplicate tracker is needed
 - **#526** function `SET` clauses except `search_path` are dropped —
   **closed upstream** by merged
   [pgschema#529](https://github.com/pgplex/pgschema/pull/529) and **covered**
@@ -452,6 +424,13 @@ snapshot are now closed upstream and keep the same pg-delta parity verdicts:
 
 Recent parity-relevant pgschema PR activity is now:
 
+- pgschema [#531](https://github.com/pgplex/pgschema/pull/531) (`fix:
+  defer functions that reference new tables to after table creation (#530)`) is
+  now **open** against issue
+  [#530](https://github.com/pgplex/pgschema/issues/530), but current pg-delta
+  already covers the exact scenario differently: the 2026-08-06 pg17 roundtrip
+  converged cleanly by prefixing the plan with `SET check_function_bodies = false`,
+  so this new upstream PR does not create a new pg-delta parity gap
 - pgschema [#529](https://github.com/pgplex/pgschema/pull/529) (`fix:
   preserve all function SET clauses from pg_proc.proconfig`) is now
   **merged** against issue
@@ -561,14 +540,14 @@ Recent parity-relevant pgschema PR activity is now:
   is retained as historical review context only
 
 The checked-in pg-delta head in this refresh
-(`a974b83fc044788caa4ca538d112b62d1873843b`) now also includes the alpha.32
-non-superuser extraction fix from pg-toolbelt PR #337 plus the adjacent
-pg-topo ordering fix from [pg-toolbelt#361](https://github.com/supabase/pg-toolbelt/pull/361),
-but it still does not include the unmerged trigger enabled-state work from
-pg-toolbelt PR #285. Benchmarks 020, 021, and 022 therefore remain the active
-resolved-issue benchmark gaps, while benchmark 023 is now solved and the
-remaining trigger-state slice from pgschema PR #479 is tracked by an exact
-in-flight pg-toolbelt PR rather than an untracked draft-only gap.
+(`2929e83981fee139772cc1c60255f1b2592a6f3a`) now matches live `main`. The
+2026-08-06 delta from the previous checked-in head is still adjacent parser
+work rather than a parity reclassification, and it still does not include the
+unmerged trigger enabled-state work from pg-toolbelt PR #285. Benchmarks 020,
+021, and 022 therefore remain the active resolved-issue benchmark gaps, while
+benchmark 023 is now solved and the remaining trigger-state slice from
+pgschema PR #479 is tracked by an exact in-flight pg-toolbelt PR rather than an
+untracked draft-only gap.
 
 Existing pg-toolbelt PR activity was also rechecked during this refresh:
 

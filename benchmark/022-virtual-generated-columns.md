@@ -17,6 +17,31 @@ mechanism. This benchmark tracks the now-resolved upstream scenario after
 pgschema merged its fix on `main`, while pg-delta's checked-in default-branch
 engine still lacks exact coverage.
 
+## Refresh note (2026-08-06)
+
+This refresh advanced the checked-in `pg-delta` baseline from
+`a974b83fc044788caa4ca538d112b62d1873843b` to
+`2929e83981fee139772cc1c60255f1b2592a6f3a`, matching live
+`pg-toolbelt/main`; `pgschema` remained at
+`b1d60e8d95cfc95508956e4c1e89572269410501`.
+
+The new upstream pgschema activity is a newly opened ordering issue,
+[#530](https://github.com/pgplex/pgschema/issues/530), with open fix PR
+[#531](https://github.com/pgplex/pgschema/pull/531), plus the newly closed
+long-enum issue [#528](https://github.com/pgplex/pgschema/issues/528). Current
+pg-delta already covers both of those scenarios, so they do not change this
+benchmark's classification. A focused 2026-08-06 pg18 runtime probe for this
+benchmark still serialized the generated column as:
+
+```sql
+ALTER TABLE test_schema.users ADD COLUMN full_name text GENERATED ALWAYS AS (((first_name || ' '::text) || last_name)) STORED
+```
+
+The `VIRTUAL` keyword is still collapsed back to `STORED`, so the
+generated-column-kind gap remains unresolved. Direct duplicate searches still
+found no exact pg-toolbelt issue or PR for this scenario, so benchmark 022
+remains **Not covered**.
+
 ## Refresh note (2026-08-05)
 
 This refresh advanced checked-in `pgschema` from
