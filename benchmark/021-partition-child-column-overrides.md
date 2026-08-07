@@ -21,6 +21,30 @@ this benchmark is intentionally narrower. The missing behavior is not partition
 creation itself; it is preserving child-specific column overrides when a new
 partition child is created.
 
+## Refresh note (2026-08-07)
+
+This refresh advanced checked-in `pgschema` from
+`b1d60e8d95cfc95508956e4c1e89572269410501` to
+`0cf544c03dcc71ae0656d0bc9ca87cae0b09432e`, bringing in the merged upstream
+ordering fixes for [#530](https://github.com/pgplex/pgschema/issues/530) via
+[#531](https://github.com/pgplex/pgschema/pull/531) and
+[#532](https://github.com/pgplex/pgschema/issues/532) via
+[#533](https://github.com/pgplex/pgschema/pull/533), while checked-in/live
+`pg-delta` remained `2929e83981fee139772cc1c60255f1b2592a6f3a`.
+
+Current pg-delta already covers both of those new ordering scenarios, so they
+do not change this benchmark's classification. A focused 2026-08-07 pg17
+runtime probe for this benchmark still emitted only:
+
+```sql
+CREATE TABLE test_schema.orders_us PARTITION OF test_schema.orders FOR VALUES IN ('us')
+```
+
+The child-specific `priority DEFAULT 10` and `notes NOT NULL` overrides were
+still omitted, so the partition-child override gap remains unresolved. Direct
+duplicate searches still found no exact pg-toolbelt issue or PR for this narrow
+case, so benchmark 021 remains **Not covered**.
+
 ## Refresh note (2026-08-06)
 
 This refresh advanced the checked-in `pg-delta` baseline from

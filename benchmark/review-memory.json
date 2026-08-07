@@ -1,75 +1,66 @@
 {
   "open": {
     "450": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-07-11T04:04:29Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"b1d60e8d95cfc95508956e4c1e89572269410501\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-07-11T04:04:29Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"0cf544c03dcc71ae0656d0bc9ca87cae0b09432e\"}",
       "issue_number": 450,
       "issue_title": "Missing role blocks plan and apply",
       "issue_updated_at": "2026-07-11T04:04:29Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/450",
-      "reviewed_at": "2026-08-06T07:18:26.606776+00:00",
+      "reviewed_at": "2026-08-07T07:15:32+00:00",
       "verdict": "not_parity"
     },
     "49": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-05-30T05:03:35Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"b1d60e8d95cfc95508956e4c1e89572269410501\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-05-30T05:03:35Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"0cf544c03dcc71ae0656d0bc9ca87cae0b09432e\"}",
       "issue_number": 49,
       "issue_title": "Introduce an Explicit Workflow for Renaming Schema Objects",
       "issue_updated_at": "2026-05-30T05:03:35Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/49",
-      "reviewed_at": "2026-08-06T07:18:25.939138+00:00",
+      "reviewed_at": "2026-08-07T07:15:32+00:00",
       "verdict": "not_parity"
     },
     "493": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-06-30T04:37:34Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"b1d60e8d95cfc95508956e4c1e89572269410501\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-30T04:37:34Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"0cf544c03dcc71ae0656d0bc9ca87cae0b09432e\"}",
       "issue_number": 493,
       "issue_title": "Inspector/IR should preserve schema identity for type references (enable --qualify-schema for types)",
       "issue_updated_at": "2026-06-30T04:37:34Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/493",
-      "reviewed_at": "2026-08-06T07:18:26.806870+00:00",
+      "reviewed_at": "2026-08-07T07:15:32+00:00",
       "verdict": "not_parity"
     },
     "518": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-07-24T09:36:41Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"b1d60e8d95cfc95508956e4c1e89572269410501\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-07-24T09:36:41Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"0cf544c03dcc71ae0656d0bc9ca87cae0b09432e\"}",
       "issue_number": 518,
       "issue_title": "Extension-owned type schema mismatch causes false-positive diffs (pgvector, etc.)",
       "issue_updated_at": "2026-07-24T09:36:41Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/518",
-      "reviewed_at": "2026-08-06T07:18:27.071352+00:00",
+      "reviewed_at": "2026-08-07T07:15:32+00:00",
       "verdict": "not_parity"
     },
     "519": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-07-27T12:26:50Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"b1d60e8d95cfc95508956e4c1e89572269410501\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-07-27T12:26:50Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"0cf544c03dcc71ae0656d0bc9ca87cae0b09432e\"}",
       "issue_number": 519,
       "issue_title": "View normalization from #316 does not converge through the temporary plan schema",
       "issue_updated_at": "2026-07-27T12:26:50Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/519",
-      "reviewed_at": "2026-08-06T07:18:27.287577+00:00",
+      "reviewed_at": "2026-08-07T07:15:32+00:00",
       "verdict": "not_parity"
     },
     "52": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"b1d60e8d95cfc95508956e4c1e89572269410501\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"0cf544c03dcc71ae0656d0bc9ca87cae0b09432e\"}",
       "issue_number": 52,
       "issue_title": "Allow inclusion of Certain files to be explicitly executed by pgschema / included in plan file",
       "issue_updated_at": "2026-02-09T03:57:30Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/52",
-      "reviewed_at": "2026-08-06T07:18:26.141611+00:00",
+      "reviewed_at": "2026-08-07T07:15:32+00:00",
       "verdict": "not_parity"
     },
-    "530": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-08-06T03:31:52Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"b1d60e8d95cfc95508956e4c1e89572269410501\"}",
-      "issue_number": 530,
-      "issue_title": "Statement order causes \"relation does not exist\" error",
-      "issue_updated_at": "2026-08-06T03:31:52Z",
-      "issue_url": "https://github.com/pgplex/pgschema/issues/530",
-      "reviewed_at": "2026-08-06T07:18:27.493539+00:00",
-      "verdict": "covered"
-    },
     "84": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-06-03T02:48:24Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"b1d60e8d95cfc95508956e4c1e89572269410501\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-03T02:48:24Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"0cf544c03dcc71ae0656d0bc9ca87cae0b09432e\"}",
       "issue_number": 84,
       "issue_title": "\ud83d\udc49\ud83d\udcdd Feedback Wanted: Share Your Use Case & Experience",
       "issue_updated_at": "2026-06-03T02:48:24Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/84",
-      "reviewed_at": "2026-08-06T07:18:26.377101+00:00",
+      "reviewed_at": "2026-08-07T07:15:32+00:00",
       "verdict": "not_parity"
     }
   },
@@ -354,12 +345,12 @@
       "verdict": "covered"
     },
     "412": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-04-29T02:24:27Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"b1d60e8d95cfc95508956e4c1e89572269410501\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-04-29T02:24:27Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"0cf544c03dcc71ae0656d0bc9ca87cae0b09432e\"}",
       "issue_number": 412,
       "issue_title": "`pgschema dump` drops `NULLS NOT DISTINCT` from `UNIQUE` table constraints",
       "issue_updated_at": "2026-04-29T02:24:27Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/412",
-      "reviewed_at": "2026-08-06T07:18:27.700825+00:00",
+      "reviewed_at": "2026-08-07T07:15:32+00:00",
       "verdict": "not_covered"
     },
     "414": {
@@ -480,21 +471,21 @@
       "verdict": "covered"
     },
     "439": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-06-10T19:04:57Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"b1d60e8d95cfc95508956e4c1e89572269410501\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-10T19:04:57Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"0cf544c03dcc71ae0656d0bc9ca87cae0b09432e\"}",
       "issue_number": 439,
       "issue_title": "Dropping constraint cascade",
       "issue_updated_at": "2026-06-10T19:04:57Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/439",
-      "reviewed_at": "2026-08-06T07:18:27.896905+00:00",
+      "reviewed_at": "2026-08-07T07:15:32+00:00",
       "verdict": "not_covered"
     },
     "444": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-06-10T06:14:56Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"b1d60e8d95cfc95508956e4c1e89572269410501\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-10T06:14:56Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"0cf544c03dcc71ae0656d0bc9ca87cae0b09432e\"}",
       "issue_number": 444,
       "issue_title": "Bug: DROP COLUMN ordered before dependent view's DROP within same group, apply fails",
       "issue_updated_at": "2026-06-10T06:14:56Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/444",
-      "reviewed_at": "2026-08-06T07:18:28.097815+00:00",
+      "reviewed_at": "2026-08-07T07:15:32+00:00",
       "verdict": "not_covered"
     },
     "445": {
@@ -606,21 +597,21 @@
       "verdict": "covered"
     },
     "499": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-07-03T14:46:36Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"b1d60e8d95cfc95508956e4c1e89572269410501\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-07-03T14:46:36Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"0cf544c03dcc71ae0656d0bc9ca87cae0b09432e\"}",
       "issue_number": 499,
       "issue_title": "PARTITION OF create path: support child-specific column elements",
       "issue_updated_at": "2026-07-03T14:46:36Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/499",
-      "reviewed_at": "2026-08-06T07:18:28.335847+00:00",
+      "reviewed_at": "2026-08-07T07:15:32+00:00",
       "verdict": "not_covered"
     },
     "501": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-07-06T06:58:48Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"b1d60e8d95cfc95508956e4c1e89572269410501\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-07-06T06:58:48Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"0cf544c03dcc71ae0656d0bc9ca87cae0b09432e\"}",
       "issue_number": 501,
       "issue_title": "PG18 VIRTUAL generated columns silently rewritten as DEFAULT in plan, producing invalid DDL",
       "issue_updated_at": "2026-07-06T06:58:48Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/501",
-      "reviewed_at": "2026-08-06T07:18:28.540991+00:00",
+      "reviewed_at": "2026-08-07T07:15:32+00:00",
       "verdict": "not_covered"
     },
     "502": {
@@ -696,48 +687,66 @@
       "verdict": "not_parity"
     },
     "523": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-08-04T07:03:22Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"b1d60e8d95cfc95508956e4c1e89572269410501\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-08-04T07:03:22Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"0cf544c03dcc71ae0656d0bc9ca87cae0b09432e\"}",
       "issue_number": 523,
       "issue_title": "Expose can_run_in_transaction on plan JSON steps",
       "issue_updated_at": "2026-08-04T07:03:22Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/523",
-      "reviewed_at": "2026-08-06T07:18:28.751117+00:00",
+      "reviewed_at": "2026-08-07T07:15:32+00:00",
       "verdict": "not_parity"
     },
     "525": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-08-04T13:42:58Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"b1d60e8d95cfc95508956e4c1e89572269410501\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-08-04T13:42:58Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"0cf544c03dcc71ae0656d0bc9ca87cae0b09432e\"}",
       "issue_number": 525,
       "issue_title": "Close the gap of state based workflow",
       "issue_updated_at": "2026-08-04T13:42:58Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/525",
-      "reviewed_at": "2026-08-06T07:18:28.957647+00:00",
+      "reviewed_at": "2026-08-07T07:15:32+00:00",
       "verdict": "not_parity"
     },
     "526": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-08-05T05:11:14Z\", \"pgdelta_sha\": \"a974b83fc044788caa4ca538d112b62d1873843b\", \"pgschema_sha\": \"b1d60e8d95cfc95508956e4c1e89572269410501\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-08-05T05:11:14Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"0cf544c03dcc71ae0656d0bc9ca87cae0b09432e\"}",
       "issue_number": 526,
       "issue_title": "Function SET clauses except search_path are dropped",
       "issue_updated_at": "2026-08-05T05:11:14Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/526",
-      "reviewed_at": "2026-08-05T07:30:55.392932+00:00",
+      "reviewed_at": "2026-08-07T07:15:32+00:00",
       "verdict": "covered"
     },
     "527": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-08-04T11:14:23Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"b1d60e8d95cfc95508956e4c1e89572269410501\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-08-04T11:14:23Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"0cf544c03dcc71ae0656d0bc9ca87cae0b09432e\"}",
       "issue_number": 527,
       "issue_title": "Embedded PostgreSQL 17 plan fails when 17.5.0 artifact is unavailable",
       "issue_updated_at": "2026-08-04T11:14:23Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/527",
-      "reviewed_at": "2026-08-06T07:18:29.164792+00:00",
+      "reviewed_at": "2026-08-07T07:15:32+00:00",
       "verdict": "not_parity"
     },
     "528": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-08-05T05:01:46Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"b1d60e8d95cfc95508956e4c1e89572269410501\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-08-05T05:01:46Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"0cf544c03dcc71ae0656d0bc9ca87cae0b09432e\"}",
       "issue_number": 528,
       "issue_title": "`plan`/`apply` truncates enum type names longer than 25 chars in generated column definitions (regression in 1.12.1)",
       "issue_updated_at": "2026-08-05T05:01:46Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/528",
-      "reviewed_at": "2026-08-06T07:18:29.373354+00:00",
+      "reviewed_at": "2026-08-07T07:15:32+00:00",
+      "verdict": "covered"
+    },
+    "530": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-08-06T08:05:46Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"0cf544c03dcc71ae0656d0bc9ca87cae0b09432e\"}",
+      "issue_number": 530,
+      "issue_title": "Statement order causes \"relation does not exist\" error",
+      "issue_updated_at": "2026-08-06T08:05:46Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/530",
+      "reviewed_at": "2026-08-07T07:15:32+00:00",
+      "verdict": "covered"
+    },
+    "532": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-08-06T15:33:48Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"0cf544c03dcc71ae0656d0bc9ca87cae0b09432e\"}",
+      "issue_number": 532,
+      "issue_title": "`plan`/`apply` fails on FK referencing a UNIQUE constraint defined later in the dump: \"no unique constraint matching given keys\"",
+      "issue_updated_at": "2026-08-06T15:33:48Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/532",
+      "reviewed_at": "2026-08-07T07:15:32+00:00",
       "verdict": "covered"
     }
   }
