@@ -54,9 +54,9 @@ scripts/
   compare_issues.py              Open-issue comparison and generation script
   compare_resolved.py            Resolved-issue (historical gap) comparison script
 benchmark/
-  001-exclude-constraints.md     15 documented gap analyses (001–015)
-  ...
-  README.md                      Summary table of all benchmarked gaps
+  005-alter-column-type-using-clause.md and peers
+                                 13 documented gap analyses (005, 007, 008, 013, 015–023)
+  README.md                      Summary table of benchmarked gaps
 requirements.txt                 Python dependencies (Python 3.11+)
 ```
 
@@ -414,7 +414,7 @@ Requires Docker (for PostgreSQL containers).
 - `docs/coverage-guide.md` — detailed coverage evaluation guide with full issue template
 - `docs/pgdelta-structure.md` — pg-delta directory map, test file listing, and test anatomy
 - `.github/copilot-instructions.md` — Copilot-specific agent instructions
-- `benchmark/README.md` — summary of all 15 benchmarked gaps with severity ratings
+- `benchmark/README.md` — latest benchmark matrix and parity status summary
 
 ## Cursor Cloud specific instructions
 
