@@ -48,7 +48,7 @@
     "534": {
       "fingerprint": "{\"issue_updated_at\": \"2026-08-07T16:15:51Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"0cf544c03dcc71ae0656d0bc9ca87cae0b09432e\"}",
       "issue_number": 534,
-      "issue_title": "Self-referencing FK to a non-PK UNIQUE constraint is always inlined in `CREATE TABLE`, breaking `dump`/`plan` (\"no unique constraint matching given keys\") — PR #533 does not cover this path",
+      "issue_title": "Self-referencing FK to a non-PK UNIQUE constraint is always inlined in `CREATE TABLE`, breaking `dump`/`plan` (\"no unique constraint matching given keys\") \u2014 PR #533 does not cover this path",
       "issue_updated_at": "2026-08-07T16:15:51Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/534",
       "reviewed_at": "2026-08-08T07:06:57+00:00",
@@ -64,13 +64,22 @@
       "verdict": "not_parity"
     },
     "84": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-06-03T02:48:24Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"0cf544c03dcc71ae0656d0bc9ca87cae0b09432e\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-08-08T15:52:12Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"0cf544c03dcc71ae0656d0bc9ca87cae0b09432e\"}",
       "issue_number": 84,
       "issue_title": "\ud83d\udc49\ud83d\udcdd Feedback Wanted: Share Your Use Case & Experience",
-      "issue_updated_at": "2026-06-03T02:48:24Z",
+      "issue_updated_at": "2026-08-08T15:52:12Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/84",
-      "reviewed_at": "2026-08-07T07:15:32+00:00",
+      "reviewed_at": "2026-08-09T07:05:52+00:00",
       "verdict": "not_parity"
+    },
+    "535": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-08-08T15:55:08Z\", \"pgdelta_sha\": \"2929e83981fee139772cc1c60255f1b2592a6f3a\", \"pgschema_sha\": \"0cf544c03dcc71ae0656d0bc9ca87cae0b09432e\"}",
+      "issue_number": 535,
+      "issue_title": "Incorrect dependencies for domain",
+      "issue_updated_at": "2026-08-08T15:55:08Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/535",
+      "reviewed_at": "2026-08-09T07:05:52+00:00",
+      "verdict": "covered"
     }
   },
   "resolved": {

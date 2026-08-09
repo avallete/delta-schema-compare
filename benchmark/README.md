@@ -4,7 +4,7 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-08-08)
+## Latest refresh snapshot (2026-08-09)
 
 Refreshed against:
 
@@ -12,8 +12,8 @@ Refreshed against:
 - live `pg-toolbelt` `main` @ `2929e83981fee139772cc1c60255f1b2592a6f3a`
 - checked-in/live `repos/pgschema` @ `0cf544c03dcc71ae0656d0bc9ca87cae0b09432e`
 
-> The 2026-08-08 refresh found **no benchmark-matrix delta** versus the
-> 2026-08-07 sweep. The active benchmarked gap set therefore remains **020**,
+> The 2026-08-09 refresh found **no benchmark-matrix delta** versus the
+> 2026-08-08 sweep. The active benchmarked gap set therefore remains **020**,
 > **021**, and **022**.
 > checked-in/live `pg-delta` remain
 > `2929e83981fee139772cc1c60255f1b2592a6f3a`, and focused runtime probes still
@@ -22,13 +22,13 @@ Refreshed against:
 > `STORED`.
 > checked-in/live `pgschema` also remain
 > `0cf544c03dcc71ae0656d0bc9ca87cae0b09432e`.
-> New open pgschema issue [#534](https://github.com/pgplex/pgschema/issues/534)
-> is already **covered** in current pg-delta: a focused 2026-08-08 pg17
-> runtime probe emitted `CREATE TABLE`, `ALTER TABLE ... ADD CONSTRAINT
-> parent_orgs_pkey PRIMARY KEY`, `CREATE UNIQUE INDEX
-> parent_orgs_external_key_key`, then `ALTER TABLE ... ADD CONSTRAINT
-> fk_self_migrated_from FOREIGN KEY`, applied cleanly, and left zero remaining
-> changes.
+> New open pgschema issue [#535](https://github.com/pgplex/pgschema/issues/535)
+> is already **covered** in current pg-delta: a focused 2026-08-09 pg17
+> runtime probe emitted `CREATE TABLE public.x ()` followed by
+> `CREATE DOMAIN public.y AS public.x`, applied cleanly, and left zero
+> remaining changes. Open issue
+> [#534](https://github.com/pgplex/pgschema/issues/534) remains covered as
+> well.
 > The current open pgschema issue set is now
 > [#49](https://github.com/pgplex/pgschema/issues/49),
 > [#52](https://github.com/pgplex/pgschema/issues/52),
@@ -36,8 +36,9 @@ Refreshed against:
 > [#450](https://github.com/pgplex/pgschema/issues/450),
 > [#493](https://github.com/pgplex/pgschema/issues/493),
 > [#518](https://github.com/pgplex/pgschema/issues/518),
-> [#519](https://github.com/pgplex/pgschema/issues/519), and
-> [#534](https://github.com/pgplex/pgschema/issues/534).
+> [#519](https://github.com/pgplex/pgschema/issues/519),
+> [#534](https://github.com/pgplex/pgschema/issues/534), and
+> [#535](https://github.com/pgplex/pgschema/issues/535).
 > Exact open pg-toolbelt parity trackers still remain only
 > [#218](https://github.com/supabase/pg-toolbelt/issues/218) and
 > [#219](https://github.com/supabase/pg-toolbelt/issues/219).
@@ -56,9 +57,10 @@ Refreshed against:
 > Direct duplicate searches still found **no exact pg-toolbelt issue or PR**
 > for active benchmarks **020** through **022**, the older draft-only gaps
 > [#439](https://github.com/pgplex/pgschema/issues/439) and
-> [#444](https://github.com/pgplex/pgschema/issues/444), or the new covered
-> open issue [#534](https://github.com/pgplex/pgschema/issues/534). The
-> earlier closed ordering issues
+> [#444](https://github.com/pgplex/pgschema/issues/444), or the covered open
+> issues [#534](https://github.com/pgplex/pgschema/issues/534) and
+> [#535](https://github.com/pgplex/pgschema/issues/535). The earlier closed
+> ordering issues
 > [#530](https://github.com/pgplex/pgschema/issues/530) and
 > [#532](https://github.com/pgplex/pgschema/issues/532) also still do not need
 > duplicate trackers. See
@@ -68,7 +70,8 @@ Refreshed against:
 > [`docs/parity-refresh-2026-08-05.md`](../docs/parity-refresh-2026-08-05.md),
 > [`docs/parity-refresh-2026-08-06.md`](../docs/parity-refresh-2026-08-06.md),
 > [`docs/parity-refresh-2026-08-07.md`](../docs/parity-refresh-2026-08-07.md),
-> and [`docs/parity-refresh-2026-08-08.md`](../docs/parity-refresh-2026-08-08.md)
+> [`docs/parity-refresh-2026-08-08.md`](../docs/parity-refresh-2026-08-08.md),
+> and [`docs/parity-refresh-2026-08-09.md`](../docs/parity-refresh-2026-08-09.md)
 > for the latest sweeps.
 
 ## Benchmark status matrix
@@ -101,18 +104,22 @@ Three resolved-issue benchmark scenarios remain active as unresolved:
   `CREATE TABLE ... PARTITION OF ...`
 - **022** — PostgreSQL 18 `VIRTUAL` generated columns
 
-There is **no** benchmark-matrix delta versus the 2026-08-07 refresh.
+There is **no** benchmark-matrix delta versus the 2026-08-08 refresh.
 This refresh keeps checked-in/live `pgschema` at
 `0cf544c03dcc71ae0656d0bc9ca87cae0b09432e` and checked-in/live `pg-delta` at
 `2929e83981fee139772cc1c60255f1b2592a6f3a`:
 
 - new open pgschema issue
-  [#534](https://github.com/pgplex/pgschema/issues/534) is already **covered**
-  in current pg-delta; a focused 2026-08-08 pg17 runtime probe emitted
-  `CREATE TABLE`, then the table `PRIMARY KEY`, then
-  `CREATE UNIQUE INDEX parent_orgs_external_key_key`, then the
-  self-referencing `FOREIGN KEY`, applied cleanly, and left zero remaining
-  changes
+  [#535](https://github.com/pgplex/pgschema/issues/535) is already **covered**
+  in current pg-delta; a focused 2026-08-09 pg17 runtime probe emitted
+  `CREATE TABLE public.x ()` followed by
+  `CREATE DOMAIN public.y AS public.x`, applied cleanly, and left zero
+  remaining changes
+- earlier newly open issue
+  [#534](https://github.com/pgplex/pgschema/issues/534) remains **covered**
+  in current pg-delta; the focused 2026-08-08 pg17 probe still emits the
+  dependency-safe `CREATE TABLE` -> `ADD PRIMARY KEY` -> `CREATE UNIQUE INDEX`
+  -> `ADD CONSTRAINT ... FOREIGN KEY` order
 - the earlier newly closed pgschema issue
   [#528](https://github.com/pgplex/pgschema/issues/528) remains **covered** in
   current pg-delta; the exact pg17 probe still preserves the full enum type
@@ -130,7 +137,8 @@ This refresh keeps checked-in/live `pgschema` at
   [#493](https://github.com/pgplex/pgschema/issues/493),
   [#518](https://github.com/pgplex/pgschema/issues/518), and
   [#519](https://github.com/pgplex/pgschema/issues/519), plus
-  [#534](https://github.com/pgplex/pgschema/issues/534)
+  [#534](https://github.com/pgplex/pgschema/issues/534) and
+  [#535](https://github.com/pgplex/pgschema/issues/535)
 - exact open pg-toolbelt parity trackers still exist only for:
   - pgschema [#404](https://github.com/pgplex/pgschema/issues/404) ->
     [pg-toolbelt#218](https://github.com/supabase/pg-toolbelt/issues/218)
@@ -154,8 +162,9 @@ A targeted GitHub + runtime sweep for the current heads now shows:
 
 - no new exact pg-toolbelt issue or PR for benchmarks **020**, **021**, or
   **022**
-- no exact pg-toolbelt issue or PR for new covered open issue
-  [#534](https://github.com/pgplex/pgschema/issues/534)
+- no exact pg-toolbelt issue or PR for the covered open issues
+  [#534](https://github.com/pgplex/pgschema/issues/534) and
+  [#535](https://github.com/pgplex/pgschema/issues/535)
 - direct duplicate probes still found no exact pg-toolbelt issue or PR for the
   older draft-only gaps [#439](https://github.com/pgplex/pgschema/issues/439)
   / [#444](https://github.com/pgplex/pgschema/issues/444); the now-closed
@@ -220,6 +229,14 @@ Screened candidates:
   fk_self_migrated_from FOREIGN KEY`, applied cleanly, and left zero remaining
   changes. No exact pg-toolbelt issue or PR exists, so no new tracker is
   needed
+- **#535** domain created over a table row type — **covered** in current
+  pg-delta; a focused 2026-08-09 pg17 runtime probe for
+  `CREATE TABLE x(); CREATE DOMAIN y AS x;` emitted the dependency-safe order
+  `CREATE TABLE public.x ()` -> `CREATE DOMAIN public.y AS public.x`, applied
+  cleanly, and left zero remaining changes. The existing open
+  [pg-toolbelt#286](https://github.com/supabase/pg-toolbelt/issues/286)
+  concerns domain CHECK replacement dependencies rather than this create-order
+  case, so there is no exact tracker or PR to update here either
 Issue [#513](https://github.com/pgplex/pgschema/issues/513) is no longer in
 the open-screening set because it closed upstream on 2026-07-20 as completed
 and still remains **not parity work for pg-delta**; see the closed-issue notes
