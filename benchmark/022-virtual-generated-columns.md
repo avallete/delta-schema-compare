@@ -17,16 +17,14 @@ mechanism. This benchmark tracks the now-resolved upstream scenario after
 pgschema merged its fix on `main`, while current pg-delta still lacks exact
 coverage.
 
-## Refresh note (2026-08-11)
+## Refresh note (2026-08-13)
 
 This refresh advanced checked-in/live `pg-delta` from
-`2929e83981fee139772cc1c60255f1b2592a6f3a` to
-`2247de05849455b358fae71bbe514273cae4faba` after the clean-room rewrite
-from [pg-toolbelt#299](https://github.com/supabase/pg-toolbelt/pull/299)
-landed on `main`; checked-in/live `pgschema` remained
-`0cf544c03dcc71ae0656d0bc9ca87cae0b09432e`.
+`2247de05849455b358fae71bbe514273cae4faba` to
+`17bfd13b49e94d4e073154921df738707fd03d87`, while checked-in/live
+`pgschema` remained `0cf544c03dcc71ae0656d0bc9ca87cae0b09432e`.
 
-A focused 2026-08-11 pg18 proof probe for this benchmark still serialized
+A focused 2026-08-13 pg18 proof probe for this benchmark still serialized
 the generated column as:
 
 ```sql
@@ -37,14 +35,13 @@ ALTER TABLE "test_schema"."users"
 The PostgreSQL 18 `VIRTUAL` keyword is still collapsed back to `STORED`.
 The same proof still returned `proofOk: true` with zero drift, which means
 the current extract/model path is also collapsing the kind strongly enough
-that the proof loop cannot see the mismatch yet. Benchmark 022 therefore
-remains **Not covered**.
+that the proof loop cannot see the mismatch yet.
 
-Direct duplicate searches still found no exact pg-toolbelt issue or PR for
-this scenario. Open
-[pg-toolbelt#332](https://github.com/supabase/pg-toolbelt/issues/332) is an
-adjacent clean-room fidelity bucket, but it does not exactly track this
-generated-column-kind gap.
+This gap is also no longer untracked: open umbrella fidelity tracker
+[pg-toolbelt#332](https://github.com/supabase/pg-toolbelt/issues/332) now
+explicitly lists PostgreSQL 17/18 virtual generated columns. Benchmark 022
+therefore remains **behaviorally uncovered** but is now **tracked** under that
+umbrella issue.
 
 ## Reproduction SQL
 
@@ -68,7 +65,7 @@ ALTER TABLE test_schema.users
 column kind when diffing and serializing the migration plan.
 
 **Actual on current pg-delta:** current pg-delta emits `... STORED`
-instead. The focused 2026-08-11 proof also reported zero drift afterward,
+instead. The focused 2026-08-13 proof also reported zero drift afterward,
 which means the current extract/model path is not preserving the
 `VIRTUAL` / `STORED` distinction as diff-visible state yet.
 
@@ -93,8 +90,8 @@ keyword intact in the resolved scenario.
 | Extract reads generated columns at all | Partially - `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` reads `attgenerated`, but only uses it to decide whether `default_expr` should be treated as a generated expression |
 | Extract / IR preserves `VIRTUAL` vs `STORED` kind | No - the current payload stores `generatedExpr` but not the actual generated kind |
 | SQL emission preserves `VIRTUAL` | No - `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts` hard-codes `... STORED` in `columnClause()` |
-| Focused proof on the exact PG18 scenario | No user-visible fidelity - the focused 2026-08-11 probe emitted `... STORED` yet still proved cleanly because the current model collapses the kind |
-| Existing exact pg-toolbelt issue / PR | No exact tracker or PR found |
+| Focused proof on the exact PG18 scenario | No user-visible fidelity - the focused 2026-08-13 probe emitted `... STORED` yet still proved cleanly because the current model collapses the kind |
+| Existing exact pg-toolbelt issue / PR | No dedicated exact tracker or PR yet; open umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332) explicitly tracks PostgreSQL 17/18 virtual generated columns |
 
 ## Comparison of approaches
 
@@ -102,7 +99,7 @@ keyword intact in the resolved scenario.
 |---|---|---|
 | **Catalog / IR representation** | Preserves generated-column kind through the resolved fix | Collapses `attgenerated` down to generated-expression presence |
 | **Plan / SQL emission** | Emits `VIRTUAL` when the schema requires it | Emits `GENERATED ALWAYS AS (...) STORED` |
-| **Current parity state** | Fixed | Not covered |
+| **Current parity state** | Fixed | Tracked under [#332](https://github.com/supabase/pg-toolbelt/issues/332), but still behaviorally uncovered |
 
 ## Plan to handle it in pg-delta
 

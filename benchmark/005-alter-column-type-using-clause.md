@@ -92,6 +92,27 @@ pg-delta now resolves the benchmark scenario end-to-end:
 3. The integration suite covers the exact `text -> enum` path with live row
    data and a default value.
 
+## Latest refresh note (2026-08-13)
+
+This refresh advanced checked-in/live `pg-delta` from
+`2247de05849455b358fae71bbe514273cae4faba` to
+`17bfd13b49e94d4e073154921df738707fd03d87`, while checked-in/live
+`pgschema` remained `0cf544c03dcc71ae0656d0bc9ca87cae0b09432e`.
+
+New open pgschema issue [#537](https://github.com/pgplex/pgschema/issues/537)
+re-raises the same `ALTER COLUMN TYPE ... USING` family for a built-in
+`text -> integer` conversion without a default. A focused 2026-08-13 pg17
+proof probe on current pg-delta emitted:
+
+```sql
+ALTER TABLE "public"."nokia_cell_info" ALTER COLUMN "arfcn_dl" DROP DEFAULT
+ALTER TABLE "public"."nokia_cell_info" ALTER COLUMN "arfcn_dl" TYPE integer USING "arfcn_dl"::integer
+```
+
+That plan still proved cleanly with zero drift, so current pg-delta continues
+to cover the broader USING-clause family and benchmark 005 remains **Solved in
+pg-delta**.
+
 ## Latest refresh note (2026-05-23)
 
 This benchmark entry moved from **tracked** to **solved in pg-delta** after
