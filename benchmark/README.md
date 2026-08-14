@@ -4,15 +4,15 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-08-13)
+## Latest refresh snapshot (2026-08-14)
 
 Refreshed against:
 
-- checked-in/live `repos/pg-toolbelt` @ `17bfd13b49e94d4e073154921df738707fd03d87`
+- checked-in/live `repos/pg-toolbelt` @ `551e88b42977db673a7a9d74f7b7876c2a5e5377`
 - checked-in/live `repos/pgschema` @ `0cf544c03dcc71ae0656d0bc9ca87cae0b09432e`
 
-> The 2026-08-13 refresh keeps the **active behavioral gap set** unchanged, but
-> it **updates the benchmark issue mapping**.
+> The 2026-08-14 refresh keeps the **active behavioral gap set** unchanged on a
+> newer pg-delta head.
 >
 > - the active benchmarked gap set remains **021** and **022**
 > - both active benchmarks now map to the open umbrella fidelity tracker
@@ -22,9 +22,13 @@ Refreshed against:
 > - open pgschema issues
 >   [#534](https://github.com/pgplex/pgschema/issues/534),
 >   [#535](https://github.com/pgplex/pgschema/issues/535),
->   [#536](https://github.com/pgplex/pgschema/issues/536), and new
+>   [#536](https://github.com/pgplex/pgschema/issues/536), and
 >   [#537](https://github.com/pgplex/pgschema/issues/537) are already
 >   **covered** in current pg-delta
+> - open pgschema PR
+>   [#539](https://github.com/pgplex/pgschema/pull/539) now carries the upstream
+>   fix for [#535](https://github.com/pgplex/pgschema/issues/535), but pg-delta
+>   already converges on that scenario
 > - exact closed coverage trackers
 >   [#218](https://github.com/supabase/pg-toolbelt/issues/218) /
 >   [#219](https://github.com/supabase/pg-toolbelt/issues/219) remain solved
@@ -67,7 +71,7 @@ Two resolved-issue benchmark scenarios remain active as unresolved behavior:
   `CREATE TABLE ... PARTITION OF ...`
 - **022** - PostgreSQL 18 `VIRTUAL` generated columns
 
-Focused 2026-08-13 runtime probes on current heads show:
+Focused 2026-08-14 runtime probes on current heads show:
 
 - benchmark **021** still emits only
   `CREATE TABLE ... PARTITION OF ... FOR VALUES ...`, omitting the
@@ -121,20 +125,22 @@ Screened candidates:
   pgschema temp-schema normalization fix rather than a live-catalog diff
   gap
 - **#534** self-referencing FK to a non-PK standalone unique index on the
-  same table - **covered** in current pg-delta; the focused 2026-08-13
+  same table - **covered** in current pg-delta; the focused 2026-08-14
   probe emitted `CREATE UNIQUE INDEX parent_orgs_external_key_key`
   immediately before `ADD CONSTRAINT fk_self_migrated_from FOREIGN KEY`,
   proved cleanly, and left zero drift
 - **#535** domain created over a table row type - **covered** in current
-  pg-delta; the focused 2026-08-13 probe emitted `CREATE TABLE public.x ()`
+  pg-delta; the focused 2026-08-14 probe emitted `CREATE TABLE public.x ()`
   before `CREATE DOMAIN public.y AS public.x`, proved cleanly, and left
-  zero drift
+  zero drift. Open pgschema PR
+  [#539](https://github.com/pgplex/pgschema/pull/539) now carries the upstream
+  fix, but there is no new pg-delta work to open or duplicate here
 - **#536** dropping a foreign-keyed table/column in the wrong order -
-  **covered** in current pg-delta; the focused 2026-08-13 probe emitted
+  **covered** in current pg-delta; the focused 2026-08-14 probe emitted
   `DROP CONSTRAINT` -> `DROP COLUMN` -> `DROP TABLE`, proved cleanly, and
   left zero drift
 - **#537** built-in `ALTER COLUMN TYPE` without a `USING` clause -
-  **covered** in current pg-delta; the focused 2026-08-13 probe emitted
+  **covered** in current pg-delta; the focused 2026-08-14 probe emitted
   `ALTER COLUMN "arfcn_dl" TYPE integer USING "arfcn_dl"::integer`,
   proved cleanly, and matches the solved benchmark family in
   [005](005-alter-column-type-using-clause.md)
@@ -182,8 +188,11 @@ PR for either benchmark.
 - pgschema PRs [#517](https://github.com/pgplex/pgschema/pull/517) and
   [#520](https://github.com/pgplex/pgschema/pull/520) remain open, and
   both still stay in the **not parity work for pg-delta** bucket
-- pg-toolbelt `main` now advances beyond the 2026-08-11 clean-room baseline to
-  `17bfd13b49e94d4e073154921df738707fd03d87`; focused probes on that newer head
+- pgschema PR [#539](https://github.com/pgplex/pgschema/pull/539) is the new
+  upstream fix path for issue [#535](https://github.com/pgplex/pgschema/issues/535),
+  but current pg-delta already covers that scenario
+- pg-toolbelt `main` now advances beyond the 2026-08-13 parity baseline to
+  `551e88b42977db673a7a9d74f7b7876c2a5e5377`; focused probes on that newer head
   did not change the active behavioral gap set
 - open umbrella issue
   [#332](https://github.com/supabase/pg-toolbelt/issues/332) is now the
@@ -191,7 +200,9 @@ PR for either benchmark.
 - recent open pg-toolbelt PRs
   [#399](https://github.com/supabase/pg-toolbelt/pull/399),
   [#400](https://github.com/supabase/pg-toolbelt/pull/400), and
-  [#401](https://github.com/supabase/pg-toolbelt/pull/401) are useful current
+  [#401](https://github.com/supabase/pg-toolbelt/pull/401),
+  [#415](https://github.com/supabase/pg-toolbelt/pull/415), and
+  [#418](https://github.com/supabase/pg-toolbelt/pull/418) are useful current
   context, but none is a dedicated exact duplicate of benchmarks **021** /
   **022** or open pgschema issues **#534** / **#535** / **#536** / **#537**
 

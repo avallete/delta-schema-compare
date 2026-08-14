@@ -16,14 +16,14 @@ In the upstream fix, pgschema only needed `DEFAULT` and `NOT NULL`
 overrides, but the gap is still real for pg-delta because the current plan
 rule emits only the bare `PARTITION OF ... <bound>` form.
 
-## Refresh note (2026-08-13)
+## Refresh note (2026-08-14)
 
 This refresh advanced checked-in/live `pg-delta` from
-`2247de05849455b358fae71bbe514273cae4faba` to
-`17bfd13b49e94d4e073154921df738707fd03d87`, while checked-in/live
+`17bfd13b49e94d4e073154921df738707fd03d87` to
+`551e88b42977db673a7a9d74f7b7876c2a5e5377`, while checked-in/live
 `pgschema` remained `0cf544c03dcc71ae0656d0bc9ca87cae0b09432e`.
 
-A focused 2026-08-13 pg17 proof probe for this benchmark still emitted only:
+A focused 2026-08-14 pg17 proof probe for this benchmark still emitted only:
 
 ```sql
 CREATE TABLE "test_schema"."orders_us" PARTITION OF "test_schema"."orders" FOR VALUES IN ('us')
@@ -95,7 +95,7 @@ The merged fix added regression data under:
 |---|---|
 | Base `PARTITION OF ... FOR VALUES ...` create support | Yes - `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` emits the partition-child create statement |
 | Typed table-element list for partition children | No - the partition-child create path in `src/plan/rules/tables.ts` hard-codes `CREATE TABLE ... PARTITION OF ... ${bound}` and never serializes the child element list |
-| Child-local `DEFAULT` / `NOT NULL` overrides survive the current extract + diff + proof path | No - the focused 2026-08-13 probe omitted the overrides yet still produced `proofOk: true`, so the current engine is not surfacing those overrides as end-to-end drift |
+| Child-local `DEFAULT` / `NOT NULL` overrides survive the current extract + diff + proof path | No - the focused 2026-08-14 probe omitted the overrides yet still produced `proofOk: true`, so the current engine is not surfacing those overrides as end-to-end drift |
 | Existing exact pg-toolbelt issue / PR | No dedicated exact tracker or PR yet; open umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332) explicitly tracks inherited-column local overrides on declarative partitions |
 
 ## Comparison of approaches

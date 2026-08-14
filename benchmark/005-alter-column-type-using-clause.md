@@ -92,16 +92,16 @@ pg-delta now resolves the benchmark scenario end-to-end:
 3. The integration suite covers the exact `text -> enum` path with live row
    data and a default value.
 
-## Latest refresh note (2026-08-13)
+## Latest refresh note (2026-08-14)
 
 This refresh advanced checked-in/live `pg-delta` from
-`2247de05849455b358fae71bbe514273cae4faba` to
-`17bfd13b49e94d4e073154921df738707fd03d87`, while checked-in/live
+`17bfd13b49e94d4e073154921df738707fd03d87` to
+`551e88b42977db673a7a9d74f7b7876c2a5e5377`, while checked-in/live
 `pgschema` remained `0cf544c03dcc71ae0656d0bc9ca87cae0b09432e`.
 
 New open pgschema issue [#537](https://github.com/pgplex/pgschema/issues/537)
 re-raises the same `ALTER COLUMN TYPE ... USING` family for a built-in
-`text -> integer` conversion without a default. A focused 2026-08-13 pg17
+`text -> integer` conversion without a default. A focused 2026-08-14 pg17
 proof probe on current pg-delta emitted:
 
 ```sql
