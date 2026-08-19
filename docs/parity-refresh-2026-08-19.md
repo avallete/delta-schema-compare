@@ -137,3 +137,45 @@ The 2026-08-19 delta is:
   - benchmark **021** / pgschema **#499** -> still `tracked`
   - benchmark **022** / pgschema **#501** -> still `tracked`
 - add this report as the 2026-08-19 latest-state sweep
+
+## 4) Validation notes
+
+This refresh was validated with:
+
+- direct GitHub issue / PR checks for:
+  - the current open pgschema issue set including
+    [#551](https://github.com/pgplex/pgschema/issues/551),
+    [#552](https://github.com/pgplex/pgschema/issues/552), and
+    [#553](https://github.com/pgplex/pgschema/issues/553)
+  - the newly closed pgschema issue
+    [#548](https://github.com/pgplex/pgschema/issues/548) and merged fix PR
+    [#549](https://github.com/pgplex/pgschema/pull/549)
+  - the current pg-toolbelt issue / PR context including
+    [#332](https://github.com/supabase/pg-toolbelt/issues/332),
+    [#433](https://github.com/supabase/pg-toolbelt/pull/433),
+    [#432](https://github.com/supabase/pg-toolbelt/pull/432),
+    [#303](https://github.com/supabase/pg-toolbelt/pull/303),
+    [#302](https://github.com/supabase/pg-toolbelt/pull/302), and
+    [#288](https://github.com/supabase/pg-toolbelt/pull/288)
+- source inspection of:
+  - `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts`
+  - `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts`
+  - `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts`
+  - `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/policies.ts`
+  - `repos/pg-toolbelt/packages/pg-delta/src/plan/policy-clause-removal.test.ts`
+  - `repos/pg-toolbelt/packages/pg-delta/src/policy/supabase-default-privileges.test.ts`
+- `python3 -m json.tool benchmark/review-memory.json >/dev/null`
+- `python3 -m unittest tests.test_review_memory tests.test_compare_resolved_benchmark`
+  (**9 tests**, pass)
+- `DRY_RUN=true python3 scripts/compare_issues.py` (**0** labeled open issues)
+- `DRY_RUN=true OUTPUT_MODE=benchmark python3 scripts/compare_resolved.py`
+  (**0** labeled resolved issues)
+- those dry-run script runs are still expected to return **0** parity items
+  because the current manual-watch-list issues
+  **#49**, **#52**, **#84**, **#450**, **#493**, **#551**, **#552**, and
+  **#553** do not carry the upstream `Bug` / `Feature` labels the automation
+  filters on
+- an attempted focused `bun test` recheck for the pg-delta policy-only unit
+  tests could not run in this VM because Bun is not installed on `PATH`, so the
+  #551 / #553 classifications rely on the current checked-in source and test
+  corpus rather than an extra local Bun execution in this environment
