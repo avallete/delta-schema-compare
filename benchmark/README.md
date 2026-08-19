@@ -4,19 +4,19 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-08-18)
+## Latest refresh snapshot (2026-08-19)
 
 Refreshed against:
 
 - checked-in/live `repos/pg-toolbelt` @ `47bf101558f0c1e42cf59b272ac943537b5af483`
-- checked-in/live `repos/pgschema` @ `843aac05eac082b3f9e486504a5d72f0c7983d7f`
+- checked-in/live `repos/pgschema` @ `91e45a1da95c4a36043ff520c8617bd7e7cc75ed`
 
-> The 2026-08-18 refresh keeps the **active behavioral gap set** unchanged on
-> newer `pg-delta` and `pgschema` heads.
+> The 2026-08-19 refresh keeps the **active behavioral gap set** unchanged after
+> a pgschema-only upstream advance.
 >
 > - the active benchmarked gap set remains **021** and **022**
-> - source inspection on the new `pg-delta` head still shows the same structural
->   gaps:
+> - source inspection on the current `pg-delta` head still shows the same
+>   structural gaps:
 >   - `src/extract/relations.ts` still filters relation columns with
 >     `a.attislocal`, so inherited partition-child local overrides never become
 >     diff-visible facts
@@ -27,14 +27,20 @@ Refreshed against:
 >     `attgenerated`
 >   - `src/plan/rules/helpers.ts` still hard-codes
 >     `GENERATED ALWAYS AS (...) STORED`
+> - new open pgschema issues
+>   [#551](https://github.com/pgplex/pgschema/issues/551),
+>   [#552](https://github.com/pgplex/pgschema/issues/552), and
+>   [#553](https://github.com/pgplex/pgschema/issues/553) were screened on the
+>   new `pgschema` head: **#551 is covered** in current pg-delta, while
+>   **#552** and **#553** remain **not parity work for pg-delta**
+> - pgschema issue [#548](https://github.com/pgplex/pgschema/issues/548) is now
+>   closed by [pgschema#549](https://github.com/pgplex/pgschema/pull/549) and
+>   remains **not parity work for pg-delta**
 > - keyword duplicate searches on pg-toolbelt still surface only umbrella
 >   fidelity issue [#332](https://github.com/supabase/pg-toolbelt/issues/332);
 >   comments on that issue thread (not the original issue body) now carry both
 >   the inherited-column local-override note and the PG17/18 virtual-generated-
 >   column note
-> - open pgschema issue [#548](https://github.com/pgplex/pgschema/issues/548)
->   is **not parity work for pg-delta**; open pgschema PR
->   [#549](https://github.com/pgplex/pgschema/pull/549) is the upstream fix path
 > - recently closed pgschema issues
 >   [#534](https://github.com/pgplex/pgschema/issues/534),
 >   [#535](https://github.com/pgplex/pgschema/issues/535),
@@ -85,7 +91,7 @@ Two resolved-issue benchmark scenarios remain active as unresolved behavior:
   `CREATE TABLE ... PARTITION OF ...`
 - **022** - PostgreSQL 18 `VIRTUAL` generated columns
 
-Source inspection on 2026-08-18 current heads still shows:
+Source inspection on 2026-08-19 current heads still shows:
 
 - benchmark **021** remains structurally uncovered because
   `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still filters
@@ -99,7 +105,7 @@ Source inspection on 2026-08-18 current heads still shows:
   `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts` still renders
   generated columns as `... STORED`
 - the focused 2026-08-14 runtime probes remain the latest direct runtime
-  evidence for both scenarios; nothing in the 2026-08-18 heads changes those
+  evidence for both scenarios; nothing in the 2026-08-19 state changes those
   specific codepaths
 - comments on the umbrella tracker
   [pg-toolbelt#332](https://github.com/supabase/pg-toolbelt/issues/332)
@@ -113,8 +119,10 @@ The current open pgschema issue set is:
 [#52](https://github.com/pgplex/pgschema/issues/52),
 [#84](https://github.com/pgplex/pgschema/issues/84),
 [#450](https://github.com/pgplex/pgschema/issues/450),
-[#493](https://github.com/pgplex/pgschema/issues/493), and
-[#548](https://github.com/pgplex/pgschema/issues/548).
+[#493](https://github.com/pgplex/pgschema/issues/493),
+[#551](https://github.com/pgplex/pgschema/issues/551),
+[#552](https://github.com/pgplex/pgschema/issues/552), and
+[#553](https://github.com/pgplex/pgschema/issues/553).
 
 Screened candidates:
 
@@ -129,12 +137,20 @@ Screened candidates:
   schema workflow, while pg-delta diffs live catalogs directly
 - **#493** `--qualify-schema` type-reference follow-up work - **not parity
   work for pg-delta**
-- **#548** cross-schema FK to `auth.users` when the `auth` schema is
-  intentionally excluded from a pgschema dump - **not parity work for
-  pg-delta**; this is another pgschema desired-state dump-scope problem,
-  while pg-delta diffs live catalogs directly and already carries `auth`
-  schema fixtures. Open pgschema PR
-  [#549](https://github.com/pgplex/pgschema/pull/549) is the upstream fix path
+- **#551** removing an explicit RLS `WITH CHECK` clause - **covered** in
+  current pg-delta; `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/policies.ts`
+  rebuilds policies when `usingExpr` / `checkExpr` changes, and
+  `src/plan/policy-clause-removal.test.ts` pins the clause-removal path
+- **#552** cross-schema partition child planning with an external plan database
+  - **not parity work for pg-delta**; this is a pgschema temporary-plan-schema
+  construction failure, while pg-delta diffs live catalogs directly and its
+  partition facts / render path already preserve fully qualified parent-table
+  schema information
+- **#553** external plan database rejects `ALTER DEFAULT PRIVILEGES` in
+  Supabase-style plans - **not parity work for pg-delta**; this is another
+  pgschema external-plan permission/setup problem, while current pg-delta
+  already exercises default-privilege planning in Supabase-style contexts
+  (`tests/policy.test.ts`, `tests/supabase-integration.test.ts`)
 
 There is currently **no dedicated exact open pg-toolbelt parity tracker** for
 the active benchmarks above or for the older draft-only gaps
@@ -188,6 +204,12 @@ either benchmark.
   types through `pg_depend` in
   `repos/pg-toolbelt/packages/pg-delta/src/extract/dependencies.ts`, so no new
   benchmark file or duplicate tracker is needed
+- **#548** cross-schema FK to `auth.users` when the `auth` schema is
+  intentionally excluded from a pgschema dump - closed by
+  [pgschema#549](https://github.com/pgplex/pgschema/pull/549) and remains
+  **not parity work for pg-delta**; pg-delta diffs live catalogs directly and
+  already carries `auth`-schema fixtures, so no benchmark or duplicate tracker
+  change is needed
 - **#499** child-specific column elements on `PARTITION OF` create -
   still **not covered in current behavior**, with only umbrella-thread context
   from [pg-toolbelt#332](https://github.com/supabase/pg-toolbelt/issues/332);
@@ -205,23 +227,27 @@ either benchmark.
 
 ## Upstream watch list
 
-- pgschema PR [#549](https://github.com/pgplex/pgschema/pull/549) is the only
-  currently open upstream PR in parity scope, and it remains **not parity work
-  for pg-delta**
-- checked-in/live `pg-toolbelt` now advance beyond the 2026-08-14 parity
-  baseline to `47bf101558f0c1e42cf59b272ac943537b5af483`
-- checked-in/live `pgschema` now advance to
-  `843aac05eac082b3f9e486504a5d72f0c7983d7f`
+- there are currently **no open pgschema PRs in parity scope**;
+  [pgschema#549](https://github.com/pgplex/pgschema/pull/549) merged on
+  2026-08-18 and closed issue
+  [#548](https://github.com/pgplex/pgschema/issues/548) without changing the
+  active pg-delta benchmark gap set
+- checked-in/live `pg-toolbelt` remains at
+  `47bf101558f0c1e42cf59b272ac943537b5af483`
+- checked-in/live `pgschema` now advances to
+  `91e45a1da95c4a36043ff520c8617bd7e7cc75ed`
 - comments on open umbrella issue
   [#332](https://github.com/supabase/pg-toolbelt/issues/332) remain the
   closest tracker context for benchmarks **021** / **022**
 - current open pg-toolbelt PRs
+  [#433](https://github.com/supabase/pg-toolbelt/pull/433),
   [#432](https://github.com/supabase/pg-toolbelt/pull/432),
   [#303](https://github.com/supabase/pg-toolbelt/pull/303),
   [#302](https://github.com/supabase/pg-toolbelt/pull/302), and
   [#288](https://github.com/supabase/pg-toolbelt/pull/288) are useful current
   context, but none is a dedicated exact duplicate of benchmarks **021** /
-  **022** or open pgschema issue **#548**
+  **022** or the newly screened open pgschema issues **#551** / **#552** /
+  **#553**
 
 ## Historical notes
 

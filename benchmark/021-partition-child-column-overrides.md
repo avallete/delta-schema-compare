@@ -16,15 +16,15 @@ In the upstream fix, pgschema only needed `DEFAULT` and `NOT NULL`
 overrides, but the gap is still real for pg-delta because the current plan
 rule emits only the bare `PARTITION OF ... <bound>` form.
 
-## Refresh note (2026-08-18)
+## Refresh note (2026-08-19)
 
-This refresh advanced checked-in/live `pg-delta` from
-`551e88b42977db673a7a9d74f7b7876c2a5e5377` to
-`47bf101558f0c1e42cf59b272ac943537b5af483`, and checked-in/live `pgschema`
-from `0cf544c03dcc71ae0656d0bc9ca87cae0b09432e` to
-`843aac05eac082b3f9e486504a5d72f0c7983d7f`.
+This refresh keeps checked-in/live `pg-delta` at
+`47bf101558f0c1e42cf59b272ac943537b5af483`, and advances checked-in/live
+`pgschema` from `843aac05eac082b3f9e486504a5d72f0c7983d7f` to
+`91e45a1da95c4a36043ff520c8617bd7e7cc75ed`.
 
-A source recheck on the new pg-delta head still finds the same uncovered path:
+A source recheck on the current pg-delta head still finds the same uncovered
+path:
 
 - `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still filters
   relation columns with `a.attislocal`, so child-local overrides on inherited
@@ -34,7 +34,7 @@ A source recheck on the new pg-delta head still finds the same uncovered path:
   `CREATE TABLE ... PARTITION OF ... ${bound}` and has no branch that emits
   PostgreSQL's typed table element list for child-local overrides.
 
-Nothing in the 2026-08-18 heads changes the last focused 2026-08-14 runtime
+Nothing in the 2026-08-19 state changes the last focused 2026-08-14 runtime
 observation, which still emitted only:
 
 ```sql

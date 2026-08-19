@@ -1,57 +1,75 @@
 {
   "open": {
     "450": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-07-11T04:04:29Z\", \"pgdelta_sha\": \"47bf101558f0c1e42cf59b272ac943537b5af483\", \"pgschema_sha\": \"843aac05eac082b3f9e486504a5d72f0c7983d7f\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-07-11T04:04:29Z\", \"pgdelta_sha\": \"47bf101558f0c1e42cf59b272ac943537b5af483\", \"pgschema_sha\": \"91e45a1da95c4a36043ff520c8617bd7e7cc75ed\"}",
       "issue_number": 450,
       "issue_title": "Missing role blocks plan and apply",
       "issue_updated_at": "2026-07-11T04:04:29Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/450",
-      "reviewed_at": "2026-08-18T07:06:59+00:00",
+      "reviewed_at": "2026-08-19T07:40:00+00:00",
       "verdict": "not_parity"
     },
     "49": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-05-30T05:03:35Z\", \"pgdelta_sha\": \"47bf101558f0c1e42cf59b272ac943537b5af483\", \"pgschema_sha\": \"843aac05eac082b3f9e486504a5d72f0c7983d7f\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-05-30T05:03:35Z\", \"pgdelta_sha\": \"47bf101558f0c1e42cf59b272ac943537b5af483\", \"pgschema_sha\": \"91e45a1da95c4a36043ff520c8617bd7e7cc75ed\"}",
       "issue_number": 49,
       "issue_title": "Introduce an Explicit Workflow for Renaming Schema Objects",
       "issue_updated_at": "2026-05-30T05:03:35Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/49",
-      "reviewed_at": "2026-08-18T07:06:59+00:00",
+      "reviewed_at": "2026-08-19T07:40:00+00:00",
       "verdict": "not_parity"
     },
     "493": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-06-30T04:37:34Z\", \"pgdelta_sha\": \"47bf101558f0c1e42cf59b272ac943537b5af483\", \"pgschema_sha\": \"843aac05eac082b3f9e486504a5d72f0c7983d7f\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-30T04:37:34Z\", \"pgdelta_sha\": \"47bf101558f0c1e42cf59b272ac943537b5af483\", \"pgschema_sha\": \"91e45a1da95c4a36043ff520c8617bd7e7cc75ed\"}",
       "issue_number": 493,
       "issue_title": "Inspector/IR should preserve schema identity for type references (enable --qualify-schema for types)",
       "issue_updated_at": "2026-06-30T04:37:34Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/493",
-      "reviewed_at": "2026-08-18T07:06:59+00:00",
+      "reviewed_at": "2026-08-19T07:40:00+00:00",
       "verdict": "not_parity"
     },
     "52": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"47bf101558f0c1e42cf59b272ac943537b5af483\", \"pgschema_sha\": \"843aac05eac082b3f9e486504a5d72f0c7983d7f\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"47bf101558f0c1e42cf59b272ac943537b5af483\", \"pgschema_sha\": \"91e45a1da95c4a36043ff520c8617bd7e7cc75ed\"}",
       "issue_number": 52,
       "issue_title": "Allow inclusion of Certain files to be explicitly executed by pgschema / included in plan file",
       "issue_updated_at": "2026-02-09T03:57:30Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/52",
-      "reviewed_at": "2026-08-18T07:06:59+00:00",
+      "reviewed_at": "2026-08-19T07:40:00+00:00",
       "verdict": "not_parity"
     },
-    "548": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-08-17T11:11:45Z\", \"pgdelta_sha\": \"47bf101558f0c1e42cf59b272ac943537b5af483\", \"pgschema_sha\": \"843aac05eac082b3f9e486504a5d72f0c7983d7f\"}",
-      "issue_number": 548,
-      "issue_title": "Error with a FK on a schema that's not dumped",
-      "issue_updated_at": "2026-08-17T11:11:45Z",
-      "issue_url": "https://github.com/pgplex/pgschema/issues/548",
-      "reviewed_at": "2026-08-18T07:06:59+00:00",
+    "551": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-08-18T11:08:05Z\", \"pgdelta_sha\": \"47bf101558f0c1e42cf59b272ac943537b5af483\", \"pgschema_sha\": \"91e45a1da95c4a36043ff520c8617bd7e7cc75ed\"}",
+      "issue_number": 551,
+      "issue_title": "pgSchema generates invalid WITH CHECK ; when removing an explicit RLS WITH CHECK clause",
+      "issue_updated_at": "2026-08-18T11:08:05Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/551",
+      "reviewed_at": "2026-08-19T07:40:00+00:00",
+      "verdict": "covered"
+    },
+    "552": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-08-18T15:07:46Z\", \"pgdelta_sha\": \"47bf101558f0c1e42cf59b272ac943537b5af483\", \"pgschema_sha\": \"91e45a1da95c4a36043ff520c8617bd7e7cc75ed\"}",
+      "issue_number": 552,
+      "issue_title": "[Bug] plan fails when a partition child is in a different schema from its parent",
+      "issue_updated_at": "2026-08-18T15:07:46Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/552",
+      "reviewed_at": "2026-08-19T07:40:00+00:00",
+      "verdict": "not_parity"
+    },
+    "553": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-08-18T15:08:07Z\", \"pgdelta_sha\": \"47bf101558f0c1e42cf59b272ac943537b5af483\", \"pgschema_sha\": \"91e45a1da95c4a36043ff520c8617bd7e7cc75ed\"}",
+      "issue_number": 553,
+      "issue_title": "[Bug] external plan database rejects ALTER DEFAULT PRIVILEGES in Supabase schema plans",
+      "issue_updated_at": "2026-08-18T15:08:07Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/553",
+      "reviewed_at": "2026-08-19T07:40:00+00:00",
       "verdict": "not_parity"
     },
     "84": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-08-08T15:52:12Z\", \"pgdelta_sha\": \"47bf101558f0c1e42cf59b272ac943537b5af483\", \"pgschema_sha\": \"843aac05eac082b3f9e486504a5d72f0c7983d7f\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-08-08T15:52:12Z\", \"pgdelta_sha\": \"47bf101558f0c1e42cf59b272ac943537b5af483\", \"pgschema_sha\": \"91e45a1da95c4a36043ff520c8617bd7e7cc75ed\"}",
       "issue_number": 84,
       "issue_title": "\ud83d\udc49\ud83d\udcdd Feedback Wanted: Share Your Use Case & Experience",
       "issue_updated_at": "2026-08-08T15:52:12Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/84",
-      "reviewed_at": "2026-08-18T07:06:59+00:00",
+      "reviewed_at": "2026-08-19T07:40:00+00:00",
       "verdict": "not_parity"
     }
   },
@@ -588,21 +606,21 @@
       "verdict": "covered"
     },
     "499": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-07-03T14:46:36Z\", \"pgdelta_sha\": \"47bf101558f0c1e42cf59b272ac943537b5af483\", \"pgschema_sha\": \"843aac05eac082b3f9e486504a5d72f0c7983d7f\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-07-03T14:46:36Z\", \"pgdelta_sha\": \"47bf101558f0c1e42cf59b272ac943537b5af483\", \"pgschema_sha\": \"91e45a1da95c4a36043ff520c8617bd7e7cc75ed\"}",
       "issue_number": 499,
       "issue_title": "PARTITION OF create path: support child-specific column elements",
       "issue_updated_at": "2026-07-03T14:46:36Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/499",
-      "reviewed_at": "2026-08-18T07:06:59+00:00",
+      "reviewed_at": "2026-08-19T07:40:00+00:00",
       "verdict": "tracked"
     },
     "501": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-07-06T06:58:48Z\", \"pgdelta_sha\": \"47bf101558f0c1e42cf59b272ac943537b5af483\", \"pgschema_sha\": \"843aac05eac082b3f9e486504a5d72f0c7983d7f\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-07-06T06:58:48Z\", \"pgdelta_sha\": \"47bf101558f0c1e42cf59b272ac943537b5af483\", \"pgschema_sha\": \"91e45a1da95c4a36043ff520c8617bd7e7cc75ed\"}",
       "issue_number": 501,
       "issue_title": "PG18 VIRTUAL generated columns silently rewritten as DEFAULT in plan, producing invalid DDL",
       "issue_updated_at": "2026-07-06T06:58:48Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/501",
-      "reviewed_at": "2026-08-18T07:06:59+00:00",
+      "reviewed_at": "2026-08-19T07:40:00+00:00",
       "verdict": "tracked"
     },
     "502": {
@@ -811,6 +829,15 @@
       "issue_url": "https://github.com/pgplex/pgschema/issues/545",
       "reviewed_at": "2026-08-18T07:06:59+00:00",
       "verdict": "covered"
+    },
+    "548": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-08-18T07:58:58Z\", \"pgdelta_sha\": \"47bf101558f0c1e42cf59b272ac943537b5af483\", \"pgschema_sha\": \"91e45a1da95c4a36043ff520c8617bd7e7cc75ed\"}",
+      "issue_number": 548,
+      "issue_title": "Error with a FK on a schema that's not dumped",
+      "issue_updated_at": "2026-08-18T07:58:58Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/548",
+      "reviewed_at": "2026-08-19T07:40:00+00:00",
+      "verdict": "not_parity"
     }
   }
 }
