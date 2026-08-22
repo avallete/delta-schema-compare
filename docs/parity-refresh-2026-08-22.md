@@ -129,3 +129,21 @@ The current open pgschema issue set is now:
 - no new draft-only pg-toolbelt issue markdown was needed because this refresh
   still found no dedicated exact duplicate beyond the existing umbrella issue
   context
+
+## 4) Validation notes
+
+This refresh was validated with:
+
+- `python3 -m pip install -r requirements.txt`
+- `python3 -m json.tool benchmark/review-memory.json >/dev/null`
+- `python3 -m unittest tests.test_review_memory tests.test_compare_resolved_benchmark`
+  (**9 tests**, pass)
+- `DRY_RUN=true python3 scripts/compare_issues.py` (**0** labeled open issues)
+- `DRY_RUN=true OUTPUT_MODE=benchmark python3 scripts/compare_resolved.py`
+  (**0** labeled resolved issues)
+- `git diff --check`
+
+Those dry-run script runs are still expected to return **0** parity items
+because the current manually tracked open pgschema issues
+**#49**, **#52**, **#84**, and **#450** do not carry the upstream `Bug` /
+`Feature` labels the automation filters on.
