@@ -1,48 +1,39 @@
 {
   "open": {
     "450": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-07-11T04:04:29Z\", \"pgdelta_sha\": \"18562f9a2eb01f181f1412dfeac1c1cea17ec579\", \"pgschema_sha\": \"9c81d465d76c20588d670ede188c6939febdf3ac\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-07-11T04:04:29Z\", \"pgdelta_sha\": \"d19314ac6586bfaabfaa7c2408038e44fdc7bb6a\", \"pgschema_sha\": \"9a09fe5861575ccfc71c7387ce3524b502992a97\"}",
       "issue_number": 450,
       "issue_title": "Missing role blocks plan and apply",
       "issue_updated_at": "2026-07-11T04:04:29Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/450",
-      "reviewed_at": "2026-08-21T07:07:15Z",
+      "reviewed_at": "2026-08-22T07:05:16+00:00",
       "verdict": "not_parity"
     },
     "49": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-05-30T05:03:35Z\", \"pgdelta_sha\": \"18562f9a2eb01f181f1412dfeac1c1cea17ec579\", \"pgschema_sha\": \"9c81d465d76c20588d670ede188c6939febdf3ac\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-05-30T05:03:35Z\", \"pgdelta_sha\": \"d19314ac6586bfaabfaa7c2408038e44fdc7bb6a\", \"pgschema_sha\": \"9a09fe5861575ccfc71c7387ce3524b502992a97\"}",
       "issue_number": 49,
       "issue_title": "Introduce an Explicit Workflow for Renaming Schema Objects",
       "issue_updated_at": "2026-05-30T05:03:35Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/49",
-      "reviewed_at": "2026-08-21T07:07:15Z",
+      "reviewed_at": "2026-08-22T07:05:16+00:00",
       "verdict": "not_parity"
     },
     "52": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"18562f9a2eb01f181f1412dfeac1c1cea17ec579\", \"pgschema_sha\": \"9c81d465d76c20588d670ede188c6939febdf3ac\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"d19314ac6586bfaabfaa7c2408038e44fdc7bb6a\", \"pgschema_sha\": \"9a09fe5861575ccfc71c7387ce3524b502992a97\"}",
       "issue_number": 52,
       "issue_title": "Allow inclusion of Certain files to be explicitly executed by pgschema / included in plan file",
       "issue_updated_at": "2026-02-09T03:57:30Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/52",
-      "reviewed_at": "2026-08-21T07:07:15Z",
-      "verdict": "not_parity"
-    },
-    "553": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-08-20T05:44:24Z\", \"pgdelta_sha\": \"18562f9a2eb01f181f1412dfeac1c1cea17ec579\", \"pgschema_sha\": \"9c81d465d76c20588d670ede188c6939febdf3ac\"}",
-      "issue_number": 553,
-      "issue_title": "[Bug] external plan database rejects ALTER DEFAULT PRIVILEGES in Supabase schema plans",
-      "issue_updated_at": "2026-08-20T05:44:24Z",
-      "issue_url": "https://github.com/pgplex/pgschema/issues/553",
-      "reviewed_at": "2026-08-21T07:07:15Z",
+      "reviewed_at": "2026-08-22T07:05:16+00:00",
       "verdict": "not_parity"
     },
     "84": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-08-08T15:52:12Z\", \"pgdelta_sha\": \"18562f9a2eb01f181f1412dfeac1c1cea17ec579\", \"pgschema_sha\": \"9c81d465d76c20588d670ede188c6939febdf3ac\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-08-08T15:52:12Z\", \"pgdelta_sha\": \"d19314ac6586bfaabfaa7c2408038e44fdc7bb6a\", \"pgschema_sha\": \"9a09fe5861575ccfc71c7387ce3524b502992a97\"}",
       "issue_number": 84,
       "issue_title": "\ud83d\udc49\ud83d\udcdd Feedback Wanted: Share Your Use Case & Experience",
       "issue_updated_at": "2026-08-08T15:52:12Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/84",
-      "reviewed_at": "2026-08-21T07:07:15Z",
+      "reviewed_at": "2026-08-22T07:05:16+00:00",
       "verdict": "not_parity"
     }
   },
@@ -579,21 +570,21 @@
       "verdict": "covered"
     },
     "499": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-07-03T14:46:36Z\", \"pgdelta_sha\": \"18562f9a2eb01f181f1412dfeac1c1cea17ec579\", \"pgschema_sha\": \"9c81d465d76c20588d670ede188c6939febdf3ac\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-07-03T14:46:36Z\", \"pgdelta_sha\": \"d19314ac6586bfaabfaa7c2408038e44fdc7bb6a\", \"pgschema_sha\": \"9a09fe5861575ccfc71c7387ce3524b502992a97\"}",
       "issue_number": 499,
       "issue_title": "PARTITION OF create path: support child-specific column elements",
       "issue_updated_at": "2026-07-03T14:46:36Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/499",
-      "reviewed_at": "2026-08-21T07:07:15Z",
+      "reviewed_at": "2026-08-22T07:05:16+00:00",
       "verdict": "tracked"
     },
     "501": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-07-06T06:58:48Z\", \"pgdelta_sha\": \"18562f9a2eb01f181f1412dfeac1c1cea17ec579\", \"pgschema_sha\": \"9c81d465d76c20588d670ede188c6939febdf3ac\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-07-06T06:58:48Z\", \"pgdelta_sha\": \"d19314ac6586bfaabfaa7c2408038e44fdc7bb6a\", \"pgschema_sha\": \"9a09fe5861575ccfc71c7387ce3524b502992a97\"}",
       "issue_number": 501,
       "issue_title": "PG18 VIRTUAL generated columns silently rewritten as DEFAULT in plan, producing invalid DDL",
       "issue_updated_at": "2026-07-06T06:58:48Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/501",
-      "reviewed_at": "2026-08-21T07:07:15Z",
+      "reviewed_at": "2026-08-22T07:05:16+00:00",
       "verdict": "tracked"
     },
     "502": {
@@ -837,6 +828,15 @@
       "issue_updated_at": "2026-08-21T05:34:27Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/552",
       "reviewed_at": "2026-08-21T07:07:15Z",
+      "verdict": "not_parity"
+    },
+    "553": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-08-21T07:27:12Z\", \"pgdelta_sha\": \"d19314ac6586bfaabfaa7c2408038e44fdc7bb6a\", \"pgschema_sha\": \"9a09fe5861575ccfc71c7387ce3524b502992a97\"}",
+      "issue_number": 553,
+      "issue_title": "[Bug] external plan database rejects ALTER DEFAULT PRIVILEGES in Supabase schema plans",
+      "issue_updated_at": "2026-08-21T07:27:12Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/553",
+      "reviewed_at": "2026-08-22T07:05:16+00:00",
       "verdict": "not_parity"
     }
   }
