@@ -16,11 +16,11 @@ In the upstream fix, pgschema only needed `DEFAULT` and `NOT NULL`
 overrides, but the gap is still real for pg-delta because the current plan
 rule emits only the bare `PARTITION OF ... <bound>` form.
 
-## Refresh note (2026-08-22)
+## Refresh note (2026-08-23)
 
-This refresh advances checked-in/live `pg-delta` to
-`d19314ac6586bfaabfaa7c2408038e44fdc7bb6a`, and advances checked-in/live
-`pgschema` to `9a09fe5861575ccfc71c7387ce3524b502992a97`.
+This same-head recheck keeps checked-in/live `pg-delta` at
+`d19314ac6586bfaabfaa7c2408038e44fdc7bb6a`, and keeps checked-in/live
+`pgschema` at `9a09fe5861575ccfc71c7387ce3524b502992a97`.
 
 A source recheck on the current pg-delta head still finds the same uncovered
 path:
@@ -33,7 +33,7 @@ path:
   `CREATE TABLE ... PARTITION OF ... ${bound}` and has no branch that emits
   PostgreSQL's typed table element list for child-local overrides.
 
-Nothing in the 2026-08-22 state changes the last focused 2026-08-14 runtime
+Nothing in the 2026-08-23 state changes the last focused 2026-08-14 runtime
 observation, which still emitted only:
 
 ```sql
@@ -48,7 +48,7 @@ engine is not surfacing those child-local overrides as diff-visible state
 end-to-end yet.
 
 There is still no dedicated exact pg-toolbelt issue or PR for this scenario on
-2026-08-22. Direct exact searches for `pgschema#499` still return nothing, and
+2026-08-23. Direct exact searches for `pgschema#499` still return nothing, and
 keyword duplicate searches still only surface umbrella fidelity tracker
 [pg-toolbelt#332](https://github.com/supabase/pg-toolbelt/issues/332) plus the
 generic closed backlog issue
