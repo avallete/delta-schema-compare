@@ -4,15 +4,15 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-08-23)
+## Latest refresh snapshot (2026-08-24)
 
 Refreshed against:
 
 - checked-in/live `repos/pg-toolbelt` @ `d19314ac6586bfaabfaa7c2408038e44fdc7bb6a`
 - checked-in/live `repos/pgschema` @ `9a09fe5861575ccfc71c7387ce3524b502992a97`
 
-> The 2026-08-23 refresh finds **no behavioral benchmark-matrix delta** versus
-> the 2026-08-22 snapshot.
+> The 2026-08-24 refresh finds **no behavioral benchmark-matrix delta** versus
+> the 2026-08-23 snapshot.
 >
 > - the active benchmarked gap set remains **021** and **022**
 > - checked-in/live `repos/pg-toolbelt` remains at
@@ -31,7 +31,7 @@ Refreshed against:
 >     `attgenerated`
 >   - `src/plan/rules/helpers.ts` still hard-codes
 >     `GENERATED ALWAYS AS (...) STORED`
-> - the current pgschema watch list is unchanged from 2026-08-22:
+> - the current pgschema watch list is unchanged from 2026-08-23:
 >   - the open issue set remains
 >     [#49](https://github.com/pgplex/pgschema/issues/49),
 >     [#52](https://github.com/pgplex/pgschema/issues/52),
@@ -85,7 +85,7 @@ Two resolved-issue benchmark scenarios remain active as unresolved behavior:
   `CREATE TABLE ... PARTITION OF ...`
 - **022** - PostgreSQL 18 `VIRTUAL` generated columns
 
-Source inspection on 2026-08-23 current heads still shows:
+Source inspection on 2026-08-24 current heads still shows:
 
 - benchmark **021** remains structurally uncovered because
   `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still filters
@@ -99,7 +99,7 @@ Source inspection on 2026-08-23 current heads still shows:
   `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts` still renders
   generated columns as `... STORED`
 - the focused 2026-08-14 runtime probes remain the latest direct runtime
-  evidence for both scenarios; nothing in the 2026-08-23 state changes those
+  evidence for both scenarios; nothing in the 2026-08-24 state changes those
   specific codepaths
 - comments on the umbrella tracker
   [pg-toolbelt#332](https://github.com/supabase/pg-toolbelt/issues/332)
@@ -140,7 +140,7 @@ either benchmark.
 ## Recent closed-issue / tracker updates
 
 - no additional parity-adjacent pgschema issues changed state between
-  2026-08-22 and 2026-08-23; the 2026-08-22 conclusions below remain current
+  2026-08-23 and 2026-08-24; the 2026-08-23 conclusions below remain current
 
 - **#493** `--qualify-schema` type-reference follow-up - closed on
   2026-08-21 and remains **not parity work for pg-delta**; the issue is still
@@ -230,7 +230,7 @@ either benchmark.
 ## Upstream watch list
 
 - there are still **no open pgschema PRs in parity-adjacent scope**, and none
-  were newly merged between 2026-08-22 and 2026-08-23; the last such change
+  were newly merged between 2026-08-23 and 2026-08-24; the last such change
   remains [pgschema#556](https://github.com/pgplex/pgschema/pull/556), which
   merged on 2026-08-21 to close
   [#553](https://github.com/pgplex/pgschema/issues/553) as a pgschema-specific
