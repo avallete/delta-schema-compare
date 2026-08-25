@@ -4,15 +4,15 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-08-24)
+## Latest refresh snapshot (2026-08-25)
 
 Refreshed against:
 
 - checked-in/live `repos/pg-toolbelt` @ `d19314ac6586bfaabfaa7c2408038e44fdc7bb6a`
 - checked-in/live `repos/pgschema` @ `9a09fe5861575ccfc71c7387ce3524b502992a97`
 
-> The 2026-08-24 refresh finds **no behavioral benchmark-matrix delta** versus
-> the 2026-08-23 snapshot.
+> The 2026-08-25 refresh finds **no behavioral benchmark-matrix delta** versus
+> the 2026-08-24 snapshot.
 >
 > - the active benchmarked gap set remains **021** and **022**
 > - checked-in/live `repos/pg-toolbelt` remains at
@@ -31,12 +31,17 @@ Refreshed against:
 >     `attgenerated`
 >   - `src/plan/rules/helpers.ts` still hard-codes
 >     `GENERATED ALWAYS AS (...) STORED`
-> - the current pgschema watch list is unchanged from 2026-08-23:
->   - the open issue set remains
+> - the current pgschema watch list changed only by one new unlabeled open
+>   issue:
+>   - the open issue set is now
 >     [#49](https://github.com/pgplex/pgschema/issues/49),
 >     [#52](https://github.com/pgplex/pgschema/issues/52),
 >     [#84](https://github.com/pgplex/pgschema/issues/84), and
->     [#450](https://github.com/pgplex/pgschema/issues/450)
+>     [#450](https://github.com/pgplex/pgschema/issues/450), plus
+>     [#557](https://github.com/pgplex/pgschema/issues/557)
+>   - new open issue [#557](https://github.com/pgplex/pgschema/issues/557)
+>     ("Lock timeout and retries") is currently screened as non-parity
+>     operational work rather than a new schema-fidelity benchmark gap
 >   - no additional parity-adjacent pgschema issues closed or reopened today
 >   - there are still no open or newly merged parity-adjacent pgschema PRs
 > - direct exact duplicate searches for `pgschema#499`, `pgschema#501`,
@@ -85,7 +90,7 @@ Two resolved-issue benchmark scenarios remain active as unresolved behavior:
   `CREATE TABLE ... PARTITION OF ...`
 - **022** - PostgreSQL 18 `VIRTUAL` generated columns
 
-Source inspection on 2026-08-24 current heads still shows:
+Source inspection on 2026-08-25 current heads still shows:
 
 - benchmark **021** remains structurally uncovered because
   `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still filters
@@ -99,7 +104,7 @@ Source inspection on 2026-08-24 current heads still shows:
   `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts` still renders
   generated columns as `... STORED`
 - the focused 2026-08-14 runtime probes remain the latest direct runtime
-  evidence for both scenarios; nothing in the 2026-08-24 state changes those
+  evidence for both scenarios; nothing in the 2026-08-25 state changes those
   specific codepaths
 - comments on the umbrella tracker
   [pg-toolbelt#332](https://github.com/supabase/pg-toolbelt/issues/332)
@@ -112,7 +117,8 @@ The current open pgschema issue set is:
 [#49](https://github.com/pgplex/pgschema/issues/49),
 [#52](https://github.com/pgplex/pgschema/issues/52),
 [#84](https://github.com/pgplex/pgschema/issues/84),
-and [#450](https://github.com/pgplex/pgschema/issues/450).
+[#450](https://github.com/pgplex/pgschema/issues/450),
+and [#557](https://github.com/pgplex/pgschema/issues/557).
 
 Screened candidates:
 
@@ -125,6 +131,11 @@ Screened candidates:
 - **#450** missing role blocks plan/apply - **not parity work for
   pg-delta**; this remains specific to pgschema's desired-state temp
   schema workflow, while pg-delta diffs live catalogs directly
+- **#557** lock timeout and retries for busy-table migrations - **not
+  parity work for pg-delta today**; current pg-delta already exposes
+  `lockTimeoutMs` on `apply()` and bounded retries in the shadow SQL-file
+  loader, but this new pgschema request is about a live-target execution
+  retry policy rather than a schema-diff fidelity gap
 
 There is currently **no dedicated exact open pg-toolbelt parity tracker** for
 the active benchmarks above or for the older draft-only gaps
@@ -140,7 +151,9 @@ either benchmark.
 ## Recent closed-issue / tracker updates
 
 - no additional parity-adjacent pgschema issues changed state between
-  2026-08-23 and 2026-08-24; the 2026-08-23 conclusions below remain current
+  2026-08-24 and 2026-08-25; the only new upstream issue-state delta is
+  open issue [#557](https://github.com/pgplex/pgschema/issues/557), which is
+  currently screened as non-parity operational work
 
 - **#493** `--qualify-schema` type-reference follow-up - closed on
   2026-08-21 and remains **not parity work for pg-delta**; the issue is still
@@ -230,7 +243,7 @@ either benchmark.
 ## Upstream watch list
 
 - there are still **no open pgschema PRs in parity-adjacent scope**, and none
-  were newly merged between 2026-08-23 and 2026-08-24; the last such change
+  were newly merged between 2026-08-24 and 2026-08-25; the last such change
   remains [pgschema#556](https://github.com/pgplex/pgschema/pull/556), which
   merged on 2026-08-21 to close
   [#553](https://github.com/pgplex/pgschema/issues/553) as a pgschema-specific
