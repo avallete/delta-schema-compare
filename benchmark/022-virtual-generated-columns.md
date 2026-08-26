@@ -17,10 +17,11 @@ mechanism. This benchmark tracks the now-resolved upstream scenario after
 pgschema merged its fix on `main`, while current pg-delta still lacks exact
 coverage.
 
-## Refresh note (2026-08-25)
+## Refresh note (2026-08-26)
 
-This same-head recheck keeps checked-in/live `pg-delta` at
-`d19314ac6586bfaabfaa7c2408038e44fdc7bb6a`, and keeps checked-in/live
+This recheck advances checked-in/live `pg-delta` to
+`6f480e6ed707133e13bd76c5ff3a8df6102806ee`
+(`@supabase/pg-delta@1.0.0-alpha.47`) and keeps checked-in/live
 `pgschema` at `9a09fe5861575ccfc71c7387ce3524b502992a97`.
 
 A source recheck on the current pg-delta head still finds the same uncovered
@@ -33,8 +34,14 @@ path:
   hard-codes generated-column rendering as
   `GENERATED ALWAYS AS (...) STORED`.
 
-Nothing in the 2026-08-25 state changes the last focused 2026-08-14 runtime
-observation, which still serialized the generated column as:
+The live pg-toolbelt head moved today, but the diff from the previous parity
+head only touches `packages/pg-delta/CHANGELOG.md`,
+`packages/pg-delta/package.json`,
+`docs/roadmap/pg-delta-next-follow-ups.md`, and `packages/pg-topo/*`.
+The active `relations.ts` / `helpers.ts` codepaths above remain unchanged, and
+the updated roadmap still lists PG18 virtual generated columns as an open
+follow-up. The last focused 2026-08-14 runtime observation therefore still
+stands and serialized the generated column as:
 
 ```sql
 ALTER TABLE "test_schema"."users"
@@ -47,7 +54,7 @@ the current extract/model path is also collapsing the kind strongly enough
 that the proof loop cannot see the mismatch yet.
 
 There is still no dedicated exact pg-toolbelt issue or PR for this scenario on
-2026-08-25. Direct exact searches for `pgschema#501` still return nothing, and
+2026-08-26. Direct exact searches for `pgschema#501` still return nothing, and
 keyword duplicate searches for `VIRTUAL generated` still only surface umbrella
 fidelity tracker
 [pg-toolbelt#332](https://github.com/supabase/pg-toolbelt/issues/332). Comments

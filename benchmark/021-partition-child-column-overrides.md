@@ -16,10 +16,11 @@ In the upstream fix, pgschema only needed `DEFAULT` and `NOT NULL`
 overrides, but the gap is still real for pg-delta because the current plan
 rule emits only the bare `PARTITION OF ... <bound>` form.
 
-## Refresh note (2026-08-25)
+## Refresh note (2026-08-26)
 
-This same-head recheck keeps checked-in/live `pg-delta` at
-`d19314ac6586bfaabfaa7c2408038e44fdc7bb6a`, and keeps checked-in/live
+This recheck advances checked-in/live `pg-delta` to
+`6f480e6ed707133e13bd76c5ff3a8df6102806ee`
+(`@supabase/pg-delta@1.0.0-alpha.47`) and keeps checked-in/live
 `pgschema` at `9a09fe5861575ccfc71c7387ce3524b502992a97`.
 
 A source recheck on the current pg-delta head still finds the same uncovered
@@ -33,8 +34,13 @@ path:
   `CREATE TABLE ... PARTITION OF ... ${bound}` and has no branch that emits
   PostgreSQL's typed table element list for child-local overrides.
 
-Nothing in the 2026-08-25 state changes the last focused 2026-08-14 runtime
-observation, which still emitted only:
+The live pg-toolbelt head moved today, but the diff from the previous parity
+head only touches `packages/pg-delta/CHANGELOG.md`,
+`packages/pg-delta/package.json`,
+`docs/roadmap/pg-delta-next-follow-ups.md`, and `packages/pg-topo/*`.
+None of those changes alter the partition-child extract / plan codepaths above,
+so the last focused 2026-08-14 runtime observation still stands and emitted
+only:
 
 ```sql
 CREATE TABLE "test_schema"."orders_us" PARTITION OF "test_schema"."orders" FOR VALUES IN ('us')
@@ -48,15 +54,13 @@ engine is not surfacing those child-local overrides as diff-visible state
 end-to-end yet.
 
 There is still no dedicated exact pg-toolbelt issue or PR for this scenario on
-2026-08-25. Direct exact searches for `pgschema#499` still return nothing, and
-keyword duplicate searches still only surface umbrella fidelity tracker
-[pg-toolbelt#332](https://github.com/supabase/pg-toolbelt/issues/332) plus the
-generic closed backlog issue
-[#333](https://github.com/supabase/pg-toolbelt/issues/333) for the broad
-`PARTITION OF` term. Comments on the open #332 thread (not the original issue
-body) still carry the inherited-column local-override note. Benchmark 021
-therefore remains **behaviorally uncovered** with only **umbrella-thread
-tracker context**.
+2026-08-26. Direct exact searches for `pgschema#499` still return nothing, and
+keyword duplicate searches for `PARTITION OF` still only surface umbrella
+fidelity tracker
+[pg-toolbelt#332](https://github.com/supabase/pg-toolbelt/issues/332).
+Comments on the open #332 thread (not the original issue body) still carry the
+inherited-column local-override note. Benchmark 021 therefore remains
+**behaviorally uncovered** with only **umbrella-thread tracker context**.
 
 ## Reproduction SQL
 
