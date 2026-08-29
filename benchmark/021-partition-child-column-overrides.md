@@ -16,12 +16,12 @@ In the upstream fix, pgschema only needed `DEFAULT` and `NOT NULL`
 overrides, but the gap is still real for pg-delta because the current plan
 rule emits only the bare `PARTITION OF ... <bound>` form.
 
-## Refresh note (2026-08-26)
+## Refresh note (2026-08-29)
 
 This recheck advances checked-in/live `pg-delta` to
-`6f480e6ed707133e13bd76c5ff3a8df6102806ee`
-(`@supabase/pg-delta@1.0.0-alpha.47`) and keeps checked-in/live
-`pgschema` at `9a09fe5861575ccfc71c7387ce3524b502992a97`.
+`013c2a2f00cf5f24259ed0344cf4b057e48cfc86`
+(`@supabase/pg-delta@1.0.0-alpha.47-1-g013c2a2f`) and keeps checked-in/live
+`pgschema` at `00db700e74b2b255e1e570495ae59fda6af38ed7`.
 
 A source recheck on the current pg-delta head still finds the same uncovered
 path:
@@ -34,13 +34,11 @@ path:
   `CREATE TABLE ... PARTITION OF ... ${bound}` and has no branch that emits
   PostgreSQL's typed table element list for child-local overrides.
 
-The live pg-toolbelt head moved today, but the diff from the previous parity
-head only touches `packages/pg-delta/CHANGELOG.md`,
-`packages/pg-delta/package.json`,
-`docs/roadmap/pg-delta-next-follow-ups.md`, and `packages/pg-topo/*`.
-None of those changes alter the partition-child extract / plan codepaths above,
-so the last focused 2026-08-14 runtime observation still stands and emitted
-only:
+The live pg-toolbelt head moved again today, but the diff from the
+2026-08-28 parity head only touches `packages/pg-delta/README.md` and
+`packages/pg-delta/COVERAGE.md`. None of those changes alter the
+partition-child extract / plan codepaths above, so the last focused 2026-08-14
+runtime observation still stands and emitted only:
 
 ```sql
 CREATE TABLE "test_schema"."orders_us" PARTITION OF "test_schema"."orders" FOR VALUES IN ('us')
@@ -54,7 +52,7 @@ engine is not surfacing those child-local overrides as diff-visible state
 end-to-end yet.
 
 There is still no dedicated exact pg-toolbelt issue or PR for this scenario on
-2026-08-26. Direct exact searches for `pgschema#499` still return nothing, and
+2026-08-29. Direct exact searches for `pgschema#499` still return nothing, and
 keyword duplicate searches for `PARTITION OF` still only surface umbrella
 fidelity tracker
 [pg-toolbelt#332](https://github.com/supabase/pg-toolbelt/issues/332).

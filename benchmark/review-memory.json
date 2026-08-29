@@ -1,48 +1,57 @@
 {
   "open": {
     "450": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-07-11T04:04:29Z\", \"pgdelta_sha\": \"6f480e6ed707133e13bd76c5ff3a8df6102806ee\", \"pgschema_sha\": \"00db700e74b2b255e1e570495ae59fda6af38ed7\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-07-11T04:04:29Z\", \"pgdelta_sha\": \"013c2a2f00cf5f24259ed0344cf4b057e48cfc86\", \"pgschema_sha\": \"00db700e74b2b255e1e570495ae59fda6af38ed7\"}",
       "issue_number": 450,
       "issue_title": "Missing role blocks plan and apply",
       "issue_updated_at": "2026-07-11T04:04:29Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/450",
-      "reviewed_at": "2026-08-28T07:16:51+00:00",
+      "reviewed_at": "2026-08-29T07:12:00.678930+00:00",
       "verdict": "not_parity"
     },
     "49": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-05-30T05:03:35Z\", \"pgdelta_sha\": \"6f480e6ed707133e13bd76c5ff3a8df6102806ee\", \"pgschema_sha\": \"00db700e74b2b255e1e570495ae59fda6af38ed7\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-05-30T05:03:35Z\", \"pgdelta_sha\": \"013c2a2f00cf5f24259ed0344cf4b057e48cfc86\", \"pgschema_sha\": \"00db700e74b2b255e1e570495ae59fda6af38ed7\"}",
       "issue_number": 49,
       "issue_title": "Introduce an Explicit Workflow for Renaming Schema Objects",
       "issue_updated_at": "2026-05-30T05:03:35Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/49",
-      "reviewed_at": "2026-08-28T07:16:51+00:00",
+      "reviewed_at": "2026-08-29T07:12:00.678893+00:00",
       "verdict": "not_parity"
     },
     "52": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"6f480e6ed707133e13bd76c5ff3a8df6102806ee\", \"pgschema_sha\": \"00db700e74b2b255e1e570495ae59fda6af38ed7\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"013c2a2f00cf5f24259ed0344cf4b057e48cfc86\", \"pgschema_sha\": \"00db700e74b2b255e1e570495ae59fda6af38ed7\"}",
       "issue_number": 52,
       "issue_title": "Allow inclusion of Certain files to be explicitly executed by pgschema / included in plan file",
       "issue_updated_at": "2026-02-09T03:57:30Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/52",
-      "reviewed_at": "2026-08-28T07:16:51+00:00",
-      "verdict": "not_parity"
-    },
-    "84": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-08-08T15:52:12Z\", \"pgdelta_sha\": \"6f480e6ed707133e13bd76c5ff3a8df6102806ee\", \"pgschema_sha\": \"00db700e74b2b255e1e570495ae59fda6af38ed7\"}",
-      "issue_number": 84,
-      "issue_title": "👉📝 Feedback Wanted: Share Your Use Case & Experience",
-      "issue_updated_at": "2026-08-08T15:52:12Z",
-      "issue_url": "https://github.com/pgplex/pgschema/issues/84",
-      "reviewed_at": "2026-08-28T07:16:51+00:00",
+      "reviewed_at": "2026-08-29T07:12:00.678916+00:00",
       "verdict": "not_parity"
     },
     "559": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-08-28T04:02:56Z\", \"pgdelta_sha\": \"6f480e6ed707133e13bd76c5ff3a8df6102806ee\", \"pgschema_sha\": \"00db700e74b2b255e1e570495ae59fda6af38ed7\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-08-28T04:02:56Z\", \"pgdelta_sha\": \"013c2a2f00cf5f24259ed0344cf4b057e48cfc86\", \"pgschema_sha\": \"00db700e74b2b255e1e570495ae59fda6af38ed7\"}",
       "issue_number": 559,
       "issue_title": "Support config data evoluation",
       "issue_updated_at": "2026-08-28T04:02:56Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/559",
-      "reviewed_at": "2026-08-28T07:16:51+00:00",
+      "reviewed_at": "2026-08-29T07:12:00.678935+00:00",
+      "verdict": "not_parity"
+    },
+    "563": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-08-29T06:53:16Z\", \"pgdelta_sha\": \"013c2a2f00cf5f24259ed0344cf4b057e48cfc86\", \"pgschema_sha\": \"00db700e74b2b255e1e570495ae59fda6af38ed7\"}",
+      "issue_number": 563,
+      "issue_title": "Dealing with migrations that impact existing data",
+      "issue_updated_at": "2026-08-29T06:53:16Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/563",
+      "reviewed_at": "2026-08-29T07:12:00.678940+00:00",
+      "verdict": "not_parity"
+    },
+    "84": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-08-08T15:52:12Z\", \"pgdelta_sha\": \"013c2a2f00cf5f24259ed0344cf4b057e48cfc86\", \"pgschema_sha\": \"00db700e74b2b255e1e570495ae59fda6af38ed7\"}",
+      "issue_number": 84,
+      "issue_title": "\ud83d\udc49\ud83d\udcdd Feedback Wanted: Share Your Use Case & Experience",
+      "issue_updated_at": "2026-08-08T15:52:12Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/84",
+      "reviewed_at": "2026-08-29T07:12:00.678925+00:00",
       "verdict": "not_parity"
     }
   },
@@ -453,21 +462,21 @@
       "verdict": "covered"
     },
     "439": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-06-10T19:04:57Z\", \"pgdelta_sha\": \"6f480e6ed707133e13bd76c5ff3a8df6102806ee\", \"pgschema_sha\": \"00db700e74b2b255e1e570495ae59fda6af38ed7\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-10T19:04:57Z\", \"pgdelta_sha\": \"013c2a2f00cf5f24259ed0344cf4b057e48cfc86\", \"pgschema_sha\": \"00db700e74b2b255e1e570495ae59fda6af38ed7\"}",
       "issue_number": 439,
       "issue_title": "Dropping constraint cascade",
       "issue_updated_at": "2026-06-10T19:04:57Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/439",
-      "reviewed_at": "2026-08-28T07:16:51+00:00",
+      "reviewed_at": "2026-08-29T07:12:00.678945+00:00",
       "verdict": "not_covered"
     },
     "444": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-06-10T06:14:56Z\", \"pgdelta_sha\": \"6f480e6ed707133e13bd76c5ff3a8df6102806ee\", \"pgschema_sha\": \"00db700e74b2b255e1e570495ae59fda6af38ed7\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-06-10T06:14:56Z\", \"pgdelta_sha\": \"013c2a2f00cf5f24259ed0344cf4b057e48cfc86\", \"pgschema_sha\": \"00db700e74b2b255e1e570495ae59fda6af38ed7\"}",
       "issue_number": 444,
       "issue_title": "Bug: DROP COLUMN ordered before dependent view's DROP within same group, apply fails",
       "issue_updated_at": "2026-06-10T06:14:56Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/444",
-      "reviewed_at": "2026-08-28T07:16:51+00:00",
+      "reviewed_at": "2026-08-29T07:12:00.678949+00:00",
       "verdict": "not_covered"
     },
     "445": {
@@ -560,10 +569,19 @@
       "reviewed_at": "2026-06-23T07:51:46+00:00",
       "verdict": "not_parity"
     },
+    "493": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-08-21T05:35:24Z\", \"pgdelta_sha\": \"18562f9a2eb01f181f1412dfeac1c1cea17ec579\", \"pgschema_sha\": \"9c81d465d76c20588d670ede188c6939febdf3ac\"}",
+      "issue_number": 493,
+      "issue_title": "Inspector/IR should preserve schema identity for type references (enable --qualify-schema for types)",
+      "issue_updated_at": "2026-08-21T05:35:24Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/493",
+      "reviewed_at": "2026-08-21T07:07:15Z",
+      "verdict": "not_parity"
+    },
     "495": {
       "fingerprint": "{\"issue_updated_at\": \"2026-07-03T03:34:05Z\", \"pgdelta_sha\": \"9284412d71635308ebb0c1537e0b0183d2cfa4da\", \"pgschema_sha\": \"7011b0a78cdd292ec24b9ddb775dc1c6ec84abe2\"}",
       "issue_number": 495,
-      "issue_title": "apply creates partition-child PK/UNIQUE as LOCAL not INHERITED → plan never converges (v1.11.1)",
+      "issue_title": "apply creates partition-child PK/UNIQUE as LOCAL not INHERITED \u2192 plan never converges (v1.11.1)",
       "issue_updated_at": "2026-07-03T03:34:05Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/495",
       "reviewed_at": "2026-07-04T07:19:29+00:00",
@@ -572,34 +590,34 @@
     "496": {
       "fingerprint": "{\"issue_updated_at\": \"2026-07-03T09:00:47Z\", \"pgdelta_sha\": \"9284412d71635308ebb0c1537e0b0183d2cfa4da\", \"pgschema_sha\": \"7011b0a78cdd292ec24b9ddb775dc1c6ec84abe2\"}",
       "issue_number": 496,
-      "issue_title": "apply creates partition children as detached standalone tables (drops PARTITION OF ... FOR VALUES) — parent gets 0 attached partitions (v1.11.1)",
+      "issue_title": "apply creates partition children as detached standalone tables (drops PARTITION OF ... FOR VALUES) \u2014 parent gets 0 attached partitions (v1.11.1)",
       "issue_updated_at": "2026-07-03T09:00:47Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/496",
       "reviewed_at": "2026-07-04T07:19:29+00:00",
       "verdict": "covered"
     },
     "499": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-07-03T14:46:36Z\", \"pgdelta_sha\": \"6f480e6ed707133e13bd76c5ff3a8df6102806ee\", \"pgschema_sha\": \"00db700e74b2b255e1e570495ae59fda6af38ed7\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-07-03T14:46:36Z\", \"pgdelta_sha\": \"013c2a2f00cf5f24259ed0344cf4b057e48cfc86\", \"pgschema_sha\": \"00db700e74b2b255e1e570495ae59fda6af38ed7\"}",
       "issue_number": 499,
       "issue_title": "PARTITION OF create path: support child-specific column elements",
       "issue_updated_at": "2026-07-03T14:46:36Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/499",
-      "reviewed_at": "2026-08-28T07:16:51+00:00",
+      "reviewed_at": "2026-08-29T07:12:00.678953+00:00",
       "verdict": "tracked"
     },
     "501": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-07-06T06:58:48Z\", \"pgdelta_sha\": \"6f480e6ed707133e13bd76c5ff3a8df6102806ee\", \"pgschema_sha\": \"00db700e74b2b255e1e570495ae59fda6af38ed7\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-07-06T06:58:48Z\", \"pgdelta_sha\": \"013c2a2f00cf5f24259ed0344cf4b057e48cfc86\", \"pgschema_sha\": \"00db700e74b2b255e1e570495ae59fda6af38ed7\"}",
       "issue_number": 501,
       "issue_title": "PG18 VIRTUAL generated columns silently rewritten as DEFAULT in plan, producing invalid DDL",
       "issue_updated_at": "2026-07-06T06:58:48Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/501",
-      "reviewed_at": "2026-08-28T07:16:51+00:00",
+      "reviewed_at": "2026-08-29T07:12:00.678957+00:00",
       "verdict": "tracked"
     },
     "502": {
       "fingerprint": "{\"issue_updated_at\": \"2026-07-06T09:48:54Z\", \"pgdelta_sha\": \"ee285b51bcfdeba4e7139b2b20d6e8192b606a0e\", \"pgschema_sha\": \"e18d9ede7973537919c02f25eced5c97271af1dc\"}",
       "issue_number": 502,
-      "issue_title": "COMMENT ON COLUMN misresolved when a table shares the target schema name — breaks dump→plan round trip",
+      "issue_title": "COMMENT ON COLUMN misresolved when a table shares the target schema name \u2014 breaks dump\u2192plan round trip",
       "issue_updated_at": "2026-07-06T09:48:54Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/502",
       "reviewed_at": "2026-07-08T07:14:38+00:00",
@@ -617,7 +635,7 @@
     "506": {
       "fingerprint": "{\"issue_updated_at\": \"2026-07-07T07:46:37Z\", \"pgdelta_sha\": \"a974b83fc044788caa4ca538d112b62d1873843b\", \"pgschema_sha\": \"325dac205047a7850a52ee9f9ff35ec18c145dcc\"}",
       "issue_number": 506,
-      "issue_title": "New table's inline FK ordered before new UNIQUE constraint/index on pre-existing referenced table — apply fails with SQLSTATE 42830",
+      "issue_title": "New table's inline FK ordered before new UNIQUE constraint/index on pre-existing referenced table \u2014 apply fails with SQLSTATE 42830",
       "issue_updated_at": "2026-07-07T07:46:37Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/506",
       "reviewed_at": "2026-07-31T07:04:12+00:00",
@@ -752,7 +770,7 @@
     "534": {
       "fingerprint": "{\"issue_updated_at\": \"2026-08-14T08:59:00Z\", \"pgdelta_sha\": \"47bf101558f0c1e42cf59b272ac943537b5af483\", \"pgschema_sha\": \"843aac05eac082b3f9e486504a5d72f0c7983d7f\"}",
       "issue_number": 534,
-      "issue_title": "Self-referencing FK to a non-PK UNIQUE constraint is always inlined in `CREATE TABLE`, breaking `dump`/`plan` (\"no unique constraint matching given keys\") — PR #533 does not cover this path",
+      "issue_title": "Self-referencing FK to a non-PK UNIQUE constraint is always inlined in `CREATE TABLE`, breaking `dump`/`plan` (\"no unique constraint matching given keys\") \u2014 PR #533 does not cover this path",
       "issue_updated_at": "2026-08-14T08:59:00Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/534",
       "reviewed_at": "2026-08-18T07:06:59+00:00",
@@ -770,7 +788,7 @@
     "536": {
       "fingerprint": "{\"issue_updated_at\": \"2026-08-14T09:45:56Z\", \"pgdelta_sha\": \"47bf101558f0c1e42cf59b272ac943537b5af483\", \"pgschema_sha\": \"843aac05eac082b3f9e486504a5d72f0c7983d7f\"}",
       "issue_number": 536,
-      "issue_title": "issue on pgplex/pgschema — constraint ordering bug",
+      "issue_title": "issue on pgplex/pgschema \u2014 constraint ordering bug",
       "issue_updated_at": "2026-08-14T09:45:56Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/536",
       "reviewed_at": "2026-08-18T07:06:59+00:00",
@@ -812,15 +830,6 @@
       "reviewed_at": "2026-08-19T07:40:00+00:00",
       "verdict": "not_parity"
     },
-    "493": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-08-21T05:35:24Z\", \"pgdelta_sha\": \"18562f9a2eb01f181f1412dfeac1c1cea17ec579\", \"pgschema_sha\": \"9c81d465d76c20588d670ede188c6939febdf3ac\"}",
-      "issue_number": 493,
-      "issue_title": "Inspector/IR should preserve schema identity for type references (enable --qualify-schema for types)",
-      "issue_updated_at": "2026-08-21T05:35:24Z",
-      "issue_url": "https://github.com/pgplex/pgschema/issues/493",
-      "reviewed_at": "2026-08-21T07:07:15Z",
-      "verdict": "not_parity"
-    },
     "551": {
       "fingerprint": "{\"issue_updated_at\": \"2026-08-21T04:31:54Z\", \"pgdelta_sha\": \"18562f9a2eb01f181f1412dfeac1c1cea17ec579\", \"pgschema_sha\": \"9c81d465d76c20588d670ede188c6939febdf3ac\"}",
       "issue_number": 551,
@@ -849,21 +858,21 @@
       "verdict": "not_parity"
     },
     "557": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-08-28T04:02:12Z\", \"pgdelta_sha\": \"6f480e6ed707133e13bd76c5ff3a8df6102806ee\", \"pgschema_sha\": \"00db700e74b2b255e1e570495ae59fda6af38ed7\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-08-28T04:02:12Z\", \"pgdelta_sha\": \"013c2a2f00cf5f24259ed0344cf4b057e48cfc86\", \"pgschema_sha\": \"00db700e74b2b255e1e570495ae59fda6af38ed7\"}",
       "issue_number": 557,
       "issue_title": "Lock timeout and retries",
       "issue_updated_at": "2026-08-28T04:02:12Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/557",
-      "reviewed_at": "2026-08-28T07:16:51+00:00",
+      "reviewed_at": "2026-08-29T07:12:00.678961+00:00",
       "verdict": "not_parity"
     },
     "561": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-08-28T06:49:43Z\", \"pgdelta_sha\": \"6f480e6ed707133e13bd76c5ff3a8df6102806ee\", \"pgschema_sha\": \"00db700e74b2b255e1e570495ae59fda6af38ed7\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-08-28T06:49:43Z\", \"pgdelta_sha\": \"013c2a2f00cf5f24259ed0344cf4b057e48cfc86\", \"pgschema_sha\": \"00db700e74b2b255e1e570495ae59fda6af38ed7\"}",
       "issue_number": 561,
       "issue_title": "Index `NULLS FIRST` / `NULLS LAST` ordering is dropped by `dump` and ignored by `plan`",
       "issue_updated_at": "2026-08-28T06:49:43Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/561",
-      "reviewed_at": "2026-08-28T07:16:51+00:00",
+      "reviewed_at": "2026-08-29T07:12:00.678964+00:00",
       "verdict": "covered"
     }
   }

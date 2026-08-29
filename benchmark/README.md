@@ -4,27 +4,26 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-08-28)
+## Latest refresh snapshot (2026-08-29)
 
 Refreshed against:
 
-- checked-in/live `repos/pg-toolbelt` @ `6f480e6ed707133e13bd76c5ff3a8df6102806ee`
+- checked-in/live `repos/pg-toolbelt` @ `013c2a2f00cf5f24259ed0344cf4b057e48cfc86`
 - checked-in/live `repos/pgschema` @ `00db700e74b2b255e1e570495ae59fda6af38ed7`
 
-> The 2026-08-28 refresh finds **no behavioral benchmark-matrix delta** versus
-> the 2026-08-27 snapshot.
+> The 2026-08-29 refresh finds **no behavioral benchmark-matrix delta** versus
+> the 2026-08-28 snapshot.
 >
 > - the active benchmarked gap set remains **021** and **022**
-> - checked-in/live `repos/pg-toolbelt` remains at
->   `6f480e6ed707133e13bd76c5ff3a8df6102806ee`
->   (`@supabase/pg-delta@1.0.0-alpha.47`)
-> - checked-in/live `repos/pgschema` advances to
+> - checked-in/live `repos/pg-toolbelt` advances to
+>   `013c2a2f00cf5f24259ed0344cf4b057e48cfc86`
+>   (`@supabase/pg-delta@1.0.0-alpha.47-1-g013c2a2f`), but the diff versus
+>   `6f480e6ed707133e13bd76c5ff3a8df6102806ee` only touches
+>   `packages/pg-delta/README.md` and `packages/pg-delta/COVERAGE.md`
+> - checked-in/live `pgschema` remains
 >   `00db700e74b2b255e1e570495ae59fda6af38ed7`
->   after merged PRs
->   [#560](https://github.com/pgplex/pgschema/pull/560) and
->   [#562](https://github.com/pgplex/pgschema/pull/562)
-> - checked-in/live `pg-delta` is unchanged from 2026-08-27, so the current
->   active-gap structural evidence still stands:
+> - the active-gap structural evidence still stands because the docs-only
+>   `pg-delta` advance leaves the relevant codepaths unchanged:
 >   - `src/extract/relations.ts` still filters relation columns with
 >     `a.attislocal`, so inherited partition-child local overrides never become
 >     diff-visible facts
@@ -39,41 +38,43 @@ Refreshed against:
 >   [#49](https://github.com/pgplex/pgschema/issues/49),
 >   [#52](https://github.com/pgplex/pgschema/issues/52),
 >   [#84](https://github.com/pgplex/pgschema/issues/84),
->   [#450](https://github.com/pgplex/pgschema/issues/450), and
->   [#559](https://github.com/pgplex/pgschema/issues/559)
-> - issue [#557](https://github.com/pgplex/pgschema/issues/557) closed on
->   2026-08-28 via merged PR
->   [#560](https://github.com/pgplex/pgschema/pull/560), but it remains
->   operational apply ergonomics rather than a schema-diff benchmark delta for
->   pg-delta
-> - newly closed issue [#561](https://github.com/pgplex/pgschema/issues/561)
->   (`NULLS FIRST` / `NULLS LAST` index ordering) appears **covered** in current
->   pg-delta because standalone indexes are keyed on exact
->   `pg_get_indexdef(i.indexrelid)` output in
->   `src/extract/relations.ts`, and `src/plan/rules/indexes.ts` replays that
->   stored `def` unchanged apart from optional `CONCURRENTLY` insertion
+>   [#450](https://github.com/pgplex/pgschema/issues/450),
+>   [#559](https://github.com/pgplex/pgschema/issues/559), and
+>   [#563](https://github.com/pgplex/pgschema/issues/563)
+> - new issue [#563](https://github.com/pgplex/pgschema/issues/563) ("Dealing
+>   with migrations that impact existing data") remains **not parity work for
+>   pg-delta**; `src/frontends/load-sql-files.ts` and
+>   `packages/pg-delta/tests/load-sql-files.test.ts` explicitly document that
+>   the loader "deliberately never compares data"
+> - no new closed pgschema issue changes the benchmark matrix beyond the
+>   2026-08-28 conclusions for
+>   [#557](https://github.com/pgplex/pgschema/issues/557) and
+>   [#561](https://github.com/pgplex/pgschema/issues/561), which still stand on
+>   the current heads
 > - direct exact duplicate searches for `pgschema#499`, `pgschema#501`,
->   `pgschema#439`, `pgschema#444`, `pgschema#559`, and `pgschema#561` still
->   return no dedicated pg-toolbelt issue or PR; keyword searches for
->   `VIRTUAL generated` and `PARTITION OF` still only surface umbrella fidelity
->   issue
+>   `pgschema#439`, `pgschema#444`, `pgschema#559`, `pgschema#561`, and
+>   `pgschema#563` still return no dedicated pg-toolbelt issue or PR; keyword
+>   searches for `VIRTUAL generated` and `PARTITION OF` still only surface
+>   umbrella fidelity issue
 >   [#332](https://github.com/supabase/pg-toolbelt/issues/332)
-> - keyword searches for `lock timeout`, `config data`, `NULLS LAST`, and
->   related event-trigger RLS terms still surface no exact pg-toolbelt
->   duplicate for the latest pgschema watch-list and resolved-issue additions
+> - keyword searches for `config data`, `existing data`, `lock timeout`, and
+>   `NULLS LAST` surfaced no exact pg-toolbelt duplicate for the current open
+>   watch-list items or recent resolved-issue context
 > - current open pg-toolbelt PRs
->   [#449](https://github.com/supabase/pg-toolbelt/pull/449),
+>   [#453](https://github.com/supabase/pg-toolbelt/pull/453),
 >   [#444](https://github.com/supabase/pg-toolbelt/pull/444),
 >   [#432](https://github.com/supabase/pg-toolbelt/pull/432),
+>   [#303](https://github.com/supabase/pg-toolbelt/pull/303), and
 >   [#288](https://github.com/supabase/pg-toolbelt/pull/288) remain useful
->   context, but none is a dedicated exact duplicate of the active benchmarks or
+>   context, but none is a dedicated exact duplicate of the active benchmarks,
 >   the older draft-only gaps
 >   [#439](https://github.com/pgplex/pgschema/issues/439) /
->   [#444](https://github.com/pgplex/pgschema/issues/444)
+>   [#444](https://github.com/pgplex/pgschema/issues/444), or the new
+>   watch-list item [#563](https://github.com/pgplex/pgschema/issues/563)
 > - open pg-toolbelt issue
->   [#451](https://github.com/supabase/pg-toolbelt/issues/451) is useful new
->   upstream context on the pg-delta side, but it does not match a current open
->   pgschema watch-list issue or the active benchmark scenarios
+>   [#451](https://github.com/supabase/pg-toolbelt/issues/451) remains useful
+>   current context on the pg-delta side, but it does not match a current open
+>   pgschema issue or the active benchmark scenarios
 
 ## Benchmark status matrix
 
@@ -104,8 +105,10 @@ Two resolved-issue benchmark scenarios remain active as unresolved behavior:
   `CREATE TABLE ... PARTITION OF ...`
 - **022** - PostgreSQL 18 `VIRTUAL` generated columns
 
-The checked-in/live `pg-delta` head is unchanged on 2026-08-28, so the
-2026-08-27 structural-gap evidence still shows:
+The checked-in/live `pg-delta` head advanced on 2026-08-29, but the diff from
+2026-08-28 only touches `packages/pg-delta/README.md` and
+`packages/pg-delta/COVERAGE.md`, so the current structural-gap evidence still
+shows:
 
 - benchmark **021** remains structurally uncovered because
   `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still filters
@@ -119,8 +122,8 @@ The checked-in/live `pg-delta` head is unchanged on 2026-08-28, so the
   `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts` still renders
   generated columns as `... STORED`
 - the focused 2026-08-14 runtime probes remain the latest direct runtime
-  evidence for both scenarios; nothing in the 2026-08-27 state changes those
-  specific codepaths
+  evidence for both scenarios; nothing in the 2026-08-29 docs-only pg-delta
+  advance changes those specific codepaths
 - comments on the umbrella tracker
   [pg-toolbelt#332](https://github.com/supabase/pg-toolbelt/issues/332)
   now carry both fidelity-gap notes, but there is still no dedicated exact
@@ -133,7 +136,8 @@ The current open pgschema watch list is now:
 [#52](https://github.com/pgplex/pgschema/issues/52),
 [#84](https://github.com/pgplex/pgschema/issues/84),
 [#450](https://github.com/pgplex/pgschema/issues/450),
-and [#559](https://github.com/pgplex/pgschema/issues/559).
+[#559](https://github.com/pgplex/pgschema/issues/559),
+and [#563](https://github.com/pgplex/pgschema/issues/563).
 
 Screened candidates:
 
@@ -151,6 +155,12 @@ Screened candidates:
   SQL-file loader explicitly treats row-level comparison as out of scope, and
   `packages/pg-delta/tests/load-sql-files.test.ts` notes that the loader
   "deliberately never compares data"
+- **#563** dealing with migrations that impact existing data - **not parity
+  work for pg-delta**; this is a workflow / hook question for migrations that
+  need manual data movement, while current pg-delta explicitly stops at schema
+  diffing and documents in `src/frontends/load-sql-files.ts` plus
+  `packages/pg-delta/tests/load-sql-files.test.ts` that it deliberately never
+  compares data
 
 There is currently **no dedicated exact open pg-toolbelt parity tracker** for
 the active benchmarks above or for the older draft-only gaps
@@ -162,18 +172,20 @@ umbrella fidelity issue
 keyword duplicate searches still surface that issue, and comments on the issue
 thread carry both gap notes, but there is still no dedicated issue or PR for
 either benchmark. Exact duplicate searches for watch-list issues
-[#559](https://github.com/pgplex/pgschema/issues/559) also return no dedicated
-pg-toolbelt issue or PR, but it remains outside the schema-diff benchmark
+[#559](https://github.com/pgplex/pgschema/issues/559) and
+[#563](https://github.com/pgplex/pgschema/issues/563) also return no dedicated
+pg-toolbelt issue or PR, but both remain outside the schema-diff benchmark
 matrix.
 
 ## Recent closed-issue / tracker updates
 
-- no benchmark status rows changed between 2026-08-27 and 2026-08-28;
-  checked-in/live `pg-toolbelt` is unchanged and `pgschema` advanced to
-  `00db700e74b2b255e1e570495ae59fda6af38ed7`, but neither the issue
-  [#557](https://github.com/pgplex/pgschema/issues/557) closure nor the newly
-  fixed issue [#561](https://github.com/pgplex/pgschema/issues/561) changes the
-  active benchmark matrix
+- no benchmark status rows changed between 2026-08-28 and 2026-08-29;
+  checked-in/live `pg-toolbelt` advanced to
+  `013c2a2f00cf5f24259ed0344cf4b057e48cfc86`, but the diff from
+  `6f480e6ed707133e13bd76c5ff3a8df6102806ee` only touches
+  `packages/pg-delta/README.md` and `packages/pg-delta/COVERAGE.md`,
+  `pgschema` remains at `00db700e74b2b255e1e570495ae59fda6af38ed7`, and no
+  new closed pgschema issue changes the active benchmark matrix
 
 - **#557** lock timeout and retries - closed by
   [pgschema#560](https://github.com/pgplex/pgschema/pull/560) and remains
@@ -282,10 +294,11 @@ matrix.
   [#49](https://github.com/pgplex/pgschema/issues/49),
   [#52](https://github.com/pgplex/pgschema/issues/52),
   [#84](https://github.com/pgplex/pgschema/issues/84),
-  [#450](https://github.com/pgplex/pgschema/issues/450), and
-  [#559](https://github.com/pgplex/pgschema/issues/559)
+  [#450](https://github.com/pgplex/pgschema/issues/450),
+  [#559](https://github.com/pgplex/pgschema/issues/559), and
+  [#563](https://github.com/pgplex/pgschema/issues/563)
 - checked-in/live `pg-toolbelt` now sits at
-  `6f480e6ed707133e13bd76c5ff3a8df6102806ee`
+  `013c2a2f00cf5f24259ed0344cf4b057e48cfc86`
 - checked-in/live `pgschema` now sits at
   `00db700e74b2b255e1e570495ae59fda6af38ed7`
 - new open pg-toolbelt issue
@@ -297,12 +310,14 @@ matrix.
   [#332](https://github.com/supabase/pg-toolbelt/issues/332) remain the
   closest tracker context for benchmarks **021** / **022**
 - current open pg-toolbelt PRs
-  [#449](https://github.com/supabase/pg-toolbelt/pull/449),
+  [#453](https://github.com/supabase/pg-toolbelt/pull/453),
   [#444](https://github.com/supabase/pg-toolbelt/pull/444),
   [#432](https://github.com/supabase/pg-toolbelt/pull/432),
-  and [#288](https://github.com/supabase/pg-toolbelt/pull/288) are useful current
+  [#303](https://github.com/supabase/pg-toolbelt/pull/303), and
+  [#288](https://github.com/supabase/pg-toolbelt/pull/288) are useful current
   context, but none is a dedicated exact duplicate of benchmarks **021** /
-  **022** or the draft-only gaps **#439** / **#444**
+  **022**, the draft-only gaps **#439** / **#444**, or the workflow/data
+  watch-list issue **#563**
 
 ## Historical notes
 
