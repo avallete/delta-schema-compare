@@ -17,11 +17,11 @@ mechanism. This benchmark tracks the now-resolved upstream scenario after
 pgschema merged its fix on `main`, while current pg-delta still lacks exact
 coverage.
 
-## Refresh note (2026-08-29)
+## Refresh note (2026-08-30)
 
 This recheck advances checked-in/live `pg-delta` to
-`013c2a2f00cf5f24259ed0344cf4b057e48cfc86`
-(`@supabase/pg-delta@1.0.0-alpha.47-1-g013c2a2f`) and keeps checked-in/live
+`107ac3df4b889c527215d1f6a37df64b33154c16`
+(`@supabase/pg-delta@1.0.0-alpha.48`) and keeps checked-in/live
 `pgschema` at `00db700e74b2b255e1e570495ae59fda6af38ed7`.
 
 A source recheck on the current pg-delta head still finds the same uncovered
@@ -34,11 +34,13 @@ path:
   hard-codes generated-column rendering as
   `GENERATED ALWAYS AS (...) STORED`.
 
-The live pg-toolbelt head moved again today, but the diff from the
-2026-08-28 parity head only touches `packages/pg-delta/README.md` and
-`packages/pg-delta/COVERAGE.md`. The active `relations.ts` / `helpers.ts`
-codepaths above remain unchanged, so the last focused 2026-08-14 runtime
-observation still stands and serialized the generated column as:
+The live pg-toolbelt head moved again through merged PR
+[#453](https://github.com/supabase/pg-toolbelt/pull/453) plus release
+[#454](https://github.com/supabase/pg-toolbelt/pull/454), but the diff from
+`013c2a2f00cf5f24259ed0344cf4b057e48cfc86` is limited to role/policy surfaces,
+related tests/fixtures, and package metadata. The active `relations.ts` /
+`helpers.ts` codepaths above remain unchanged, so the last focused 2026-08-14
+runtime observation still stands and serialized the generated column as:
 
 ```sql
 ALTER TABLE "test_schema"."users"
@@ -51,12 +53,11 @@ the current extract/model path is also collapsing the kind strongly enough
 that the proof loop cannot see the mismatch yet.
 
 There is still no dedicated exact pg-toolbelt issue or PR for this scenario on
-2026-08-29. Direct exact searches for `pgschema#501` still return nothing, and
+2026-08-30. Direct exact searches for `pgschema#501` still return nothing, and
 keyword duplicate searches for `VIRTUAL generated` still only surface umbrella
-fidelity tracker
-[pg-toolbelt#332](https://github.com/supabase/pg-toolbelt/issues/332). Comments
-on that issue thread (not the original issue body) still carry the PG17/18
-virtual-generated-column note. Benchmark 022 therefore remains
+fidelity tracker [#332](https://github.com/supabase/pg-toolbelt/issues/332).
+Comments on that issue thread (not the original issue body) still carry the
+PG17/18 virtual-generated-column note. Benchmark 022 therefore remains
 **behaviorally uncovered** with only **umbrella-thread tracker context**.
 
 ## Reproduction SQL

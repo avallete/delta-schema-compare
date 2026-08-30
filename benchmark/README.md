@@ -4,26 +4,29 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-08-29)
+## Latest refresh snapshot (2026-08-30)
 
 Refreshed against:
 
-- checked-in/live `repos/pg-toolbelt` @ `013c2a2f00cf5f24259ed0344cf4b057e48cfc86`
+- checked-in/live `repos/pg-toolbelt` @ `107ac3df4b889c527215d1f6a37df64b33154c16`
 - checked-in/live `repos/pgschema` @ `00db700e74b2b255e1e570495ae59fda6af38ed7`
 
-> The 2026-08-29 refresh finds **no behavioral benchmark-matrix delta** versus
-> the 2026-08-28 snapshot.
+> The 2026-08-30 refresh finds **no behavioral benchmark-matrix delta** versus
+> the 2026-08-29 snapshot.
 >
 > - the active benchmarked gap set remains **021** and **022**
 > - checked-in/live `repos/pg-toolbelt` advances to
->   `013c2a2f00cf5f24259ed0344cf4b057e48cfc86`
->   (`@supabase/pg-delta@1.0.0-alpha.47-1-g013c2a2f`), but the diff versus
->   `6f480e6ed707133e13bd76c5ff3a8df6102806ee` only touches
->   `packages/pg-delta/README.md` and `packages/pg-delta/COVERAGE.md`
+>   `107ac3df4b889c527215d1f6a37df64b33154c16`
+>   (`@supabase/pg-delta@1.0.0-alpha.48`) through merged pg-toolbelt PR
+>   [#453](https://github.com/supabase/pg-toolbelt/pull/453) plus release
+>   [#454](https://github.com/supabase/pg-toolbelt/pull/454); the diff versus
+>   `013c2a2f00cf5f24259ed0344cf4b057e48cfc86` only touches role/policy
+>   surfaces, related tests/fixtures, and package metadata
 > - checked-in/live `pgschema` remains
 >   `00db700e74b2b255e1e570495ae59fda6af38ed7`
-> - the active-gap structural evidence still stands because the docs-only
->   `pg-delta` advance leaves the relevant codepaths unchanged:
+> - the active-gap structural evidence still stands because the new
+>   `pg-delta` advance leaves the relevant partition-child and generated-column
+>   codepaths unchanged:
 >   - `src/extract/relations.ts` still filters relation columns with
 >     `a.attislocal`, so inherited partition-child local overrides never become
 >     diff-visible facts
@@ -34,16 +37,16 @@ Refreshed against:
 >     `attgenerated`
 >   - `src/plan/rules/helpers.ts` still hard-codes
 >     `GENERATED ALWAYS AS (...) STORED`
-> - the current open pgschema watch list is now
+> - the current open pgschema watch list is still
 >   [#49](https://github.com/pgplex/pgschema/issues/49),
 >   [#52](https://github.com/pgplex/pgschema/issues/52),
 >   [#84](https://github.com/pgplex/pgschema/issues/84),
 >   [#450](https://github.com/pgplex/pgschema/issues/450),
 >   [#559](https://github.com/pgplex/pgschema/issues/559), and
 >   [#563](https://github.com/pgplex/pgschema/issues/563)
-> - new issue [#563](https://github.com/pgplex/pgschema/issues/563) ("Dealing
->   with migrations that impact existing data") remains **not parity work for
->   pg-delta**; `src/frontends/load-sql-files.ts` and
+> - open issues [#559](https://github.com/pgplex/pgschema/issues/559) and
+>   [#563](https://github.com/pgplex/pgschema/issues/563) remain **not parity
+>   work for pg-delta**; `src/frontends/load-sql-files.ts` and
 >   `packages/pg-delta/tests/load-sql-files.test.ts` explicitly document that
 >   the loader "deliberately never compares data"
 > - no new closed pgschema issue changes the benchmark matrix beyond the
@@ -53,28 +56,30 @@ Refreshed against:
 >   the current heads
 > - direct exact duplicate searches for `pgschema#499`, `pgschema#501`,
 >   `pgschema#439`, `pgschema#444`, `pgschema#559`, `pgschema#561`, and
->   `pgschema#563` still return no dedicated pg-toolbelt issue or PR; keyword
->   searches for `VIRTUAL generated` and `PARTITION OF` still only surface
->   umbrella fidelity issue
->   [#332](https://github.com/supabase/pg-toolbelt/issues/332)
+>   `pgschema#563` still return no dedicated pg-toolbelt issue or PR
+> - keyword searches for `VIRTUAL generated` still only surface umbrella
+>   fidelity issue [#332](https://github.com/supabase/pg-toolbelt/issues/332);
+>   `PARTITION OF` now also surfaces open issue
+>   [#451](https://github.com/supabase/pg-toolbelt/issues/451), but that issue
+>   is about identical-SQL RLS drift rather than partition-child column
+>   overrides
 > - keyword searches for `config data`, `existing data`, `lock timeout`, and
 >   `NULLS LAST` surfaced no exact pg-toolbelt duplicate for the current open
 >   watch-list items or recent resolved-issue context
+> - merged pg-toolbelt PR
+>   [#453](https://github.com/supabase/pg-toolbelt/pull/453) and release
+>   [#454](https://github.com/supabase/pg-toolbelt/pull/454) are useful current
+>   upstream context, but neither is a dedicated exact duplicate of the active
+>   benchmarks
 > - current open pg-toolbelt PRs
->   [#453](https://github.com/supabase/pg-toolbelt/pull/453),
->   [#444](https://github.com/supabase/pg-toolbelt/pull/444),
 >   [#432](https://github.com/supabase/pg-toolbelt/pull/432),
 >   [#303](https://github.com/supabase/pg-toolbelt/pull/303), and
 >   [#288](https://github.com/supabase/pg-toolbelt/pull/288) remain useful
 >   context, but none is a dedicated exact duplicate of the active benchmarks,
 >   the older draft-only gaps
 >   [#439](https://github.com/pgplex/pgschema/issues/439) /
->   [#444](https://github.com/pgplex/pgschema/issues/444), or the new
+>   [#444](https://github.com/pgplex/pgschema/issues/444), or the workflow/data
 >   watch-list item [#563](https://github.com/pgplex/pgschema/issues/563)
-> - open pg-toolbelt issue
->   [#451](https://github.com/supabase/pg-toolbelt/issues/451) remains useful
->   current context on the pg-delta side, but it does not match a current open
->   pgschema issue or the active benchmark scenarios
 
 ## Benchmark status matrix
 
@@ -105,10 +110,12 @@ Two resolved-issue benchmark scenarios remain active as unresolved behavior:
   `CREATE TABLE ... PARTITION OF ...`
 - **022** - PostgreSQL 18 `VIRTUAL` generated columns
 
-The checked-in/live `pg-delta` head advanced on 2026-08-29, but the diff from
-2026-08-28 only touches `packages/pg-delta/README.md` and
-`packages/pg-delta/COVERAGE.md`, so the current structural-gap evidence still
-shows:
+The checked-in/live `pg-delta` head advanced on 2026-08-30 to
+`107ac3df4b889c527215d1f6a37df64b33154c16`
+(`@supabase/pg-delta@1.0.0-alpha.48`), but the diff from
+`013c2a2f00cf5f24259ed0344cf4b057e48cfc86` stays in role/policy surfaces,
+related tests/fixtures, and package metadata rather than the active-gap
+codepaths below. The current structural-gap evidence therefore still shows:
 
 - benchmark **021** remains structurally uncovered because
   `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still filters
@@ -122,8 +129,8 @@ shows:
   `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts` still renders
   generated columns as `... STORED`
 - the focused 2026-08-14 runtime probes remain the latest direct runtime
-  evidence for both scenarios; nothing in the 2026-08-29 docs-only pg-delta
-  advance changes those specific codepaths
+  evidence for both scenarios; today's role/policy pg-delta advance does not
+  change those specific codepaths
 - comments on the umbrella tracker
   [pg-toolbelt#332](https://github.com/supabase/pg-toolbelt/issues/332)
   now carry both fidelity-gap notes, but there is still no dedicated exact
@@ -179,13 +186,16 @@ matrix.
 
 ## Recent closed-issue / tracker updates
 
-- no benchmark status rows changed between 2026-08-28 and 2026-08-29;
+- no benchmark status rows changed between 2026-08-29 and 2026-08-30;
   checked-in/live `pg-toolbelt` advanced to
-  `013c2a2f00cf5f24259ed0344cf4b057e48cfc86`, but the diff from
-  `6f480e6ed707133e13bd76c5ff3a8df6102806ee` only touches
-  `packages/pg-delta/README.md` and `packages/pg-delta/COVERAGE.md`,
-  `pgschema` remains at `00db700e74b2b255e1e570495ae59fda6af38ed7`, and no
-  new closed pgschema issue changes the active benchmark matrix
+  `107ac3df4b889c527215d1f6a37df64b33154c16`
+  (`@supabase/pg-delta@1.0.0-alpha.48`) via merged PR
+  [#453](https://github.com/supabase/pg-toolbelt/pull/453) plus release
+  [#454](https://github.com/supabase/pg-toolbelt/pull/454), but the diff from
+  `013c2a2f00cf5f24259ed0344cf4b057e48cfc86` stays in role/policy surfaces,
+  related tests/fixtures, and package metadata rather than the active 021/022
+  codepaths; `pgschema` remains at `00db700e74b2b255e1e570495ae59fda6af38ed7`,
+  and no new closed pgschema issue changes the active benchmark matrix
 
 - **#557** lock timeout and retries - closed by
   [pgschema#560](https://github.com/pgplex/pgschema/pull/560) and remains
@@ -298,7 +308,7 @@ matrix.
   [#559](https://github.com/pgplex/pgschema/issues/559), and
   [#563](https://github.com/pgplex/pgschema/issues/563)
 - checked-in/live `pg-toolbelt` now sits at
-  `013c2a2f00cf5f24259ed0344cf4b057e48cfc86`
+  `107ac3df4b889c527215d1f6a37df64b33154c16`
 - checked-in/live `pgschema` now sits at
   `00db700e74b2b255e1e570495ae59fda6af38ed7`
 - new open pg-toolbelt issue
@@ -306,12 +316,18 @@ matrix.
   trigger-driven RLS state drift on identical SQL inputs; it is useful current
   pg-delta context, but it does not map to an open pgschema issue or the active
   benchmarked gaps
+- merged pg-toolbelt PR
+  [#453](https://github.com/supabase/pg-toolbelt/pull/453) plus release
+  [#454](https://github.com/supabase/pg-toolbelt/pull/454) add role/policy
+  capability that is adjacent upstream context, but neither is a dedicated
+  tracker for the active partition-child or virtual-generated-column gaps
+- previously open pg-toolbelt PR
+  [#444](https://github.com/supabase/pg-toolbelt/pull/444) closed without merge
+  on 2026-08-29 and is no longer part of the active upstream PR set
 - comments on open umbrella issue
   [#332](https://github.com/supabase/pg-toolbelt/issues/332) remain the
   closest tracker context for benchmarks **021** / **022**
 - current open pg-toolbelt PRs
-  [#453](https://github.com/supabase/pg-toolbelt/pull/453),
-  [#444](https://github.com/supabase/pg-toolbelt/pull/444),
   [#432](https://github.com/supabase/pg-toolbelt/pull/432),
   [#303](https://github.com/supabase/pg-toolbelt/pull/303), and
   [#288](https://github.com/supabase/pg-toolbelt/pull/288) are useful current
