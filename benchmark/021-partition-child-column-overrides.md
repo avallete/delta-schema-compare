@@ -16,12 +16,17 @@ In the upstream fix, pgschema only needed `DEFAULT` and `NOT NULL`
 overrides, but the gap is still real for pg-delta because the current plan
 rule emits only the bare `PARTITION OF ... <bound>` form.
 
-## Refresh note (2026-08-30)
+## Refresh note (2026-08-31)
 
-This recheck advances checked-in/live `pg-delta` to
+This recheck keeps checked-in/live `pg-delta` at
 `107ac3df4b889c527215d1f6a37df64b33154c16`
-(`@supabase/pg-delta@1.0.0-alpha.48`) and keeps checked-in/live
-`pgschema` at `00db700e74b2b255e1e570495ae59fda6af38ed7`.
+(`@supabase/pg-delta@1.0.0-alpha.48`) and advances checked-in/live
+`pgschema` to `97d8d60dd72a46704cc63b71b63aab2784847658`
+(`v1.12.5`) through merged PRs
+[#565](https://github.com/pgplex/pgschema/pull/565),
+[#566](https://github.com/pgplex/pgschema/pull/566),
+[#567](https://github.com/pgplex/pgschema/pull/567), and
+[#568](https://github.com/pgplex/pgschema/pull/568).
 
 A source recheck on the current pg-delta head still finds the same uncovered
 path:
@@ -34,11 +39,9 @@ path:
   `CREATE TABLE ... PARTITION OF ... ${bound}` and has no branch that emits
   PostgreSQL's typed table element list for child-local overrides.
 
-The live pg-toolbelt head moved again through merged PR
-[#453](https://github.com/supabase/pg-toolbelt/pull/453) plus release
-[#454](https://github.com/supabase/pg-toolbelt/pull/454), but the diff from
-`013c2a2f00cf5f24259ed0344cf4b057e48cfc86` is limited to role/policy surfaces,
-related tests/fixtures, and package metadata. None of those changes alter the
+The upstream delta since the 2026-08-30 refresh is on the pgschema side rather
+than the pg-delta side. Those new pgschema changes land in online rewrite,
+constraint-validation, docs, and release surfaces, not in the current
 partition-child extract / plan codepaths above, so the last focused 2026-08-14
 runtime observation still stands and emitted only:
 
@@ -54,7 +57,7 @@ engine is not surfacing those child-local overrides as diff-visible state
 end-to-end yet.
 
 There is still no dedicated exact pg-toolbelt issue or PR for this scenario on
-2026-08-30. Direct exact searches for `pgschema#499` still return nothing, and
+2026-08-31. Direct exact searches for `pgschema#499` still return nothing, and
 keyword duplicate searches for `PARTITION OF` now surface umbrella fidelity
 tracker [#332](https://github.com/supabase/pg-toolbelt/issues/332) plus
 unrelated open issue [#451](https://github.com/supabase/pg-toolbelt/issues/451).
