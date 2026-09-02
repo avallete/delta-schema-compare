@@ -45,22 +45,40 @@
       "reviewed_at": "2026-08-31T07:08:44.805890+00:00",
       "verdict": "not_covered"
     },
-    "569": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-08-31T06:40:56Z\", \"pgdelta_sha\": \"107ac3df4b889c527215d1f6a37df64b33154c16\", \"pgschema_sha\": \"97d8d60dd72a46704cc63b71b63aab2784847658\"}",
-      "issue_number": 569,
-      "issue_title": "dump and plan uses wrong order",
-      "issue_updated_at": "2026-08-31T06:40:56Z",
-      "issue_url": "https://github.com/pgplex/pgschema/issues/569",
-      "reviewed_at": "2026-08-31T07:08:44.805890+00:00",
-      "verdict": "covered"
-    },
     "571": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-08-31T06:33:20Z\", \"pgdelta_sha\": \"107ac3df4b889c527215d1f6a37df64b33154c16\", \"pgschema_sha\": \"97d8d60dd72a46704cc63b71b63aab2784847658\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-09-02T07:00:07Z\", \"pgdelta_sha\": \"107ac3df4b889c527215d1f6a37df64b33154c16\", \"pgschema_sha\": \"97d8d60dd72a46704cc63b71b63aab2784847658\"}",
       "issue_number": 571,
       "issue_title": "functionCallRegex does not match quoted identifiers in dependency detection",
-      "issue_updated_at": "2026-08-31T06:33:20Z",
+      "issue_updated_at": "2026-09-02T07:00:07Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/571",
-      "reviewed_at": "2026-08-31T07:08:44.805890+00:00",
+      "reviewed_at": "2026-09-02T07:07:41.156075+00:00",
+      "verdict": "covered"
+    },
+    "573": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-09-02T07:00:16Z\", \"pgdelta_sha\": \"107ac3df4b889c527215d1f6a37df64b33154c16\", \"pgschema_sha\": \"97d8d60dd72a46704cc63b71b63aab2784847658\"}",
+      "issue_number": 573,
+      "issue_title": "not dumping sequences",
+      "issue_updated_at": "2026-09-02T07:00:16Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/573",
+      "reviewed_at": "2026-09-02T07:07:41.156099+00:00",
+      "verdict": "covered"
+    },
+    "574": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-09-02T07:01:51Z\", \"pgdelta_sha\": \"107ac3df4b889c527215d1f6a37df64b33154c16\", \"pgschema_sha\": \"97d8d60dd72a46704cc63b71b63aab2784847658\"}",
+      "issue_number": 574,
+      "issue_title": "plan wrongly creates sequences",
+      "issue_updated_at": "2026-09-02T07:01:51Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/574",
+      "reviewed_at": "2026-09-02T07:07:41.156107+00:00",
+      "verdict": "covered"
+    },
+    "576": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-09-02T07:02:10Z\", \"pgdelta_sha\": \"107ac3df4b889c527215d1f6a37df64b33154c16\", \"pgschema_sha\": \"97d8d60dd72a46704cc63b71b63aab2784847658\"}",
+      "issue_number": 576,
+      "issue_title": "extra sequences created for custom-named sequence defaults",
+      "issue_updated_at": "2026-09-02T07:02:10Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/576",
+      "reviewed_at": "2026-09-02T07:07:41.156112+00:00",
       "verdict": "covered"
     },
     "84": {
@@ -71,24 +89,6 @@
       "issue_url": "https://github.com/pgplex/pgschema/issues/84",
       "reviewed_at": "2026-08-31T07:08:44.805890+00:00",
       "verdict": "not_parity"
-    },
-    "573": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-08-31T15:56:27Z\", \"pgdelta_sha\": \"107ac3df4b889c527215d1f6a37df64b33154c16\", \"pgschema_sha\": \"97d8d60dd72a46704cc63b71b63aab2784847658\"}",
-      "issue_number": 573,
-      "issue_title": "not dumping sequences",
-      "issue_updated_at": "2026-08-31T15:56:27Z",
-      "issue_url": "https://github.com/pgplex/pgschema/issues/573",
-      "reviewed_at": "2026-09-01T07:06:12+00:00",
-      "verdict": "covered"
-    },
-    "574": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-09-01T01:55:26Z\", \"pgdelta_sha\": \"107ac3df4b889c527215d1f6a37df64b33154c16\", \"pgschema_sha\": \"97d8d60dd72a46704cc63b71b63aab2784847658\"}",
-      "issue_number": 574,
-      "issue_title": "plan wrongly creates sequences",
-      "issue_updated_at": "2026-09-01T01:55:26Z",
-      "issue_url": "https://github.com/pgplex/pgschema/issues/574",
-      "reviewed_at": "2026-09-01T07:06:12+00:00",
-      "verdict": "covered"
     }
   },
   "resolved": {
@@ -919,6 +919,15 @@
       "issue_url": "https://github.com/pgplex/pgschema/issues/563",
       "reviewed_at": "2026-08-31T07:08:44.805890+00:00",
       "verdict": "not_parity"
+    },
+    "569": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-09-02T07:03:58Z\", \"pgdelta_sha\": \"107ac3df4b889c527215d1f6a37df64b33154c16\", \"pgschema_sha\": \"97d8d60dd72a46704cc63b71b63aab2784847658\"}",
+      "issue_number": 569,
+      "issue_title": "dump and plan uses wrong order",
+      "issue_updated_at": "2026-09-02T07:03:58Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/569",
+      "reviewed_at": "2026-09-02T07:07:41.156118+00:00",
+      "verdict": "covered"
     }
   }
 }
