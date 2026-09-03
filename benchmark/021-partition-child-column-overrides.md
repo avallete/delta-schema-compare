@@ -16,6 +16,52 @@ In the upstream fix, pgschema only needed `DEFAULT` and `NOT NULL`
 overrides, but the gap is still real for pg-delta because the current plan
 rule emits only the bare `PARTITION OF ... <bound>` form.
 
+## Refresh note (2026-09-03)
+
+This recheck advances checked-in/live `pg-delta` from
+`107ac3df4b889c527215d1f6a37df64b33154c16`
+(`@supabase/pg-delta@1.0.0-alpha.48`) to
+`08219f1a8832f86e7287e50bab793a498129db7a`
+(`@supabase/pg-delta@1.0.0-alpha.49`) through merged PR
+[#455](https://github.com/supabase/pg-toolbelt/pull/455) and release
+[#457](https://github.com/supabase/pg-toolbelt/pull/457), and advances
+checked-in/live `pgschema` from
+`97d8d60dd72a46704cc63b71b63aab2784847658`
+(`v1.12.5`) to `5f76bfd8c8ca63cfbd3f0c43e55f7ad34ecca623` through merged PR
+[#572](https://github.com/pgplex/pgschema/pull/572).
+
+The new pg-delta delta only touches `packages/pg-delta/src/plan/internal.ts`
+plus enum/default ordering tests and corpus fixtures, while the new pgschema
+delta only touches quoted-identifier dependency detection for issue
+[#571](https://github.com/pgplex/pgschema/issues/571). The active
+partition-child extract / plan path is unchanged:
+
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still filters
+  relation columns with `a.attislocal`, so child-local overrides on inherited
+  partition columns never become diff-visible facts.
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still
+  serializes partition-child creation as
+  `CREATE TABLE ... PARTITION OF ... ${bound}` and has no branch that emits
+  PostgreSQL's typed table element list for child-local overrides.
+
+The last focused 2026-08-14 runtime observation therefore still stands and
+emitted only:
+
+```sql
+CREATE TABLE "test_schema"."orders_us" PARTITION OF "test_schema"."orders" FOR VALUES IN ('us')
+ALTER TABLE "test_schema"."orders_us" OWNER TO "test"
+```
+
+The child-specific `priority DEFAULT 10` and `notes NOT NULL` overrides were
+still omitted, and the proof loop still returned `proofOk: true` with zero
+drift after omitting them. Direct exact searches for `pgschema#499` still
+return no dedicated pg-toolbelt issue or PR, while keyword duplicate searches
+for `PARTITION OF` still surface umbrella fidelity tracker
+[#332](https://github.com/supabase/pg-toolbelt/issues/332) plus unrelated open
+issue [#451](https://github.com/supabase/pg-toolbelt/issues/451). Benchmark 021
+therefore remains **behaviorally uncovered** with only **umbrella-thread
+tracker context**.
+
 ## Refresh note (2026-08-31)
 
 This recheck keeps checked-in/live `pg-delta` at
