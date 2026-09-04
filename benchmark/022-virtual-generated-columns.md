@@ -17,6 +17,46 @@ mechanism. This benchmark tracks the now-resolved upstream scenario after
 pgschema merged its fix on `main`, while current pg-delta still lacks exact
 coverage.
 
+## Refresh note (2026-09-04)
+
+This recheck keeps checked-in/live `pg-delta` at
+`08219f1a8832f86e7287e50bab793a498129db7a`
+(`@supabase/pg-delta@1.0.0-alpha.49`) and advances checked-in/live
+`pgschema` from `5f76bfd8c8ca63cfbd3f0c43e55f7ad34ecca623` to
+`89265906bd4d1a5c65971529989a81eb8b159d96` through merged PR
+[#577](https://github.com/pgplex/pgschema/pull/577).
+
+The upstream delta since the 2026-09-03 refresh is on the pgschema side only.
+It fixes sequence ownership / SERIAL collapsing for issues
+[#573](https://github.com/pgplex/pgschema/issues/573),
+[#574](https://github.com/pgplex/pgschema/issues/574), and
+[#576](https://github.com/pgplex/pgschema/issues/576), and does not touch the
+active generated-column extract / plan path:
+
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still reads
+  `attgenerated` but only preserves generated-expression presence as
+  `generatedExpr`, not the actual `VIRTUAL` versus `STORED` kind.
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts` still
+  hard-codes generated-column rendering as
+  `GENERATED ALWAYS AS (...) STORED`.
+
+The last focused 2026-08-14 runtime observation therefore still stands and
+serialized the generated column as:
+
+```sql
+ALTER TABLE "test_schema"."users"
+  ADD COLUMN "full_name" text GENERATED ALWAYS AS (((first_name || ' '::text) || last_name)) STORED
+```
+
+The PostgreSQL 18 `VIRTUAL` keyword is still collapsed back to `STORED`, and
+the proof loop still returned `proofOk: true` with zero drift after that
+rewrite. Direct exact searches for `pgschema#501` still return no dedicated
+pg-toolbelt issue or PR, while keyword duplicate searches for `VIRTUAL
+generated` still only surface umbrella fidelity tracker
+[#332](https://github.com/supabase/pg-toolbelt/issues/332). Benchmark 022
+therefore remains **behaviorally uncovered** with only **umbrella-thread
+tracker context**.
+
 ## Refresh note (2026-09-03)
 
 This recheck advances checked-in/live `pg-delta` from
