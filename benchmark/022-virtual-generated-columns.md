@@ -17,6 +17,40 @@ mechanism. This benchmark tracks the now-resolved upstream scenario after
 pgschema merged its fix on `main`, while current pg-delta still lacks exact
 coverage.
 
+## Refresh note (2026-09-06)
+
+This recheck keeps checked-in/live `pg-delta` at
+`08219f1a8832f86e7287e50bab793a498129db7a`
+(`@supabase/pg-delta@1.0.0-alpha.49`) and keeps checked-in/live `pgschema` at
+`c6ed06f6fd5f1e36a00787b7034e35bda025e86b`.
+
+No upstream code, issue, or PR delta landed since the 2026-09-05 refresh:
+`gh issue list` / `gh pr list` updated-since checks returned empty arrays for
+both `pgplex/pgschema` and `supabase/pg-toolbelt`, so the active generated-
+column extract / plan path remains unchanged:
+
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still reads
+  `attgenerated` but only preserves generated-expression presence as
+  `generatedExpr`, not the actual `VIRTUAL` versus `STORED` kind.
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts` still
+  hard-codes generated-column rendering as
+  `GENERATED ALWAYS AS (...) STORED`.
+
+The last focused 2026-08-14 runtime observation therefore still stands and
+serialized the generated column as:
+
+```sql
+ALTER TABLE "test_schema"."users"
+  ADD COLUMN "full_name" text GENERATED ALWAYS AS (((first_name || ' '::text) || last_name)) STORED
+```
+
+The PostgreSQL 18 `VIRTUAL` keyword is still collapsed back to `STORED`, and
+exact duplicate searches for `pgschema#501` still return no dedicated
+pg-toolbelt issue or PR. Umbrella issue
+[#332](https://github.com/supabase/pg-toolbelt/issues/332) remains the only
+adjacent tracker context. Benchmark 022 therefore remains
+**behaviorally uncovered** with only **umbrella-thread tracker context**.
+
 ## Refresh note (2026-09-05)
 
 This recheck keeps checked-in/live `pg-delta` at

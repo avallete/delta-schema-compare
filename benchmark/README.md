@@ -4,29 +4,28 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-09-05)
+## Latest refresh snapshot (2026-09-06)
 
 Refreshed against:
 
 - checked-in/live `repos/pg-toolbelt` @ `08219f1a8832f86e7287e50bab793a498129db7a`
 - checked-in/live `repos/pgschema` @ `c6ed06f6fd5f1e36a00787b7034e35bda025e86b`
 
-> The 2026-09-05 refresh still finds **no behavioral benchmark-matrix delta**
-> versus [`docs/parity-refresh-2026-09-04.md`](../docs/parity-refresh-2026-09-04.md).
+> The 2026-09-06 refresh still finds **no behavioral benchmark-matrix delta**
+> versus [`docs/parity-refresh-2026-09-05.md`](../docs/parity-refresh-2026-09-05.md).
 >
 > - the active benchmarked gap set remains **021** and **022**
 > - checked-in/live `repos/pg-toolbelt` remains
 >   `08219f1a8832f86e7287e50bab793a498129db7a`
 >   (`@supabase/pg-delta@1.0.0-alpha.49`)
-> - checked-in/live `pgschema` advanced from
->   `89265906bd4d1a5c65971529989a81eb8b159d96` to
->   `c6ed06f6fd5f1e36a00787b7034e35bda025e86b` through merged PR
->   [#578](https://github.com/pgplex/pgschema/pull/578)
-> - the new pgschema delta is still adjacent to the active gaps: it adds
->   `ALTER SEQUENCE ... OWNED BY` / `OWNED BY NONE` coverage for ownership-only
->   changes in the already-resolved [#573](https://github.com/pgplex/pgschema/issues/573)
->   sequence family, and does not alter the active partition-child or
->   generated-column codepaths below
+> - checked-in/live `pgschema` remains
+>   `c6ed06f6fd5f1e36a00787b7034e35bda025e86b`
+> - no upstream code, issue, or PR delta landed in either repo since
+>   2026-09-05:
+>   - `git submodule update --remote --merge` left both checked-in/live heads
+>     unchanged
+>   - `gh issue list` / `gh pr list` updated-since queries returned empty
+>     arrays for both `pgplex/pgschema` and `supabase/pg-toolbelt`
 > - the active-gap structural evidence still stands because current `pg-delta`
 >   still:
 >   - filters relation columns with `a.attislocal` in
@@ -38,7 +37,7 @@ Refreshed against:
 >     `src/extract/relations.ts`
 >   - hard-codes `GENERATED ALWAYS AS (...) STORED` in
 >     `src/plan/rules/helpers.ts`
-> - the open pgschema watch scope is unchanged from 2026-09-04 and remains
+> - the open pgschema watch scope is unchanged from 2026-09-05 and remains
 >   [#49](https://github.com/pgplex/pgschema/issues/49),
 >   [#52](https://github.com/pgplex/pgschema/issues/52),
 >   [#84](https://github.com/pgplex/pgschema/issues/84),
@@ -50,7 +49,7 @@ Refreshed against:
 >   draft-only tracker body remains in
 >   [`docs/parity-issue-drafts-2026-08-31.md`](../docs/parity-issue-drafts-2026-08-31.md)
 > - [#573](https://github.com/pgplex/pgschema/issues/573) remains in the
->   resolved bucket and is now fully followed through upstream by
+>   resolved bucket and is fully followed through upstream by
 >   [#577](https://github.com/pgplex/pgschema/pull/577) plus
 >   [#578](https://github.com/pgplex/pgschema/pull/578); current pg-delta still
 >   covers the same explicit sequence + ownership path via
@@ -113,14 +112,11 @@ Two resolved-issue benchmark scenarios remain active as unresolved behavior:
 
 The checked-in/live `pg-delta` head remains
 `08219f1a8832f86e7287e50bab793a498129db7a`
-(`@supabase/pg-delta@1.0.0-alpha.49`), while checked-in/live `pgschema`
-advanced to `c6ed06f6fd5f1e36a00787b7034e35bda025e86b` through merged PR
-[#578](https://github.com/pgplex/pgschema/pull/578). That upstream delta
-remains adjacent to the active gaps rather than inside them: #578 is the
-ownership-only follow-up in the already-resolved
-[#573](https://github.com/pgplex/pgschema/issues/573) sequence family, while
-the active partition-child and generated-column pg-delta codepaths are
-unchanged. The current structural-gap evidence therefore still shows:
+(`@supabase/pg-delta@1.0.0-alpha.49`), and checked-in/live `pgschema`
+remains `c6ed06f6fd5f1e36a00787b7034e35bda025e86b`. The checked-in/live heads
+are unchanged from the 2026-09-05 refresh, and updated-since issue / PR
+queries also returned no new upstream activity, so the current structural-gap
+evidence still shows:
 
 - benchmark **021** remains structurally uncovered because
   `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still filters
@@ -236,12 +232,12 @@ covers that behavior family.
   `DEFAULT nextval(...)` edges rather than rewriting them into guessed
   `<table>_<column>_seq` sequences
 
-- no benchmark status rows changed between 2026-09-04 and 2026-09-05;
+- no benchmark status rows changed between 2026-09-05 and 2026-09-06;
   checked-in/live `pg-delta` remains
   `08219f1a8832f86e7287e50bab793a498129db7a`, checked-in/live `pgschema`
-  advanced to `c6ed06f6fd5f1e36a00787b7034e35bda025e86b`, and the new upstream
-  delta remained adjacent to the active benchmark codepaths, so the benchmark
-  matrix stays unchanged
+  remains `c6ed06f6fd5f1e36a00787b7034e35bda025e86b`, updated-since issue / PR
+  queries across both upstream repos returned no new activity, and the
+  benchmark matrix stays unchanged
 
 - **#569** `dump and plan uses wrong order` - closed on 2026-09-02 after the
   already-merged pgschema fix
@@ -374,9 +370,12 @@ covers that behavior family.
   `08219f1a8832f86e7287e50bab793a498129db7a`
 - checked-in/live `pgschema` now sits at
   `c6ed06f6fd5f1e36a00787b7034e35bda025e86b`
+- no pgschema or pg-toolbelt issue / PR updated since 2026-09-05; the current
+  checked-in/live heads also remained unchanged after `git submodule update
+  --remote --merge`
 - merged pgschema PR
-  [#578](https://github.com/pgplex/pgschema/pull/578) advanced the checked-in
-  head today as the ownership-only follow-up to the now-resolved
+  [#578](https://github.com/pgplex/pgschema/pull/578) remains the latest
+  upstream change in the now-resolved
   [#573](https://github.com/pgplex/pgschema/issues/573) sequence family;
   current pg-delta parity for that scenario remains covered
 - issues [#574](https://github.com/pgplex/pgschema/issues/574) and

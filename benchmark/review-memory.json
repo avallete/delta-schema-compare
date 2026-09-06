@@ -6,7 +6,7 @@
       "issue_title": "Missing role blocks plan and apply",
       "issue_updated_at": "2026-07-11T04:04:29Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/450",
-      "reviewed_at": "2026-09-05T07:08:29+00:00",
+      "reviewed_at": "2026-09-06T07:04:14+00:00",
       "verdict": "not_parity"
     },
     "49": {
@@ -15,7 +15,7 @@
       "issue_title": "Introduce an Explicit Workflow for Renaming Schema Objects",
       "issue_updated_at": "2026-05-30T05:03:35Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/49",
-      "reviewed_at": "2026-09-05T07:08:29+00:00",
+      "reviewed_at": "2026-09-06T07:04:14+00:00",
       "verdict": "not_parity"
     },
     "52": {
@@ -24,7 +24,7 @@
       "issue_title": "Allow inclusion of Certain files to be explicitly executed by pgschema / included in plan file",
       "issue_updated_at": "2026-02-09T03:57:30Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/52",
-      "reviewed_at": "2026-09-05T07:08:29+00:00",
+      "reviewed_at": "2026-09-06T07:04:14+00:00",
       "verdict": "not_parity"
     },
     "559": {
@@ -33,7 +33,7 @@
       "issue_title": "Support config data evoluation",
       "issue_updated_at": "2026-08-31T11:37:31Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/559",
-      "reviewed_at": "2026-09-05T07:08:29+00:00",
+      "reviewed_at": "2026-09-06T07:04:14+00:00",
       "verdict": "not_parity"
     },
     "564": {
@@ -42,7 +42,7 @@
       "issue_title": "adding NOT NULL columns safely (with easy optional backfill proposal)",
       "issue_updated_at": "2026-08-30T13:31:21Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/564",
-      "reviewed_at": "2026-09-05T07:08:29+00:00",
+      "reviewed_at": "2026-09-06T07:04:14+00:00",
       "verdict": "not_covered"
     },
     "84": {
@@ -51,7 +51,7 @@
       "issue_title": "\ud83d\udc49\ud83d\udcdd Feedback Wanted: Share Your Use Case & Experience",
       "issue_updated_at": "2026-08-08T15:52:12Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/84",
-      "reviewed_at": "2026-09-05T07:08:29+00:00",
+      "reviewed_at": "2026-09-06T07:04:14+00:00",
       "verdict": "not_parity"
     }
   },
@@ -602,7 +602,7 @@
       "issue_title": "PARTITION OF create path: support child-specific column elements",
       "issue_updated_at": "2026-07-03T14:46:36Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/499",
-      "reviewed_at": "2026-09-05T07:08:29+00:00",
+      "reviewed_at": "2026-09-06T07:04:14+00:00",
       "verdict": "tracked"
     },
     "501": {
@@ -611,7 +611,7 @@
       "issue_title": "PG18 VIRTUAL generated columns silently rewritten as DEFAULT in plan, producing invalid DDL",
       "issue_updated_at": "2026-07-06T06:58:48Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/501",
-      "reviewed_at": "2026-09-05T07:08:29+00:00",
+      "reviewed_at": "2026-09-06T07:04:14+00:00",
       "verdict": "tracked"
     },
     "502": {
@@ -899,7 +899,7 @@
       "issue_title": "functionCallRegex does not match quoted identifiers in dependency detection",
       "issue_updated_at": "2026-09-03T03:20:02Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/571",
-      "reviewed_at": "2026-09-05T07:08:29+00:00",
+      "reviewed_at": "2026-09-06T07:04:14+00:00",
       "verdict": "covered"
     },
     "573": {
@@ -908,7 +908,7 @@
       "issue_title": "not dumping sequences",
       "issue_updated_at": "2026-09-04T05:06:33Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/573",
-      "reviewed_at": "2026-09-05T07:08:29+00:00",
+      "reviewed_at": "2026-09-06T07:04:14+00:00",
       "verdict": "covered"
     },
     "574": {
@@ -917,7 +917,7 @@
       "issue_title": "plan wrongly creates sequences",
       "issue_updated_at": "2026-09-03T06:18:42Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/574",
-      "reviewed_at": "2026-09-05T07:08:29+00:00",
+      "reviewed_at": "2026-09-06T07:04:14+00:00",
       "verdict": "covered"
     },
     "576": {
@@ -926,7 +926,7 @@
       "issue_title": "extra sequences created for custom-named sequence defaults",
       "issue_updated_at": "2026-09-03T06:18:45Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/576",
-      "reviewed_at": "2026-09-05T07:08:29+00:00",
+      "reviewed_at": "2026-09-06T07:04:14+00:00",
       "verdict": "covered"
     }
   }

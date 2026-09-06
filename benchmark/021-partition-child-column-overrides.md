@@ -16,6 +16,42 @@ In the upstream fix, pgschema only needed `DEFAULT` and `NOT NULL`
 overrides, but the gap is still real for pg-delta because the current plan
 rule emits only the bare `PARTITION OF ... <bound>` form.
 
+## Refresh note (2026-09-06)
+
+This recheck keeps checked-in/live `pg-delta` at
+`08219f1a8832f86e7287e50bab793a498129db7a`
+(`@supabase/pg-delta@1.0.0-alpha.49`) and keeps checked-in/live `pgschema` at
+`c6ed06f6fd5f1e36a00787b7034e35bda025e86b`.
+
+No upstream code, issue, or PR delta landed since the 2026-09-05 refresh:
+`gh issue list` / `gh pr list` updated-since checks returned empty arrays for
+both `pgplex/pgschema` and `supabase/pg-toolbelt`, so the active
+partition-child extract / plan path remains unchanged:
+
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still filters
+  relation columns with `a.attislocal`, so child-local overrides on inherited
+  partition columns never become diff-visible facts.
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still
+  serializes partition-child creation as
+  `CREATE TABLE ... PARTITION OF ... ${bound}` and has no branch that emits
+  PostgreSQL's typed table element list for child-local overrides.
+
+The last focused 2026-08-14 runtime observation therefore still stands and
+emitted only:
+
+```sql
+CREATE TABLE "test_schema"."orders_us" PARTITION OF "test_schema"."orders" FOR VALUES IN ('us')
+ALTER TABLE "test_schema"."orders_us" OWNER TO "test"
+```
+
+The child-specific `priority DEFAULT 10` and `notes NOT NULL` overrides were
+still omitted, and exact duplicate searches for `pgschema#499` still return no
+dedicated pg-toolbelt issue or PR. Umbrella issue
+[#332](https://github.com/supabase/pg-toolbelt/issues/332) plus unrelated open
+issue [#451](https://github.com/supabase/pg-toolbelt/issues/451) remain the
+only adjacent tracker context. Benchmark 021 therefore remains
+**behaviorally uncovered** with only **umbrella-thread tracker context**.
+
 ## Refresh note (2026-09-05)
 
 This recheck keeps checked-in/live `pg-delta` at
