@@ -16,6 +16,45 @@ In the upstream fix, pgschema only needed `DEFAULT` and `NOT NULL`
 overrides, but the gap is still real for pg-delta because the current plan
 rule emits only the bare `PARTITION OF ... <bound>` form.
 
+## Refresh note (2026-09-07)
+
+This recheck keeps checked-in/live `pg-delta` at
+`08219f1a8832f86e7287e50bab793a498129db7a`
+(`@supabase/pg-delta@1.0.0-alpha.49`) and advances checked-in/live
+`pgschema` from `c6ed06f6fd5f1e36a00787b7034e35bda025e86b` to
+`fe7c64bfa410e7f9e8235eae3b912eb163b255f4` through merged PR
+[#581](https://github.com/pgplex/pgschema/pull/581).
+
+Today's upstream delta is still outside the active partition-child path.
+pgschema issues [#579](https://github.com/pgplex/pgschema/issues/579) and
+[#580](https://github.com/pgplex/pgschema/issues/580) closed on 2026-09-07,
+and follow-up PR [#582](https://github.com/pgplex/pgschema/pull/582) remains
+open, but current pg-delta's partition-child extract / plan path is unchanged:
+
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still filters
+  relation columns with `a.attislocal`, so child-local overrides on inherited
+  partition columns never become diff-visible facts.
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still
+  serializes partition-child creation as
+  `CREATE TABLE ... PARTITION OF ... ${bound}` and has no branch that emits
+  PostgreSQL's typed table element list for child-local overrides.
+
+The last focused 2026-08-14 runtime observation therefore still stands and
+emitted only:
+
+```sql
+CREATE TABLE "test_schema"."orders_us" PARTITION OF "test_schema"."orders" FOR VALUES IN ('us')
+ALTER TABLE "test_schema"."orders_us" OWNER TO "test"
+```
+
+The child-specific `priority DEFAULT 10` and `notes NOT NULL` overrides were
+still omitted, and direct exact searches for `pgschema#499`, `pgschema#579`,
+and `pgschema#580` still return no dedicated pg-toolbelt issue or PR. Umbrella
+issue [#332](https://github.com/supabase/pg-toolbelt/issues/332) plus
+unrelated open issue [#451](https://github.com/supabase/pg-toolbelt/issues/451)
+remain the only adjacent tracker context. Benchmark 021 therefore remains
+**behaviorally uncovered** with only **umbrella-thread tracker context**.
+
 ## Refresh note (2026-09-06)
 
 This recheck keeps checked-in/live `pg-delta` at
