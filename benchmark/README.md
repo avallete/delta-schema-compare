@@ -4,34 +4,47 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-09-07)
+## Latest refresh snapshot (2026-09-08)
 
 Refreshed against:
 
-- checked-in/live `repos/pg-toolbelt` @ `08219f1a8832f86e7287e50bab793a498129db7a`
-- checked-in/live `repos/pgschema` @ `fe7c64bfa410e7f9e8235eae3b912eb163b255f4`
+- checked-in `repos/pg-toolbelt` @ `08219f1a8832f86e7287e50bab793a498129db7a`
+- live `repos/pg-toolbelt/main` @ `a982dfab6a87fa97f47130a1754dbd48d69446ce`
+- checked-in/live `repos/pgschema` @ `b25a9e9c7312d0ddc1be17207bc4b3d61f4140cd`
 
-> The 2026-09-07 refresh still finds **no behavioral benchmark-matrix delta**
-> versus [`docs/parity-refresh-2026-09-06.md`](../docs/parity-refresh-2026-09-06.md).
+> The 2026-09-08 refresh still finds **no behavioral benchmark-matrix delta**
+> versus [`docs/parity-refresh-2026-09-07.md`](../docs/parity-refresh-2026-09-07.md).
 >
 > - the active benchmarked gap set remains **021** and **022**
-> - checked-in/live `repos/pg-toolbelt` remains
+> - checked-in `repos/pg-toolbelt` remains
 >   `08219f1a8832f86e7287e50bab793a498129db7a`
 >   (`@supabase/pg-delta@1.0.0-alpha.49`)
+> - live `pg-toolbelt/main` advanced to
+>   `a982dfab6a87fa97f47130a1754dbd48d69446ce` through merged PR
+>   [#458](https://github.com/supabase/pg-toolbelt/pull/458), but that delta
+>   only guards checked-out clients from connection errors and does not touch
+>   the active partition-child or generated-column codepaths
 > - checked-in/live `pgschema` advances from
->   `c6ed06f6fd5f1e36a00787b7034e35bda025e86b` to
->   `fe7c64bfa410e7f9e8235eae3b912eb163b255f4` through merged PR
->   [#581](https://github.com/pgplex/pgschema/pull/581)
-> - today's upstream delta is pgschema-only:
->   - issues [#579](https://github.com/pgplex/pgschema/issues/579) and
->     [#580](https://github.com/pgplex/pgschema/issues/580) closed on
->     2026-09-07
->   - open follow-up PR [#582](https://github.com/pgplex/pgschema/pull/582)
->     remains current context for the broader #580 family
->   - `gh issue list` / `gh pr list` updated-since queries returned empty
->     arrays for `supabase/pg-toolbelt`
-> - the active-gap structural evidence still stands because current `pg-delta`
->   still:
+>   `fe7c64bfa410e7f9e8235eae3b912eb163b255f4` to
+>   `b25a9e9c7312d0ddc1be17207bc4b3d61f4140cd` through merged PRs
+>   [#582](https://github.com/pgplex/pgschema/pull/582) and
+>   [#583](https://github.com/pgplex/pgschema/pull/583)
+> - today's upstream delta reshapes the watch list but not the benchmark
+>   matrix:
+>   - pgschema issue [#559](https://github.com/pgplex/pgschema/issues/559)
+>     closed on 2026-09-08 through merged PR
+>     [#583](https://github.com/pgplex/pgschema/pull/583)
+>   - pgschema issue [#584](https://github.com/pgplex/pgschema/issues/584)
+>     opened on 2026-09-08; open PR
+>     [#585](https://github.com/pgplex/pgschema/pull/585) is current adjacent
+>     context
+>   - merged pgschema PR [#582](https://github.com/pgplex/pgschema/pull/582)
+>     broadens the resolved [#580](https://github.com/pgplex/pgschema/issues/580)
+>     family, which current pg-delta still appears to cover through existing
+>     dependency extraction plus `check_function_bodies = off` in plan/load
+>     paths
+> - the active-gap structural evidence still stands because current checked-in
+>   `pg-delta` still:
 >   - filters relation columns with `a.attislocal` in
 >     `src/extract/relations.ts`, so inherited partition-child local overrides
 >     never become diff-visible facts
@@ -41,49 +54,40 @@ Refreshed against:
 >     `src/extract/relations.ts`
 >   - hard-codes `GENERATED ALWAYS AS (...) STORED` in
 >     `src/plan/rules/helpers.ts`
-> - the open pgschema watch scope is unchanged from 2026-09-06 and remains
+> - the open pgschema watch scope now becomes
 >   [#49](https://github.com/pgplex/pgschema/issues/49),
 >   [#52](https://github.com/pgplex/pgschema/issues/52),
 >   [#84](https://github.com/pgplex/pgschema/issues/84),
 >   [#450](https://github.com/pgplex/pgschema/issues/450),
->   [#559](https://github.com/pgplex/pgschema/issues/559), and
->   [#564](https://github.com/pgplex/pgschema/issues/564)
+>   [#564](https://github.com/pgplex/pgschema/issues/564), and
+>   [#584](https://github.com/pgplex/pgschema/issues/584)
 > - [#564](https://github.com/pgplex/pgschema/issues/564) remains the one open
 >   uncovered parity candidate from the current watch list; the existing
 >   draft-only tracker body remains in
 >   [`docs/parity-issue-drafts-2026-08-31.md`](../docs/parity-issue-drafts-2026-08-31.md)
-> - [#573](https://github.com/pgplex/pgschema/issues/573) remains in the
->   resolved bucket and is fully followed through upstream by
->   [#577](https://github.com/pgplex/pgschema/pull/577) plus
->   [#578](https://github.com/pgplex/pgschema/pull/578); current pg-delta still
->   covers the same explicit sequence + ownership path via
->   `src/plan/rules/sequences.ts`, `sequenceOwnedBySpecs()` in
->   `src/plan/rules/helpers.ts`, and the export/load tests listed below
+> - [#559](https://github.com/pgplex/pgschema/issues/559) moves from the open
+>   watch list into the resolved **not parity** bucket because current
+>   pg-delta still deliberately never compares row-level data in
+>   `src/frontends/load-sql-files.ts`
 > - direct exact duplicate searches for `pgschema#499`, `pgschema#501`,
->   `pgschema#564`, `pgschema#579`, and `pgschema#580` returned no dedicated
->   pg-toolbelt issue or PR
+>   `pgschema#564`, and `pgschema#584` returned no dedicated pg-toolbelt issue
+>   or PR
 > - keyword searches for `VIRTUAL generated` still only surface umbrella
 >   fidelity issue [#332](https://github.com/supabase/pg-toolbelt/issues/332);
 >   `PARTITION OF` still surfaces umbrella issue
 >   [#332](https://github.com/supabase/pg-toolbelt/issues/332) plus unrelated
 >   open issue [#451](https://github.com/supabase/pg-toolbelt/issues/451)
-> - keyword searches for `ADD COLUMN NOT NULL`, `ALTER COLUMN SET NOT NULL`,
->   `NOT NULL NOT VALID`, `sequence dump`, `create sequences`, and
->   `custom-named sequence defaults` still surfaced only umbrella/backlog or
->   adjacent sequence-support context, not an exact new tracker for the active
->   benchmarks or the remaining open parity candidate
-> - current open pg-toolbelt issue
->   [#451](https://github.com/supabase/pg-toolbelt/issues/451) and open PRs
->   [#432](https://github.com/supabase/pg-toolbelt/pull/432),
->   [#303](https://github.com/supabase/pg-toolbelt/pull/303), and
->   [#288](https://github.com/supabase/pg-toolbelt/pull/288) remain useful
->   current context, but none is a dedicated exact duplicate of the active
+> - keyword searches for `config data`, `reference data`, `ADD COLUMN NOT NULL`,
+>   `ALTER COLUMN SET NOT NULL`, and `NOT NULL NOT VALID` surfaced only
+>   umbrella/backlog or adjacent context, not an exact new tracker for the
+>   active benchmarks or the one remaining open parity candidate
+> - recent pg-toolbelt issue/PR activity since 2026-09-07 remains useful
+>   adjacent context only; none is a dedicated exact duplicate of the active
 >   benchmarks, the older draft-only gaps
 >   [#439](https://github.com/pgplex/pgschema/issues/439) /
->   [#444](https://github.com/pgplex/pgschema/issues/444), the remaining open
->   uncovered parity candidate [#564](https://github.com/pgplex/pgschema/issues/564),
->   or the now-resolved sequence root-cause issue
->   [#573](https://github.com/pgplex/pgschema/issues/573)
+>   [#444](https://github.com/pgplex/pgschema/issues/444), or the remaining
+>   open uncovered parity candidate
+>   [#564](https://github.com/pgplex/pgschema/issues/564)
 
 ## Benchmark status matrix
 
@@ -114,17 +118,16 @@ Two resolved-issue benchmark scenarios remain active as unresolved behavior:
   `CREATE TABLE ... PARTITION OF ...`
 - **022** - PostgreSQL 18 `VIRTUAL` generated columns
 
-The checked-in/live `pg-delta` head remains
+The checked-in `pg-delta` head remains
 `08219f1a8832f86e7287e50bab793a498129db7a`
-(`@supabase/pg-delta@1.0.0-alpha.49`), and checked-in/live `pgschema`
-advances to `fe7c64bfa410e7f9e8235eae3b912eb163b255f4` through merged PR
-[#581](https://github.com/pgplex/pgschema/pull/581). Today's upstream delta
-stays outside the active benchmark codepaths: it closes pgschema issues
-[#579](https://github.com/pgplex/pgschema/issues/579) and
-[#580](https://github.com/pgplex/pgschema/issues/580), leaves follow-up PR
-[#582](https://github.com/pgplex/pgschema/pull/582) open, and does not change
-the current pg-delta extract / plan paths, so the structural-gap evidence
-still shows:
+(`@supabase/pg-delta@1.0.0-alpha.49`), live `pg-toolbelt/main` advances to
+`a982dfab6a87fa97f47130a1754dbd48d69446ce` through merged PR
+[#458](https://github.com/supabase/pg-toolbelt/pull/458), and checked-in/live
+`pgschema` advances to `b25a9e9c7312d0ddc1be17207bc4b3d61f4140cd` through
+merged PRs [#582](https://github.com/pgplex/pgschema/pull/582) and
+[#583](https://github.com/pgplex/pgschema/pull/583). Today's upstream delta
+still stays outside the active benchmark codepaths, so the structural-gap
+evidence still shows:
 
 - benchmark **021** remains structurally uncovered because
   `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still filters
@@ -137,9 +140,19 @@ still shows:
   `attgenerated` to `generatedExpr`, and
   `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts` still renders
   generated columns as `... STORED`
+- the live pg-delta delta only touches checked-out client connection guards in
+  `src/apply/apply.ts`, `src/extract/extract.ts`,
+  `src/extract/parallel.ts`, `src/frontends/load-sql-files.ts`, and
+  `src/frontends/schema-plan.ts`, leaving the active `relations.ts`,
+  `tables.ts`, and `helpers.ts` codepaths unchanged
+- merged pgschema PR
+  [#582](https://github.com/pgplex/pgschema/pull/582) broadens the resolved
+  [#580](https://github.com/pgplex/pgschema/issues/580) family, but current
+  pg-delta still appears to cover that broader slice through
+  `check_function_bodies = off` in its plan/load paths and relation-row-type
+  dependency extraction in `src/extract/dependencies.ts`
 - the focused 2026-08-14 runtime probes remain the latest direct runtime
-  evidence for both scenarios; today's upstream delta is still pgschema-only
-  and does not change those pg-delta codepaths
+  evidence for both scenarios
 - comments on the umbrella tracker
   [pg-toolbelt#332](https://github.com/supabase/pg-toolbelt/issues/332)
   now carry both fidelity-gap notes, but there is still no dedicated exact
@@ -152,8 +165,8 @@ The current open pgschema watch list is now:
 [#52](https://github.com/pgplex/pgschema/issues/52),
 [#84](https://github.com/pgplex/pgschema/issues/84),
 [#450](https://github.com/pgplex/pgschema/issues/450),
-[#559](https://github.com/pgplex/pgschema/issues/559),
-and [#564](https://github.com/pgplex/pgschema/issues/564).
+[#564](https://github.com/pgplex/pgschema/issues/564),
+and [#584](https://github.com/pgplex/pgschema/issues/584).
 
 Screened candidates:
 
@@ -166,11 +179,6 @@ Screened candidates:
 - **#450** missing role blocks plan/apply - **not parity work for
   pg-delta**; this remains specific to pgschema's desired-state temp
   schema workflow, while pg-delta diffs live catalogs directly
-- **#559** support config data evolution - **not parity work for pg-delta**;
-  current pg-delta's
-  SQL-file loader explicitly treats row-level comparison as out of scope, and
-  `packages/pg-delta/tests/load-sql-files.test.ts` notes that the loader
-  "deliberately never compares data"
 - **#564** adding `NOT NULL` columns safely - **not covered in current
   pg-delta**; related pgschema PR
   [#566](https://github.com/pgplex/pgschema/pull/566) now uses PostgreSQL 18's
@@ -182,6 +190,18 @@ Screened candidates:
   `src/plan/rules/tables.ts`; no exact pg-toolbelt issue/PR was found, so a
   draft-only tracker body is saved in
   [`docs/parity-issue-drafts-2026-08-31.md`](../docs/parity-issue-drafts-2026-08-31.md)
+- **#584** global items / extensions / roles - **not parity work for
+  pg-delta**; open pgschema PR
+  [#585](https://github.com/pgplex/pgschema/pull/585) mirrors target
+  extensions into pgschema's embedded plan database and explicitly treats the
+  roles half as a duplicate of
+  [#450](https://github.com/pgplex/pgschema/issues/450). Current pg-delta does
+  not depend on an embedded plan database, already extracts extensions and
+  roles as first-class facts in
+  `repos/pg-toolbelt/packages/pg-delta/src/extract/extract.ts`, and has current
+  extension / cluster-scope role coverage in
+  `tests/vault-presence.test.ts` and
+  `tests/supabase-cluster-scope-roles.test.ts`
 
 There is currently **no dedicated exact open pg-toolbelt parity tracker** for
 the active benchmarks above, the new open parity candidate
@@ -194,13 +214,13 @@ umbrella fidelity issue
 keyword duplicate searches still surface that issue, and comments on the issue
 thread carry both gap notes, but there is still no dedicated issue or PR for
 either benchmark. Exact duplicate searches for watch-list issues
-[#559](https://github.com/pgplex/pgschema/issues/559) and
-[#564](https://github.com/pgplex/pgschema/issues/564) also return no
-dedicated pg-toolbelt issue or PR; #559 remains outside the schema-diff matrix
-and #564 is preserved as a draft-only candidate. The now-resolved sequence
-root-cause issue [#573](https://github.com/pgplex/pgschema/issues/573) also
-still has no dedicated pg-toolbelt tracker, but current pg-delta already
-covers that behavior family.
+[#564](https://github.com/pgplex/pgschema/issues/564) and
+[#584](https://github.com/pgplex/pgschema/issues/584) also return no
+dedicated pg-toolbelt issue or PR; #584 remains outside the schema-diff matrix
+and #564 is preserved as a draft-only candidate. The now-resolved config-data
+issue [#559](https://github.com/pgplex/pgschema/issues/559) also has no
+dedicated pg-toolbelt tracker, but current pg-delta explicitly keeps row-level
+data comparison out of scope.
 
 ## Recent closed-issue / tracker updates
 
@@ -251,8 +271,10 @@ covers that behavior family.
     export/load chain round-trippable
 
 - **#580** multi-file include ordering by dependency - closed on 2026-09-07 by
-  [pgschema#581](https://github.com/pgplex/pgschema/pull/581) and remains
-  **covered** in current pg-delta's supported export/load path:
+  [pgschema#581](https://github.com/pgplex/pgschema/pull/581), then broadened
+  on 2026-09-07 by merged follow-up
+  [pgschema#582](https://github.com/pgplex/pgschema/pull/582), and current
+  pg-delta still appears **covered**:
   - `exportSqlFiles()` preserves plan order across files in the default
     `by-object` layout and offers filename-stable dependency order through
     `layout: "ordered"`
@@ -260,18 +282,32 @@ covers that behavior family.
     `load(export(fb)) ≡ fb` across layouts
   - `tests/load-sql-files.test.ts` proves out-of-order SQL files still
     converge through dependency-aware retry rounds
+  - `src/frontends/load-sql-files.ts` and `src/plan/preamble.ts` both set
+    `check_function_bodies = off`, so forward-referencing SQL function bodies
+    remain replayable in the load/apply path
+  - `src/extract/dependencies.ts` maps relation row types through
+    `pg_type.typrelid` back to the owning table/view facts and resolves
+    `pg_proc` aggregates (`prokind = 'a'`) as first-class dependency endpoints,
+    so aggregates over view row types still sort after the view
   - no dedicated exact pg-toolbelt issue or PR was found
 
-- open follow-up PR [#582](https://github.com/pgplex/pgschema/pull/582)
-  remains adjacent upstream context for the broader #580 family, but since it
-  is not merged into pgschema main yet it does not change today's benchmark
-  matrix
+- **#559** support config data evolution - closed on 2026-09-08 by
+  [pgschema#583](https://github.com/pgplex/pgschema/pull/583) and remains
+  **not parity work for pg-delta** because current pg-delta still explicitly
+  stops at schema diffing and documents in
+  `src/frontends/load-sql-files.ts` plus
+  `packages/pg-delta/tests/load-sql-files.test.ts` that it deliberately never
+  compares data
 
-- no benchmark status rows changed between 2026-09-06 and 2026-09-07;
-  checked-in/live `pg-delta` remains
+- no benchmark status rows changed between 2026-09-07 and 2026-09-08;
+  checked-in `pg-delta` remains
   `08219f1a8832f86e7287e50bab793a498129db7a`, checked-in/live `pgschema`
-  advances to `fe7c64bfa410e7f9e8235eae3b912eb163b255f4` through merged PR
-  [#581](https://github.com/pgplex/pgschema/pull/581), and the benchmark
+  advances to `b25a9e9c7312d0ddc1be17207bc4b3d61f4140cd` through merged PRs
+  [#582](https://github.com/pgplex/pgschema/pull/582) and
+  [#583](https://github.com/pgplex/pgschema/pull/583), live
+  `pg-toolbelt/main` advances to
+  `a982dfab6a87fa97f47130a1754dbd48d69446ce` through merged PR
+  [#458](https://github.com/supabase/pg-toolbelt/pull/458), and the benchmark
   matrix stays unchanged
 
 - **#569** `dump and plan uses wrong order` - closed on 2026-09-02 after the
@@ -399,21 +435,25 @@ covers that behavior family.
   [#52](https://github.com/pgplex/pgschema/issues/52),
   [#84](https://github.com/pgplex/pgschema/issues/84),
   [#450](https://github.com/pgplex/pgschema/issues/450),
-  [#559](https://github.com/pgplex/pgschema/issues/559),
-  and [#564](https://github.com/pgplex/pgschema/issues/564)
-- checked-in/live `pg-toolbelt` now sits at
+  [#564](https://github.com/pgplex/pgschema/issues/564),
+  and [#584](https://github.com/pgplex/pgschema/issues/584)
+- checked-in `pg-toolbelt` now sits at
   `08219f1a8832f86e7287e50bab793a498129db7a`
+- live `pg-toolbelt/main` now sits at
+  `a982dfab6a87fa97f47130a1754dbd48d69446ce`
 - checked-in/live `pgschema` now sits at
-  `fe7c64bfa410e7f9e8235eae3b912eb163b255f4`
+  `b25a9e9c7312d0ddc1be17207bc4b3d61f4140cd`
 - merged pgschema PR
-  [#581](https://github.com/pgplex/pgschema/pull/581) is the current latest
-  upstream change on `main`; it closes issues
-  [#579](https://github.com/pgplex/pgschema/issues/579) and
-  [#580](https://github.com/pgplex/pgschema/issues/580)
-- open pgschema PR [#582](https://github.com/pgplex/pgschema/pull/582)
-  remains the current follow-up context for the broader #580 family
-- no pg-toolbelt issue / PR updated since 2026-09-06; its checked-in/live head
-  also remained unchanged after `git submodule update --remote --merge`
+  [#583](https://github.com/pgplex/pgschema/pull/583) is the current latest
+  upstream change on `main`; it closes issue
+  [#559](https://github.com/pgplex/pgschema/issues/559)
+- merged pgschema PR
+  [#582](https://github.com/pgplex/pgschema/pull/582) is the immediately
+  previous `main` change and broadens the resolved
+  [#580](https://github.com/pgplex/pgschema/issues/580) family
+- open pgschema PR [#585](https://github.com/pgplex/pgschema/pull/585)
+  is the current follow-up context for open issue
+  [#584](https://github.com/pgplex/pgschema/issues/584)
 - merged pgschema PR
   [#578](https://github.com/pgplex/pgschema/pull/578) remains the latest
   upstream change in the now-resolved
@@ -429,24 +469,16 @@ covers that behavior family.
   pg-delta context, but it does not map to an open pgschema issue or the active
   benchmarked gaps
 - merged pg-toolbelt PR
-  [#455](https://github.com/supabase/pg-toolbelt/pull/455) plus release
-  [#457](https://github.com/supabase/pg-toolbelt/pull/457) add the current
-  alpha.49 in-place alter ordering fix; the change is adjacent current context,
-  but it is not a dedicated tracker for the active partition-child or
-  virtual-generated-column gaps
-- previously open pg-toolbelt PR
-  [#444](https://github.com/supabase/pg-toolbelt/pull/444) closed without merge
-  on 2026-08-29 and is no longer part of the active upstream PR set
+  [#458](https://github.com/supabase/pg-toolbelt/pull/458) is the current live-
+  head delta; it is adjacent current context, but it is not a dedicated tracker
+  for the active partition-child or virtual-generated-column gaps
 - comments on open umbrella issue
   [#332](https://github.com/supabase/pg-toolbelt/issues/332) remain the
   closest tracker context for benchmarks **021** / **022**
-- current open pg-toolbelt PRs
-  [#432](https://github.com/supabase/pg-toolbelt/pull/432),
-  [#303](https://github.com/supabase/pg-toolbelt/pull/303), and
-  [#288](https://github.com/supabase/pg-toolbelt/pull/288) are useful current
-  context, but none is a dedicated exact duplicate of benchmarks **021** /
-  **022**, the draft-only gaps **#439** / **#444**, the remaining open parity
-  candidate **#564**, or the now-resolved sequence root-cause issue **#573**
+- recent pg-toolbelt open PR activity since 2026-09-07 remains adjacent only;
+  none is a dedicated exact duplicate of benchmarks **021** / **022**, the
+  draft-only gaps **#439** / **#444**, the remaining open parity candidate
+  **#564**, or the new open watch-list item **#584**
 
 ## Historical notes
 

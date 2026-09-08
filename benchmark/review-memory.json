@@ -1,57 +1,57 @@
 {
   "open": {
     "450": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-07-11T04:04:29Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"fe7c64bfa410e7f9e8235eae3b912eb163b255f4\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-07-11T04:04:29Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"b25a9e9c7312d0ddc1be17207bc4b3d61f4140cd\"}",
       "issue_number": 450,
       "issue_title": "Missing role blocks plan and apply",
       "issue_updated_at": "2026-07-11T04:04:29Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/450",
-      "reviewed_at": "2026-09-07T07:06:00+00:00",
+      "reviewed_at": "2026-09-08T07:10:55+00:00",
       "verdict": "not_parity"
     },
     "49": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-05-30T05:03:35Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"fe7c64bfa410e7f9e8235eae3b912eb163b255f4\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-05-30T05:03:35Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"b25a9e9c7312d0ddc1be17207bc4b3d61f4140cd\"}",
       "issue_number": 49,
       "issue_title": "Introduce an Explicit Workflow for Renaming Schema Objects",
       "issue_updated_at": "2026-05-30T05:03:35Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/49",
-      "reviewed_at": "2026-09-07T07:06:00+00:00",
+      "reviewed_at": "2026-09-08T07:10:55+00:00",
       "verdict": "not_parity"
     },
     "52": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"fe7c64bfa410e7f9e8235eae3b912eb163b255f4\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"b25a9e9c7312d0ddc1be17207bc4b3d61f4140cd\"}",
       "issue_number": 52,
       "issue_title": "Allow inclusion of Certain files to be explicitly executed by pgschema / included in plan file",
       "issue_updated_at": "2026-02-09T03:57:30Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/52",
-      "reviewed_at": "2026-09-07T07:06:00+00:00",
-      "verdict": "not_parity"
-    },
-    "559": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-08-31T11:37:31Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"fe7c64bfa410e7f9e8235eae3b912eb163b255f4\"}",
-      "issue_number": 559,
-      "issue_title": "Support config data evoluation",
-      "issue_updated_at": "2026-08-31T11:37:31Z",
-      "issue_url": "https://github.com/pgplex/pgschema/issues/559",
-      "reviewed_at": "2026-09-07T07:06:00+00:00",
+      "reviewed_at": "2026-09-08T07:10:55+00:00",
       "verdict": "not_parity"
     },
     "564": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-08-30T13:31:21Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"fe7c64bfa410e7f9e8235eae3b912eb163b255f4\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-08-30T13:31:21Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"b25a9e9c7312d0ddc1be17207bc4b3d61f4140cd\"}",
       "issue_number": 564,
       "issue_title": "adding NOT NULL columns safely (with easy optional backfill proposal)",
       "issue_updated_at": "2026-08-30T13:31:21Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/564",
-      "reviewed_at": "2026-09-07T07:06:00+00:00",
+      "reviewed_at": "2026-09-08T07:10:55+00:00",
       "verdict": "not_covered"
     },
+    "584": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-09-08T06:26:41Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"b25a9e9c7312d0ddc1be17207bc4b3d61f4140cd\"}",
+      "issue_number": 584,
+      "issue_title": "provide a solution for global items, extensions and roles.",
+      "issue_updated_at": "2026-09-08T06:26:41Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/584",
+      "reviewed_at": "2026-09-08T07:10:55+00:00",
+      "verdict": "not_parity"
+    },
     "84": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-08-08T15:52:12Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"fe7c64bfa410e7f9e8235eae3b912eb163b255f4\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-09-08T03:04:25Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"b25a9e9c7312d0ddc1be17207bc4b3d61f4140cd\"}",
       "issue_number": 84,
       "issue_title": "\ud83d\udc49\ud83d\udcdd Feedback Wanted: Share Your Use Case & Experience",
-      "issue_updated_at": "2026-08-08T15:52:12Z",
+      "issue_updated_at": "2026-09-08T03:04:25Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/84",
-      "reviewed_at": "2026-09-07T07:06:00+00:00",
+      "reviewed_at": "2026-09-08T07:10:55+00:00",
       "verdict": "not_parity"
     }
   },
@@ -597,21 +597,21 @@
       "verdict": "covered"
     },
     "499": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-07-03T14:46:36Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"fe7c64bfa410e7f9e8235eae3b912eb163b255f4\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-07-03T14:46:36Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"b25a9e9c7312d0ddc1be17207bc4b3d61f4140cd\"}",
       "issue_number": 499,
       "issue_title": "PARTITION OF create path: support child-specific column elements",
       "issue_updated_at": "2026-07-03T14:46:36Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/499",
-      "reviewed_at": "2026-09-07T07:06:00+00:00",
+      "reviewed_at": "2026-09-08T07:10:55+00:00",
       "verdict": "tracked"
     },
     "501": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-07-06T06:58:48Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"fe7c64bfa410e7f9e8235eae3b912eb163b255f4\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-07-06T06:58:48Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"b25a9e9c7312d0ddc1be17207bc4b3d61f4140cd\"}",
       "issue_number": 501,
       "issue_title": "PG18 VIRTUAL generated columns silently rewritten as DEFAULT in plan, producing invalid DDL",
       "issue_updated_at": "2026-07-06T06:58:48Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/501",
-      "reviewed_at": "2026-09-07T07:06:00+00:00",
+      "reviewed_at": "2026-09-08T07:10:55+00:00",
       "verdict": "tracked"
     },
     "502": {
@@ -866,6 +866,15 @@
       "reviewed_at": "2026-08-31T07:08:44.805890+00:00",
       "verdict": "not_parity"
     },
+    "559": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-09-08T04:12:32Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"b25a9e9c7312d0ddc1be17207bc4b3d61f4140cd\"}",
+      "issue_number": 559,
+      "issue_title": "Support config data evoluation",
+      "issue_updated_at": "2026-09-08T04:12:32Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/559",
+      "reviewed_at": "2026-09-08T07:10:55+00:00",
+      "verdict": "not_parity"
+    },
     "561": {
       "fingerprint": "{\"issue_updated_at\": \"2026-08-28T06:49:43Z\", \"pgdelta_sha\": \"107ac3df4b889c527215d1f6a37df64b33154c16\", \"pgschema_sha\": \"97d8d60dd72a46704cc63b71b63aab2784847658\"}",
       "issue_number": 561,
@@ -930,21 +939,21 @@
       "verdict": "covered"
     },
     "579": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-09-07T03:52:07Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"fe7c64bfa410e7f9e8235eae3b912eb163b255f4\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-09-07T03:52:07Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"b25a9e9c7312d0ddc1be17207bc4b3d61f4140cd\"}",
       "issue_number": 579,
       "issue_title": "type does not exist",
       "issue_updated_at": "2026-09-07T03:52:07Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/579",
-      "reviewed_at": "2026-09-07T07:06:00+00:00",
+      "reviewed_at": "2026-09-08T07:10:55+00:00",
       "verdict": "covered"
     },
     "580": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-09-07T05:16:10Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"fe7c64bfa410e7f9e8235eae3b912eb163b255f4\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-09-07T05:16:10Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"b25a9e9c7312d0ddc1be17207bc4b3d61f4140cd\"}",
       "issue_number": 580,
       "issue_title": "dump --multi-file orders \\i includes by fixed object-category buckets, not by dependency",
       "issue_updated_at": "2026-09-07T05:16:10Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/580",
-      "reviewed_at": "2026-09-07T07:06:00+00:00",
+      "reviewed_at": "2026-09-08T07:10:55+00:00",
       "verdict": "covered"
     }
   }

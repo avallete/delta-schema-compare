@@ -16,6 +16,57 @@ In the upstream fix, pgschema only needed `DEFAULT` and `NOT NULL`
 overrides, but the gap is still real for pg-delta because the current plan
 rule emits only the bare `PARTITION OF ... <bound>` form.
 
+## Refresh note (2026-09-08)
+
+This recheck keeps the checked-in `pg-delta` baseline at
+`08219f1a8832f86e7287e50bab793a498129db7a`
+(`@supabase/pg-delta@1.0.0-alpha.49`), observes live `pg-toolbelt/main` at
+`a982dfab6a87fa97f47130a1754dbd48d69446ce` through merged PR
+[#458](https://github.com/supabase/pg-toolbelt/pull/458), and advances
+checked-in/live `pgschema` from `fe7c64bfa410e7f9e8235eae3b912eb163b255f4` to
+`b25a9e9c7312d0ddc1be17207bc4b3d61f4140cd` through merged PRs
+[#582](https://github.com/pgplex/pgschema/pull/582) and
+[#583](https://github.com/pgplex/pgschema/pull/583).
+
+The new live pg-delta delta is adjacent rather than gap-closing: PR #458 only
+guards checked-out clients from connection errors in apply/extract/load
+callers, so the active partition-child extract / plan path is still unchanged:
+
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still filters
+  relation columns with `a.attislocal`, so child-local overrides on inherited
+  partition columns never become diff-visible facts.
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still
+  serializes partition-child creation as
+  `CREATE TABLE ... PARTITION OF ... ${bound}` and has no branch that emits
+  PostgreSQL's typed table element list for child-local overrides.
+
+Today's pgschema delta is also outside the active partition-child path.
+Merged PR [#582](https://github.com/pgplex/pgschema/pull/582) broadens the
+already-covered multi-file ordering family around
+[#580](https://github.com/pgplex/pgschema/issues/580), merged PR
+[#583](https://github.com/pgplex/pgschema/pull/583) closes
+[#559](https://github.com/pgplex/pgschema/issues/559) as config-data work
+outside pg-delta's schema-diff scope, and new issue
+[#584](https://github.com/pgplex/pgschema/issues/584) plus open PR
+[#585](https://github.com/pgplex/pgschema/pull/585) remain embedded-plan
+ergonomics rather than this benchmark.
+
+The last focused 2026-08-14 runtime observation therefore still stands and
+emitted only:
+
+```sql
+CREATE TABLE "test_schema"."orders_us" PARTITION OF "test_schema"."orders" FOR VALUES IN ('us')
+ALTER TABLE "test_schema"."orders_us" OWNER TO "test"
+```
+
+The child-specific `priority DEFAULT 10` and `notes NOT NULL` overrides were
+still omitted, and direct exact searches for `pgschema#499`, `pgschema#564`,
+and `pgschema#584` still return no dedicated pg-toolbelt issue or PR. Umbrella
+issue [#332](https://github.com/supabase/pg-toolbelt/issues/332) plus
+unrelated open issue [#451](https://github.com/supabase/pg-toolbelt/issues/451)
+remain the only adjacent tracker context. Benchmark 021 therefore remains
+**behaviorally uncovered** with only **umbrella-thread tracker context**.
+
 ## Refresh note (2026-09-07)
 
 This recheck keeps checked-in/live `pg-delta` at
