@@ -16,6 +16,55 @@ In the upstream fix, pgschema only needed `DEFAULT` and `NOT NULL`
 overrides, but the gap is still real for pg-delta because the current plan
 rule emits only the bare `PARTITION OF ... <bound>` form.
 
+## Refresh note (2026-09-09)
+
+This recheck keeps the checked-in `pg-delta` baseline at
+`08219f1a8832f86e7287e50bab793a498129db7a`
+(`@supabase/pg-delta@1.0.0-alpha.49`), observes live `pg-toolbelt/main` at
+`ce61f01c24962fe21b9d02b319d8c26be0b5fd13` through merged PRs
+[#460](https://github.com/supabase/pg-toolbelt/pull/460),
+[#461](https://github.com/supabase/pg-toolbelt/pull/461),
+[#462](https://github.com/supabase/pg-toolbelt/pull/462),
+[#464](https://github.com/supabase/pg-toolbelt/pull/464),
+[#467](https://github.com/supabase/pg-toolbelt/pull/467), and
+[#469](https://github.com/supabase/pg-toolbelt/pull/469), and advances
+checked-in/live `pgschema` from
+`b25a9e9c7312d0ddc1be17207bc4b3d61f4140cd` to
+`738a3bb40cf6b062928eeb564e3a98ec7f3c6989` through merged PRs
+[#585](https://github.com/pgplex/pgschema/pull/585),
+[#586](https://github.com/pgplex/pgschema/pull/586),
+[#587](https://github.com/pgplex/pgschema/pull/587), and
+[#590](https://github.com/pgplex/pgschema/pull/590).
+
+Today's upstream delta reshapes the watch list and promotes resolved
+pgschema issue [#564](https://github.com/pgplex/pgschema/issues/564) into new
+benchmark [024](024-pg18-not-null-validation.md), but it still does not touch
+the active partition-child extract / plan path:
+
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still filters
+  relation columns with `a.attislocal`, so child-local overrides on inherited
+  partition columns never become diff-visible facts.
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still
+  serializes partition-child creation as
+  `CREATE TABLE ... PARTITION OF ... ${bound}` and has no branch that emits
+  PostgreSQL's typed table element list for child-local overrides.
+
+The last focused 2026-08-14 runtime observation therefore still stands and
+emitted only:
+
+```sql
+CREATE TABLE "test_schema"."orders_us" PARTITION OF "test_schema"."orders" FOR VALUES IN ('us')
+ALTER TABLE "test_schema"."orders_us" OWNER TO "test"
+```
+
+The child-specific `priority DEFAULT 10` and `notes NOT NULL` overrides were
+still omitted, and direct exact searches for `pgschema#499`, `pgschema#564`,
+and `pgschema#589` still return no dedicated pg-toolbelt issue or PR.
+Umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332)
+plus unrelated open issue [#451](https://github.com/supabase/pg-toolbelt/issues/451)
+remain the only adjacent tracker context. Benchmark 021 therefore remains
+**behaviorally uncovered** with only **umbrella-thread tracker context**.
+
 ## Refresh note (2026-09-08)
 
 This recheck keeps the checked-in `pg-delta` baseline at

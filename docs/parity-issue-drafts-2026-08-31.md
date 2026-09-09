@@ -7,6 +7,10 @@ No GitHub issues were opened as part of this refresh. This draft is saved so
 the finding can be reviewed in a PR first and then promoted to a real
 pg-toolbelt issue only if it still looks correct.
 
+Draft 1 for pgschema issue #564 was promoted into benchmark
+[`024-pg18-not-null-validation.md`](../benchmark/024-pg18-not-null-validation.md)
+on 2026-09-09. The draft text below is retained as historical context.
+
 ## Duplicate-check summary (pg-toolbelt)
 
 Before writing the draft below, I checked the current open and closed
