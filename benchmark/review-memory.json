@@ -1,58 +1,49 @@
 {
   "open": {
     "49": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-05-30T05:03:35Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"738a3bb40cf6b062928eeb564e3a98ec7f3c6989\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-05-30T05:03:35Z\", \"pgdelta_sha\": \"85e8946a79b0a5b149fe9a772fef882c14cb9567\", \"pgschema_sha\": \"319b88c83d62b2c9a62eff7a09ec6563954bcf4b\"}",
       "issue_number": 49,
       "issue_title": "Introduce an Explicit Workflow for Renaming Schema Objects",
       "issue_updated_at": "2026-05-30T05:03:35Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/49",
-      "reviewed_at": "2026-09-10T07:07:30+00:00",
+      "reviewed_at": "2026-09-11T07:18:41+00:00",
       "verdict": "not_parity"
     },
     "52": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"738a3bb40cf6b062928eeb564e3a98ec7f3c6989\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-02-09T03:57:30Z\", \"pgdelta_sha\": \"85e8946a79b0a5b149fe9a772fef882c14cb9567\", \"pgschema_sha\": \"319b88c83d62b2c9a62eff7a09ec6563954bcf4b\"}",
       "issue_number": 52,
       "issue_title": "Allow inclusion of Certain files to be explicitly executed by pgschema / included in plan file",
       "issue_updated_at": "2026-02-09T03:57:30Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/52",
-      "reviewed_at": "2026-09-10T07:07:30+00:00",
-      "verdict": "not_parity"
-    },
-    "84": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-09-08T03:04:25Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"738a3bb40cf6b062928eeb564e3a98ec7f3c6989\"}",
-      "issue_number": 84,
-      "issue_title": "\ud83d\udc49\ud83d\udcdd Feedback Wanted: Share Your Use Case & Experience",
-      "issue_updated_at": "2026-09-08T03:04:25Z",
-      "issue_url": "https://github.com/pgplex/pgschema/issues/84",
-      "reviewed_at": "2026-09-10T07:07:30+00:00",
+      "reviewed_at": "2026-09-11T07:18:41+00:00",
       "verdict": "not_parity"
     },
     "588": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-09-09T10:56:55Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"738a3bb40cf6b062928eeb564e3a98ec7f3c6989\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-09-09T10:56:55Z\", \"pgdelta_sha\": \"85e8946a79b0a5b149fe9a772fef882c14cb9567\", \"pgschema_sha\": \"319b88c83d62b2c9a62eff7a09ec6563954bcf4b\"}",
       "issue_number": 588,
       "issue_title": "data feature design doesn't work for us",
       "issue_updated_at": "2026-09-09T10:56:55Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/588",
-      "reviewed_at": "2026-09-10T07:07:30+00:00",
+      "reviewed_at": "2026-09-11T07:18:41+00:00",
       "verdict": "not_parity"
     },
-    "591": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-09-09T09:27:58Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"738a3bb40cf6b062928eeb564e3a98ec7f3c6989\"}",
-      "issue_number": 591,
-      "issue_title": "GENERATED ALWAYS AS expression changes are ignored by plan",
-      "issue_updated_at": "2026-09-09T09:27:58Z",
-      "issue_url": "https://github.com/pgplex/pgschema/issues/591",
-      "reviewed_at": "2026-09-10T07:07:30+00:00",
-      "verdict": "covered"
-    },
     "593": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-09-09T13:53:32Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"738a3bb40cf6b062928eeb564e3a98ec7f3c6989\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-09-09T13:53:32Z\", \"pgdelta_sha\": \"85e8946a79b0a5b149fe9a772fef882c14cb9567\", \"pgschema_sha\": \"319b88c83d62b2c9a62eff7a09ec6563954bcf4b\"}",
       "issue_number": 593,
       "issue_title": "dump omits non-default column collations",
       "issue_updated_at": "2026-09-09T13:53:32Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/593",
-      "reviewed_at": "2026-09-10T07:07:30+00:00",
+      "reviewed_at": "2026-09-11T07:18:41+00:00",
       "verdict": "covered"
+    },
+    "84": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-09-08T03:04:25Z\", \"pgdelta_sha\": \"85e8946a79b0a5b149fe9a772fef882c14cb9567\", \"pgschema_sha\": \"319b88c83d62b2c9a62eff7a09ec6563954bcf4b\"}",
+      "issue_number": 84,
+      "issue_title": "\ud83d\udc49\ud83d\udcdd Feedback Wanted: Share Your Use Case & Experience",
+      "issue_updated_at": "2026-09-08T03:04:25Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/84",
+      "reviewed_at": "2026-09-11T07:18:41+00:00",
+      "verdict": "not_parity"
     }
   },
   "resolved": {
@@ -606,21 +597,21 @@
       "verdict": "covered"
     },
     "499": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-07-03T14:46:36Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"738a3bb40cf6b062928eeb564e3a98ec7f3c6989\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-07-03T14:46:36Z\", \"pgdelta_sha\": \"85e8946a79b0a5b149fe9a772fef882c14cb9567\", \"pgschema_sha\": \"319b88c83d62b2c9a62eff7a09ec6563954bcf4b\"}",
       "issue_number": 499,
       "issue_title": "PARTITION OF create path: support child-specific column elements",
       "issue_updated_at": "2026-07-03T14:46:36Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/499",
-      "reviewed_at": "2026-09-09T07:05:30+00:00",
+      "reviewed_at": "2026-09-11T07:18:41+00:00",
       "verdict": "tracked"
     },
     "501": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-07-06T06:58:48Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"738a3bb40cf6b062928eeb564e3a98ec7f3c6989\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-07-06T06:58:48Z\", \"pgdelta_sha\": \"85e8946a79b0a5b149fe9a772fef882c14cb9567\", \"pgschema_sha\": \"319b88c83d62b2c9a62eff7a09ec6563954bcf4b\"}",
       "issue_number": 501,
       "issue_title": "PG18 VIRTUAL generated columns silently rewritten as DEFAULT in plan, producing invalid DDL",
       "issue_updated_at": "2026-07-06T06:58:48Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/501",
-      "reviewed_at": "2026-09-09T07:05:30+00:00",
+      "reviewed_at": "2026-09-11T07:18:41+00:00",
       "verdict": "tracked"
     },
     "502": {
@@ -903,12 +894,12 @@
       "verdict": "not_parity"
     },
     "564": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-09-08T10:11:17Z\", \"pgdelta_sha\": \"08219f1a8832f86e7287e50bab793a498129db7a\", \"pgschema_sha\": \"738a3bb40cf6b062928eeb564e3a98ec7f3c6989\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-09-08T10:11:17Z\", \"pgdelta_sha\": \"85e8946a79b0a5b149fe9a772fef882c14cb9567\", \"pgschema_sha\": \"319b88c83d62b2c9a62eff7a09ec6563954bcf4b\"}",
       "issue_number": 564,
       "issue_title": "adding NOT NULL columns safely (with easy optional backfill proposal)",
       "issue_updated_at": "2026-09-08T10:11:17Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/564",
-      "reviewed_at": "2026-09-09T07:05:30+00:00",
+      "reviewed_at": "2026-09-11T07:18:41+00:00",
       "verdict": "not_covered"
     },
     "569": {
@@ -990,6 +981,15 @@
       "issue_updated_at": "2026-09-09T06:13:21Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/589",
       "reviewed_at": "2026-09-09T07:05:30+00:00",
+      "verdict": "covered"
+    },
+    "591": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-09-10T08:22:07Z\", \"pgdelta_sha\": \"85e8946a79b0a5b149fe9a772fef882c14cb9567\", \"pgschema_sha\": \"319b88c83d62b2c9a62eff7a09ec6563954bcf4b\"}",
+      "issue_number": 591,
+      "issue_title": "GENERATED ALWAYS AS expression changes are ignored by plan",
+      "issue_updated_at": "2026-09-10T08:22:07Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/591",
+      "reviewed_at": "2026-09-11T07:18:41+00:00",
       "verdict": "covered"
     }
   }

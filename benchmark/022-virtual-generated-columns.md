@@ -17,6 +17,58 @@ mechanism. This benchmark tracks the now-resolved upstream scenario after
 pgschema merged its fix on `main`, while current pg-delta still lacks exact
 coverage.
 
+## Refresh note (2026-09-11)
+
+This recheck advances checked-in/live `pg-delta` from
+`08219f1a8832f86e7287e50bab793a498129db7a`
+(`@supabase/pg-delta@1.0.0-alpha.49`) to
+`85e8946a79b0a5b149fe9a772fef882c14cb9567`
+(`@supabase/pg-delta@1.0.0-alpha.50`) and advances checked-in/live
+`pgschema` from `738a3bb40cf6b062928eeb564e3a98ec7f3c6989` to
+`319b88c83d62b2c9a62eff7a09ec6563954bcf4b` through merged PR
+[#592](https://github.com/pgplex/pgschema/pull/592), which closes
+[#591](https://github.com/pgplex/pgschema/issues/591).
+
+The new upstream generated-column fix still does not change this benchmark's
+active uncovered slice:
+
+- `git diff` between the two pg-delta heads is empty for the active files
+  `src/extract/relations.ts`, `src/plan/rules/helpers.ts`,
+  `src/plan/rules/tables.ts`, and the generated-column corpus, so the latest
+  runtime evidence for this benchmark is still representative on alpha.50.
+- current pg-delta already covered issue
+  [#591](https://github.com/pgplex/pgschema/issues/591)'s generated-expression
+  change scenario before the upstream fix landed: the existing
+  `packages/pg-delta/corpus/alter-table--generated-column` case exercises a
+  `+` -> `*` expression change, and
+  `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still diffs
+  `generatedExpr` with `"replace"` semantics.
+- benchmark **022** remains about the missing `VIRTUAL` versus `STORED` kind:
+  `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still
+  collapses `attgenerated` to generated-expression presence, and
+  `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts` still
+  hard-codes generated-column rendering as
+  `GENERATED ALWAYS AS (...) STORED`.
+- open pgschema issue [#593](https://github.com/pgplex/pgschema/issues/593)
+  remains a separate covered column-collation case and does not touch the
+  generated-column kind path.
+
+The last focused 2026-08-14 runtime observation therefore still stands and
+serialized the generated column as:
+
+```sql
+ALTER TABLE "test_schema"."users"
+  ADD COLUMN "full_name" text GENERATED ALWAYS AS (((first_name || ' '::text) || last_name)) STORED
+```
+
+The PostgreSQL 18 `VIRTUAL` keyword is still collapsed back to `STORED`, and
+direct exact searches for `pgschema#501`, `pgschema#591`, and `pgschema#593`
+still return no dedicated pg-toolbelt issue or PR. Umbrella issue
+[#332](https://github.com/supabase/pg-toolbelt/issues/332) remains the only
+adjacent tracker context. Benchmark 022 therefore remains **behaviorally
+uncovered**, while resolved pgschema issue **#591** itself is already
+**covered** in current pg-delta.
+
 ## Refresh note (2026-09-10)
 
 This recheck keeps the checked-in `pg-delta` baseline at

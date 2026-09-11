@@ -21,6 +21,40 @@ column nullability only as a boolean `notNull` fact, emits a direct
 `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL`, and does not extract PG18's
 `contype = 'n'` constraint rows as diff-visible state.
 
+## Refresh note (2026-09-11)
+
+This recheck advances checked-in/live `pg-delta` from
+`08219f1a8832f86e7287e50bab793a498129db7a`
+(`@supabase/pg-delta@1.0.0-alpha.49`) to
+`85e8946a79b0a5b149fe9a772fef882c14cb9567`
+(`@supabase/pg-delta@1.0.0-alpha.50`) and advances checked-in/live
+`pgschema` from `738a3bb40cf6b062928eeb564e3a98ec7f3c6989` to
+`319b88c83d62b2c9a62eff7a09ec6563954bcf4b` through merged PR
+[#592](https://github.com/pgplex/pgschema/pull/592).
+
+Today's upstream delta is elsewhere, and the active PG18 not-null path remains
+unchanged:
+
+- `git diff` between the two pg-delta heads is empty for the active files
+  `src/extract/relations.ts`, `src/plan/rules/helpers.ts`,
+  `src/plan/rules/tables.ts`, and the generated-column corpus, so alpha.50
+  still carries the same nullability modeling limits as alpha.49.
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still records
+  column nullability from `a.attnotnull` and filters table constraints to
+  `con.contype IN ('p', 'u', 'f', 'c', 'x')`, so PG18 `contype = 'n'` pending-
+  validation state remains invisible.
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still emits a
+  plain `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL` in `notNull.alter`.
+- resolved pgschema issue [#591](https://github.com/pgplex/pgschema/issues/591)
+  and open issue [#593](https://github.com/pgplex/pgschema/issues/593) cover
+  adjacent generated-column and collation fidelity work, but neither changes
+  this nullability workflow.
+
+Direct exact searches for `pgschema#564`, `pgschema#591`, and `pgschema#593`
+still return no dedicated pg-toolbelt issue or PR for this nullability
+workflow. Benchmark 024 therefore remains **not covered** in current
+pg-delta.
+
 ## Refresh note (2026-09-10)
 
 This recheck keeps the checked-in `pg-delta` baseline at

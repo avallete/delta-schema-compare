@@ -4,43 +4,45 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-09-10)
+## Latest refresh snapshot (2026-09-11)
 
 Refreshed against:
 
-- checked-in `repos/pg-toolbelt` @ `08219f1a8832f86e7287e50bab793a498129db7a`
-- live `repos/pg-toolbelt/main` @ `ce61f01c24962fe21b9d02b319d8c26be0b5fd13`
-- checked-in/live `repos/pgschema` @ `738a3bb40cf6b062928eeb564e3a98ec7f3c6989`
+- checked-in/live `repos/pg-toolbelt` @ `85e8946a79b0a5b149fe9a772fef882c14cb9567`
+- checked-in/live `repos/pgschema` @ `319b88c83d62b2c9a62eff7a09ec6563954bcf4b`
 
-> The 2026-09-10 refresh keeps the active benchmarked gap set at **021**,
-> **022**, and **024** while screening two new open pgschema issues:
+> The 2026-09-11 refresh keeps the active benchmarked gap set at **021**,
+> **022**, and **024** while promoting pgschema issue **#591** from the open
+> watch list into the resolved-and-covered bucket:
 >
 > - [#591](https://github.com/pgplex/pgschema/issues/591)
->   (`GENERATED ALWAYS AS` expression changes) is **covered** in current
->   pg-delta via the existing `alter-table--generated-column` corpus scenario
->   and `generatedExpr: "replace"` diff path
+>   (`GENERATED ALWAYS AS` expression changes) closed on 2026-09-10 via
+>   [pgschema#592](https://github.com/pgplex/pgschema/pull/592) and remains
+>   **covered** in current pg-delta via the existing
+>   `alter-table--generated-column` corpus scenario and
+>   `generatedExpr: "replace"` diff path
 > - [#593](https://github.com/pgplex/pgschema/issues/593)
 >   (non-default column collations omitted from dump) appears **covered** in
 >   current pg-delta because column extraction preserves explicit
 >   `attcollation` and SQL emission replays `COLLATE ...`
-> - checked-in `repos/pg-toolbelt` remains
+> - checked-in/live `repos/pg-toolbelt` advances from
 >   `08219f1a8832f86e7287e50bab793a498129db7a` (`@supabase/pg-delta@1.0.0-alpha.49`)
-> - live `pg-toolbelt/main` remains `ce61f01c24962fe21b9d02b319d8c26be0b5fd13`; new open PRs
->   [#470](https://github.com/supabase/pg-toolbelt/pull/470),
->   [#471](https://github.com/supabase/pg-toolbelt/pull/471), and
->   [#472](https://github.com/supabase/pg-toolbelt/pull/472) are adjacent only
-> - checked-in/live `pgschema` remains `738a3bb40cf6b062928eeb564e3a98ec7f3c6989`; new issue
->   [#591](https://github.com/pgplex/pgschema/issues/591), open PR
->   [#592](https://github.com/pgplex/pgschema/pull/592), and new issue
->   [#593](https://github.com/pgplex/pgschema/issues/593) widen upstream
->   generated-column and column-collation coverage
+>   to `85e8946a79b0a5b149fe9a772fef882c14cb9567`
+>   (`@supabase/pg-delta@1.0.0-alpha.50`), but the active-gap files
+>   (`src/extract/relations.ts`, `src/plan/rules/helpers.ts`,
+>   `src/plan/rules/tables.ts`, and `corpus/alter-table--generated-column/`)
+>   are unchanged across that bump
+> - checked-in/live `repos/pgschema` advances from
+>   `738a3bb40cf6b062928eeb564e3a98ec7f3c6989` to
+>   `319b88c83d62b2c9a62eff7a09ec6563954bcf4b` through merged PR
+>   [#592](https://github.com/pgplex/pgschema/pull/592)
 > - benchmark **021** remains unresolved because child-local partition
 >   overrides are still not modeled, while benchmarks **022** and **024**
 >   remain unresolved for the previously documented `VIRTUAL`-kind and PG18
 >   native `NOT NULL` reasons
-> - exact duplicate searches for `pgschema#499`, `#501`, `#564`, `#591`, and
->   `#593` still return no dedicated pg-toolbelt issue or PR, and this
->   repository still has no local tracker issues
+> - exact duplicate searches for `pgschema#499`, `#501`, `#564`, and `#593`
+>   still return no dedicated pg-toolbelt issue or PR, and this repository
+>   still has no local tracker issues
 
 ## Benchmark status matrix
 
@@ -74,14 +76,13 @@ Three resolved-issue benchmark scenarios remain active as unresolved behavior:
 - **024** - PostgreSQL 18 native `NOT NULL ... NOT VALID` state and pending
   validation visibility
 
-The checked-in `pg-delta` head remains
-`08219f1a8832f86e7287e50bab793a498129db7a`
-(`@supabase/pg-delta@1.0.0-alpha.49`), live `pg-toolbelt/main` remains
-`ce61f01c24962fe21b9d02b319d8c26be0b5fd13`, and checked-in/live `pgschema` remains
-`738a3bb40cf6b062928eeb564e3a98ec7f3c6989`.
+The checked-in/live `pg-delta` head is now
+`85e8946a79b0a5b149fe9a772fef882c14cb9567`
+(`@supabase/pg-delta@1.0.0-alpha.50`), and checked-in/live `pgschema` is now
+`319b88c83d62b2c9a62eff7a09ec6563954bcf4b`.
 
-Today's upstream delta does not change the active gap set, but it adds adjacent
-context:
+Today's upstream delta does not change the active gap set, and the active
+pg-delta gap paths are unchanged from alpha.49 to alpha.50:
 
 - benchmark **021** remains structurally uncovered because
   `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still filters
@@ -93,7 +94,7 @@ context:
   `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still collapses
   `attgenerated` to generated-expression presence and
   `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts` still renders
-  generated columns as `... STORED`; new pgschema issue
+  generated columns as `... STORED`; resolved pgschema issue
   [#591](https://github.com/pgplex/pgschema/issues/591) is already covered in
   current pg-delta and does not change this benchmark verdict
 - benchmark **024** remains structurally uncovered because
@@ -102,12 +103,16 @@ context:
   `con.contype IN ('p', 'u', 'f', 'c', 'x')`, while
   `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still emits a
   plain `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL`
+- merged pgschema PR [#592](https://github.com/pgplex/pgschema/pull/592)
+  expands upstream generated-column comparison, but the corresponding pg-delta
+  expression-change scenario was already covered before this refresh
 - new pgschema issue [#593](https://github.com/pgplex/pgschema/issues/593)
   appears covered in current pg-delta's extract/render path, so there is still
   no open uncovered parity candidate on the pgschema side
 - the focused 2026-08-14 runtime probes remain the latest direct runtime
-  evidence for benchmarks **021** / **022**, while benchmark **024** remains
-  source-validated from its 2026-09-09 promotion note
+  evidence for benchmarks **021** / **022** because the relevant pg-delta
+  files did not change across the alpha.49 -> alpha.50 bump, while benchmark
+  **024** remains source-validated from its 2026-09-09 promotion note
 - umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332)
   still carries the only adjacent tracker context for benchmarks **021** /
   **022**; benchmark **024** still has no exact pg-toolbelt issue or PR
@@ -119,7 +124,6 @@ The current open pgschema watch list is now:
 [#52](https://github.com/pgplex/pgschema/issues/52),
 [#84](https://github.com/pgplex/pgschema/issues/84),
 [#588](https://github.com/pgplex/pgschema/issues/588),
-[#591](https://github.com/pgplex/pgschema/issues/591),
 and [#593](https://github.com/pgplex/pgschema/issues/593).
 
 Screened candidates:
@@ -134,12 +138,6 @@ Screened candidates:
   it discusses pgschema's config/data dump workflow, while current pg-delta
   remains a schema-diff tool and explicitly leaves row-level data comparison
   out of scope
-- **#591** generated-column expression changes on existing columns -
-  **covered** in current pg-delta; `packages/pg-delta/corpus/alter-table--generated-column`
-  already exercises an existing generated-expression change and
-  `tableRules.column.generatedExpr` is diffed with `"replace"` semantics, so
-  the change is not invisible even though pg-delta uses replacement rather than
-  pgschema's version-gated `SET EXPRESSION AS`
 - **#593** explicit non-default column collations - **covered** in current
   pg-delta's extract/render model; `src/extract/relations.ts` preserves
   explicit non-default `attcollation` on column facts and
@@ -159,12 +157,25 @@ benchmark **024** still has no exact pg-toolbelt issue or PR, and open PR
 rather than a direct fix for benchmark **021**'s child-local column-override
 path. Exact duplicate searches for current open watch-list issues
 [#588](https://github.com/pgplex/pgschema/issues/588),
-[#591](https://github.com/pgplex/pgschema/issues/591),
 [#593](https://github.com/pgplex/pgschema/issues/593), and the already-
 benchmarked resolved issue [#564](https://github.com/pgplex/pgschema/issues/564)
 also return no dedicated pg-toolbelt issue or PR.
 
 ## Recent closed-issue / tracker updates
+
+- **#591** generated-column expression changes on existing columns - closed on
+  2026-09-10 by [pgschema#592](https://github.com/pgplex/pgschema/pull/592)
+  and remains **covered** in current pg-delta:
+  - `packages/pg-delta/corpus/alter-table--generated-column` already exercises
+    an existing generated-expression change (`+` -> `*`) and a new generated
+    column add
+  - `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still diffs
+    `generatedExpr` with `"replace"` semantics, so the expression-change slice
+    was already visible on the pg-delta side even before pgschema's merged
+    `SET EXPRESSION AS` / drop-and-recreate fix
+  - benchmark [022](022-virtual-generated-columns.md) therefore remains the
+    narrower unresolved `VIRTUAL`-kind parity gap rather than broad generated-
+    column drift
 
 - **#571** quoted identifiers in dependency detection - closed on 2026-09-03
   by [pgschema#572](https://github.com/pgplex/pgschema/pull/572) and remains
