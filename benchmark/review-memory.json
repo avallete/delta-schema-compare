@@ -6,7 +6,7 @@
       "issue_title": "Introduce an Explicit Workflow for Renaming Schema Objects",
       "issue_updated_at": "2026-05-30T05:03:35Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/49",
-      "reviewed_at": "2026-09-11T07:18:41+00:00",
+      "reviewed_at": "2026-09-12T07:18:47+00:00",
       "verdict": "not_parity"
     },
     "52": {
@@ -15,7 +15,7 @@
       "issue_title": "Allow inclusion of Certain files to be explicitly executed by pgschema / included in plan file",
       "issue_updated_at": "2026-02-09T03:57:30Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/52",
-      "reviewed_at": "2026-09-11T07:18:41+00:00",
+      "reviewed_at": "2026-09-12T07:18:47+00:00",
       "verdict": "not_parity"
     },
     "588": {
@@ -24,7 +24,7 @@
       "issue_title": "data feature design doesn't work for us",
       "issue_updated_at": "2026-09-09T10:56:55Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/588",
-      "reviewed_at": "2026-09-11T07:18:41+00:00",
+      "reviewed_at": "2026-09-12T07:18:47+00:00",
       "verdict": "not_parity"
     },
     "593": {
@@ -33,8 +33,17 @@
       "issue_title": "dump omits non-default column collations",
       "issue_updated_at": "2026-09-09T13:53:32Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/593",
-      "reviewed_at": "2026-09-11T07:18:41+00:00",
+      "reviewed_at": "2026-09-12T07:18:47+00:00",
       "verdict": "covered"
+    },
+    "594": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-09-11T11:56:08Z\", \"pgdelta_sha\": \"85e8946a79b0a5b149fe9a772fef882c14cb9567\", \"pgschema_sha\": \"319b88c83d62b2c9a62eff7a09ec6563954bcf4b\"}",
+      "issue_number": 594,
+      "issue_title": "ignore views seems broken",
+      "issue_updated_at": "2026-09-11T11:56:08Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/594",
+      "reviewed_at": "2026-09-12T07:18:47+00:00",
+      "verdict": "not_parity"
     },
     "84": {
       "fingerprint": "{\"issue_updated_at\": \"2026-09-08T03:04:25Z\", \"pgdelta_sha\": \"85e8946a79b0a5b149fe9a772fef882c14cb9567\", \"pgschema_sha\": \"319b88c83d62b2c9a62eff7a09ec6563954bcf4b\"}",
@@ -42,7 +51,7 @@
       "issue_title": "\ud83d\udc49\ud83d\udcdd Feedback Wanted: Share Your Use Case & Experience",
       "issue_updated_at": "2026-09-08T03:04:25Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/84",
-      "reviewed_at": "2026-09-11T07:18:41+00:00",
+      "reviewed_at": "2026-09-12T07:18:47+00:00",
       "verdict": "not_parity"
     }
   },
@@ -602,7 +611,7 @@
       "issue_title": "PARTITION OF create path: support child-specific column elements",
       "issue_updated_at": "2026-07-03T14:46:36Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/499",
-      "reviewed_at": "2026-09-11T07:18:41+00:00",
+      "reviewed_at": "2026-09-12T07:18:47+00:00",
       "verdict": "tracked"
     },
     "501": {
@@ -611,7 +620,7 @@
       "issue_title": "PG18 VIRTUAL generated columns silently rewritten as DEFAULT in plan, producing invalid DDL",
       "issue_updated_at": "2026-07-06T06:58:48Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/501",
-      "reviewed_at": "2026-09-11T07:18:41+00:00",
+      "reviewed_at": "2026-09-12T07:18:47+00:00",
       "verdict": "tracked"
     },
     "502": {
@@ -899,7 +908,7 @@
       "issue_title": "adding NOT NULL columns safely (with easy optional backfill proposal)",
       "issue_updated_at": "2026-09-08T10:11:17Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/564",
-      "reviewed_at": "2026-09-11T07:18:41+00:00",
+      "reviewed_at": "2026-09-12T07:18:47+00:00",
       "verdict": "not_covered"
     },
     "569": {
@@ -989,7 +998,7 @@
       "issue_title": "GENERATED ALWAYS AS expression changes are ignored by plan",
       "issue_updated_at": "2026-09-10T08:22:07Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/591",
-      "reviewed_at": "2026-09-11T07:18:41+00:00",
+      "reviewed_at": "2026-09-12T07:18:47+00:00",
       "verdict": "covered"
     }
   }

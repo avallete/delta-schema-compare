@@ -17,6 +17,52 @@ mechanism. This benchmark tracks the now-resolved upstream scenario after
 pgschema merged its fix on `main`, while current pg-delta still lacks exact
 coverage.
 
+## Refresh note (2026-09-12)
+
+This recheck keeps checked-in/live `pg-delta` at
+`85e8946a79b0a5b149fe9a772fef882c14cb9567`
+(`@supabase/pg-delta@1.0.0-alpha.50`) and keeps checked-in/live
+`pgschema` at `319b88c83d62b2c9a62eff7a09ec6563954bcf4b`.
+
+There is no upstream code delta on either side since the 2026-09-11 refresh.
+The only new pgschema activity is open issue
+[#594](https://github.com/pgplex/pgschema/issues/594), which is a
+`.pgschemaignore` view-filtering report and remains outside this generated-
+column benchmark. The active generated-kind gap is therefore unchanged:
+
+- current pg-delta already covered issue
+  [#591](https://github.com/pgplex/pgschema/issues/591)'s generated-expression
+  change family before upstream merged its fix, via
+  `packages/pg-delta/corpus/alter-table--generated-column` and the
+  `generatedExpr: "replace"` path in
+  `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts`.
+- benchmark **022** remains about the missing `VIRTUAL` versus `STORED` kind:
+  `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still
+  collapses `attgenerated` to generated-expression presence, and
+  `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts` still
+  hard-codes generated-column rendering as
+  `GENERATED ALWAYS AS (...) STORED`.
+- open PRs [#470](https://github.com/supabase/pg-toolbelt/pull/470),
+  [#471](https://github.com/supabase/pg-toolbelt/pull/471), and
+  [#472](https://github.com/supabase/pg-toolbelt/pull/472) remain adjacent or
+  unrelated; none closes the generated-kind gap.
+
+The last focused 2026-08-14 runtime observation therefore still stands and
+serialized the generated column as:
+
+```sql
+ALTER TABLE "test_schema"."users"
+  ADD COLUMN "full_name" text GENERATED ALWAYS AS (((first_name || ' '::text) || last_name)) STORED
+```
+
+The PostgreSQL 18 `VIRTUAL` keyword is still collapsed back to `STORED`, and
+direct exact searches for `pgschema#501`, `pgschema#593`, and `pgschema#594`
+still return no dedicated pg-toolbelt issue or PR. Umbrella issue
+[#332](https://github.com/supabase/pg-toolbelt/issues/332) remains the only
+adjacent tracker context. Benchmark 022 therefore remains **behaviorally
+uncovered**, while resolved pgschema issue **#591** itself is already
+**covered** in current pg-delta.
+
 ## Refresh note (2026-09-11)
 
 This recheck advances checked-in/live `pg-delta` from
