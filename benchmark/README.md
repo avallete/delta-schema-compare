@@ -4,23 +4,23 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-09-12)
+## Latest refresh snapshot (2026-09-13)
 
 Refreshed against:
 
 - checked-in/live `repos/pg-toolbelt` @ `85e8946a79b0a5b149fe9a772fef882c14cb9567`
 - checked-in/live `repos/pgschema` @ `319b88c83d62b2c9a62eff7a09ec6563954bcf4b`
 
-> The 2026-09-12 refresh keeps the active benchmarked gap set unchanged at
+> The 2026-09-13 refresh keeps the active benchmarked gap set unchanged at
 > **021**, **022**, and **024**:
 >
-> - there is no upstream code delta since the 2026-09-11 refresh; both
->   checked-in submodules already match the latest `origin/main` heads
+> - there is no upstream code delta since the 2026-09-12 refresh; both
+>   checked-in submodules still match the latest `origin/main` heads
 > - the only new upstream issue is
->   [#594](https://github.com/pgplex/pgschema/issues/594)
->   (`ignore views seems broken`), which remains **not parity work for
->   pg-delta** because it is a `.pgschemaignore` view-ignore configuration
->   issue rather than pg-delta diff/apply behavior
+>   [#595](https://github.com/pgplex/pgschema/issues/595)
+>   (`dump takes some extension objects`), which current pg-delta already
+>   covers through extension-member projection plus export/load handling, so
+>   it does not enlarge the active gap set
 > - benchmark **021** remains unresolved because child-local partition column
 >   overrides are still not extracted or rendered
 > - benchmark **022** remains unresolved because pg-delta still collapses the
@@ -28,9 +28,9 @@ Refreshed against:
 > - benchmark **024** remains unresolved because pg-delta still does not model
 >   PostgreSQL 18 native `NOT NULL ... NOT VALID` / `VALIDATE CONSTRAINT`
 >   state
-> - exact duplicate searches for `pgschema#499`, `#501`, `#564`, `#593`, and
->   `#594` still return no dedicated pg-toolbelt issue or PR, and this
->   repository still has no local tracker issues
+> - exact duplicate searches for `pgschema#499`, `#501`, `#564`, `#593`,
+>   `#594`, and `#595` still return no dedicated pg-toolbelt issue or PR, and
+>   this repository still has no local tracker issues
 
 ## Benchmark status matrix
 
@@ -103,7 +103,8 @@ The current open pgschema watch list is now:
 [#84](https://github.com/pgplex/pgschema/issues/84),
 [#588](https://github.com/pgplex/pgschema/issues/588),
 [#593](https://github.com/pgplex/pgschema/issues/593), and
-[#594](https://github.com/pgplex/pgschema/issues/594).
+[#594](https://github.com/pgplex/pgschema/issues/594),
+[#595](https://github.com/pgplex/pgschema/issues/595).
 
 Screened candidates:
 
@@ -124,6 +125,19 @@ Screened candidates:
 - **#594** view-ignore behavior in `.pgschemaignore` - **not parity work for
   pg-delta**; it is an upstream dump/filter configuration issue rather than a
   pg-delta live-catalog diff/apply gap
+- **#595** extension-owned objects appearing in dump - **covered** in current
+  pg-delta's extension-member handling:
+  - `src/extract/relations.ts` and `src/extract/routines.ts` tag extension-
+    owned relations / routines with `memberOfExtension` via
+    `memberExtensionExpr(...)`
+  - `src/policy/view.ts` keeps extension members reference-only in the managed
+    view
+  - `src/frontends/export-sql-files.ts` and
+    `src/frontends/load-sql-files.ts` already avoid recreating extension
+    members directly and rely on `CREATE EXTENSION` to materialize them; tests
+    `export-extension-member-parent.test.ts`,
+    `extension-member-acl.test.ts`, and
+    `load-sql-files-extension-rows.test.ts` cover the relevant behavior
 
 There is currently **no open uncovered parity candidate** on the pgschema
 side. The remaining active benchmarks **021** / **022** still only have
@@ -163,18 +177,20 @@ relevant closed items remain:
 - checked-in/live `pg-toolbelt` remains at
   `85e8946a79b0a5b149fe9a772fef882c14cb9567`
 - there are no merged pgschema PRs or newly closed pgschema issues since the
-  2026-09-11 refresh
-- recent pg-toolbelt activity since 2026-09-11 remains open PRs
+  2026-09-12 refresh
+- there are no new pg-toolbelt issue or PR updates since the 2026-09-12
+  refresh; the nearby open PRs remain
   [#470](https://github.com/supabase/pg-toolbelt/pull/470),
-  [#471](https://github.com/supabase/pg-toolbelt/pull/471), and
-  [#472](https://github.com/supabase/pg-toolbelt/pull/472)
+  [#471](https://github.com/supabase/pg-toolbelt/pull/471),
+  [#472](https://github.com/supabase/pg-toolbelt/pull/472), and
+  [#473](https://github.com/supabase/pg-toolbelt/pull/473)
   - only PR **#470** is adjacent to the benchmark set, and it still does not
     close benchmark **021**'s child-local column-override gap
-  - PRs **#471** and **#472** remain unrelated to benchmarks **021**, **022**,
-    and **024**
+  - PRs **#471**, **#472**, and **#473** remain unrelated to benchmarks
+    **021**, **022**, and **024**
 - no target-repo issue in `avallete/delta-schema-compare` currently matches
-  pgschema issues **#499**, **#501**, **#564**, **#593**, **#594**, **#439**,
-  or **#444**
+  pgschema issues **#499**, **#501**, **#564**, **#593**, **#594**, **#595**,
+  **#439**, or **#444**
 
 ## Historical notes
 
