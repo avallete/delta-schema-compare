@@ -21,6 +21,40 @@ column nullability only as a boolean `notNull` fact, emits a direct
 `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL`, and does not extract PG18's
 `contype = 'n'` constraint rows as diff-visible state.
 
+## Refresh note (2026-09-14)
+
+This recheck advances checked-in/live `pg-delta` from
+`85e8946a79b0a5b149fe9a772fef882c14cb9567`
+(`@supabase/pg-delta@1.0.0-alpha.50`) to
+`9fac5a973a0fddac0618314164331633606b5126`
+(`@supabase/pg-delta@1.0.0-alpha.51`) through merged PR
+[#470](https://github.com/supabase/pg-toolbelt/pull/470) and release
+[#474](https://github.com/supabase/pg-toolbelt/pull/474), and keeps
+checked-in/live `pgschema` at `319b88c83d62b2c9a62eff7a09ec6563954bcf4b`.
+
+The new open pgschema issues [#596](https://github.com/pgplex/pgschema/issues/596)
+through [#603](https://github.com/pgplex/pgschema/issues/603) do not alter
+this PG18 nullability workflow, and alpha.51 does not change the active
+not-null gap:
+
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still records
+  column nullability from `a.attnotnull` and filters table constraints to
+  `con.contype IN ('p', 'u', 'f', 'c', 'x')`, so PG18 `contype = 'n'` pending-
+  validation state remains invisible.
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still emits a
+  plain `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL` in `notNull.alter`.
+- merged PR [#470](https://github.com/supabase/pg-toolbelt/pull/470) and open
+  PRs [#471](https://github.com/supabase/pg-toolbelt/pull/471),
+  [#472](https://github.com/supabase/pg-toolbelt/pull/472),
+  [#473](https://github.com/supabase/pg-toolbelt/pull/473), and
+  [#475](https://github.com/supabase/pg-toolbelt/pull/475) remain adjacent or
+  unrelated; none closes this PG18 native not-null workflow gap.
+
+Direct exact searches for `pgschema#564`, `pgschema#594`, and `pgschema#595`
+still return no dedicated pg-toolbelt issue or PR for this nullability
+workflow. Benchmark 024 therefore remains **not covered** in current
+pg-delta.
+
 ## Refresh note (2026-09-13)
 
 This recheck keeps checked-in/live `pg-delta` at

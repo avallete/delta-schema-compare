@@ -4,30 +4,39 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-09-13)
+## Latest refresh snapshot (2026-09-14)
 
 Refreshed against:
 
-- checked-in/live `repos/pg-toolbelt` @ `85e8946a79b0a5b149fe9a772fef882c14cb9567`
+- checked-in/live `repos/pg-toolbelt` @ `9fac5a973a0fddac0618314164331633606b5126`
 - checked-in/live `repos/pgschema` @ `319b88c83d62b2c9a62eff7a09ec6563954bcf4b`
 
-> The 2026-09-13 refresh keeps the active benchmarked gap set unchanged at
-> **021**, **022**, and **024**:
+> The 2026-09-14 refresh advances checked-in/live `pg-toolbelt` from
+> `@supabase/pg-delta@1.0.0-alpha.50` to `@supabase/pg-delta@1.0.0-alpha.51`
+> through merged PR [#470](https://github.com/supabase/pg-toolbelt/pull/470)
+> and release [#474](https://github.com/supabase/pg-toolbelt/pull/474), while
+> `pgschema` stays unchanged. The active benchmarked gap set remains **021**,
+> **022**, and **024**:
 >
-> - there is no upstream code delta since the 2026-09-12 refresh; both
->   checked-in submodules still match the latest `origin/main` heads
-> - the only new upstream issue is
->   [#595](https://github.com/pgplex/pgschema/issues/595)
->   (`dump takes some extension objects`), which current pg-delta already
->   covers through extension-member projection plus export/load handling, so
->   it does not enlarge the active gap set
-> - benchmark **021** remains unresolved because child-local partition column
->   overrides are still not extracted or rendered
+> - benchmark **021** remains unresolved because alpha.51 improves replace-path
+>   dependents and attached partition indexes, but still does not extract or
+>   render child-local partition column overrides
 > - benchmark **022** remains unresolved because pg-delta still collapses the
 >   generated-column kind and rewrites PostgreSQL 18 `VIRTUAL` to `STORED`
 > - benchmark **024** remains unresolved because pg-delta still does not model
 >   PostgreSQL 18 native `NOT NULL ... NOT VALID` / `VALIDATE CONSTRAINT`
 >   state
+> - new open pgschema issues [#596](https://github.com/pgplex/pgschema/issues/596)
+>   through [#603](https://github.com/pgplex/pgschema/issues/603) do not
+>   enlarge the active gap set: [#598](https://github.com/pgplex/pgschema/issues/598),
+>   [#600](https://github.com/pgplex/pgschema/issues/600),
+>   [#602](https://github.com/pgplex/pgschema/issues/602), and
+>   [#603](https://github.com/pgplex/pgschema/issues/603) are already covered in
+>   current pg-delta; [#599](https://github.com/pgplex/pgschema/issues/599) and
+>   [#601](https://github.com/pgplex/pgschema/issues/601) are source-level
+>   covered by current pg-delta rules; [#596](https://github.com/pgplex/pgschema/issues/596)
+>   and [#597](https://github.com/pgplex/pgschema/issues/597) remain outside the
+>   pg-delta parity scope
 > - exact duplicate searches for `pgschema#499`, `#501`, `#564`, `#593`,
 >   `#594`, and `#595` still return no dedicated pg-toolbelt issue or PR, and
 >   this repository still has no local tracker issues
@@ -46,7 +55,7 @@ Refreshed against:
 | 018 | [Cross-table RLS policy ordering](018-cross-table-rls-policy-ordering.md) | [#373](https://github.com/pgplex/pgschema/issues/373) | [#184](https://github.com/supabase/pg-toolbelt/issues/184) (closed) | [#187](https://github.com/supabase/pg-toolbelt/pull/187) (merged) | **Solved in pg-delta** |
 | 019 | [Column-less CHECK NO INHERIT](019-columnless-check-no-inherit.md) | [#386](https://github.com/pgplex/pgschema/issues/386) | [#198](https://github.com/supabase/pg-toolbelt/issues/198) (closed) | [#212](https://github.com/supabase/pg-toolbelt/pull/212) (merged) | **Solved in pg-delta** |
 | 020 | [UNIQUE constraint NULLS NOT DISTINCT](020-unique-constraint-nulls-not-distinct.md) | [#412](https://github.com/pgplex/pgschema/issues/412) | none found | none found | **Solved in pg-delta** |
-| 021 | [Partition child column overrides](021-partition-child-column-overrides.md) | [#499](https://github.com/pgplex/pgschema/issues/499) | [#332](https://github.com/supabase/pg-toolbelt/issues/332) (open umbrella / comment thread) | [#470](https://github.com/supabase/pg-toolbelt/pull/470) (open, adjacent only) | **Tracked (umbrella thread only)** |
+| 021 | [Partition child column overrides](021-partition-child-column-overrides.md) | [#499](https://github.com/pgplex/pgschema/issues/499) | [#332](https://github.com/supabase/pg-toolbelt/issues/332) (open umbrella / comment thread) | adjacent [#470](https://github.com/supabase/pg-toolbelt/pull/470) (merged) | **Tracked (umbrella thread only)** |
 | 022 | [VIRTUAL generated columns](022-virtual-generated-columns.md) | [#501](https://github.com/pgplex/pgschema/issues/501) | [#332](https://github.com/supabase/pg-toolbelt/issues/332) (open umbrella / comment thread) | none found | **Tracked (umbrella thread only)** |
 | 023 | [FK before standalone unique index](023-fk-before-standalone-unique-index.md) | [#506](https://github.com/pgplex/pgschema/issues/506) | none found | adjacent [#361](https://github.com/supabase/pg-toolbelt/pull/361) (merged) | **Solved in pg-delta** |
 | 024 | [PG18 native NOT NULL validation](024-pg18-not-null-validation.md) | [#564](https://github.com/pgplex/pgschema/issues/564) | none found | none found | **Not covered** |
@@ -66,10 +75,10 @@ Three resolved-issue benchmark scenarios remain active as unresolved behavior:
   - `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still
     emits bare `CREATE TABLE ... PARTITION OF ... ${bound}` with no typed
     child column-element list
-  - open PR [#470](https://github.com/supabase/pg-toolbelt/pull/470) remains
-    adjacent only, and umbrella issue
+  - merged PR [#470](https://github.com/supabase/pg-toolbelt/pull/470)
+    (alpha.51) remains adjacent only, and umbrella issue
     [#332](https://github.com/supabase/pg-toolbelt/issues/332) remains the
-    only tracker context
+    only open tracker context
 - **022** - PostgreSQL 18 `VIRTUAL` generated columns
   - `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still
     collapses `attgenerated` to generated-expression presence instead of
@@ -90,10 +99,11 @@ Three resolved-issue benchmark scenarios remain active as unresolved behavior:
     emits a plain `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL`
   - there is still no exact pg-toolbelt issue or PR for this benchmark
 
-Because the checked-in/live heads are unchanged from the 2026-09-11 refresh,
-the focused 2026-08-14 runtime observations for benchmarks **021** / **022**
-and the source-level validation for benchmark **024** remain the latest direct
-evidence on current pg-delta.
+Because Bun and Docker are unavailable in this pod, the focused 2026-08-14
+runtime observations for benchmarks **021** / **022** remain the latest direct
+runtime evidence. Today's alpha.51 source inspection confirms those gaps still
+persist, and benchmark **024** remains source-level not covered on the current
+heads.
 
 ## Open pgschema issue screening (current state)
 
@@ -102,9 +112,17 @@ The current open pgschema watch list is now:
 [#52](https://github.com/pgplex/pgschema/issues/52),
 [#84](https://github.com/pgplex/pgschema/issues/84),
 [#588](https://github.com/pgplex/pgschema/issues/588),
-[#593](https://github.com/pgplex/pgschema/issues/593), and
+[#593](https://github.com/pgplex/pgschema/issues/593),
 [#594](https://github.com/pgplex/pgschema/issues/594),
-[#595](https://github.com/pgplex/pgschema/issues/595).
+[#595](https://github.com/pgplex/pgschema/issues/595),
+[#596](https://github.com/pgplex/pgschema/issues/596),
+[#597](https://github.com/pgplex/pgschema/issues/597),
+[#598](https://github.com/pgplex/pgschema/issues/598),
+[#599](https://github.com/pgplex/pgschema/issues/599),
+[#600](https://github.com/pgplex/pgschema/issues/600),
+[#601](https://github.com/pgplex/pgschema/issues/601),
+[#602](https://github.com/pgplex/pgschema/issues/602), and
+[#603](https://github.com/pgplex/pgschema/issues/603).
 
 Screened candidates:
 
@@ -138,6 +156,55 @@ Screened candidates:
     `export-extension-member-parent.test.ts`,
     `extension-member-acl.test.ts`, and
     `load-sql-files-extension-rows.test.ts` cover the relevant behavior
+- **#596** missing cross-schema object in the embedded plan/temp-schema path -
+  **not parity work for pg-delta**; this is an upstream partial-schema
+  validation / `.pgschemaignore` / external-plan-database workflow problem, not
+  a live-catalog pg-delta diff gap
+- **#597** broad multi-schema complexity / auto-ignore feedback - **not parity
+  work for pg-delta**; it is general product feedback rather than a concrete
+  pg-delta parity scenario
+- **#598** interrupted `CREATE INDEX CONCURRENTLY` leaves an invalid index
+  behind - **covered** in current pg-delta:
+  - `src/extract/relations.ts` captures regular-index `indisvalid` as semantic
+    `valid`
+  - `src/plan/rules/indexes.ts` diffs `valid` with the `"replace"` strategy
+  - `tests/index-invalid-repair.test.ts` covers the invalid-index repair path
+- **#599** trigger `ENABLE REPLICA` / `ENABLE ALWAYS` states - **covered** in
+  current pg-delta's trigger model:
+  - `src/extract/relations.ts` captures `pg_trigger.tgenabled` as `enabled`
+  - `src/plan/rules/helpers.ts` maps `O/D/R/A` to `ENABLE`, `DISABLE`,
+    `ENABLE REPLICA`, and `ENABLE ALWAYS`
+  - `src/plan/rules/triggers.ts` emits the corresponding
+    `ALTER TABLE ... TRIGGER` clauses
+- **#600** enum `ADD VALUE` plus same-plan default use - **covered** in current
+  pg-delta:
+  - `src/plan/rules/types.ts` marks `ALTER TYPE ... ADD VALUE` actions as
+    `transactionality: "commitBoundaryAfter"`
+  - `src/apply/commit-boundary.test.ts` and the
+    `type-ops--enum-add-value-used-in-*` corpus pin the required commit
+    boundary
+- **#601** function return-type change with a dependent view - **covered** by
+  current pg-delta's generic replace-path dependent rebuild:
+  - `src/extract/dependencies.ts` resolves a view's `_RETURN` rule
+    dependencies onto the view fact itself
+  - `src/plan/rules/routines.ts` treats `returnType` as `"replace"` and marks
+    routines `rebuildable`
+  - `src/plan/rules/views.ts` marks views `rebuildable`, so dependent views are
+    dropped and recreated around a demolished function
+- **#602** schema-level `OWNER TO` changes - **covered** in current pg-delta:
+  - ownership is modeled as owner edges and emitted as `ALTER ... OWNER TO`
+  - `tests/owner-edge.test.ts` covers owner roundtrip and owner-change flows
+  - `ownerAlterPrefix` is implemented for tables, views, sequences, and
+    routines
+- **#603** global `ALTER DEFAULT PRIVILEGES` (no `IN SCHEMA`) - **covered** in
+  current pg-delta:
+  - `src/extract/roles.ts` keeps `defaclnamespace = 0` rows as global
+    default-privilege facts
+  - `src/plan/rules/helpers.ts` omits `IN SCHEMA` when the default-privilege
+    fact carries `schema: null`
+  - `tests/default-privileges-owner-self-revoke.test.ts` and
+    `src/plan/rules/default-privilege.test.ts` cover the global
+    extract/render shapes
 
 There is currently **no open uncovered parity candidate** on the pgschema
 side. The remaining active benchmarks **021** / **022** still only have
@@ -150,47 +217,51 @@ pg-toolbelt issue or PR.
 
 ## Recent closed-issue / tracker updates
 
-No benchmark item changed status in this refresh. The most recent benchmark-
-relevant closed items remain:
+No benchmark item changed status in this refresh. The most relevant current
+tracker updates are:
 
-- **#591** generated-column expression changes on existing columns - closed on
-  2026-09-10 by [pgschema#592](https://github.com/pgplex/pgschema/pull/592)
-  and remains **covered** in current pg-delta via the existing
+- pg-toolbelt PR [#470](https://github.com/supabase/pg-toolbelt/pull/470)
+  merged on 2026-09-13 and released in alpha.51, but it remains adjacent only
+  to benchmark **021**: it rebuilds replace-path dependents, publication
+  membership, and attached partition indexes, yet still does not add
+  child-local partition column override extraction or rendering
+- **#591** generated-column expression changes on existing columns remains
+  **covered** in current pg-delta via the existing
   `packages/pg-delta/corpus/alter-table--generated-column` scenario plus the
   `generatedExpr: "replace"` diff path
-- **#589** `ON DELETE SET NULL` / `SET DEFAULT` column lists on foreign keys -
-  closed on 2026-09-09 by [pgschema#590](https://github.com/pgplex/pgschema/pull/590)
-  and remains **covered** because pg-delta keys and replays foreign-key
-  definitions from canonical `pg_get_constraintdef(...)` text
-- **#564** safer `NOT NULL` additions / PG18 native validation workflow -
-  closed on 2026-09-08 by
-  [pgschema#566](https://github.com/pgplex/pgschema/pull/566) and
-  [pgschema#587](https://github.com/pgplex/pgschema/pull/587), and remains
+- **#589** `ON DELETE SET NULL` / `SET DEFAULT` column lists on foreign keys
+  remains **covered** because pg-delta keys and replays foreign-key definitions
+  from canonical `pg_get_constraintdef(...)` text
+- **#564** safer `NOT NULL` additions / PG18 native validation workflow remains
   **not covered** in current pg-delta as benchmark **024**
-- **#571**, **#573**, **#574**, **#576**, **#579**, and **#580** remain
-  **covered** in current pg-delta and do not change the active benchmark set
+- there were no merged pgschema PRs or newly closed pgschema issues since the
+  2026-09-13 refresh
 
 ## Upstream watch list
 
 - checked-in/live `pgschema` remains at
   `319b88c83d62b2c9a62eff7a09ec6563954bcf4b`
-- checked-in/live `pg-toolbelt` remains at
-  `85e8946a79b0a5b149fe9a772fef882c14cb9567`
-- there are no merged pgschema PRs or newly closed pgschema issues since the
-  2026-09-12 refresh
-- there are no new pg-toolbelt issue or PR updates since the 2026-09-12
-  refresh; the nearby open PRs remain
-  [#470](https://github.com/supabase/pg-toolbelt/pull/470),
+- checked-in/live `pg-toolbelt` advances to
+  `9fac5a973a0fddac0618314164331633606b5126`
+  (`@supabase/pg-delta@1.0.0-alpha.51`)
+- new open pgschema issues since the 2026-09-13 refresh are
+  [#596](https://github.com/pgplex/pgschema/issues/596) through
+  [#603](https://github.com/pgplex/pgschema/issues/603); none enlarges the
+  active benchmark set
+- the nearby pg-toolbelt PR landscape is now merged
+  [#470](https://github.com/supabase/pg-toolbelt/pull/470) plus open PRs
   [#471](https://github.com/supabase/pg-toolbelt/pull/471),
-  [#472](https://github.com/supabase/pg-toolbelt/pull/472), and
-  [#473](https://github.com/supabase/pg-toolbelt/pull/473)
-  - only PR **#470** is adjacent to the benchmark set, and it still does not
-    close benchmark **021**'s child-local column-override gap
-  - PRs **#471**, **#472**, and **#473** remain unrelated to benchmarks
-    **021**, **022**, and **024**
+  [#472](https://github.com/supabase/pg-toolbelt/pull/472),
+  [#473](https://github.com/supabase/pg-toolbelt/pull/473), and
+  [#475](https://github.com/supabase/pg-toolbelt/pull/475)
+  - only merged PR **#470** is adjacent to the benchmark set, and it still does
+    not close benchmark **021**'s child-local column-override gap
+  - PRs **#471**, **#472**, **#473**, and **#475** remain unrelated to
+    benchmarks **021**, **022**, and **024**
 - no target-repo issue in `avallete/delta-schema-compare` currently matches
   pgschema issues **#499**, **#501**, **#564**, **#593**, **#594**, **#595**,
-  **#439**, or **#444**
+  **#596**, **#597**, **#598**, **#599**, **#600**, **#601**, **#602**,
+  **#603**, **#439**, or **#444**
 
 ## Historical notes
 
