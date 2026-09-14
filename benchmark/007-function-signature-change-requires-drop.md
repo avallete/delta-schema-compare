@@ -5,17 +5,19 @@
 ## Context
 
 PostgreSQL does not allow `CREATE OR REPLACE FUNCTION` to change a function's
-parameter types because the parameter types are part of the function's identity
-(OID). To change parameter types, you must `DROP FUNCTION` the old signature
-first, then `CREATE FUNCTION` with the new signature.
+parameter types because the parameter list is part of the function identity.
+When the signature changes, the old function must be dropped first and the new
+signature created afterwards.
 
-pgschema was generating only `CREATE OR REPLACE FUNCTION` for signature changes,
-which fails with `ERROR: cannot change name of input parameter`.
+pgschema originally emitted only `CREATE OR REPLACE FUNCTION` for signature
+changes, which failed at runtime.
 
-pg-delta has the **same bug**. When non-alterable fields change (including
-`argument_types`), the diff logic in `procedure.diff.ts` generates
-`CreateProcedure` with `orReplace: true` — but never emits a `DropProcedure`
-for the old signature.
+Refresh note (2026-05-13): this parity gap is now fixed in pg-delta. The
+tracking issue [pg-toolbelt#132](https://github.com/supabase/pg-toolbelt/issues/132)
+is closed, and
+[pg-toolbelt#214](https://github.com/supabase/pg-toolbelt/pull/214) merged the
+required `DROP FUNCTION` + `CREATE FUNCTION` behavior together with focused
+integration coverage.
 
 ## Reproduction SQL
 
@@ -48,73 +50,42 @@ DROP FUNCTION test_schema.process_item(text);
 CREATE FUNCTION test_schema.process_item(param1 uuid) ...;
 ```
 
-**Actual pg-delta DDL (buggy):**
-
-```sql
-CREATE OR REPLACE FUNCTION test_schema.process_item(param1 uuid) ...;
--- ERROR: cannot change name of input parameter "param1"
--- (or creates a second overload instead of replacing)
-```
-
 ## How pgschema handled it
 
-pgschema now emits `DROP FUNCTION` before `CREATE FUNCTION` when the function
-signature (argument types) changes.
+pgschema now emits `DROP FUNCTION` before `CREATE FUNCTION` whenever a function
+signature changes in a way PostgreSQL cannot alter in place.
 
 ## Current pg-delta status
 
 | Aspect | Status |
 |---|---|
-| Detects signature changes via NON_ALTERABLE_FIELDS | ✅ |
-| Generates DROP before CREATE on signature change | ❌ **Bug** |
-| Integration test for signature change | ❌ None |
+| Detects non-alterable signature changes | ✅ Present in `procedure.diff.ts` |
+| Emits `DROP FUNCTION` before recreation | ✅ Fixed |
+| Integration coverage for parameter type / arity / rename changes | ✅ Present in `tests/integration/function-operations.test.ts` |
+| Dependency-aware signature-change coverage | ✅ Includes a signature change that cascades through a dependent view |
+| Existing pg-toolbelt issue / PR | ✅ [#132](https://github.com/supabase/pg-toolbelt/issues/132) closed by merged PR [#214](https://github.com/supabase/pg-toolbelt/pull/214) |
 
-**Source evidence** (`procedure.diff.ts` lines 198–201):
-```typescript
-if (nonAlterablePropsChanged) {
-  changes.push(
-    new CreateProcedure({ procedure: branchProcedure, orReplace: true }),
-  );
-}
-```
+Current integration coverage now includes:
 
-No `DropProcedure` is pushed before the `CreateProcedure`.
+- `"function signature: parameter type change"`
+- `"function signature: parameter arity change"`
+- `"function signature: parameter name change only"`
+- `"function signature: return type change"`
+- `"function signature change cascades through a dependent view"`
+
+All of those cases assert that pg-delta emits `DROP FUNCTION ...` before the
+replacement `CREATE FUNCTION ...`.
 
 ## Comparison of approaches
 
 | | pgschema | pg-delta |
 |---|---|---|
-| **Root cause** | Missing DROP for signature changes | Same — only CREATE OR REPLACE emitted |
-| **Fix scope** | Diff planner | `procedure.diff.ts` lines 198–201 |
-| **Severity** | 🔴 Migration fails at runtime | 🔴 Same |
+| **Historical root cause** | Missing DROP before CREATE on signature changes | Same historical gap |
+| **Current fix** | Emit explicit drop/recreate flow | Detect signature changes and switch from `OR REPLACE` to drop + create |
+| **Regression coverage** | Issue-driven upstream fix | Multiple integration regressions, including dependency fallout through views |
 
-## Plan to handle it in pg-delta
+## Resolution in pg-delta
 
-1. **Fix `procedure.diff.ts`** — when `nonAlterablePropsChanged` is true AND
-   `argument_types` differ, emit `DropProcedure` for the old signature
-   **before** `CreateProcedure` for the new one:
-   ```typescript
-   if (nonAlterablePropsChanged) {
-     const signatureChanged = !deepEqual(
-       mainProcedure.argument_types,
-       branchProcedure.argument_types,
-     );
-     if (signatureChanged) {
-       // Argument types changed — DROP old signature first
-       changes.push(new DropProcedure({ procedure: mainProcedure }));
-     }
-     changes.push(
-       new CreateProcedure({
-         procedure: branchProcedure,
-         orReplace: !signatureChanged,
-       }),
-     );
-   }
-   ```
-2. **Add integration test** in `tests/integration/function-operations.test.ts`:
-   - Change a function parameter from `text` to `uuid`
-   - Change parameter count
-   - Verify the DDL contains DROP then CREATE (not CREATE OR REPLACE)
-3. **Handle cascading dependencies** — dropping a function may require
-   dropping dependent objects first (triggers, views, defaults). Verify the
-   dependency sorter handles this.
+No active parity gap remains for this benchmark item in the current pg-delta
+snapshot. The benchmark entry now serves as historical context for why function
+signature diffs use a full drop/recreate path instead of `CREATE OR REPLACE`.
