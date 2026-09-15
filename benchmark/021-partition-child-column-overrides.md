@@ -16,6 +16,51 @@ In the upstream fix, pgschema only needed `DEFAULT` and `NOT NULL`
 overrides, but the gap is still real for pg-delta because the current plan
 rule emits only the bare `PARTITION OF ... <bound>` form.
 
+## Refresh note (2026-09-15)
+
+This recheck advances checked-in/live `pg-delta` from
+`9fac5a973a0fddac0618314164331633606b5126`
+(`@supabase/pg-delta@1.0.0-alpha.51`) to post-alpha.51 main
+`bb393ff61f5cd9ba95aee2824045f737afbe013b` through merged PR
+[#475](https://github.com/supabase/pg-toolbelt/pull/475), and advances
+checked-in/live `pgschema` from `319b88c83d62b2c9a62eff7a09ec6563954bcf4b`
+to `11678c582923fc1a27ed2edf37f3503d1fc466a8` through merged PR
+[#604](https://github.com/pgplex/pgschema/pull/604).
+
+Today's upstream code movement is still adjacent rather than gap-closing for
+this benchmark:
+
+- the pg-delta delta between those heads only touches assumed default grants,
+  export/policy paths, and their tests; `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts`
+  still keeps `COLUMNS_SQL` gated by `a.attislocal`, so child-local overrides
+  on inherited partition columns remain absent from diff-visible facts
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still emits
+  `CREATE TABLE ... PARTITION OF ... ${bound}` with no typed child
+  column-element list for local `DEFAULT` / `NOT NULL` overrides
+- pgschema PR [#604](https://github.com/pgplex/pgschema/pull/604) closes
+  issue [#595](https://github.com/pgplex/pgschema/issues/595) and adds
+  adjacent application-partition coverage when an extension owns the parent,
+  which reinforces that current pgschema handles another slice of the same
+  column-override family while current pg-delta still does not
+
+The last focused 2026-08-14 runtime observation therefore still stands and
+emitted only:
+
+```sql
+CREATE TABLE "test_schema"."orders_us" PARTITION OF "test_schema"."orders" FOR VALUES IN ('us')
+ALTER TABLE "test_schema"."orders_us" OWNER TO "test"
+```
+
+The child-specific `priority DEFAULT 10` and `notes NOT NULL` overrides were
+still omitted. Umbrella issue
+[#332](https://github.com/supabase/pg-toolbelt/issues/332) remains the only
+open tracker context for this benchmark, while new pg-toolbelt issue
+[#477](https://github.com/supabase/pg-toolbelt/issues/477) and open PR
+[#478](https://github.com/supabase/pg-toolbelt/pull/478) are adjacent
+identity-sequence privilege work rather than duplicates. Benchmark 021
+therefore remains **behaviorally uncovered** with **umbrella-thread tracker
+context only**.
+
 ## Refresh note (2026-09-14)
 
 This recheck advances checked-in/live `pg-delta` from

@@ -17,6 +17,48 @@ mechanism. This benchmark tracks the now-resolved upstream scenario after
 pgschema merged its fix on `main`, while current pg-delta still lacks exact
 coverage.
 
+## Refresh note (2026-09-15)
+
+This recheck advances checked-in/live `pg-delta` from
+`9fac5a973a0fddac0618314164331633606b5126`
+(`@supabase/pg-delta@1.0.0-alpha.51`) to post-alpha.51 main
+`bb393ff61f5cd9ba95aee2824045f737afbe013b` through merged PR
+[#475](https://github.com/supabase/pg-toolbelt/pull/475), and advances
+checked-in/live `pgschema` from `319b88c83d62b2c9a62eff7a09ec6563954bcf4b`
+to `11678c582923fc1a27ed2edf37f3503d1fc466a8` through merged PR
+[#604](https://github.com/pgplex/pgschema/pull/604).
+
+The new upstream movement does not touch this generated-kind gap:
+
+- the pg-delta delta between those heads only touches assumed default grants,
+  export/policy paths, and their tests; `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts`
+  still collapses `attgenerated` to generated-expression presence, and
+  `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts` still
+  hard-codes generated-column rendering as
+  `GENERATED ALWAYS AS (...) STORED`
+- pgschema PR [#604](https://github.com/pgplex/pgschema/pull/604) closes
+  issue [#595](https://github.com/pgplex/pgschema/issues/595), but its
+  extension-member filtering is unrelated to PostgreSQL 18 generated-column
+  kind preservation
+- new pg-toolbelt issue [#477](https://github.com/supabase/pg-toolbelt/issues/477)
+  and open PR [#478](https://github.com/supabase/pg-toolbelt/pull/478) are
+  adjacent identity-sequence privilege work rather than duplicates of this
+  benchmark
+
+The last focused 2026-08-14 runtime observation therefore still stands and
+serialized the generated column as:
+
+```sql
+ALTER TABLE "test_schema"."users"
+  ADD COLUMN "full_name" text GENERATED ALWAYS AS (((first_name || ' '::text) || last_name)) STORED
+```
+
+The PostgreSQL 18 `VIRTUAL` keyword is still collapsed back to `STORED`, and
+umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332)
+remains the only open tracker context for this benchmark. Benchmark 022
+therefore remains **behaviorally uncovered**, while resolved pgschema issue
+**#591** itself is already **covered** in current pg-delta.
+
 ## Refresh note (2026-09-14)
 
 This recheck advances checked-in/live `pg-delta` from
