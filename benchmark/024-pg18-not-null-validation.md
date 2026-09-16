@@ -21,6 +21,39 @@ column nullability only as a boolean `notNull` fact, emits a direct
 `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL`, and does not extract PG18's
 `contype = 'n'` constraint rows as diff-visible state.
 
+## Refresh note (2026-09-16)
+
+This recheck advances checked-in/live `pg-delta` from
+`bb393ff61f5cd9ba95aee2824045f737afbe013b` (post-alpha.51 main) to
+`94de18e34e9758e36cd0c18f7ffadeb2291bb446`
+(`@supabase/pg-delta@1.0.0-alpha.52`) through merged release PR
+[#479](https://github.com/supabase/pg-toolbelt/pull/479), while
+checked-in/live `pgschema` remains
+`11678c582923fc1a27ed2edf37f3503d1fc466a8`.
+
+The new upstream movement is still release-only rather than gap-closing for
+this PG18 nullability workflow:
+
+- the pg-delta delta between those heads only touches
+  `packages/pg-delta/CHANGELOG.md` and
+  `packages/pg-delta/package.json`; none of
+  `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts`,
+  `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/constraints.ts`, or
+  `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` changed
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still records
+  column nullability from `a.attnotnull` and filters table constraints to
+  `con.contype IN ('p', 'u', 'f', 'c', 'x')`, so PG18
+  `contype = 'n'` pending-validation state remains invisible
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still emits a
+  plain `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL` in `notNull.alter`
+- open pg-toolbelt issue [#476](https://github.com/supabase/pg-toolbelt/issues/476)
+  plus issue [#477](https://github.com/supabase/pg-toolbelt/issues/477) /
+  PR [#478](https://github.com/supabase/pg-toolbelt/pull/478) remain adjacent
+  role / identity-sequence privilege work rather than duplicates, and there is
+  still no exact pg-toolbelt issue or PR for this benchmark
+
+Benchmark 024 therefore remains **not covered** in current pg-delta.
+
 ## Refresh note (2026-09-15)
 
 This recheck advances checked-in/live `pg-delta` from
