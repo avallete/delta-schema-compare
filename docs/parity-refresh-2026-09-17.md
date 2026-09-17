@@ -114,3 +114,32 @@ There is no upstream issue or PR delta on either side since the
 - add this report as the 2026-09-17 latest-state sweep
 - no submodule pointer advances, no new benchmark files, and no new draft-only
   uncovered issue docs were needed
+
+## 4) Validation notes
+
+This refresh was validated with:
+
+- `git submodule update --init --recursive`
+- `git submodule update --remote --merge`
+- `git -C repos/pg-toolbelt fetch origin main`
+- `git -C repos/pgschema fetch origin main`
+- GitHub CLI updated-state queries for both upstream repos:
+  - `gh issue list -R pgplex/pgschema --state open --limit 100 --json number,title,updatedAt,url`
+  - `gh issue list -R pgplex/pgschema --state closed --search 'closed:>=2026-09-16' --limit 100 --json number,title,updatedAt,closedAt,url`
+  - `gh pr list -R pgplex/pgschema --state merged --search 'merged:>=2026-09-16' --limit 100 --json number,title,mergedAt,url`
+  - `gh issue list -R supabase/pg-toolbelt --state open --limit 120 --json number,title,updatedAt,url`
+  - `gh pr list -R supabase/pg-toolbelt --state open --limit 120 --json number,title,updatedAt,url`
+  - `gh pr list -R supabase/pg-toolbelt --state merged --search 'merged:>=2026-09-16' --limit 100 --json number,title,mergedAt,url`
+  - `gh issue list -R avallete/delta-schema-compare --state all --limit 120 --json number,title,state,updatedAt,url`
+- repo Python validation after installing `requirements.txt`:
+  - `python3 -m pip install -r requirements.txt`
+  - `GITHUB_TOKEN="$(gh auth token)" DRY_RUN=true python3 scripts/compare_issues.py`
+    (**0 labeled open issues**)
+  - `GITHUB_TOKEN="$(gh auth token)" DRY_RUN=true OUTPUT_MODE=benchmark python3 scripts/compare_resolved.py`
+    (**0 labeled resolved issues**)
+  - `python3 -m unittest tests.test_review_memory tests.test_compare_resolved_benchmark`
+    (**9 tests**, pass)
+  - `python3 -m json.tool benchmark/review-memory.json >/dev/null`
+  - `git diff --check`
+- no new pg-delta runtime probes were needed in this environment because there
+  is no upstream code delta since the 2026-09-16 refresh
