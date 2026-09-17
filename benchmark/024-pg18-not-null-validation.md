@@ -21,6 +21,30 @@ column nullability only as a boolean `notNull` fact, emits a direct
 `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL`, and does not extract PG18's
 `contype = 'n'` constraint rows as diff-visible state.
 
+## Refresh note (2026-09-17)
+
+This recheck keeps checked-in/live `pg-delta` at
+`94de18e34e9758e36cd0c18f7ffadeb2291bb446`
+(`@supabase/pg-delta@1.0.0-alpha.52`) and keeps checked-in/live
+`pgschema` at `11678c582923fc1a27ed2edf37f3503d1fc466a8`.
+
+There is no upstream code or issue delta on either side since the
+2026-09-16 refresh, so the same PG18 nullability gap remains:
+
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still
+  records column nullability from `a.attnotnull` and filters table
+  constraints to `con.contype IN ('p', 'u', 'f', 'c', 'x')`, so PG18
+  `contype = 'n'` pending-validation state remains invisible
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still emits
+  a plain `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL` in `notNull.alter`
+- there is still no exact pg-toolbelt issue or PR for this benchmark, while
+  issue [#476](https://github.com/supabase/pg-toolbelt/issues/476), issue
+  [#477](https://github.com/supabase/pg-toolbelt/issues/477), and PR
+  [#478](https://github.com/supabase/pg-toolbelt/pull/478) remain adjacent
+  role / identity-sequence privilege work rather than duplicates
+
+Benchmark 024 therefore remains **not covered** in current pg-delta.
+
 ## Refresh note (2026-09-16)
 
 This recheck advances checked-in/live `pg-delta` from
