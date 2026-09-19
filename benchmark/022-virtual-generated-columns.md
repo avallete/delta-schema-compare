@@ -17,6 +17,44 @@ mechanism. This benchmark tracks the now-resolved upstream scenario after
 pgschema merged its fix on `main`, while current pg-delta still lacks exact
 coverage.
 
+## Refresh note (2026-09-19)
+
+This recheck keeps checked-in/live `pg-delta` at
+`0882fc4cb6b792b79b599a414b434e4e048b6672` and keeps checked-in/live
+`pgschema` at `11678c582923fc1a27ed2edf37f3503d1fc466a8`.
+
+There is no new pg-delta code or tracker delta since the 2026-09-18 refresh,
+and the new pgschema activity does not change this generated-kind benchmark:
+
+- open pgschema PR [#610](https://github.com/pgplex/pgschema/pull/610) is the
+  upstream fix path for issue [#606](https://github.com/pgplex/pgschema/issues/606),
+  which current pg-delta already covers and which is unrelated to generated
+  column kind extraction or rendering
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still
+  collapses `attgenerated` to generated-expression presence, and
+  `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts` still
+  hard-codes generated-column rendering as
+  `GENERATED ALWAYS AS (...) STORED`
+- open issue [#476](https://github.com/supabase/pg-toolbelt/issues/476),
+  open issue [#477](https://github.com/supabase/pg-toolbelt/issues/477),
+  open PR [#478](https://github.com/supabase/pg-toolbelt/pull/478), and open
+  release PR [#481](https://github.com/supabase/pg-toolbelt/pull/481) remain
+  adjacent work rather than duplicates, and umbrella issue
+  [#332](https://github.com/supabase/pg-toolbelt/issues/332) remains the only
+  open tracker context for this benchmark
+
+The last focused 2026-08-14 runtime observation therefore still stands and
+serialized the generated column as:
+
+```sql
+ALTER TABLE "test_schema"."users"
+  ADD COLUMN "full_name" text GENERATED ALWAYS AS (((first_name || ' '::text) || last_name)) STORED
+```
+
+The PostgreSQL 18 `VIRTUAL` keyword is still collapsed back to `STORED`.
+Benchmark 022 therefore remains **behaviorally uncovered**, while resolved
+pgschema issue **#591** itself remains **covered** in current pg-delta.
+
 ## Refresh note (2026-09-18)
 
 This recheck advances checked-in/live `pg-delta` from

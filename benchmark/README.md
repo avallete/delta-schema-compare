@@ -4,28 +4,25 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-09-18)
+## Latest refresh snapshot (2026-09-19)
 
 Refreshed against:
 
 - checked-in/live `repos/pg-toolbelt` @ `0882fc4cb6b792b79b599a414b434e4e048b6672`
 - checked-in/live `repos/pgschema` @ `11678c582923fc1a27ed2edf37f3503d1fc466a8`
 
-> The 2026-09-18 refresh finds one upstream `pg-toolbelt` code delta and two
-> new open pgschema issues since the 2026-09-17 snapshot:
+> The 2026-09-19 refresh finds no checked-in/live submodule code delta and
+> two new upstream bookkeeping changes since the 2026-09-18 snapshot:
 >
-> - checked-in/live `pg-toolbelt` advances from
->   `94de18e34e9758e36cd0c18f7ffadeb2291bb446`
->   (`@supabase/pg-delta@1.0.0-alpha.52`) to post-alpha.52 main
->   `0882fc4cb6b792b79b599a414b434e4e048b6672` through merged PR
->   [#480](https://github.com/supabase/pg-toolbelt/pull/480)
+> - checked-in/live `pg-toolbelt` remains
+>   `0882fc4cb6b792b79b599a414b434e4e048b6672`
 > - checked-in/live `pgschema` remains
 >   `11678c582923fc1a27ed2edf37f3503d1fc466a8`
-> - new open pgschema issues [#606](https://github.com/pgplex/pgschema/issues/606)
->   and [#607](https://github.com/pgplex/pgschema/issues/607) were screened:
->   **#606** is covered in current pg-delta, while **#607** remains upstream
->   temp-schema/search-path work with open fix PR
->   [#608](https://github.com/pgplex/pgschema/pull/608)
+> - new open pgschema PR [#610](https://github.com/pgplex/pgschema/pull/610)
+>   is the upstream fix path for already-covered issue
+>   [#606](https://github.com/pgplex/pgschema/issues/606)
+> - new closed pgschema issue [#609](https://github.com/pgplex/pgschema/issues/609)
+>   was screened as **not parity work** for pg-delta
 > - the open pg-toolbelt umbrella issue
 >   [#332](https://github.com/supabase/pg-toolbelt/issues/332) still covers
 >   only benchmarks **021** / **022**, while the adjacent issue/PR cluster
@@ -204,7 +201,9 @@ Screened candidates:
   - `src/extract/relations.ts` preserves table constraints via
     `pg_get_constraintdef(con.oid)`
   - `src/plan/rules/constraints.ts` replays the preserved
-    `PRIMARY KEY (...)` text verbatim in `ADD CONSTRAINT`
+    `PRIMARY KEY (...)` text verbatim in `ADD CONSTRAINT`, and open pgschema PR
+    [#610](https://github.com/pgplex/pgschema/pull/610) is the upstream fix
+    path for the pgschema-side reorder bug
 - **#607** extension-owned types in the external plan/temp-schema path -
   **not parity work for pg-delta**; it remains the same upstream temp-schema /
   `search_path` resolution class as closed issue
@@ -237,20 +236,24 @@ issues.
 No benchmark item changed status in this refresh. The most relevant current
 tracker updates are:
 
-- new open pgschema issue
-  [#606](https://github.com/pgplex/pgschema/issues/606) is **covered** in
-  current pg-delta: constraint extraction keeps `PRIMARY KEY (...)` text
-  verbatim and the current plan rules replay it without reordering
-- new open pgschema issue
+- new closed pgschema issue
+  [#609](https://github.com/pgplex/pgschema/issues/609) is **not parity
+  work** for pg-delta; it depends on pgschema's embedded desired-state
+  PostgreSQL startup path in offline / air-gapped environments
+- open pgschema PR
+  [#610](https://github.com/pgplex/pgschema/pull/610) is the upstream fix path
+  for covered issue [#606](https://github.com/pgplex/pgschema/issues/606);
+  current pg-delta still preserves and replays partitioned-table primary-key
+  text without reordering
+- open pgschema issue
   [#607](https://github.com/pgplex/pgschema/issues/607) is **not parity work**
   for pg-delta; open pgschema PR
   [#608](https://github.com/pgplex/pgschema/pull/608) is the upstream fix path
 - merged pg-toolbelt PR
-  [#480](https://github.com/supabase/pg-toolbelt/pull/480) advances the
-  checked-in/live head to `0882fc4cb6b792b79b599a414b434e4e048b6672`, but
-  remains adjacent only to benchmark **021**: it keeps attached child indexes
-  on the partition drop root and does not add child-local column override
-  extraction or rendering
+  [#480](https://github.com/supabase/pg-toolbelt/pull/480) remains the current
+  checked-in/live head and is still adjacent only to benchmark **021**: it
+  keeps attached child indexes on the partition drop root and does not add
+  child-local column override extraction or rendering
 - **#564** safer `NOT NULL` additions / PG18 native validation workflow remains
   **not covered** in current pg-delta as benchmark **024**
 - there are still no local tracker issues in this repository
@@ -259,13 +262,15 @@ tracker updates are:
 
 - checked-in/live `pgschema` remains at
   `11678c582923fc1a27ed2edf37f3503d1fc466a8`; the only new upstream activity
-  since the 2026-09-17 refresh is open issues
-  [#606](https://github.com/pgplex/pgschema/issues/606) and
-  [#607](https://github.com/pgplex/pgschema/issues/607) plus open PR
-  [#608](https://github.com/pgplex/pgschema/pull/608)
-- checked-in/live `pg-toolbelt` advances to
-  `0882fc4cb6b792b79b599a414b434e4e048b6672` through merged PR
-  [#480](https://github.com/supabase/pg-toolbelt/pull/480)
+  since the 2026-09-18 refresh is closed issue
+  [#609](https://github.com/pgplex/pgschema/issues/609), open PR
+  [#610](https://github.com/pgplex/pgschema/pull/610) for issue
+  [#606](https://github.com/pgplex/pgschema/issues/606), and the still-open
+  PR [#608](https://github.com/pgplex/pgschema/pull/608) for issue
+  [#607](https://github.com/pgplex/pgschema/issues/607)
+- checked-in/live `pg-toolbelt` remains at
+  `0882fc4cb6b792b79b599a414b434e4e048b6672`; no new pg-toolbelt issue or PR
+  landed since the 2026-09-18 refresh that changes any benchmark verdict
 - the nearby pg-toolbelt issue/PR landscape is:
   - open issue [#476](https://github.com/supabase/pg-toolbelt/issues/476)
   - open issue [#477](https://github.com/supabase/pg-toolbelt/issues/477)

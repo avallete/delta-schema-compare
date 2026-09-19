@@ -16,6 +16,45 @@ In the upstream fix, pgschema only needed `DEFAULT` and `NOT NULL`
 overrides, but the gap is still real for pg-delta because the current plan
 rule emits only the bare `PARTITION OF ... <bound>` form.
 
+## Refresh note (2026-09-19)
+
+This recheck keeps checked-in/live `pg-delta` at
+`0882fc4cb6b792b79b599a414b434e4e048b6672` and keeps checked-in/live
+`pgschema` at `11678c582923fc1a27ed2edf37f3503d1fc466a8`.
+
+There is no new pg-delta code or tracker delta since the 2026-09-18 refresh,
+and the new pgschema activity does not change this benchmark:
+
+- open pgschema PR [#610](https://github.com/pgplex/pgschema/pull/610) is the
+  upstream fix path for issue [#606](https://github.com/pgplex/pgschema/issues/606),
+  which current pg-delta already covers and which is separate from child-local
+  partition overrides
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still keeps
+  `COLUMNS_SQL` gated by `a.attislocal`, so child-local overrides on inherited
+  partition columns remain absent from diff-visible facts
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still emits
+  `CREATE TABLE ... PARTITION OF ... ${bound}` with no typed child
+  column-element list for local `DEFAULT` / `NOT NULL` overrides
+- umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332)
+  remains the only open tracker context for this benchmark, while issue
+  [#476](https://github.com/supabase/pg-toolbelt/issues/476), issue
+  [#477](https://github.com/supabase/pg-toolbelt/issues/477), PR
+  [#478](https://github.com/supabase/pg-toolbelt/pull/478), and release PR
+  [#481](https://github.com/supabase/pg-toolbelt/pull/481) remain adjacent
+  role / identity-sequence privilege work rather than duplicates
+
+The last focused 2026-08-14 runtime observation therefore still stands and
+emitted only:
+
+```sql
+CREATE TABLE "test_schema"."orders_us" PARTITION OF "test_schema"."orders" FOR VALUES IN ('us')
+ALTER TABLE "test_schema"."orders_us" OWNER TO "test"
+```
+
+The child-specific `priority DEFAULT 10` and `notes NOT NULL` overrides were
+still omitted. Benchmark 021 therefore remains **behaviorally uncovered**
+with **umbrella-thread tracker context only**.
+
 ## Refresh note (2026-09-18)
 
 This recheck advances checked-in/live `pg-delta` from
