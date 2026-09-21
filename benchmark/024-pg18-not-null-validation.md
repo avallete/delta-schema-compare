@@ -21,6 +21,56 @@ column nullability only as a boolean `notNull` fact, emits a direct
 `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL`, and does not extract PG18's
 `contype = 'n'` constraint rows as diff-visible state.
 
+## Refresh note (2026-09-21)
+
+This recheck keeps checked-in/live `pg-delta` at
+`0882fc4cb6b792b79b599a414b434e4e048b6672` and advances checked-in/live
+`pgschema` to `580f4040d0f3c1bfad1497918200c9c1f638a020` through merged PRs
+[#616](https://github.com/pgplex/pgschema/pull/616),
+[#617](https://github.com/pgplex/pgschema/pull/617),
+[#618](https://github.com/pgplex/pgschema/pull/618),
+[#619](https://github.com/pgplex/pgschema/pull/619),
+[#620](https://github.com/pgplex/pgschema/pull/620),
+[#621](https://github.com/pgplex/pgschema/pull/621), and
+[#608](https://github.com/pgplex/pgschema/pull/608).
+
+Today's upstream movement still does not change this PG18 nullability workflow
+gap:
+
+- merged PR [#616](https://github.com/pgplex/pgschema/pull/616) is the
+  follow-up on already-upstream-only issue
+  [#596](https://github.com/pgplex/pgschema/issues/596) and remains in
+  pgschema's temp-schema / SQL-function batching path
+- merged PRs [#617](https://github.com/pgplex/pgschema/pull/617),
+  [#618](https://github.com/pgplex/pgschema/pull/618),
+  [#619](https://github.com/pgplex/pgschema/pull/619),
+  [#620](https://github.com/pgplex/pgschema/pull/620),
+  [#621](https://github.com/pgplex/pgschema/pull/621), and
+  [#608](https://github.com/pgplex/pgschema/pull/608) close already-screened
+  covered or upstream-only issues
+  [#599](https://github.com/pgplex/pgschema/issues/599),
+  [#600](https://github.com/pgplex/pgschema/issues/600),
+  [#601](https://github.com/pgplex/pgschema/issues/601),
+  [#602](https://github.com/pgplex/pgschema/issues/602),
+  [#603](https://github.com/pgplex/pgschema/issues/603), and
+  [#607](https://github.com/pgplex/pgschema/issues/607); none of those touch
+  PG18 native `NOT NULL ... NOT VALID` handling
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still records
+  column nullability from `a.attnotnull` and filters table constraints to
+  `con.contype IN ('p', 'u', 'f', 'c', 'x')`, so PG18
+  `contype = 'n'` pending-validation state remains invisible
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still emits a
+  plain `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL` in `notNull.alter`
+- open issue [#476](https://github.com/supabase/pg-toolbelt/issues/476),
+  open issue [#477](https://github.com/supabase/pg-toolbelt/issues/477), open
+  PR [#478](https://github.com/supabase/pg-toolbelt/pull/478), merged PR
+  [#480](https://github.com/supabase/pg-toolbelt/pull/480), and open release
+  PR [#481](https://github.com/supabase/pg-toolbelt/pull/481) remain adjacent
+  role / identity-sequence / partition-index work rather than duplicates, and
+  there is still no exact pg-toolbelt issue or PR for this benchmark
+
+Benchmark 024 therefore remains **not covered** in current pg-delta.
+
 ## Refresh note (2026-09-20)
 
 This recheck keeps checked-in/live `pg-delta` at
