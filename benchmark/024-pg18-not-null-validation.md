@@ -21,6 +21,47 @@ column nullability only as a boolean `notNull` fact, emits a direct
 `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL`, and does not extract PG18's
 `contype = 'n'` constraint rows as diff-visible state.
 
+## Refresh note (2026-09-23)
+
+This recheck keeps checked-in/live `pg-delta` at
+`c00c4d0194a8aec34f3f6e85c1052fb5a62c0f5e` and keeps checked-in/live
+`pgschema` at `580f4040d0f3c1bfad1497918200c9c1f638a020`.
+
+Today's upstream delta still does not change this PG18 nullability workflow
+gap:
+
+- `gh issue list -R pgplex/pgschema --state all --search 'updated:>=2026-09-22'`
+  and
+  `gh pr list -R pgplex/pgschema --state all --search 'updated:>=2026-09-22'`
+  both returned `[]`, so there is no new pgschema-side issue or PR delta
+  since the 2026-09-22 sweep
+- there is no new merged `pg-toolbelt/main` code on top of the current
+  checked-in/live head, so the active extract / plan files remain unchanged
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still records
+  column nullability from `a.attnotnull` and filters table constraints to
+  `con.contype IN ('p', 'u', 'f', 'c', 'x')`, so PG18
+  `contype = 'n'` pending-validation state remains invisible
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still emits a
+  plain `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL` in `notNull.alter`
+- open PR [#484](https://github.com/supabase/pg-toolbelt/pull/484) fixes
+  duplicate domain `NOT NULL` rendering on PostgreSQL 17+, which is adjacent
+  but not a duplicate of this table-column PG18 native validation workflow
+- open PR [#485](https://github.com/supabase/pg-toolbelt/pull/485) suppresses
+  `dangling_edge` warnings for PostgreSQL 18 table `contype = 'n'` rows, but
+  its own summary says the change is diagnostics-only and leaves the fact
+  base, content hashes, and resulting plans unchanged; it therefore still does
+  not surface pending validation state or add PG18-native
+  `ADD CONSTRAINT ... NOT NULL ... NOT VALID` / `VALIDATE CONSTRAINT`
+  planning
+- duplicate searches still find no exact current pg-toolbelt issue or PR for
+  this benchmark; the only historical hit remains merged PR
+  [#174](https://github.com/supabase/pg-toolbelt/pull/174), which patched the
+  pre-clean-room `packages/pg-delta/src/core/objects/table/table.model.ts`
+  path and does not close the current `src/extract/relations.ts` /
+  `src/plan/rules/tables.ts` gap
+
+Benchmark 024 therefore remains **not covered** in current pg-delta.
+
 ## Refresh note (2026-09-22)
 
 This recheck advances checked-in/live `pg-delta` from

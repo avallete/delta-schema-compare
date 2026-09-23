@@ -16,6 +16,53 @@ In the upstream fix, pgschema only needed `DEFAULT` and `NOT NULL`
 overrides, but the gap is still real for pg-delta because the current plan
 rule emits only the bare `PARTITION OF ... <bound>` form.
 
+## Refresh note (2026-09-23)
+
+This recheck keeps checked-in/live `pg-delta` at
+`c00c4d0194a8aec34f3f6e85c1052fb5a62c0f5e` and keeps checked-in/live
+`pgschema` at `580f4040d0f3c1bfad1497918200c9c1f638a020`.
+
+Today's upstream delta still does not close the active partition-child
+override gap:
+
+- `gh issue list -R pgplex/pgschema --state all --search 'updated:>=2026-09-22'`
+  and
+  `gh pr list -R pgplex/pgschema --state all --search 'updated:>=2026-09-22'`
+  both returned `[]`, so there is no new pgschema-side issue or PR delta
+  since the 2026-09-22 sweep
+- there is no new merged `pg-toolbelt/main` code on top of the current
+  checked-in/live head, so the active extract / plan files remain unchanged
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still keeps
+  `COLUMNS_SQL` gated by `a.attislocal`, so child-local overrides on inherited
+  partition columns remain absent from diff-visible facts
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still emits
+  `CREATE TABLE ... PARTITION OF ... ${bound}` with no typed child
+  column-element list for local `DEFAULT` / `NOT NULL` overrides
+- umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332)
+  remains the only open tracker context for this benchmark, while open issue
+  [#483](https://github.com/supabase/pg-toolbelt/issues/483), open PR
+  [#484](https://github.com/supabase/pg-toolbelt/pull/484), open PR
+  [#485](https://github.com/supabase/pg-toolbelt/pull/485), issue
+  [#476](https://github.com/supabase/pg-toolbelt/issues/476), issue
+  [#477](https://github.com/supabase/pg-toolbelt/issues/477), PR
+  [#478](https://github.com/supabase/pg-toolbelt/pull/478), and merged PRs
+  [#480](https://github.com/supabase/pg-toolbelt/pull/480) and
+  [#481](https://github.com/supabase/pg-toolbelt/pull/481) remain adjacent
+  diagnostics / domain-not-null / role / identity-sequence / partition-index
+  / release work rather than duplicates
+
+The last focused 2026-08-14 runtime observation therefore still stands and
+emitted only:
+
+```sql
+CREATE TABLE "test_schema"."orders_us" PARTITION OF "test_schema"."orders" FOR VALUES IN ('us')
+ALTER TABLE "test_schema"."orders_us" OWNER TO "test"
+```
+
+The child-specific `priority DEFAULT 10` and `notes NOT NULL` overrides were
+still omitted. Benchmark 021 therefore remains **behaviorally uncovered**
+with **umbrella-thread tracker context only**.
+
 ## Refresh note (2026-09-22)
 
 This recheck advances checked-in/live `pg-delta` from

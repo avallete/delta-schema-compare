@@ -17,6 +17,50 @@ mechanism. This benchmark tracks the now-resolved upstream scenario after
 pgschema merged its fix on `main`, while current pg-delta still lacks exact
 coverage.
 
+## Refresh note (2026-09-23)
+
+This recheck keeps checked-in/live `pg-delta` at
+`c00c4d0194a8aec34f3f6e85c1052fb5a62c0f5e` and keeps checked-in/live
+`pgschema` at `580f4040d0f3c1bfad1497918200c9c1f638a020`.
+
+Today's upstream delta still stays outside the active generated-kind gap:
+
+- `gh issue list -R pgplex/pgschema --state all --search 'updated:>=2026-09-22'`
+  and
+  `gh pr list -R pgplex/pgschema --state all --search 'updated:>=2026-09-22'`
+  both returned `[]`, so there is no new pgschema-side issue or PR delta
+  since the 2026-09-22 sweep
+- there is no new merged `pg-toolbelt/main` code on top of the current
+  checked-in/live head, so the active extract / render files remain unchanged
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still
+  collapses `attgenerated` to generated-expression presence, and
+  `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts` still
+  hard-codes generated-column rendering as
+  `GENERATED ALWAYS AS (...) STORED`
+- umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332)
+  remains the only open tracker context for this benchmark, while open issue
+  [#483](https://github.com/supabase/pg-toolbelt/issues/483), open PR
+  [#484](https://github.com/supabase/pg-toolbelt/pull/484), open PR
+  [#485](https://github.com/supabase/pg-toolbelt/pull/485), issue
+  [#476](https://github.com/supabase/pg-toolbelt/issues/476), issue
+  [#477](https://github.com/supabase/pg-toolbelt/issues/477), PR
+  [#478](https://github.com/supabase/pg-toolbelt/pull/478), and merged PRs
+  [#480](https://github.com/supabase/pg-toolbelt/pull/480) and
+  [#481](https://github.com/supabase/pg-toolbelt/pull/481) remain adjacent
+  work rather than duplicates
+
+The last focused 2026-08-14 runtime observation therefore still stands and
+serialized the generated column as:
+
+```sql
+ALTER TABLE "test_schema"."users"
+  ADD COLUMN "full_name" text GENERATED ALWAYS AS (((first_name || ' '::text) || last_name)) STORED
+```
+
+The PostgreSQL 18 `VIRTUAL` keyword is still collapsed back to `STORED`.
+Benchmark 022 therefore remains **behaviorally uncovered**, while resolved
+pgschema issue **#591** itself remains **covered** in current pg-delta.
+
 ## Refresh note (2026-09-22)
 
 This recheck advances checked-in/live `pg-delta` from

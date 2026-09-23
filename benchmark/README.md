@@ -4,42 +4,39 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-09-22)
+## Latest refresh snapshot (2026-09-23)
 
 Refreshed against:
 
 - checked-in/live `repos/pg-toolbelt` @ `c00c4d0194a8aec34f3f6e85c1052fb5a62c0f5e`
 - checked-in/live `repos/pgschema` @ `580f4040d0f3c1bfad1497918200c9c1f638a020`
 
-> The 2026-09-22 refresh advances checked-in/live `pg-delta` from
-> `0882fc4cb6b792b79b599a414b434e4e048b6672` to
-> `c00c4d0194a8aec34f3f6e85c1052fb5a62c0f5e` through merged release PR
-> [#481](https://github.com/supabase/pg-toolbelt/pull/481), while
-> checked-in/live `pgschema` remains
-> `580f4040d0f3c1bfad1497918200c9c1f638a020`
+> The 2026-09-23 refresh keeps checked-in/live `pg-delta` at
+> `c00c4d0194a8aec34f3f6e85c1052fb5a62c0f5e` and keeps checked-in/live
+> `pgschema` at `580f4040d0f3c1bfad1497918200c9c1f638a020`
 >
-> - `gh issue list -R pgplex/pgschema --state all --search 'updated:>=2026-09-21'`
+> - `gh issue list -R pgplex/pgschema --state all --search 'updated:>=2026-09-22'`
 >   and
->   `gh pr list -R pgplex/pgschema --state all --search 'updated:>=2026-09-21'`
+>   `gh pr list -R pgplex/pgschema --state all --search 'updated:>=2026-09-22'`
 >   both returned `[]`, so there is no new pgschema-side issue or PR delta
->   since the 2026-09-21 sweep
-> - merged pg-toolbelt PR
->   [#481](https://github.com/supabase/pg-toolbelt/pull/481) is release-only
->   on top of already-reviewed code: the checked-in/live delta only touches
->   `packages/pg-delta/CHANGELOG.md` and
->   `packages/pg-delta/package.json`
-> - new open pg-toolbelt issues
->   [#482](https://github.com/supabase/pg-toolbelt/issues/482) (duplicate
->   domain `NOT NULL`) and
->   [#483](https://github.com/supabase/pg-toolbelt/issues/483)
->   (`dangling_edge` warnings) are adjacent reports, not duplicates of
->   benchmarks **021**, **022**, or **024**
-> - benchmark **024** now has historical duplicate-search context via merged
->   pg-toolbelt PR [#174](https://github.com/supabase/pg-toolbelt/pull/174),
->   but that fix landed on the pre-clean-room
->   `packages/pg-delta/src/core/objects/table/table.model.ts` path and does
->   not close the current `src/extract/relations.ts` /
->   `src/plan/rules/tables.ts` gap
+>   since the 2026-09-22 sweep
+> - there is no new merged `pg-toolbelt/main` code on top of the current
+>   checked-in/live head
+> - open issue [#482](https://github.com/supabase/pg-toolbelt/issues/482),
+>   open issue [#483](https://github.com/supabase/pg-toolbelt/issues/483),
+>   open PR [#484](https://github.com/supabase/pg-toolbelt/pull/484), and
+>   open PR [#485](https://github.com/supabase/pg-toolbelt/pull/485) are
+>   adjacent context rather than duplicates of benchmarks **021**, **022**, or
+>   **024**
+> - open PR [#484](https://github.com/supabase/pg-toolbelt/pull/484) fixes
+>   duplicate domain `NOT NULL` rendering on PostgreSQL 17+, while open PR
+>   [#485](https://github.com/supabase/pg-toolbelt/pull/485) suppresses PG18
+>   `dangling_edge` warnings for table `contype = 'n'` rows and explicitly
+>   leaves the fact base, content hashes, and resulting plans unchanged
+> - benchmark **024** therefore still has only historical duplicate-search
+>   context via merged pg-toolbelt PR
+>   [#174](https://github.com/supabase/pg-toolbelt/pull/174); PR **#485**
+>   touches the same catalog family but is not an exact fix path
 > - the open pg-toolbelt umbrella issue
 >   [#332](https://github.com/supabase/pg-toolbelt/issues/332) still covers
 >   only benchmarks **021** / **022**
@@ -108,14 +105,18 @@ Three resolved-issue benchmark scenarios remain active as unresolved behavior:
     constraints to `con.contype IN ('p', 'u', 'f', 'c', 'x')`
   - `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still
     emits a plain `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL`
-  - there is still no exact pg-toolbelt issue or PR for this benchmark
+  - there is still no exact pg-toolbelt issue or PR for this benchmark; open
+    PR [#485](https://github.com/supabase/pg-toolbelt/pull/485) only filters
+    PG18 `contype = 'n'` diagnostic noise and explicitly leaves the fact base
+    and resulting plans unchanged
 
-Because the checked-in/live pg-delta delta between the 2026-09-21 and
-2026-09-22 heads is release-only (`CHANGELOG.md` / `package.json`) and the
-updated-since `gh` queries for `pgplex/pgschema` issues and PRs both returned
-`[]`, the focused 2026-08-14 runtime observations for benchmarks **021** /
-**022** remain the latest direct runtime evidence, and benchmark **024**
-remains source-level not covered on the same current heads.
+Because the checked-in/live `pg-delta` and `pgschema` heads are unchanged from
+the 2026-09-22 refresh, the updated-since `gh` queries for `pgplex/pgschema`
+issues and PRs both returned `[]`, and open PR
+[#485](https://github.com/supabase/pg-toolbelt/pull/485) is diagnostics-only,
+the focused 2026-08-14 runtime observations for benchmarks **021** / **022**
+remain the latest direct runtime evidence, and benchmark **024** remains
+source-level not covered on the same current heads.
 
 ## Open pgschema issue screening (current state)
 
@@ -156,10 +157,12 @@ There is currently **no open uncovered parity candidate** on the pgschema
 side. The remaining active benchmarks **021** / **022** still only have
 umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332) as
 adjacent tracker context, benchmark **024** still has no exact current
-pg-toolbelt issue or PR, new open issues
-[#482](https://github.com/supabase/pg-toolbelt/issues/482) and
-[#483](https://github.com/supabase/pg-toolbelt/issues/483) are adjacent
-domain-not-null / warning-surface reports, merged PR
+pg-toolbelt issue or PR, open issue
+[#482](https://github.com/supabase/pg-toolbelt/issues/482), open issue
+[#483](https://github.com/supabase/pg-toolbelt/issues/483), open PR
+[#484](https://github.com/supabase/pg-toolbelt/pull/484), and open PR
+[#485](https://github.com/supabase/pg-toolbelt/pull/485) are adjacent
+domain-not-null / warning-surface work, merged PR
 [#174](https://github.com/supabase/pg-toolbelt/pull/174) is only historical
 pre-clean-room context for benchmark **024**, and issue
 [#476](https://github.com/supabase/pg-toolbelt/issues/476), issue
@@ -176,20 +179,25 @@ issues.
 No benchmark item changed status in this refresh. The most relevant current
 tracker updates are:
 
-- `gh issue list -R pgplex/pgschema --state all --search 'updated:>=2026-09-21'`
-  and `gh pr list -R pgplex/pgschema --state all --search 'updated:>=2026-09-21'`
+- `gh issue list -R pgplex/pgschema --state all --search 'updated:>=2026-09-22'`
+  and `gh pr list -R pgplex/pgschema --state all --search 'updated:>=2026-09-22'`
   both returned `[]`, so the pgschema side is unchanged since the
-  2026-09-21 refresh
-- merged pg-toolbelt PR
-  [#481](https://github.com/supabase/pg-toolbelt/pull/481) publishes
-  alpha.53 but only carries `CHANGELOG.md` / `package.json` metadata relative
-  to the prior checked-in/live head
-- new open pg-toolbelt issue
-  [#482](https://github.com/supabase/pg-toolbelt/issues/482) is a domain
-  `NOT NULL` rendering bug, and new open issue
-  [#483](https://github.com/supabase/pg-toolbelt/issues/483) is a
-  `dangling_edge` warning report; both are adjacent rather than duplicates of
-  benchmarks **021**, **022**, or **024**
+  2026-09-22 refresh
+- checked-in/live `pg-toolbelt` remains at
+  `c00c4d0194a8aec34f3f6e85c1052fb5a62c0f5e`; there is no new merged
+  `main`-branch code since the 2026-09-22 refresh
+- open pg-toolbelt issue
+  [#483](https://github.com/supabase/pg-toolbelt/issues/483) reports PG18
+  `dangling_edge` warning noise on catalog `NOT NULL` rows
+- open pg-toolbelt PR
+  [#484](https://github.com/supabase/pg-toolbelt/pull/484) fixes duplicate
+  domain `NOT NULL` rendering on PostgreSQL 17+
+- open pg-toolbelt PR
+  [#485](https://github.com/supabase/pg-toolbelt/pull/485), stacked on
+  [#484](https://github.com/supabase/pg-toolbelt/pull/484), filters PG18
+  table `contype = 'n'` dangling-edge warnings but explicitly leaves the fact
+  base and plans unchanged, so it is adjacent rather than a benchmark **024**
+  closure
 
 - closed pgschema issue
   [#588](https://github.com/pgplex/pgschema/issues/588) is still **not parity
@@ -264,12 +272,13 @@ tracker updates are:
   [#611](https://github.com/pgplex/pgschema/pull/611) and unrelated security
   update PR [#605](https://github.com/pgplex/pgschema/pull/605) remain in
   flight
-- checked-in/live `pg-toolbelt` advances to
-  `c00c4d0194a8aec34f3f6e85c1052fb5a62c0f5e` through merged release PR
-  [#481](https://github.com/supabase/pg-toolbelt/pull/481); the code delta
-  from the prior checked-in/live head is release-only and does not change any
-  benchmark verdict
+- checked-in/live `pg-toolbelt` remains at
+  `c00c4d0194a8aec34f3f6e85c1052fb5a62c0f5e`; there is no new merged
+  `main`-branch code since release PR
+  [#481](https://github.com/supabase/pg-toolbelt/pull/481)
 - the nearby pg-toolbelt issue/PR landscape is:
+  - open PR [#485](https://github.com/supabase/pg-toolbelt/pull/485)
+  - open PR [#484](https://github.com/supabase/pg-toolbelt/pull/484)
   - open issue [#483](https://github.com/supabase/pg-toolbelt/issues/483)
   - open issue [#482](https://github.com/supabase/pg-toolbelt/issues/482)
   - open issue [#476](https://github.com/supabase/pg-toolbelt/issues/476)
@@ -285,11 +294,12 @@ tracker updates are:
   - only umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332)
     still points at benchmarks **021** / **022**, and benchmark **024**
     still has no exact current pg-toolbelt issue or PR
-  - issues **#482** / **#483**, issue **#476**, issue **#477**, PR **#478**,
-    PR **#480**, PR **#481**, and historical PR **#174** are adjacent
-    domain-not-null / warning-surface / cluster-global role /
-    identity-sequence privilege / partition-index / release / legacy-engine
-    context rather than duplicates of the active benchmark set
+  - issues **#482** / **#483**, PRs **#484** / **#485**, issue **#476**,
+    issue **#477**, PR **#478**, PR **#480**, PR **#481**, and historical
+    PR **#174** are adjacent domain-not-null / warning-surface /
+    cluster-global role / identity-sequence privilege / partition-index /
+    release / legacy-engine context rather than duplicates of the active
+    benchmark set
 - the target repo still has no local tracker issues
 
 ## Historical notes
