@@ -4,24 +4,39 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-09-23)
+## Latest refresh snapshot (2026-09-24)
 
 Refreshed against:
 
 - checked-in/live `repos/pg-toolbelt` @ `c00c4d0194a8aec34f3f6e85c1052fb5a62c0f5e`
 - checked-in/live `repos/pgschema` @ `580f4040d0f3c1bfad1497918200c9c1f638a020`
 
-> The 2026-09-23 refresh keeps checked-in/live `pg-delta` at
+> The 2026-09-24 refresh keeps checked-in/live `pg-delta` at
 > `c00c4d0194a8aec34f3f6e85c1052fb5a62c0f5e` and keeps checked-in/live
 > `pgschema` at `580f4040d0f3c1bfad1497918200c9c1f638a020`
 >
-> - `gh issue list -R pgplex/pgschema --state all --search 'updated:>=2026-09-22'`
->   and
->   `gh pr list -R pgplex/pgschema --state all --search 'updated:>=2026-09-22'`
->   both returned `[]`, so there is no new pgschema-side issue or PR delta
->   since the 2026-09-22 sweep
+> - `gh issue list -R pgplex/pgschema --state all --search 'updated:>=2026-09-23'`
+>   returned `[]`, while
+>   `gh pr list -R pgplex/pgschema --state all --search 'updated:>=2026-09-23'`
+>   surfaced only open PR
+>   [#622](https://github.com/pgplex/pgschema/pull/622), a follow-up to
+>   already-covered issue [#601](https://github.com/pgplex/pgschema/issues/601)
+> - open pgschema PR [#622](https://github.com/pgplex/pgschema/pull/622)
+>   broadens upstream function-recreate dependent handling past the exact
+>   dependent-view failure from issue
+>   [#601](https://github.com/pgplex/pgschema/issues/601), but current
+>   pg-delta already has generic replace-path dependent rebuild infrastructure,
+>   so there is no benchmark status change from that follow-up alone
 > - there is no new merged `pg-toolbelt/main` code on top of the current
 >   checked-in/live head
+> - new open pg-toolbelt issue
+>   [#486](https://github.com/supabase/pg-toolbelt/issues/486) (shadow
+>   non-superuser event-trigger loading) is adjacent tooling behavior rather
+>   than pgschema parity work, while new open issue
+>   [#487](https://github.com/supabase/pg-toolbelt/issues/487) is adjacent to
+>   benchmark **005** but does not reopen the exact pgschema
+>   [#190](https://github.com/pgplex/pgschema/issues/190) `text -> enum` +
+>   default scenario
 > - open issue [#482](https://github.com/supabase/pg-toolbelt/issues/482),
 >   open issue [#483](https://github.com/supabase/pg-toolbelt/issues/483),
 >   open PR [#484](https://github.com/supabase/pg-toolbelt/pull/484), and
@@ -111,12 +126,14 @@ Three resolved-issue benchmark scenarios remain active as unresolved behavior:
     and resulting plans unchanged
 
 Because the checked-in/live `pg-delta` and `pgschema` heads are unchanged from
-the 2026-09-22 refresh, the updated-since `gh` queries for `pgplex/pgschema`
-issues and PRs both returned `[]`, and open PR
-[#485](https://github.com/supabase/pg-toolbelt/pull/485) is diagnostics-only,
-the focused 2026-08-14 runtime observations for benchmarks **021** / **022**
-remain the latest direct runtime evidence, and benchmark **024** remains
-source-level not covered on the same current heads.
+the 2026-09-23 refresh, the updated-since `gh` query for `pgplex/pgschema`
+issues returned `[]`, the PR query surfaced only open follow-up PR
+[#622](https://github.com/pgplex/pgschema/pull/622) for already-covered issue
+[#601](https://github.com/pgplex/pgschema/issues/601), and open PR
+[#485](https://github.com/supabase/pg-toolbelt/pull/485) remains
+diagnostics-only, the focused 2026-08-14 runtime observations for benchmarks
+**021** / **022** remain the latest direct runtime evidence, and benchmark
+**024** remains source-level not covered on the same current heads.
 
 ## Open pgschema issue screening (current state)
 
@@ -179,13 +196,26 @@ issues.
 No benchmark item changed status in this refresh. The most relevant current
 tracker updates are:
 
-- `gh issue list -R pgplex/pgschema --state all --search 'updated:>=2026-09-22'`
-  and `gh pr list -R pgplex/pgschema --state all --search 'updated:>=2026-09-22'`
-  both returned `[]`, so the pgschema side is unchanged since the
-  2026-09-22 refresh
+- `gh issue list -R pgplex/pgschema --state all --search 'updated:>=2026-09-23'`
+  returned `[]`, while
+  `gh pr list -R pgplex/pgschema --state all --search 'updated:>=2026-09-23'`
+  surfaced only open follow-up PR
+  [#622](https://github.com/pgplex/pgschema/pull/622) for covered issue
+  [#601](https://github.com/pgplex/pgschema/issues/601)
 - checked-in/live `pg-toolbelt` remains at
   `c00c4d0194a8aec34f3f6e85c1052fb5a62c0f5e`; there is no new merged
-  `main`-branch code since the 2026-09-22 refresh
+  `main`-branch code since the 2026-09-23 refresh
+- open pg-toolbelt issue
+  [#486](https://github.com/supabase/pg-toolbelt/issues/486) reports a shadow
+  non-superuser event-trigger load failure; this is adjacent platform/tooling
+  behavior rather than a pgschema parity benchmark
+- open pg-toolbelt issue
+  [#487](https://github.com/supabase/pg-toolbelt/issues/487) reports that
+  current `src/plan/rules/tables.ts` still emits a direct enum-to-enum cast
+  for the differently named-type path; that is adjacent to benchmark **005**,
+  but it does not duplicate the exact pgschema
+  [#190](https://github.com/pgplex/pgschema/issues/190) `text -> enum` +
+  default scenario that current pg-delta still covers
 - open pg-toolbelt issue
   [#483](https://github.com/supabase/pg-toolbelt/issues/483) reports PG18
   `dangling_edge` warning noise on catalog `NOT NULL` rows
@@ -233,7 +263,12 @@ tracker updates are:
   [#601](https://github.com/pgplex/pgschema/issues/601) remains **covered** in
   current pg-delta; merged PR
   [#619](https://github.com/pgplex/pgschema/pull/619) recreates dependent
-  views around function replacement, which current pg-delta already covers
+  views around function replacement, which current pg-delta already covers,
+  while open follow-up PR [#622](https://github.com/pgplex/pgschema/pull/622)
+  broadens the upstream recreate-dependents flow to non-view dependents; the
+  current pg-delta planner already has generic replacement expansion plus
+  rebuildable default / constraint / index / policy / trigger / table kinds,
+  so this stays watch-list context rather than a benchmark status change
 - closed pgschema issue
   [#602](https://github.com/pgplex/pgschema/issues/602) remains **covered** in
   current pg-delta; merged PR
@@ -267,9 +302,11 @@ tracker updates are:
 ## Upstream watch list
 
 - checked-in/live `pgschema` remains at
-  `580f4040d0f3c1bfad1497918200c9c1f638a020`; updated-since issue/PR queries
-  returned `[]`, while open PR
-  [#611](https://github.com/pgplex/pgschema/pull/611) and unrelated security
+  `580f4040d0f3c1bfad1497918200c9c1f638a020`; the updated-since issue query
+  returned `[]`, the PR query surfaced only open follow-up PR
+  [#622](https://github.com/pgplex/pgschema/pull/622) for covered issue
+  [#601](https://github.com/pgplex/pgschema/issues/601), and open PR
+  [#611](https://github.com/pgplex/pgschema/pull/611) plus unrelated security
   update PR [#605](https://github.com/pgplex/pgschema/pull/605) remain in
   flight
 - checked-in/live `pg-toolbelt` remains at
@@ -277,6 +314,8 @@ tracker updates are:
   `main`-branch code since release PR
   [#481](https://github.com/supabase/pg-toolbelt/pull/481)
 - the nearby pg-toolbelt issue/PR landscape is:
+  - open issue [#487](https://github.com/supabase/pg-toolbelt/issues/487)
+  - open issue [#486](https://github.com/supabase/pg-toolbelt/issues/486)
   - open PR [#485](https://github.com/supabase/pg-toolbelt/pull/485)
   - open PR [#484](https://github.com/supabase/pg-toolbelt/pull/484)
   - open issue [#483](https://github.com/supabase/pg-toolbelt/issues/483)
@@ -294,12 +333,14 @@ tracker updates are:
   - only umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332)
     still points at benchmarks **021** / **022**, and benchmark **024**
     still has no exact current pg-toolbelt issue or PR
-  - issues **#482** / **#483**, PRs **#484** / **#485**, issue **#476**,
-    issue **#477**, PR **#478**, PR **#480**, PR **#481**, and historical
-    PR **#174** are adjacent domain-not-null / warning-surface /
-    cluster-global role / identity-sequence privilege / partition-index /
-    release / legacy-engine context rather than duplicates of the active
-    benchmark set
+  - issue **#487** is adjacent enum-cast context for benchmark **005**, issue
+    **#486** is adjacent shadow-load / superuser tooling context, issues
+    **#482** / **#483** and PRs **#484** / **#485** are adjacent domain-not-
+    null / warning-surface context for benchmark **024**, and issue **#476**,
+    issue **#477**, PR **#478**, PR **#480**, PR **#481**, and historical PR
+    **#174** remain adjacent cluster-global role / identity-sequence
+    privilege / partition-index / release / legacy-engine context rather than
+    duplicates of the active benchmark set
 - the target repo still has no local tracker issues
 
 ## Historical notes

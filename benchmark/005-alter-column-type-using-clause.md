@@ -79,7 +79,7 @@ the type change.
 | **Original gap** | Missing `USING` and default-safe sequencing | Same |
 | **Current upstream state** | Fixed | Fixed |
 | **Coverage** | Regression fixture in pgschema | Roundtrip integration test in pg-delta |
-| **Remaining follow-up** | None for issue #190 | A separate skipped reverse-direction enum regression still exists, but it does not block the pgschema #190 direction |
+| **Remaining follow-up** | None for issue #190 | Open pg-toolbelt issue [#487](https://github.com/supabase/pg-toolbelt/issues/487) tracks a different enum-to-differently-named-enum cast path, but it does not block the exact pgschema #190 direction |
 
 ## Resolution in pg-delta
 
@@ -91,6 +91,36 @@ pg-delta now resolves the benchmark scenario end-to-end:
    the original column had a default.
 3. The integration suite covers the exact `text -> enum` path with live row
    data and a default value.
+
+## Latest refresh note (2026-09-24)
+
+This refresh kept checked-in/live `pg-delta` at
+`c00c4d0194a8aec34f3f6e85c1052fb5a62c0f5e` and checked-in/live `pgschema` at
+`580f4040d0f3c1bfad1497918200c9c1f638a020`.
+
+New open pg-toolbelt issue
+[#487](https://github.com/supabase/pg-toolbelt/issues/487) reports that current
+`repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still emits a
+direct enum-to-enum cast for the differently named-type path:
+
+```sql
+ALTER TABLE "public"."widgets"
+  ALTER COLUMN "status" TYPE public.widget_status
+  USING "status"::public.widget_status;
+```
+
+That is adjacent to, but does not reopen, benchmark **005**:
+
+- pgschema issue [#190](https://github.com/pgplex/pgschema/issues/190) is the
+  `text -> enum` + default-safe sequencing case
+- current pg-delta still covers that exact direction in
+  `tests/integration/alter-table-operations.test.ts`
+- issue **#487** is the separate enum-to-differently-named-enum path, where the
+  planner should route through `::text::new_enum` instead of a direct cast
+
+Benchmark **005** therefore remains **Solved in pg-delta**, with issue
+**#487** recorded as nearby follow-up context rather than a benchmark status
+change.
 
 ## Latest refresh note (2026-08-14)
 
