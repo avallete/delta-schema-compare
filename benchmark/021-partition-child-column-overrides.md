@@ -16,6 +16,65 @@ In the upstream fix, pgschema only needed `DEFAULT` and `NOT NULL`
 overrides, but the gap is still real for pg-delta because the current plan
 rule emits only the bare `PARTITION OF ... <bound>` form.
 
+## Refresh note (2026-09-25)
+
+This recheck keeps checked-in/live `pg-delta` at
+`c00c4d0194a8aec34f3f6e85c1052fb5a62c0f5e` and keeps checked-in/live
+`pgschema` at `580f4040d0f3c1bfad1497918200c9c1f638a020`.
+
+Today's upstream delta still does not close the active partition-child
+override gap:
+
+- `gh issue list -R pgplex/pgschema --state all --search 'updated:>=2026-09-24'`
+  returned `[]`, while
+  `gh pr list -R pgplex/pgschema --state all --search 'updated:>=2026-09-24'`
+  surfaced only open follow-up PR
+  [#622](https://github.com/pgplex/pgschema/pull/622) plus closed unrelated
+  security PR [#605](https://github.com/pgplex/pgschema/pull/605), so there
+  is no new pgschema-side partition-child delta
+- there is no new merged `pg-toolbelt/main` code on top of the current
+  checked-in/live head, so the active extract / plan files remain unchanged
+- open PR [#488](https://github.com/supabase/pg-toolbelt/pull/488) adds a
+  test-only corpus scenario for heap-to-partitioned replacement with `ON ONLY`
+  parent indexes, cross-schema partitions, and
+  `publish_via_partition_root = true`, but it does not touch
+  `src/extract/relations.ts` or `src/plan/rules/tables.ts`
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still keeps
+  `COLUMNS_SQL` gated by `a.attislocal`, so child-local overrides on inherited
+  partition columns remain absent from diff-visible facts
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still emits
+  `CREATE TABLE ... PARTITION OF ... ${bound}` with no typed child
+  column-element list for local `DEFAULT` / `NOT NULL` overrides
+- umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332)
+  remains the only exact tracker context; open PR
+  [#488](https://github.com/supabase/pg-toolbelt/pull/488), open issues
+  [#476](https://github.com/supabase/pg-toolbelt/issues/476),
+  [#477](https://github.com/supabase/pg-toolbelt/issues/477),
+  [#482](https://github.com/supabase/pg-toolbelt/issues/482),
+  [#483](https://github.com/supabase/pg-toolbelt/issues/483),
+  [#486](https://github.com/supabase/pg-toolbelt/issues/486),
+  [#487](https://github.com/supabase/pg-toolbelt/issues/487),
+  [#489](https://github.com/supabase/pg-toolbelt/issues/489), open PRs
+  [#478](https://github.com/supabase/pg-toolbelt/pull/478),
+  [#484](https://github.com/supabase/pg-toolbelt/pull/484),
+  [#485](https://github.com/supabase/pg-toolbelt/pull/485), and merged PRs
+  [#480](https://github.com/supabase/pg-toolbelt/pull/480) and
+  [#481](https://github.com/supabase/pg-toolbelt/pull/481) remain adjacent
+  partition / warning-surface / privilege / tooling / release work rather
+  than duplicates
+
+The last focused 2026-08-14 runtime observation therefore still stands and
+emitted only:
+
+```sql
+CREATE TABLE "test_schema"."orders_us" PARTITION OF "test_schema"."orders" FOR VALUES IN ('us')
+ALTER TABLE "test_schema"."orders_us" OWNER TO "test"
+```
+
+The child-specific `priority DEFAULT 10` and `notes NOT NULL` overrides were
+still omitted. Benchmark 021 therefore remains **behaviorally uncovered**
+with **umbrella-thread tracker context only**.
+
 ## Refresh note (2026-09-23)
 
 This recheck keeps checked-in/live `pg-delta` at
