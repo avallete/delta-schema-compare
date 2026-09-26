@@ -79,7 +79,7 @@ the type change.
 | **Original gap** | Missing `USING` and default-safe sequencing | Same |
 | **Current upstream state** | Fixed | Fixed |
 | **Coverage** | Regression fixture in pgschema | Roundtrip integration test in pg-delta |
-| **Remaining follow-up** | None for issue #190 | Open pg-toolbelt issue [#487](https://github.com/supabase/pg-toolbelt/issues/487) tracks a different enum-to-differently-named-enum cast path, but it does not block the exact pgschema #190 direction |
+| **Remaining follow-up** | None for issue #190 | Open pg-toolbelt issue [#487](https://github.com/supabase/pg-toolbelt/issues/487) and open PR [#490](https://github.com/supabase/pg-toolbelt/pull/490) track a different enum-to-differently-named-enum cast path, but they do not block the exact pgschema #190 direction |
 
 ## Resolution in pg-delta
 
@@ -91,6 +91,34 @@ pg-delta now resolves the benchmark scenario end-to-end:
    the original column had a default.
 3. The integration suite covers the exact `text -> enum` path with live row
    data and a default value.
+
+## Latest refresh note (2026-09-26)
+
+This refresh kept checked-in/live `pg-delta` at
+`c00c4d0194a8aec34f3f6e85c1052fb5a62c0f5e` and checked-in/live `pgschema` at
+`580f4040d0f3c1bfad1497918200c9c1f638a020`.
+
+Open pg-toolbelt PR
+[#490](https://github.com/supabase/pg-toolbelt/pull/490) now carries the fix
+for adjacent issue
+[#487](https://github.com/supabase/pg-toolbelt/issues/487): it adds a focused
+enum-to-differently-named-enum regression and changes
+`repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` so that when
+both the old and new types are enums, the retype routes through `::text` (or
+`::text[]` for arrays) instead of emitting a direct enum-to-enum cast.
+
+That remains adjacent to, but does not reopen, benchmark **005**:
+
+- pgschema issue [#190](https://github.com/pgplex/pgschema/issues/190) is
+  still the `text -> enum` + default-safe sequencing case
+- current pg-delta still covers that exact direction in
+  `tests/integration/alter-table-operations.test.ts`
+- PR **#490** closes the different enum-to-differently-named-enum path and
+  does not change the benchmark verdict
+
+Benchmark **005** therefore remains **Solved in pg-delta**, with issue
+**#487** / PR **#490** recorded as nearby follow-up context rather than a
+parity regression.
 
 ## Latest refresh note (2026-09-24)
 
