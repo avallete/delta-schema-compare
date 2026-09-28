@@ -4,32 +4,35 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-09-27)
+## Latest refresh snapshot (2026-09-28)
 
 Refreshed against:
 
 - checked-in/live `repos/pg-toolbelt` @ `c00c4d0194a8aec34f3f6e85c1052fb5a62c0f5e`
 - checked-in/live `repos/pgschema` @ `580f4040d0f3c1bfad1497918200c9c1f638a020`
 
-> The 2026-09-27 refresh keeps checked-in/live `pg-delta` at
+> The 2026-09-28 refresh keeps checked-in/live `pg-delta` at
 > `c00c4d0194a8aec34f3f6e85c1052fb5a62c0f5e` and keeps checked-in/live
 > `pgschema` at `580f4040d0f3c1bfad1497918200c9c1f638a020`, unchanged from the
-> 2026-09-26 snapshot
+> 2026-09-27 snapshot
 >
-> - `gh issue list -R pgplex/pgschema --state all --search 'updated:>=2026-09-26'`
+> - `gh issue list -R pgplex/pgschema --state all --search 'updated:>=2026-09-27'`
 >   returned `[]`, and
->   `gh pr list -R pgplex/pgschema --state all --search 'updated:>=2026-09-26'`
+>   `gh pr list -R pgplex/pgschema --state all --search 'updated:>=2026-09-27'`
 >   also returned `[]`
-> - `gh issue list -R supabase/pg-toolbelt --state all --search 'updated:>=2026-09-26'`
->   returned `[]`, and
->   `gh pr list -R supabase/pg-toolbelt --state all --search 'updated:>=2026-09-26'`
+> - `gh issue list -R supabase/pg-toolbelt --state all --search 'updated:>=2026-09-27'`
+>   returned only updated issue
+>   [#497](https://github.com/supabase/pg-toolbelt/issues/497), and
+>   `gh pr list -R supabase/pg-toolbelt --state all --search 'updated:>=2026-09-27'`
 >   also returned `[]`
 > - `gh issue list -R avallete/delta-schema-compare --state all --limit 200`
 >   returned `[]`
 > - there is still no new merged `pg-toolbelt/main` code on top of the
 >   current checked-in/live head
-> - the nearby pg-toolbelt issue/PR landscape therefore stays unchanged from
->   the 2026-09-26 snapshot, including umbrella issue
+> - the nearby pg-toolbelt issue/PR landscape therefore stays unchanged in
+>   substance from the 2026-09-27 snapshot: updated issue
+>   [#497](https://github.com/supabase/pg-toolbelt/issues/497) remains
+>   adjacent partition-key retype context only, including umbrella issue
 >   [#332](https://github.com/supabase/pg-toolbelt/issues/332) for benchmarks
 >   **021** / **022** and no exact current tracker for benchmark **024**
 > - the active benchmarked gap set therefore remains **021**, **022**, and
@@ -79,6 +82,9 @@ Three resolved-issue benchmark scenarios remain active as unresolved behavior:
     extraction or rendering; umbrella issue
     [#332](https://github.com/supabase/pg-toolbelt/issues/332) remains the
     only open tracker context
+  - updated open issue [#497](https://github.com/supabase/pg-toolbelt/issues/497)
+    still covers partition-key column retypes, not child-local `PARTITION OF`
+    column override extraction or rendering
 - **022** - PostgreSQL 18 `VIRTUAL` generated columns
   - `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still
     collapses `attgenerated` to generated-expression presence instead of
@@ -103,9 +109,10 @@ Three resolved-issue benchmark scenarios remain active as unresolved behavior:
     and resulting plans unchanged
 
 Because the checked-in/live `pg-delta` and `pgschema` heads are unchanged from
-the 2026-09-26 refresh, the updated-since `gh` queries for
-`pgplex/pgschema`, `supabase/pg-toolbelt`, and
-`avallete/delta-schema-compare` all returned `[]`; umbrella issue
+the 2026-09-27 refresh, the updated-since `gh` queries for `pgplex/pgschema`
+returned `[]`, the `supabase/pg-toolbelt` updated-since issue query surfaced
+only updated issue [#497](https://github.com/supabase/pg-toolbelt/issues/497),
+and the remaining updated-since queries still returned `[]`; umbrella issue
 [#332](https://github.com/supabase/pg-toolbelt/issues/332) still only covers
 benchmarks **021** / **022**, benchmark **024** still has no exact current
 pg-toolbelt issue or PR, the focused 2026-08-14 runtime observations for
@@ -151,22 +158,24 @@ There is currently **no open uncovered parity candidate** on the pgschema
 side. The remaining active benchmarks **021** / **022** still only have
 umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332) as
 exact tracker context, benchmark **024** still has no exact current
-pg-toolbelt issue or PR, and the nearby pg-toolbelt issue / PR landscape is
-unchanged from the 2026-09-26 snapshot. This repository still has no local
-tracker issues.
+pg-toolbelt issue or PR, and the only pg-toolbelt-side delta since the
+2026-09-27 refresh is updated issue
+[#497](https://github.com/supabase/pg-toolbelt/issues/497), which still
+remains adjacent partition-key retype context rather than a duplicate of the
+active benchmark set. This repository still has no local tracker issues.
 
 ## Recent closed-issue / tracker updates
 
 No benchmark item changed status in this refresh. The most relevant current
 tracker updates are:
 
-- `gh issue list -R pgplex/pgschema --state all --search 'updated:>=2026-09-26'`
+- `gh issue list -R pgplex/pgschema --state all --search 'updated:>=2026-09-27'`
   returned `[]`
-- `gh pr list -R pgplex/pgschema --state all --search 'updated:>=2026-09-26'`
+- `gh pr list -R pgplex/pgschema --state all --search 'updated:>=2026-09-27'`
   also returned `[]`
-- `gh issue list -R supabase/pg-toolbelt --state all --search 'updated:>=2026-09-26'`
-  returned `[]`
-- `gh pr list -R supabase/pg-toolbelt --state all --search 'updated:>=2026-09-26'`
+- `gh issue list -R supabase/pg-toolbelt --state all --search 'updated:>=2026-09-27'`
+  returned updated issue [#497](https://github.com/supabase/pg-toolbelt/issues/497)
+- `gh pr list -R supabase/pg-toolbelt --state all --search 'updated:>=2026-09-27'`
   also returned `[]`
 - `gh issue list -R avallete/delta-schema-compare --state all --limit 200`
   still returned `[]`
@@ -174,8 +183,12 @@ tracker updates are:
   `c00c4d0194a8aec34f3f6e85c1052fb5a62c0f5e`; there is no new merged
   `main`-branch code since release PR
   [#481](https://github.com/supabase/pg-toolbelt/pull/481)
+- updated issue [#497](https://github.com/supabase/pg-toolbelt/issues/497)
+  still reports partition-key column retypes failing, which remains adjacent
+  pg-toolbelt-side context rather than an exact duplicate of benchmarks
+  **021**, **022**, or **024**
 - previously screened pgschema verdicts remain unchanged because there was no
-  new pgschema-side delta on 2026-09-27: open issue
+  new pgschema-side delta on 2026-09-28: open issue
   [#598](https://github.com/pgplex/pgschema/issues/598) remains **covered**,
   open issues [#49](https://github.com/pgplex/pgschema/issues/49),
   [#52](https://github.com/pgplex/pgschema/issues/52),
@@ -207,8 +220,9 @@ tracker updates are:
   `c00c4d0194a8aec34f3f6e85c1052fb5a62c0f5e`; there is no new merged
   `main`-branch code since release PR
   [#481](https://github.com/supabase/pg-toolbelt/pull/481)
-- the nearby pg-toolbelt issue/PR landscape is unchanged from the 2026-09-26
-  snapshot:
+- the nearby pg-toolbelt issue/PR landscape is unchanged in substance from the
+  2026-09-27 snapshot; the only updated item is open issue
+  [#497](https://github.com/supabase/pg-toolbelt/issues/497):
   - open issue [#497](https://github.com/supabase/pg-toolbelt/issues/497)
   - open PR [#496](https://github.com/supabase/pg-toolbelt/pull/496)
   - open PR [#493](https://github.com/supabase/pg-toolbelt/pull/493)
@@ -239,17 +253,18 @@ tracker updates are:
   - only umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332)
     still points at benchmarks **021** / **022**, and benchmark **024**
     still has no exact current pg-toolbelt issue or PR
-  - issue **#497** is adjacent partition-key retype context; issue **#451** is
-    adjacent event-trigger/RLS context; issue **#491** plus PRs **#494** /
-    **#496** are adjacent column-grant / view-grant context with no exact
-    current pgschema parity tracker; PR **#490** is adjacent enum-cast context
-    for benchmark **005**; issue **#489** is adjacent view-column-grant
-    context; PR **#488** is adjacent partitioned-parent corpus coverage for
-    benchmark **021**; issue **#487** is adjacent enum-cast context for
-    benchmark **005**; issue **#486** is adjacent shadow-load / superuser
-    tooling context; issues **#482** / **#483** and PRs **#484** / **#485**
-    are adjacent domain-not-null / warning-surface context for benchmark
-    **024**; PRs **#492**, **#493**, and **#495** are adjacent extraction /
+  - issue **#497** remains adjacent partition-key retype context even after
+    its 2026-09-27 update; issue **#451** is adjacent event-trigger/RLS
+    context; issue **#491** plus PRs **#494** / **#496** are adjacent
+    column-grant / view-grant context with no exact current pgschema parity
+    tracker; PR **#490** is adjacent enum-cast context for benchmark **005**;
+    issue **#489** is adjacent view-column-grant context; PR **#488** is
+    adjacent partitioned-parent corpus coverage for benchmark **021**; issue
+    **#487** is adjacent enum-cast context for benchmark **005**; issue
+    **#486** is adjacent shadow-load / superuser tooling context; issues
+    **#482** / **#483** and PRs **#484** / **#485** are adjacent
+    domain-not-null / warning-surface context for benchmark **024**; PRs
+    **#492**, **#493**, and **#495** are adjacent extraction /
     owner-capability / extension-export work without current pgschema parity
     trackers; and issue **#476**, issue **#477**, PR **#478**, PR **#480**,
     PR **#481**, and historical PR **#174** remain adjacent cluster-global
