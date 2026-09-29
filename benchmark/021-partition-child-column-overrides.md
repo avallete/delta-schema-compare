@@ -16,6 +16,56 @@ In the upstream fix, pgschema only needed `DEFAULT` and `NOT NULL`
 overrides, but the gap is still real for pg-delta because the current plan
 rule emits only the bare `PARTITION OF ... <bound>` form.
 
+## Refresh note (2026-09-29)
+
+This recheck advances checked-in/live `pg-delta` from
+`c00c4d0194a8aec34f3f6e85c1052fb5a62c0f5e` to
+`e17c45925c3ddbf660dfb13c51029b605bcee448` through merged PRs
+[#490](https://github.com/supabase/pg-toolbelt/pull/490),
+[#488](https://github.com/supabase/pg-toolbelt/pull/488),
+[#494](https://github.com/supabase/pg-toolbelt/pull/494),
+[#484](https://github.com/supabase/pg-toolbelt/pull/484),
+[#485](https://github.com/supabase/pg-toolbelt/pull/485),
+[#492](https://github.com/supabase/pg-toolbelt/pull/492), and
+[#499](https://github.com/supabase/pg-toolbelt/pull/499), while checked-in/live
+`pgschema` remains `580f4040d0f3c1bfad1497918200c9c1f638a020`.
+
+Today's upstream delta still does not close the active partition-child
+override gap:
+
+- `gh issue list -R pgplex/pgschema --state all --search 'updated:>=2026-09-28'`
+  and
+  `gh pr list -R pgplex/pgschema --state all --search 'updated:>=2026-09-28'`
+  both returned `[]`, so there is no new pgschema-side partition-child delta
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` changed on
+  the new head, but `COLUMNS_SQL` still keeps inherited child columns gated by
+  `a.attislocal`, so child-local overrides on inherited partition columns
+  remain absent from diff-visible facts
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` also changed
+  on the new head, but the partition-child create path still emits
+  `CREATE TABLE ... PARTITION OF ... ${bound}` with no typed child column-
+  element list for local `DEFAULT` / `NOT NULL` overrides
+- merged PR [#488](https://github.com/supabase/pg-toolbelt/pull/488) is
+  still test-only corpus coverage for a different partitioned-parent mix
+- updated issue [#497](https://github.com/supabase/pg-toolbelt/issues/497)
+  plus open PR [#501](https://github.com/supabase/pg-toolbelt/pull/501)
+  still cover partition-key column retypes / parent replacement only, not
+  child-local `PARTITION OF` column override extraction or rendering
+- umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332)
+  remains the only exact tracker context
+
+The last focused 2026-08-14 runtime observation therefore still stands and
+emitted only:
+
+```sql
+CREATE TABLE "test_schema"."orders_us" PARTITION OF "test_schema"."orders" FOR VALUES IN ('us')
+ALTER TABLE "test_schema"."orders_us" OWNER TO "test"
+```
+
+The child-specific `priority DEFAULT 10` and `notes NOT NULL` overrides were
+still omitted. Benchmark 021 therefore remains **behaviorally uncovered**
+with **umbrella-thread tracker context only**.
+
 ## Refresh note (2026-09-25)
 
 This recheck keeps checked-in/live `pg-delta` at
