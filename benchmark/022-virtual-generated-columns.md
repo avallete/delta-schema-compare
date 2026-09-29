@@ -17,6 +17,51 @@ mechanism. This benchmark tracks the now-resolved upstream scenario after
 pgschema merged its fix on `main`, while current pg-delta still lacks exact
 coverage.
 
+## Refresh note (2026-09-29)
+
+This recheck advances checked-in/live `pg-delta` from
+`c00c4d0194a8aec34f3f6e85c1052fb5a62c0f5e` to
+`e17c45925c3ddbf660dfb13c51029b605bcee448` through merged PRs
+[#490](https://github.com/supabase/pg-toolbelt/pull/490),
+[#488](https://github.com/supabase/pg-toolbelt/pull/488),
+[#494](https://github.com/supabase/pg-toolbelt/pull/494),
+[#484](https://github.com/supabase/pg-toolbelt/pull/484),
+[#485](https://github.com/supabase/pg-toolbelt/pull/485),
+[#492](https://github.com/supabase/pg-toolbelt/pull/492), and
+[#499](https://github.com/supabase/pg-toolbelt/pull/499), while checked-in/live
+`pgschema` remains `580f4040d0f3c1bfad1497918200c9c1f638a020`.
+
+Today's upstream delta still stays outside the active generated-kind gap:
+
+- `gh issue list -R pgplex/pgschema --state all --search 'updated:>=2026-09-28'`
+  and
+  `gh pr list -R pgplex/pgschema --state all --search 'updated:>=2026-09-28'`
+  both returned `[]`, so there is no new pgschema-side generated-column delta
+- the 2026-09-29 pg-delta delta lands in enum-retype casts, concurrent-drop
+  retries, view/materialized-view column grants, and PG18 NOT NULL
+  diagnostics; none of those changes preserves generated kind
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still reads
+  `attgenerated` but collapses it to generated-expression presence instead of
+  preserving the actual `VIRTUAL` versus `STORED` kind
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts` still
+  hard-codes generated-column rendering as
+  `GENERATED ALWAYS AS (...) STORED`
+- umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332)
+  remains the only open tracker context; there is still no exact pg-toolbelt
+  issue or PR for the generated-kind gap itself
+
+The last focused 2026-08-14 runtime observation therefore still stands and
+serialized the generated column as:
+
+```sql
+ALTER TABLE "test_schema"."users"
+  ADD COLUMN "full_name" text GENERATED ALWAYS AS (((first_name || ' '::text) || last_name)) STORED
+```
+
+The PostgreSQL 18 `VIRTUAL` keyword is still collapsed back to `STORED`.
+Benchmark 022 therefore remains **behaviorally uncovered**, while resolved
+pgschema issue **#591** itself remains **covered** in current pg-delta.
+
 ## Refresh note (2026-09-23)
 
 This recheck keeps checked-in/live `pg-delta` at

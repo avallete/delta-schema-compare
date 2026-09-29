@@ -21,6 +21,47 @@ column nullability only as a boolean `notNull` fact, emits a direct
 `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL`, and does not extract PG18's
 `contype = 'n'` constraint rows as diff-visible state.
 
+## Refresh note (2026-09-29)
+
+This recheck advances checked-in/live `pg-delta` from
+`c00c4d0194a8aec34f3f6e85c1052fb5a62c0f5e` to
+`e17c45925c3ddbf660dfb13c51029b605bcee448` through merged PRs
+[#490](https://github.com/supabase/pg-toolbelt/pull/490),
+[#488](https://github.com/supabase/pg-toolbelt/pull/488),
+[#494](https://github.com/supabase/pg-toolbelt/pull/494),
+[#484](https://github.com/supabase/pg-toolbelt/pull/484),
+[#485](https://github.com/supabase/pg-toolbelt/pull/485),
+[#492](https://github.com/supabase/pg-toolbelt/pull/492), and
+[#499](https://github.com/supabase/pg-toolbelt/pull/499), while checked-in/live
+`pgschema` remains `580f4040d0f3c1bfad1497918200c9c1f638a020`.
+
+Today's upstream delta still does not change this PG18 nullability workflow
+gap:
+
+- `gh issue list -R pgplex/pgschema --state all --search 'updated:>=2026-09-28'`
+  and
+  `gh pr list -R pgplex/pgschema --state all --search 'updated:>=2026-09-28'`
+  both returned `[]`, so there is no new pgschema-side nullability delta
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` changed on
+  the new head, but table-column nullability is still modeled from
+  `a.attnotnull`, while PG18 `contype = 'n'` rows still do not become
+  diff-visible facts; they now only survive long enough to report
+  `table_not_null_comment_skipped` diagnostics for commented rows
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still emits a
+  plain `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL` in `notNull.alter`
+- merged PR [#485](https://github.com/supabase/pg-toolbelt/pull/485) is
+  diagnostics-only for table `contype = 'n'` rows and explicitly leaves the
+  fact base and plans unchanged
+- merged PR [#484](https://github.com/supabase/pg-toolbelt/pull/484) fixes the
+  domain-only half of the same root cause on PostgreSQL 17+, but does not add
+  PG18 table-column `NOT NULL ... NOT VALID` extraction or planning
+- duplicate searches still find no exact current pg-toolbelt issue or PR for
+  this benchmark; the only historical hit remains merged PR
+  [#174](https://github.com/supabase/pg-toolbelt/pull/174), which patched the
+  pre-clean-room engine only
+
+Benchmark 024 therefore remains **not covered** in current pg-delta.
+
 ## Refresh note (2026-09-23)
 
 This recheck keeps checked-in/live `pg-delta` at
