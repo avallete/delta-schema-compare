@@ -17,6 +17,56 @@ mechanism. This benchmark tracks the now-resolved upstream scenario after
 pgschema merged its fix on `main`, while current pg-delta still lacks exact
 coverage.
 
+## Refresh note (2026-09-30)
+
+This recheck advances checked-in/live `pg-delta` from
+`e17c45925c3ddbf660dfb13c51029b605bcee448` to
+`524c04f3c1cbd4290630e0a5ed87c15ca86663b2` through merged PRs
+[#496](https://github.com/supabase/pg-toolbelt/pull/496),
+[#495](https://github.com/supabase/pg-toolbelt/pull/495),
+[#478](https://github.com/supabase/pg-toolbelt/pull/478),
+[#473](https://github.com/supabase/pg-toolbelt/pull/473), and release PR
+[#505](https://github.com/supabase/pg-toolbelt/pull/505), while checked-in/live
+`pgschema` remains `580f4040d0f3c1bfad1497918200c9c1f638a020`.
+
+Today's upstream delta still stays outside the active generated-kind gap:
+
+- `gh issue list -R pgplex/pgschema --state all --search 'updated:>=2026-09-29'`
+  and
+  `gh pr list -R pgplex/pgschema --state all --search 'updated:>=2026-09-29'`
+  both returned `[]`, so there is still no new pgschema-side generated-column
+  delta
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still reads
+  `attgenerated` but only preserves generated-expression presence as
+  `generatedExpr`, not the actual `VIRTUAL` versus `STORED` kind
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts` still
+  hard-codes generated-column rendering as
+  `GENERATED ALWAYS AS (...) STORED`
+- the new mainline pg-delta delta lands in column/object grant preservation,
+  pinned-extension schema export, identity-sequence privileges, and
+  PK-redundant UNIQUE folding; none of those changes preserves generated kind
+- the new nearby partition follow-up issue
+  [#502](https://github.com/supabase/pg-toolbelt/issues/502) plus open PR
+  [#504](https://github.com/supabase/pg-toolbelt/pull/504) are unrelated
+  partition work rather than duplicates of the generated-kind gap
+- umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332)
+  remains the only tracker context; there is still no exact current
+  pg-toolbelt issue or PR for this scenario
+
+The last focused 2026-08-14 runtime observation therefore still stands and
+serialized the generated column as:
+
+```sql
+ALTER TABLE "test_schema"."users"
+  ADD COLUMN "full_name" text GENERATED ALWAYS AS (((first_name || ' '::text) || last_name)) STORED
+```
+
+The PostgreSQL 18 `VIRTUAL` keyword is still collapsed back to `STORED`, and
+the proof loop still returned `proofOk: true` with zero drift after that
+rewrite. Direct exact searches for `pgschema#501` still return no dedicated
+pg-toolbelt issue or PR, so benchmark 022 remains
+**behaviorally uncovered** with only **umbrella-thread tracker context**.
+
 ## Refresh note (2026-09-29)
 
 This recheck advances checked-in/live `pg-delta` from
