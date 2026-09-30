@@ -21,6 +21,45 @@ column nullability only as a boolean `notNull` fact, emits a direct
 `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL`, and does not extract PG18's
 `contype = 'n'` constraint rows as diff-visible state.
 
+## Refresh note (2026-09-30)
+
+This recheck advances checked-in/live `pg-delta` from
+`e17c45925c3ddbf660dfb13c51029b605bcee448` to
+`524c04f3c1cbd4290630e0a5ed87c15ca86663b2` through merged PRs
+[#496](https://github.com/supabase/pg-toolbelt/pull/496),
+[#495](https://github.com/supabase/pg-toolbelt/pull/495),
+[#478](https://github.com/supabase/pg-toolbelt/pull/478),
+[#473](https://github.com/supabase/pg-toolbelt/pull/473), and release PR
+[#505](https://github.com/supabase/pg-toolbelt/pull/505), while checked-in/live
+`pgschema` remains `580f4040d0f3c1bfad1497918200c9c1f638a020`.
+
+Today's upstream delta still does not change this PG18 nullability workflow
+gap:
+
+- `gh issue list -R pgplex/pgschema --state all --search 'updated:>=2026-09-29'`
+  and
+  `gh pr list -R pgplex/pgschema --state all --search 'updated:>=2026-09-29'`
+  both returned `[]`, so there is still no new pgschema-side nullability delta
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still models
+  table-column nullability from `a.attnotnull`, while PG18 `contype = 'n'`
+  rows still do not become diff-visible facts; they only survive long enough
+  to report `table_not_null_comment_skipped` diagnostics for commented rows
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still emits a
+  plain `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL`
+- the new mainline pg-delta delta lands in column/object grant preservation,
+  pinned-extension schema export, identity-sequence privileges, and
+  PK-redundant UNIQUE folding; none of those changes preserves native PG18
+  nullability state or pending validation
+- new nearby partition work under issue
+  [#502](https://github.com/supabase/pg-toolbelt/issues/502) and open PR
+  [#504](https://github.com/supabase/pg-toolbelt/pull/504) does not address
+  this nullability model/planner gap, and there is still no exact current
+  pg-toolbelt issue or PR for benchmark 024
+
+Direct exact searches for `pgschema#564` still return no dedicated pg-toolbelt
+issue or PR. Benchmark 024 therefore remains **not covered** in current
+pg-delta.
+
 ## Refresh note (2026-09-29)
 
 This recheck advances checked-in/live `pg-delta` from
