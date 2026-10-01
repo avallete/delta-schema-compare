@@ -21,6 +21,47 @@ column nullability only as a boolean `notNull` fact, emits a direct
 `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL`, and does not extract PG18's
 `contype = 'n'` constraint rows as diff-visible state.
 
+## Refresh note (2026-10-01)
+
+This recheck advances checked-in/live `pg-delta` from
+`524c04f3c1cbd4290630e0a5ed87c15ca86663b2` to
+`8154463671f8637d5a7a9b65134526fa3eb06b84` through merged PRs
+[#500](https://github.com/supabase/pg-toolbelt/pull/500),
+[#501](https://github.com/supabase/pg-toolbelt/pull/501),
+[#504](https://github.com/supabase/pg-toolbelt/pull/504), and release PR
+[#507](https://github.com/supabase/pg-toolbelt/pull/507), while checked-in/live
+`pgschema` remains `580f4040d0f3c1bfad1497918200c9c1f638a020`.
+
+Today's upstream delta still does not change this PG18 nullability workflow
+gap:
+
+- `gh search issues --repo pgplex/pgschema --updated '>=2026-09-30'`
+  surfaced only open issue
+  [#623](https://github.com/pgplex/pgschema/issues/623), which is a release
+  checksums request unrelated to PG18 nullability, and no pgschema PRs were
+  updated in that window
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still models
+  table-column nullability from `a.attnotnull`, while PG18 `contype = 'n'`
+  rows still do not become diff-visible facts; they only survive long enough
+  to report `table_not_null_comment_skipped` diagnostics for commented rows
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still emits a
+  plain `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL`
+- merged PRs [#500](https://github.com/supabase/pg-toolbelt/pull/500),
+  [#501](https://github.com/supabase/pg-toolbelt/pull/501),
+  [#504](https://github.com/supabase/pg-toolbelt/pull/504), and release PR
+  [#507](https://github.com/supabase/pg-toolbelt/pull/507) stay outside PG18
+  table-column nullability modeling; PR #504 explicitly reuses the
+  `NOT_NULL_IS_NOT_A_FACT` treatment from #485 rather than changing the fact
+  base
+- there is still no exact current pg-toolbelt issue or PR for benchmark 024;
+  the only historical exact hit remains merged PR
+  [#174](https://github.com/supabase/pg-toolbelt/pull/174), which targets the
+  pre-clean-room engine only
+
+Direct exact searches for `pgschema#564` still return no dedicated pg-toolbelt
+issue or PR. Benchmark 024 therefore remains **not covered** in current
+pg-delta.
+
 ## Refresh note (2026-09-30)
 
 This recheck advances checked-in/live `pg-delta` from
