@@ -21,6 +21,46 @@ column nullability only as a boolean `notNull` fact, emits a direct
 `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL`, and does not extract PG18's
 `contype = 'n'` constraint rows as diff-visible state.
 
+## Refresh note (2026-10-02)
+
+This recheck advances checked-in/live `pg-delta` from
+`8154463671f8637d5a7a9b65134526fa3eb06b84` to
+`6845a0beb646cec0bcbf894cec99cbcae2567fc6` through merged PR
+[#508](https://github.com/supabase/pg-toolbelt/pull/508), while checked-in/live
+`pgschema` remains `580f4040d0f3c1bfad1497918200c9c1f638a020`.
+
+Today's upstream delta still does not change this PG18 nullability workflow
+gap:
+
+- `gh search issues --repo pgplex/pgschema --updated '>=2026-10-01'`
+  and
+  `gh search issues --repo pgplex/pgschema --include-prs --updated '>=2026-10-01'`
+  both returned `[]`, so there is no new pgschema-side nullability delta;
+  open PRs [#611](https://github.com/pgplex/pgschema/pull/611) and
+  [#622](https://github.com/pgplex/pgschema/pull/622) remain in flight
+  unchanged since 2026-09-20 / 2026-09-24
+- `git -C repos/pg-toolbelt diff --name-only
+  8154463671f8637d5a7a9b65134526fa3eb06b84..6845a0beb646cec0bcbf894cec99cbcae2567fc6`
+  only touches `LICENSE`, `README.md`, and package metadata; none of
+  `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts`,
+  `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/constraints.ts`, or
+  `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` changed on
+  the new checked-in/live head
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still models
+  table-column nullability from `a.attnotnull`, while PG18 `contype = 'n'`
+  rows still do not become diff-visible facts; they only survive long enough
+  to report `table_not_null_comment_skipped` diagnostics for commented rows
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still emits a
+  plain `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL`
+- merged PR [#508](https://github.com/supabase/pg-toolbelt/pull/508) and open
+  release PR [#509](https://github.com/supabase/pg-toolbelt/pull/509) stay
+  outside PG18 table-column nullability modeling, and there is still no exact
+  current pg-toolbelt issue or PR for benchmark 024
+
+Direct exact searches for `pgschema#564` still return no dedicated pg-toolbelt
+issue or PR. Benchmark 024 therefore remains **not covered** in current
+pg-delta.
+
 ## Refresh note (2026-10-01)
 
 This recheck advances checked-in/live `pg-delta` from
