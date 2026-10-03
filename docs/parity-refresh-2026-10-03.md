@@ -123,5 +123,32 @@ No benchmark file changed verdict, and no new tracker issue draft was needed.
 
 ## 4) Validation notes
 
-Validation commands and results will be filled in after the post-edit checks
-for this run complete.
+This refresh was validated with:
+
+- `git submodule update --init --recursive`
+- `git submodule update --remote --merge`
+- direct submodule head checks:
+  - `git -C repos/pg-toolbelt rev-parse HEAD origin/main`
+  - `git -C repos/pgschema rev-parse HEAD origin/main`
+- GitHub CLI updated-state and duplicate checks:
+  - `gh search issues --repo pgplex/pgschema --updated '>=2026-10-03' --limit 50 --json number,title,state,updatedAt,url`
+  - `gh search issues --repo pgplex/pgschema --include-prs --updated '>=2026-10-03' --limit 50 --json number,title,state,updatedAt,url,isPullRequest`
+  - `gh pr list -R pgplex/pgschema --state open --limit 20 --json number,title,updatedAt,url`
+  - `gh search issues --repo supabase/pg-toolbelt --include-prs --updated '>=2026-10-03' --limit 100 --json number,title,state,updatedAt,url,isPullRequest`
+  - `gh issue view 332 -R supabase/pg-toolbelt --json number,title,state,updatedAt,url,body`
+  - `gh issue view 502 -R supabase/pg-toolbelt --json number,title,state,updatedAt,url,body`
+  - `gh pr view 509 -R supabase/pg-toolbelt --json number,title,state,updatedAt,url,body`
+  - `gh search issues --repo supabase/pg-toolbelt 'pgschema#499' --limit 20 --json number,title,state,updatedAt,url,isPullRequest`
+  - `gh search issues --repo supabase/pg-toolbelt 'pgschema#501' --limit 20 --json number,title,state,updatedAt,url,isPullRequest`
+  - `gh search issues --repo supabase/pg-toolbelt 'pgschema#564' --limit 20 --json number,title,state,updatedAt,url,isPullRequest`
+  - `gh search issues --repo supabase/pg-toolbelt '\"PARTITION OF\"' --limit 20 --json number,title,state,updatedAt,url,isPullRequest`
+  - `gh search issues --repo supabase/pg-toolbelt '\"VIRTUAL\" generated' --limit 20 --json number,title,state,updatedAt,url,isPullRequest`
+  - `gh search issues --repo supabase/pg-toolbelt '\"NOT NULL\" \"NOT VALID\"' --limit 20 --json number,title,state,updatedAt,url,isPullRequest`
+  - `gh issue list -R avallete/delta-schema-compare --state all --limit 200 --json number,title,state,updatedAt,url`
+- repo validation:
+  - `python3 -m pip install --user -r requirements.txt`
+  - `GITHUB_TOKEN="$(gh auth token)" DRY_RUN=true python3 scripts/compare_issues.py` (**0 labeled open issues**)
+  - `GITHUB_TOKEN="$(gh auth token)" DRY_RUN=true OUTPUT_MODE=benchmark python3 scripts/compare_resolved.py` (**0 labeled resolved issues**)
+  - `python3 -m unittest tests.test_review_memory tests.test_compare_resolved_benchmark` (**9 tests**, pass)
+  - `python3 -m json.tool benchmark/review-memory.json >/dev/null`
+  - `git diff --check`
