@@ -6,7 +6,7 @@
       "issue_title": "Introduce an Explicit Workflow for Renaming Schema Objects",
       "issue_updated_at": "2026-05-30T05:03:35Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/49",
-      "reviewed_at": "2026-10-02T07:07:23.045517+00:00",
+      "reviewed_at": "2026-10-03T07:08:58+00:00",
       "verdict": "not_parity"
     },
     "52": {
@@ -15,7 +15,7 @@
       "issue_title": "Allow inclusion of Certain files to be explicitly executed by pgschema / included in plan file",
       "issue_updated_at": "2026-02-09T03:57:30Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/52",
-      "reviewed_at": "2026-10-02T07:07:23.045517+00:00",
+      "reviewed_at": "2026-10-03T07:08:58+00:00",
       "verdict": "not_parity"
     },
     "559": {
@@ -24,7 +24,7 @@
       "issue_title": "Support config data evoluation",
       "issue_updated_at": "2026-09-20T02:55:48Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/559",
-      "reviewed_at": "2026-10-02T07:07:23.045517+00:00",
+      "reviewed_at": "2026-10-03T07:08:58+00:00",
       "verdict": "not_parity"
     },
     "597": {
@@ -33,7 +33,7 @@
       "issue_title": "schemas, ordering, complexity.",
       "issue_updated_at": "2026-09-20T02:58:46Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/597",
-      "reviewed_at": "2026-10-02T07:07:23.045517+00:00",
+      "reviewed_at": "2026-10-03T07:08:58+00:00",
       "verdict": "not_parity"
     },
     "598": {
@@ -42,7 +42,7 @@
       "issue_title": "Replanning after interrupted CREATE INDEX CONCURRENTLY ignores the invalid index",
       "issue_updated_at": "2026-09-13T12:10:59Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/598",
-      "reviewed_at": "2026-10-02T07:07:23.045517+00:00",
+      "reviewed_at": "2026-10-03T07:08:58+00:00",
       "verdict": "covered"
     },
     "623": {
@@ -51,7 +51,7 @@
       "issue_title": "Publish a checksums file with each release",
       "issue_updated_at": "2026-09-30T23:47:00Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/623",
-      "reviewed_at": "2026-10-02T07:07:23.045517+00:00",
+      "reviewed_at": "2026-10-03T07:08:58+00:00",
       "verdict": "not_parity"
     },
     "84": {
@@ -60,7 +60,7 @@
       "issue_title": "\ud83d\udc49\ud83d\udcdd Feedback Wanted: Share Your Use Case & Experience",
       "issue_updated_at": "2026-09-08T03:04:25Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/84",
-      "reviewed_at": "2026-10-02T07:07:23.045517+00:00",
+      "reviewed_at": "2026-10-03T07:08:58+00:00",
       "verdict": "not_parity"
     }
   },
@@ -620,7 +620,7 @@
       "issue_title": "PARTITION OF create path: support child-specific column elements",
       "issue_updated_at": "2026-07-03T14:46:36Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/499",
-      "reviewed_at": "2026-10-02T07:07:23.045517+00:00",
+      "reviewed_at": "2026-10-03T07:08:58+00:00",
       "verdict": "tracked"
     },
     "501": {
@@ -629,7 +629,7 @@
       "issue_title": "PG18 VIRTUAL generated columns silently rewritten as DEFAULT in plan, producing invalid DDL",
       "issue_updated_at": "2026-07-06T06:58:48Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/501",
-      "reviewed_at": "2026-10-02T07:07:23.045517+00:00",
+      "reviewed_at": "2026-10-03T07:08:58+00:00",
       "verdict": "tracked"
     },
     "502": {
@@ -908,7 +908,7 @@
       "issue_title": "adding NOT NULL columns safely (with easy optional backfill proposal)",
       "issue_updated_at": "2026-09-08T10:11:17Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/564",
-      "reviewed_at": "2026-10-02T07:07:23.045517+00:00",
+      "reviewed_at": "2026-10-03T07:08:58+00:00",
       "verdict": "not_covered"
     },
     "569": {
@@ -1043,7 +1043,7 @@
       "issue_title": "table not found",
       "issue_updated_at": "2026-09-20T06:14:23Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/596",
-      "reviewed_at": "2026-10-02T07:07:23.045517+00:00",
+      "reviewed_at": "2026-10-03T07:08:58+00:00",
       "verdict": "not_parity"
     },
     "599": {
@@ -1052,7 +1052,7 @@
       "issue_title": "ENABLE REPLICA and ENABLE ALWAYS trigger changes produce an empty plan",
       "issue_updated_at": "2026-09-20T07:40:30Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/599",
-      "reviewed_at": "2026-10-02T07:07:23.045517+00:00",
+      "reviewed_at": "2026-10-03T07:08:58+00:00",
       "verdict": "covered"
     },
     "600": {
@@ -1061,7 +1061,7 @@
       "issue_title": "Adding an enum label and using it as a default produces a plan that fails with SQLSTATE 55P04",
       "issue_updated_at": "2026-09-20T09:24:45Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/600",
-      "reviewed_at": "2026-10-02T07:07:23.045517+00:00",
+      "reviewed_at": "2026-10-03T07:08:58+00:00",
       "verdict": "covered"
     },
     "601": {
@@ -1070,7 +1070,7 @@
       "issue_title": "Function return-type change does not recreate a dependent view; apply fails with SQLSTATE 2BP01",
       "issue_updated_at": "2026-09-20T10:08:34Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/601",
-      "reviewed_at": "2026-10-02T07:07:23.045517+00:00",
+      "reviewed_at": "2026-10-03T07:08:58+00:00",
       "verdict": "covered"
     },
     "602": {
@@ -1079,7 +1079,7 @@
       "issue_title": "Support object OWNER changes or diagnose ignored ownership intent",
       "issue_updated_at": "2026-09-20T10:20:08Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/602",
-      "reviewed_at": "2026-10-02T07:07:23.045517+00:00",
+      "reviewed_at": "2026-10-03T07:08:58+00:00",
       "verdict": "covered"
     },
     "603": {
@@ -1088,7 +1088,7 @@
       "issue_title": "Diagnose unsupported global ALTER DEFAULT PRIVILEGES instead of returning an empty plan",
       "issue_updated_at": "2026-09-20T11:03:15Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/603",
-      "reviewed_at": "2026-10-02T07:07:23.045517+00:00",
+      "reviewed_at": "2026-10-03T07:08:58+00:00",
       "verdict": "covered"
     },
     "606": {
@@ -1097,7 +1097,7 @@
       "issue_title": "Inconsistent behaviour with multi-column primary key and partitioning",
       "issue_updated_at": "2026-09-20T02:03:24Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/606",
-      "reviewed_at": "2026-10-02T07:07:23.045517+00:00",
+      "reviewed_at": "2026-10-03T07:08:58+00:00",
       "verdict": "covered"
     },
     "607": {
@@ -1106,7 +1106,7 @@
       "issue_title": "plan/apply still fails on extension-owned types even when plan and target schemas agree (gap remaining after #544 / #518)",
       "issue_updated_at": "2026-09-20T14:22:46Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/607",
-      "reviewed_at": "2026-10-02T07:07:23.045517+00:00",
+      "reviewed_at": "2026-10-03T07:08:58+00:00",
       "verdict": "not_parity"
     },
     "609": {

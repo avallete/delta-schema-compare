@@ -4,32 +4,36 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-10-02)
+## Latest refresh snapshot (2026-10-03)
 
 Refreshed against:
 
 - checked-in/live `repos/pg-toolbelt` @ `6845a0beb646cec0bcbf894cec99cbcae2567fc6`
 - checked-in/live `repos/pgschema` @ `580f4040d0f3c1bfad1497918200c9c1f638a020`
 
-> The 2026-10-02 refresh advances checked-in/live `pg-delta` from
-> `8154463671f8637d5a7a9b65134526fa3eb06b84` to
-> `6845a0beb646cec0bcbf894cec99cbcae2567fc6` through merged PR
-> [#508](https://github.com/supabase/pg-toolbelt/pull/508), while keeping
-> checked-in/live `pgschema` at
-> `580f4040d0f3c1bfad1497918200c9c1f638a020`
+> The 2026-10-03 refresh keeps both checked-in/live heads unchanged from the
+> 2026-10-02 snapshot:
+> - `repos/pg-toolbelt` remains
+>   `6845a0beb646cec0bcbf894cec99cbcae2567fc6`, which still comes from merged
+>   PR [#508](https://github.com/supabase/pg-toolbelt/pull/508) while open
+>   release PR [#509](https://github.com/supabase/pg-toolbelt/pull/509)
+>   remains unmerged
+> - `repos/pgschema` remains
+>   `580f4040d0f3c1bfad1497918200c9c1f638a020`
 >
-> - `gh search issues --repo pgplex/pgschema --updated '>=2026-10-01'`
+> - `gh search issues --repo pgplex/pgschema --updated '>=2026-10-03'`
 >   returned `[]`, and the matching `--include-prs` query also returned `[]`
 > - open pgschema PRs [#611](https://github.com/pgplex/pgschema/pull/611) and
 >   [#622](https://github.com/pgplex/pgschema/pull/622) remain in flight
 >   without new updates since 2026-09-20 / 2026-09-24
-> - `gh search issues --repo supabase/pg-toolbelt --include-prs --updated '>=2026-10-01'`
->   surfaced merged PR
->   [#508](https://github.com/supabase/pg-toolbelt/pull/508) and open release
->   PR [#509](https://github.com/supabase/pg-toolbelt/pull/509)
-> - `git -C repos/pg-toolbelt diff --name-only 8154463671f8637d5a7a9b65134526fa3eb06b84..6845a0beb646cec0bcbf894cec99cbcae2567fc6`
->   shows only license, README, and package-metadata changes; none of the
->   active `packages/pg-delta/src/` paths changed
+> - `gh search issues --repo supabase/pg-toolbelt --include-prs --updated '>=2026-10-03'`
+>   returned `[]`
+> - open pg-toolbelt umbrella issue
+>   [#332](https://github.com/supabase/pg-toolbelt/issues/332), adjacent
+>   partition follow-up
+>   [#502](https://github.com/supabase/pg-toolbelt/issues/502), and release PR
+>   [#509](https://github.com/supabase/pg-toolbelt/pull/509) remain unchanged
+>   since 2026-09-29 / 2026-09-29 / 2026-10-02
 > - `gh issue list -R avallete/delta-schema-compare --state all --limit 200`
 >   returned `[]`
 > - the active benchmarked gap set therefore remains **021**, **022**, and
@@ -113,19 +117,24 @@ Three resolved-issue benchmark scenarios remain active as unresolved behavior:
     stay outside PG18 table-column nullability modeling, and there is still
     no exact current pg-toolbelt issue or PR for this benchmark
 
-Because checked-in/live `pg-delta` advanced to
-`6845a0beb646cec0bcbf894cec99cbcae2567fc6` while checked-in/live `pgschema`
-remained unchanged, and because the new pg-delta delta only touches license,
-README, and package metadata, source rechecks on the new head still find
+Because today's refresh kept both checked-in/live heads unchanged from the
+2026-10-02 snapshot, source rechecks on the current head still find
 `a.attislocal` in `relations.ts`, generated-column kind still collapsed to
 expression presence plus a hard-coded `... STORED` renderer, and PG18 table
-`contype = 'n'` rows still kept out of diff-visible facts. Umbrella issue
+`contype = 'n'` rows still kept out of diff-visible facts. Exact duplicate
+searches for `pgschema#499`, `pgschema#501`, and `pgschema#564` still return
+no dedicated pg-toolbelt issue or PR; keyword searches for `"PARTITION OF"`
+still only surface issues [#332](https://github.com/supabase/pg-toolbelt/issues/332)
+and [#502](https://github.com/supabase/pg-toolbelt/issues/502), `"VIRTUAL"
+generated` still only surfaces issue
+[#332](https://github.com/supabase/pg-toolbelt/issues/332), and `"NOT NULL"
+"NOT VALID"` still returns `[]`. Umbrella issue
 [#332](https://github.com/supabase/pg-toolbelt/issues/332) therefore still
 only covers benchmarks **021** / **022**, benchmark **024** still has no exact
 current pg-toolbelt issue or PR, the focused 2026-08-14 runtime observations
 for benchmarks **021** / **022** remain the latest direct runtime evidence,
-and benchmark **024** remains source-level not covered on the new current
-heads.
+and benchmark **024** remains source-level not covered on the unchanged
+current heads.
 
 ## Open pgschema issue screening (current state)
 
@@ -169,7 +178,7 @@ There is currently **no open uncovered parity candidate** on the pgschema
 side. The remaining active benchmarks **021** / **022** still only have
 umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332) as
 exact tracker context, benchmark **024** still has no exact current
-pg-toolbelt issue or PR, and the 2026-10-02 pg-toolbelt delta consists of
+pg-toolbelt issue or PR, and the current pg-toolbelt head still reflects
 merged PR [#508](https://github.com/supabase/pg-toolbelt/pull/508) plus open
 release PR [#509](https://github.com/supabase/pg-toolbelt/pull/509), neither
 of which touches the active source paths. This repository still has no local
@@ -180,17 +189,24 @@ tracker issues.
 No benchmark item changed status in this refresh. The most relevant current
 tracker updates are:
 
-- `gh search issues --repo pgplex/pgschema --updated '>=2026-10-01'` and the
+- `gh search issues --repo pgplex/pgschema --updated '>=2026-10-03'` and the
   matching `--include-prs` query both returned `[]`; open PRs
   [#611](https://github.com/pgplex/pgschema/pull/611) and
   [#622](https://github.com/pgplex/pgschema/pull/622) remain open without new
   updates
-- `gh search issues --repo supabase/pg-toolbelt --include-prs --updated '>=2026-10-01'`
-  surfaced merged PR [#508](https://github.com/supabase/pg-toolbelt/pull/508)
-  and open release PR [#509](https://github.com/supabase/pg-toolbelt/pull/509)
-- `git -C repos/pg-toolbelt diff --name-only 8154463671f8637d5a7a9b65134526fa3eb06b84..6845a0beb646cec0bcbf894cec99cbcae2567fc6`
-  only touched license, README, and package metadata, so the active gap source
-  paths stayed unchanged
+- `gh search issues --repo supabase/pg-toolbelt --include-prs --updated '>=2026-10-03'`
+  returned `[]`; open issue
+  [#332](https://github.com/supabase/pg-toolbelt/issues/332), open issue
+  [#502](https://github.com/supabase/pg-toolbelt/issues/502), and open release
+  PR [#509](https://github.com/supabase/pg-toolbelt/pull/509) remain unchanged
+  since 2026-09-29 / 2026-09-29 / 2026-10-02
+- exact duplicate searches for `pgschema#499`, `pgschema#501`, and
+  `pgschema#564` still returned `[]`; keyword searches for `"PARTITION OF"`,
+  `"VIRTUAL" generated`, and `"NOT NULL" "NOT VALID"` likewise surfaced no new
+  exact tracker candidates
+- the checked-in/live pg-toolbelt head stayed on
+  `6845a0beb646cec0bcbf894cec99cbcae2567fc6`, so the active gap source paths
+  stayed unchanged
 - previously screened pgschema verdicts remain unchanged: open issue
   [#598](https://github.com/pgplex/pgschema/issues/598) remains **covered**,
   open issues [#49](https://github.com/pgplex/pgschema/issues/49),
@@ -222,23 +238,26 @@ tracker updates are:
   [#611](https://github.com/pgplex/pgschema/pull/611) and
   [#622](https://github.com/pgplex/pgschema/pull/622) remain in flight without
   new updates since 2026-09-20 / 2026-09-24
-- checked-in/live `pg-toolbelt` advances to
-  `6845a0beb646cec0bcbf894cec99cbcae2567fc6` through merged PR
-  [#508](https://github.com/supabase/pg-toolbelt/pull/508), with open release
-  PR [#509](https://github.com/supabase/pg-toolbelt/pull/509) now tracking
+- checked-in/live `pg-toolbelt` remains at
+  `6845a0beb646cec0bcbf894cec99cbcae2567fc6`, which still comes from merged PR
+  [#508](https://github.com/supabase/pg-toolbelt/pull/508); the updated-since
+  query for `>=2026-10-03` returned `[]`, and open release PR
+  [#509](https://github.com/supabase/pg-toolbelt/pull/509) still tracks
   `@supabase/pg-delta@1.0.0-alpha.57`
-- the nearby pg-toolbelt issue/PR landscape changed, but not the parity
-  mapping:
+- the nearby pg-toolbelt issue/PR landscape remains unchanged, and so does the
+  parity mapping:
   - open issue [#332](https://github.com/supabase/pg-toolbelt/issues/332)
-    still points at benchmarks **021** / **022**, and benchmark **024**
-    still has no exact current pg-toolbelt issue or PR
+    still points at benchmarks **021** / **022**; exact searches for
+    `pgschema#499` and `pgschema#501` still return no dedicated issue or PR
   - open issue [#502](https://github.com/supabase/pg-toolbelt/issues/502)
     remains the over-destructive partition-tree follow-up for benchmark
-    **021**, and merged PR [#508](https://github.com/supabase/pg-toolbelt/pull/508)
-    plus open release PR [#509](https://github.com/supabase/pg-toolbelt/pull/509)
-    stay in license / release metadata only
+    **021**, and keyword `"PARTITION OF"` searches still only surface issues
+    [#502](https://github.com/supabase/pg-toolbelt/issues/502) and
+    [#332](https://github.com/supabase/pg-toolbelt/issues/332)
   - historical PR [#174](https://github.com/supabase/pg-toolbelt/pull/174)
-    remains legacy-engine-only context for benchmark **024**
+    remains legacy-engine-only context for benchmark **024**; exact
+    `pgschema#564` and keyword `"NOT NULL" "NOT VALID"` searches still return
+    no current pg-toolbelt issue or PR for that workflow
 - the target repo still has no local tracker issues
 
 ## Historical notes

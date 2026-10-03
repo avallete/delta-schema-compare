@@ -1203,6 +1203,45 @@ issue [#451](https://github.com/supabase/pg-toolbelt/issues/451). Benchmark 021
 therefore remains **behaviorally uncovered** with only **umbrella-thread
 tracker context**.
 
+## Refresh note (2026-10-03)
+
+This recheck keeps checked-in/live `pg-delta` at
+`6845a0beb646cec0bcbf894cec99cbcae2567fc6` and checked-in/live `pgschema` at
+`580f4040d0f3c1bfad1497918200c9c1f638a020`; neither head moved since the
+2026-10-02 refresh.
+
+A source recheck on the current pg-delta head still finds the same uncovered
+path:
+
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still filters
+  relation columns with `a.attislocal`, so child-local overrides on inherited
+  partition columns never become diff-visible facts.
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still
+  serializes partition-child creation as bare
+  `CREATE TABLE ... PARTITION OF ... ${bound}`. Even after merged partition-key
+  handling from PR [#501](https://github.com/supabase/pg-toolbelt/pull/501)
+  and dependency-edge repairs from PR
+  [#504](https://github.com/supabase/pg-toolbelt/pull/504), there is still no
+  branch that emits PostgreSQL's typed child column-element list for local
+  overrides.
+
+Direct exact searches for `pgschema#499` still return no dedicated pg-toolbelt
+issue or PR on 2026-10-03. Keyword `"PARTITION OF"` searches still only
+surface umbrella fidelity tracker
+[#332](https://github.com/supabase/pg-toolbelt/issues/332) plus adjacent
+partition-tree follow-up
+[#502](https://github.com/supabase/pg-toolbelt/issues/502). Issue #502 remains
+about avoiding over-destructive whole-tree replacement around sub-partition
+keys rather than about preserving child-local column overrides during
+`PARTITION OF` creation.
+
+The focused 2026-08-14 runtime observation therefore still stands: pg-delta
+emits only the bare partition-child `CREATE TABLE ... PARTITION OF ... FOR
+VALUES ...` statement, omits the child-specific `DEFAULT` / `NOT NULL`
+overrides, and still lets the proof loop return `proofOk: true` with zero
+drift afterward. Benchmark 021 therefore remains **behaviorally uncovered**
+with only **umbrella-thread tracker context**.
+
 ## Refresh note (2026-08-31)
 
 This recheck keeps checked-in/live `pg-delta` at
