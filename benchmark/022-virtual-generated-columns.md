@@ -1135,6 +1135,37 @@ generated` still only surface umbrella fidelity tracker
 therefore remains **behaviorally uncovered** with only **umbrella-thread
 tracker context**.
 
+## Refresh note (2026-10-03)
+
+This recheck keeps checked-in/live `pg-delta` at
+`6845a0beb646cec0bcbf894cec99cbcae2567fc6` and checked-in/live `pgschema` at
+`580f4040d0f3c1bfad1497918200c9c1f638a020`; neither head moved since the
+2026-10-02 refresh.
+
+A source recheck on the current pg-delta head still finds the same uncovered
+path:
+
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still reads
+  `attgenerated`, but only preserves generated-expression presence as
+  `generatedExpr`, not the actual `VIRTUAL` versus `STORED` kind.
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts` still
+  hard-codes generated-column rendering as
+  `GENERATED ALWAYS AS (...) STORED`.
+
+Direct exact searches for `pgschema#501` still return no dedicated pg-toolbelt
+issue or PR on 2026-10-03. Keyword `"VIRTUAL" generated` searches still only
+surface umbrella fidelity tracker
+[#332](https://github.com/supabase/pg-toolbelt/issues/332). Resolved pgschema
+issue [#591](https://github.com/pgplex/pgschema/issues/591) remains covered
+separately in current pg-delta, so the active parity gap is still only the
+missing generated-kind distinction itself.
+
+The focused 2026-08-14 runtime observation therefore still stands: pg-delta
+serializes the generated column as `... STORED`, collapses away the PostgreSQL
+18 `VIRTUAL` keyword, and still lets the proof loop return `proofOk: true`
+with zero drift afterward. Benchmark 022 therefore remains
+**behaviorally uncovered** with only **umbrella-thread tracker context**.
+
 ## Refresh note (2026-08-31)
 
 This recheck keeps checked-in/live `pg-delta` at
