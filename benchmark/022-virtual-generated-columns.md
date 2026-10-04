@@ -1135,6 +1135,48 @@ generated` still only surface umbrella fidelity tracker
 therefore remains **behaviorally uncovered** with only **umbrella-thread
 tracker context**.
 
+## Refresh note (2026-10-04)
+
+This recheck keeps checked-in/live `pg-delta` at
+`6845a0beb646cec0bcbf894cec99cbcae2567fc6` and checked-in/live `pgschema` at
+`580f4040d0f3c1bfad1497918200c9c1f638a020`; neither head moved since the
+2026-10-03 refresh.
+
+Today's upstream activity still stays outside the active generated-kind gap:
+
+- `gh search issues --repo pgplex/pgschema --updated '>=2026-10-03'` and the
+  matching `--include-prs` query both returned `[]`, so there is still no new
+  pgschema-side generated-column delta; open PRs
+  [#611](https://github.com/pgplex/pgschema/pull/611) and
+  [#622](https://github.com/pgplex/pgschema/pull/622) remain unchanged since
+  2026-09-20 / 2026-09-24
+- `gh search issues --repo supabase/pg-toolbelt --include-prs --updated '>=2026-10-03'`
+  surfaced open issue [#510](https://github.com/supabase/pg-toolbelt/issues/510),
+  closed issue [#491](https://github.com/supabase/pg-toolbelt/issues/491), and
+  updated open issue [#476](https://github.com/supabase/pg-toolbelt/issues/476);
+  direct inspection showed they are trigger/ACL/role-scope work rather than
+  generated-column kind tracking
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still reads
+  `attgenerated`, but only preserves generated-expression presence as
+  `generatedExpr`, not the actual `VIRTUAL` versus `STORED` kind
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts` still
+  hard-codes generated-column rendering as
+  `GENERATED ALWAYS AS (...) STORED`
+
+Direct exact searches for `pgschema#501` still return no dedicated
+pg-toolbelt issue or PR on 2026-10-04. Keyword `"VIRTUAL" generated`
+searches still only surface umbrella fidelity tracker
+[#332](https://github.com/supabase/pg-toolbelt/issues/332). Resolved
+pgschema issue [#591](https://github.com/pgplex/pgschema/issues/591)
+remains covered separately in current pg-delta, so the active parity gap
+is still only the missing generated-kind distinction itself.
+
+The focused 2026-08-14 runtime observation therefore still stands: pg-delta
+serializes the generated column as `... STORED`, collapses away the
+PostgreSQL 18 `VIRTUAL` keyword, and still lets the proof loop return
+`proofOk: true` with zero drift afterward. Benchmark 022 therefore remains
+**behaviorally uncovered** with only **umbrella-thread tracker context**.
+
 ## Refresh note (2026-10-03)
 
 This recheck keeps checked-in/live `pg-delta` at
