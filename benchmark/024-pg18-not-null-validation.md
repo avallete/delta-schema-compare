@@ -665,6 +665,49 @@ still return no dedicated pg-toolbelt issue or PR for this nullability
 workflow. Benchmark 024 therefore remains **not covered** in current
 pg-delta.
 
+## Refresh note (2026-10-05)
+
+This recheck keeps checked-in/live `pg-delta` at
+`6845a0beb646cec0bcbf894cec99cbcae2567fc6` and checked-in/live `pgschema` at
+`580f4040d0f3c1bfad1497918200c9c1f638a020`; neither head moved since the
+2026-10-04 refresh.
+
+Today's upstream activity still does not change this PG18 nullability
+workflow gap:
+
+- `gh search issues --repo pgplex/pgschema --updated '>=2026-10-04'` and the
+  matching `--include-prs` query both returned `[]`, so there is still no new
+  pgschema-side PG18 nullability delta; open PRs
+  [#611](https://github.com/pgplex/pgschema/pull/611) and
+  [#622](https://github.com/pgplex/pgschema/pull/622) remain unchanged since
+  2026-09-20 / 2026-09-24
+- `gh search issues --repo supabase/pg-toolbelt --include-prs --updated '>=2026-10-04'`
+  surfaced open issue [#510](https://github.com/supabase/pg-toolbelt/issues/510),
+  closed PR [#511](https://github.com/supabase/pg-toolbelt/pull/511), and
+  open PR [#512](https://github.com/supabase/pg-toolbelt/pull/512); direct
+  inspection shows #510 / #511 are trigger `WHEN` row-comparison convergence
+  work and #512 is grouped-export column-grant ordering rather than PG18
+  native not-null modeling
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still records
+  column nullability through `a.attnotnull` and still keeps PG18
+  `contype = 'n'` rows out of diff-visible facts, aside from the
+  informational `table_not_null_comment_skipped` diagnostic path
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still keeps
+  `SET NOT NULL` in place for this path and does not emit the native
+  PostgreSQL 18 `ADD CONSTRAINT ... NOT NULL ... NOT VALID` plus
+  `VALIDATE CONSTRAINT` workflow
+
+Direct exact searches for `pgschema#564` still return no dedicated
+pg-toolbelt issue or PR on 2026-10-05, and keyword
+`"NOT NULL" "NOT VALID"` searches still return `[]`. Open release PR
+[#509](https://github.com/supabase/pg-toolbelt/pull/509) remains metadata-only
+and unchanged since 2026-10-02.
+
+Benchmark 024 therefore remains **not covered** in current pg-delta: the PG18
+native nullability state is still collapsed away during extraction, pending
+validation is still invisible on a later diff, and the current planner still
+falls back to a plain `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL`.
+
 ## Refresh note (2026-10-04)
 
 This recheck keeps checked-in/live `pg-delta` at
