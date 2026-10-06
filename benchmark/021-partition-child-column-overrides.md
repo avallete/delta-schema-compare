@@ -1203,6 +1203,56 @@ issue [#451](https://github.com/supabase/pg-toolbelt/issues/451). Benchmark 021
 therefore remains **behaviorally uncovered** with only **umbrella-thread
 tracker context**.
 
+## Refresh note (2026-10-06)
+
+This recheck advances checked-in/live `pg-delta` from
+`6845a0beb646cec0bcbf894cec99cbcae2567fc6` to
+`55d20b026f4208a21d24034c1714d9daa9daf9ee` through merged PR
+[#512](https://github.com/supabase/pg-toolbelt/pull/512), while
+checked-in/live `pgschema` remains `580f4040d0f3c1bfad1497918200c9c1f638a020`.
+
+Today's upstream activity still does not close the active partition-child
+override gap:
+
+- `gh search issues --repo pgplex/pgschema --updated '>=2026-10-05'` and the
+  matching `--include-prs` query both returned `[]`, so there is still no new
+  pgschema-side partition-child delta; open PRs
+  [#611](https://github.com/pgplex/pgschema/pull/611) and
+  [#622](https://github.com/pgplex/pgschema/pull/622) remain unchanged since
+  2026-09-20 / 2026-09-24
+- `gh search issues --repo supabase/pg-toolbelt --include-prs --updated '>=2026-10-05'`
+  surfaced merged PR [#512](https://github.com/supabase/pg-toolbelt/pull/512)
+  and open release PR [#509](https://github.com/supabase/pg-toolbelt/pull/509)
+- `git -C repos/pg-toolbelt diff --name-only
+  6845a0beb646cec0bcbf894cec99cbcae2567fc6..55d20b026f4208a21d24034c1714d9daa9daf9ee`
+  only touches `.changeset/grouped-export-column-grants.md`,
+  `packages/pg-delta/src/frontends/export-sql-files.ts`, and
+  `packages/pg-delta/tests/export-grouped.test.ts`; none touch the active
+  partition-child extract / plan path
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still filters
+  inherited child columns with `a.attislocal`, so child-local overrides on
+  inherited partition columns never become diff-visible facts
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still
+  serializes partition-child creation as bare
+  `CREATE TABLE ... PARTITION OF ... ${bound}` with no typed child
+  column-element list for local `DEFAULT` / `NOT NULL` overrides
+- direct exact searches for `pgschema#499` still return no dedicated
+  pg-toolbelt issue or PR. Keyword `"PARTITION OF"` searches continue to
+  surface umbrella issue
+  [#332](https://github.com/supabase/pg-toolbelt/issues/332), adjacent
+  follow-up [#502](https://github.com/supabase/pg-toolbelt/issues/502), and
+  merged partition PRs [#501](https://github.com/supabase/pg-toolbelt/pull/501),
+  [#503](https://github.com/supabase/pg-toolbelt/pull/503), and
+  [#504](https://github.com/supabase/pg-toolbelt/pull/504) rather than any
+  exact child-local override tracker
+
+The focused 2026-08-14 runtime observation therefore still stands: pg-delta
+emits only the bare partition-child `CREATE TABLE ... PARTITION OF ... FOR
+VALUES ...` statement, omits the child-specific `DEFAULT` / `NOT NULL`
+overrides, and still lets the proof loop return `proofOk: true` with zero
+drift afterward. Benchmark 021 therefore remains **behaviorally uncovered**
+with only **umbrella-thread tracker context**.
+
 ## Refresh note (2026-10-05)
 
 This recheck keeps checked-in/live `pg-delta` at
