@@ -4,6 +4,69 @@
 
 ## Context
 
+## Refresh note (2026-10-08)
+
+This recheck advances checked-in/live `pg-delta` from
+`5e7c43674ab55f297702d18830489ac0008c019d` to `8a62438b03300c1922cb04b292d2140fcc694b25` through merged PRs
+[#515](https://github.com/supabase/pg-toolbelt/pull/515) and
+[#520](https://github.com/supabase/pg-toolbelt/pull/520), while checked-in/live
+`pgschema` remains `580f4040d0f3c1bfad1497918200c9c1f638a020`.
+
+Today's upstream activity still does not close the active partition-child
+override gap:
+
+- `gh search issues --repo pgplex/pgschema --updated '>=2026-10-07'` and the
+  matching `--include-prs` query both surfaced only open issue
+  [#624](https://github.com/pgplex/pgschema/issues/624), whose updated body now
+  explicitly calls out the same `check_function_bodies=off` workaround that
+  current pg-delta already applies; open PRs
+  [#611](https://github.com/pgplex/pgschema/pull/611) and
+  [#622](https://github.com/pgplex/pgschema/pull/622) remain unchanged since
+  2026-09-20 / 2026-09-24
+- `gh search issues --repo supabase/pg-toolbelt --include-prs --updated '>=2026-10-07'`
+  surfaced merged PRs [#515](https://github.com/supabase/pg-toolbelt/pull/515)
+  and [#520](https://github.com/supabase/pg-toolbelt/pull/520), open PRs
+  [#514](https://github.com/supabase/pg-toolbelt/pull/514),
+  [#522](https://github.com/supabase/pg-toolbelt/pull/522),
+  [#527](https://github.com/supabase/pg-toolbelt/pull/527), and
+  [#528](https://github.com/supabase/pg-toolbelt/pull/528), open issues
+  [#510](https://github.com/supabase/pg-toolbelt/issues/510),
+  [#521](https://github.com/supabase/pg-toolbelt/issues/521),
+  [#523](https://github.com/supabase/pg-toolbelt/issues/523),
+  [#524](https://github.com/supabase/pg-toolbelt/issues/524),
+  [#525](https://github.com/supabase/pg-toolbelt/issues/525), and
+  [#526](https://github.com/supabase/pg-toolbelt/issues/526), plus closed issue
+  [#517](https://github.com/supabase/pg-toolbelt/issues/517)
+- `git -C repos/pg-toolbelt diff --name-only
+  5e7c43674ab55f297702d18830489ac0008c019d..8a62438b03300c1922cb04b292d2140fcc694b25 -- packages/pg-delta/src/extract/relations.ts
+  packages/pg-delta/src/plan/rules/tables.ts
+  packages/pg-delta/src/plan/rules/helpers.ts` returned no paths; the new
+  merged code lands in declarative-e2e infrastructure plus declarative public-
+  schema revoke export, not the active partition-child extract / plan path
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still filters
+  inherited child columns with `a.attislocal`, so child-local overrides on
+  inherited partition columns remain absent from diff-visible facts
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still
+  serializes partition-child creation as bare
+  `CREATE TABLE ... PARTITION OF ... ${bound}` with no typed child
+  column-element list for local `DEFAULT` / `NOT NULL` overrides
+- exact searches for `pgschema#499` still return no dedicated pg-toolbelt
+  issue or PR. Keyword `"PARTITION OF" --include-prs` searches still surface
+  umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332),
+  adjacent follow-up [#502](https://github.com/supabase/pg-toolbelt/issues/502),
+  merged partition PRs [#501](https://github.com/supabase/pg-toolbelt/pull/501),
+  [#503](https://github.com/supabase/pg-toolbelt/pull/503), and
+  [#504](https://github.com/supabase/pg-toolbelt/pull/504), plus declarative
+  settling PR [#514](https://github.com/supabase/pg-toolbelt/pull/514) as
+  separate context rather than any exact child-local override tracker
+
+The focused 2026-08-14 runtime observation therefore still stands: pg-delta
+emits only the bare partition-child `CREATE TABLE ... PARTITION OF ... FOR
+VALUES ...` statement, omits the child-specific `DEFAULT` / `NOT NULL`
+overrides, and still lets the proof loop return `proofOk: true` with zero
+drift afterward. Benchmark 021 therefore remains **behaviorally uncovered**
+with only **umbrella-thread tracker context**.
+
 pgschema issue #499 is the follow-up to the earlier partition-child create-
 path bug from issue #496. After pgschema learned to emit
 `CREATE TABLE ... PARTITION OF ... FOR VALUES ...` for new partition
