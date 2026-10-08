@@ -4,6 +4,65 @@
 
 ## Context
 
+## Refresh note (2026-10-08)
+
+This recheck advances checked-in/live `pg-delta` from
+`5e7c43674ab55f297702d18830489ac0008c019d` to `8a62438b03300c1922cb04b292d2140fcc694b25` through merged PRs
+[#515](https://github.com/supabase/pg-toolbelt/pull/515) and
+[#520](https://github.com/supabase/pg-toolbelt/pull/520), while checked-in/live
+`pgschema` remains `580f4040d0f3c1bfad1497918200c9c1f638a020`.
+
+Today's upstream activity still does not change this PG18 nullability
+workflow gap:
+
+- `gh search issues --repo pgplex/pgschema --updated '>=2026-10-07'` and the
+  matching `--include-prs` query both surfaced only open issue
+  [#624](https://github.com/pgplex/pgschema/issues/624), whose updated body now
+  explicitly calls out the same `check_function_bodies=off` workaround that
+  current pg-delta already applies; open PRs
+  [#611](https://github.com/pgplex/pgschema/pull/611) and
+  [#622](https://github.com/pgplex/pgschema/pull/622) remain unchanged since
+  2026-09-20 / 2026-09-24
+- `gh search issues --repo supabase/pg-toolbelt --include-prs --updated '>=2026-10-07'`
+  surfaced merged PRs [#515](https://github.com/supabase/pg-toolbelt/pull/515)
+  and [#520](https://github.com/supabase/pg-toolbelt/pull/520), open PRs
+  [#514](https://github.com/supabase/pg-toolbelt/pull/514),
+  [#522](https://github.com/supabase/pg-toolbelt/pull/522),
+  [#527](https://github.com/supabase/pg-toolbelt/pull/527), and
+  [#528](https://github.com/supabase/pg-toolbelt/pull/528), open issues
+  [#510](https://github.com/supabase/pg-toolbelt/issues/510),
+  [#521](https://github.com/supabase/pg-toolbelt/issues/521),
+  [#523](https://github.com/supabase/pg-toolbelt/issues/523),
+  [#524](https://github.com/supabase/pg-toolbelt/issues/524),
+  [#525](https://github.com/supabase/pg-toolbelt/issues/525), and
+  [#526](https://github.com/supabase/pg-toolbelt/issues/526), plus closed issue
+  [#517](https://github.com/supabase/pg-toolbelt/issues/517)
+- `git -C repos/pg-toolbelt diff --name-only
+  5e7c43674ab55f297702d18830489ac0008c019d..8a62438b03300c1922cb04b292d2140fcc694b25 -- packages/pg-delta/src/extract/relations.ts
+  packages/pg-delta/src/plan/rules/constraints.ts
+  packages/pg-delta/src/plan/rules/tables.ts` returned no paths; the new
+  merged code lands in declarative-e2e infrastructure plus declarative public-
+  schema revoke export, not the active PG18 nullability extraction or planning
+  path
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still records
+  column nullability through `a.attnotnull` and still keeps PG18
+  `contype = 'n'` rows out of diff-visible facts, aside from the
+  informational `table_not_null_comment_skipped` diagnostic path
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still keeps
+  `SET NOT NULL` in place for this path and does not emit the native
+  PostgreSQL 18 `ADD CONSTRAINT ... NOT NULL ... NOT VALID` plus
+  `VALIDATE CONSTRAINT` workflow
+- direct exact searches for `pgschema#564` still return no dedicated
+  pg-toolbelt issue or PR. Keyword `"NOT NULL" "NOT VALID" --include-prs`
+  searches still only surface merged domain-only PR
+  [#484](https://github.com/supabase/pg-toolbelt/pull/484) as adjacent
+  historical context rather than an exact table-column PG18 validation tracker
+
+Benchmark 024 therefore remains **not covered** in current pg-delta: the PG18
+native nullability state is still collapsed away during extraction, pending
+validation is still invisible on a later diff, and the current planner still
+falls back to a plain `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL`.
+
 pgschema issue #564 started as a request for a safer way to introduce `NOT NULL`
 requirements without collapsing everything to a single immediate
 `ALTER COLUMN ... SET NOT NULL` step. Upstream now handles that family on
