@@ -4,79 +4,80 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-10-09)
+## Latest refresh snapshot (2026-10-10)
 
 Refreshed against:
 
-- checked-in/live `repos/pg-toolbelt` @ `3c60914eae50ff9d28084a8a1ce4e110b9c3d55d`
+- checked-in/live `repos/pg-toolbelt` @ `7f2fd64e05945fe3ef5860e3ee4569dc28c9ddb4`
 - checked-in/live `repos/pgschema` @ `580f4040d0f3c1bfad1497918200c9c1f638a020`
 
-> The 2026-10-09 refresh advances checked-in/live `repos/pg-toolbelt` from
-> `8a62438b03300c1922cb04b292d2140fcc694b25` to
-> `3c60914eae50ff9d28084a8a1ce4e110b9c3d55d` through merged PRs
-> [#528](https://github.com/supabase/pg-toolbelt/pull/528) and
-> [#529](https://github.com/supabase/pg-toolbelt/pull/529), while
+> The 2026-10-10 refresh advances checked-in/live `repos/pg-toolbelt` from
+> `3c60914eae50ff9d28084a8a1ce4e110b9c3d55d` to
+> `7f2fd64e05945fe3ef5860e3ee4569dc28c9ddb4` through merged PRs
+> [#514](https://github.com/supabase/pg-toolbelt/pull/514) and
+> [#527](https://github.com/supabase/pg-toolbelt/pull/527), while
 > checked-in/live `repos/pgschema` remains
 > `580f4040d0f3c1bfad1497918200c9c1f638a020`
 >
-> - `gh search issues --repo pgplex/pgschema --updated '>=2026-10-08'`
+> - `gh issue list --repo pgplex/pgschema --state open --search 'updated:>=2026-10-09'`
 >   surfaced open issues
->   [#625](https://github.com/pgplex/pgschema/issues/625) and
->   [#626](https://github.com/pgplex/pgschema/issues/626)
-> - the matching `--include-prs` query returned the same two issues, and
->   open pgschema PRs [#611](https://github.com/pgplex/pgschema/pull/611) and
->   [#622](https://github.com/pgplex/pgschema/pull/622) remain unchanged since
->   2026-09-20 / 2026-09-24
-> - pgschema issue [#625](https://github.com/pgplex/pgschema/issues/625)
->   appears **covered** in current pg-delta: composite attributes are extracted
->   as standalone `typeAttribute` facts (`tests/extract.test.ts`), and
->   `src/plan/rules/types.ts` already emits
->   `ALTER TYPE ... ADD ATTRIBUTE ... CASCADE` for additive changes; exact
->   duplicate search `pgschema#625` returned no pg-toolbelt issue or PR
-> - pgschema issue [#626](https://github.com/pgplex/pgschema/issues/626)
->   appears **covered** in current pg-delta at source level:
->   `src/extract/dependencies.ts` maps composite-attribute `pg_depend` edges
->   through array / row-type resolution onto the owning table fact, so the
->   dependency graph already prefers creating the table before the composite
->   type; exact duplicate search `pgschema#626` returned no pg-toolbelt issue
->   or PR
-> - `gh search issues --repo supabase/pg-toolbelt --include-prs --updated '>=2026-10-08'`
->   surfaced merged PRs
->   [#528](https://github.com/supabase/pg-toolbelt/pull/528) and
->   [#529](https://github.com/supabase/pg-toolbelt/pull/529), open PRs
->   [#514](https://github.com/supabase/pg-toolbelt/pull/514),
+>   [#623](https://github.com/pgplex/pgschema/issues/623),
+>   [#627](https://github.com/pgplex/pgschema/issues/627),
+>   [#628](https://github.com/pgplex/pgschema/issues/628),
+>   [#629](https://github.com/pgplex/pgschema/issues/629),
+>   [#630](https://github.com/pgplex/pgschema/issues/630),
+>   [#631](https://github.com/pgplex/pgschema/issues/631),
+>   [#632](https://github.com/pgplex/pgschema/issues/632),
+>   [#633](https://github.com/pgplex/pgschema/issues/633),
+>   [#634](https://github.com/pgplex/pgschema/issues/634),
+>   [#635](https://github.com/pgplex/pgschema/issues/635),
+>   [#636](https://github.com/pgplex/pgschema/issues/636),
+>   [#638](https://github.com/pgplex/pgschema/issues/638),
+>   [#639](https://github.com/pgplex/pgschema/issues/639),
+>   [#640](https://github.com/pgplex/pgschema/issues/640), and
+>   [#641](https://github.com/pgplex/pgschema/issues/641)
+> - `gh pr list --repo pgplex/pgschema --state all --search 'updated:>=2026-10-09'`
+>   surfaced open PR [#637](https://github.com/pgplex/pgschema/pull/637)
+> - the new pgschema global-state cluster rooted at
+>   [#627](https://github.com/pgplex/pgschema/issues/627) plus PR
+>   [#637](https://github.com/pgplex/pgschema/pull/637) does not add a new
+>   benchmark parity item in this repo; the schema-diff issues
+>   [#638](https://github.com/pgplex/pgschema/issues/638),
+>   [#639](https://github.com/pgplex/pgschema/issues/639),
+>   [#640](https://github.com/pgplex/pgschema/issues/640), and
+>   [#641](https://github.com/pgplex/pgschema/issues/641) are already covered
+>   or avoided in current pg-delta
+> - `gh issue list --repo supabase/pg-toolbelt --state all --search 'updated:>=2026-10-09'`
+>   plus `gh pr list --repo supabase/pg-toolbelt --state all --search
+>   'updated:>=2026-10-09'` surfaced merged PRs
+>   [#514](https://github.com/supabase/pg-toolbelt/pull/514) and
+>   [#527](https://github.com/supabase/pg-toolbelt/pull/527), open PRs
+>   [#471](https://github.com/supabase/pg-toolbelt/pull/471),
 >   [#522](https://github.com/supabase/pg-toolbelt/pull/522),
->   [#527](https://github.com/supabase/pg-toolbelt/pull/527), and
->   [#532](https://github.com/supabase/pg-toolbelt/pull/532), open issues
->   [#525](https://github.com/supabase/pg-toolbelt/issues/525),
->   [#530](https://github.com/supabase/pg-toolbelt/issues/530), and
->   [#531](https://github.com/supabase/pg-toolbelt/issues/531), plus closed
->   issue [#519](https://github.com/supabase/pg-toolbelt/issues/519)
+>   [#532](https://github.com/supabase/pg-toolbelt/pull/532),
+>   [#534](https://github.com/supabase/pg-toolbelt/pull/534),
+>   [#536](https://github.com/supabase/pg-toolbelt/pull/536), and
+>   [#537](https://github.com/supabase/pg-toolbelt/pull/537), open issues
+>   [#533](https://github.com/supabase/pg-toolbelt/issues/533) and
+>   [#535](https://github.com/supabase/pg-toolbelt/issues/535), plus closed
+>   issues [#510](https://github.com/supabase/pg-toolbelt/issues/510) and
+>   [#521](https://github.com/supabase/pg-toolbelt/issues/521)
 > - direct inspection of those updated pg-toolbelt items plus
 >   `git -C repos/pg-toolbelt diff --name-only
->   8a62438b03300c1922cb04b292d2140fcc694b25..3c60914eae50ff9d28084a8a1ce4e110b9c3d55d -- packages/pg-delta/src/extract/relations.ts
+>   3c60914eae50ff9d28084a8a1ce4e110b9c3d55d..7f2fd64e05945fe3ef5860e3ee4569dc28c9ddb4 -- packages/pg-delta/src/extract/relations.ts
 >   packages/pg-delta/src/extract/dependencies.ts
 >   packages/pg-delta/src/plan/rules/tables.ts
 >   packages/pg-delta/src/plan/rules/helpers.ts
 >   packages/pg-delta/src/plan/rules/types.ts`
 >   shows the active benchmark paths are unchanged; the merged code lands in
->   declarative-e2e infrastructure plus extension-member grant export / policy
->   handling, and the open work is separate baseline-grant / declarative settle
->   coverage rather than benchmark duplicates
-> - open pg-toolbelt umbrella issue
->   [#332](https://github.com/supabase/pg-toolbelt/issues/332) and adjacent
->   partition follow-up
->   [#502](https://github.com/supabase/pg-toolbelt/issues/502) remain the only
->   exact tracker context, while keyword `"PARTITION OF"` searches now also
->   surface open issue [#530](https://github.com/supabase/pg-toolbelt/issues/530)
->   as adjacent partition / inheritance rewrite-risk work rather than a fix for
->   benchmark **021**'s child-local override gap
+>   `src/extract/routines.ts`, `src/extract/scoped-read.ts`, frontends/export /
+>   settle paths, `src/policy/policy.ts`, and related tests
 > - `gh issue list -R avallete/delta-schema-compare --state all --limit 200`
->   returned `[]`
-> - the active benchmarked gap set therefore remains **021**, **022**, and
->   **024**
-> - there is still **no open uncovered parity candidate** on the pgschema
->   side
+>   still returned `[]`
+>
+> The active benchmarked gap set therefore remains **021**, **022**, and
+> **024**, and there is still **no open uncovered parity candidate** on the
+> pgschema side.
 
 ## Benchmark status matrix
 
@@ -136,9 +137,10 @@ Three resolved-issue benchmark scenarios remain active as unresolved behavior:
   - `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts` still
     hard-codes generated-column rendering as
     `GENERATED ALWAYS AS (...) STORED`
-  - the 2026-10-09 pg-delta delta only touches declarative-e2e execution plus
-    extension-member grant export / policy handling; none of those changes
-    preserves generated kind, so umbrella issue
+  - the 2026-10-10 pg-delta delta only touches `extract/routines.ts`,
+    `extract/scoped-read.ts`, frontends/export / settle paths,
+    `src/policy/policy.ts`, and related tests; none of those changes preserves
+    generated kind, so umbrella issue
     [#332](https://github.com/supabase/pg-toolbelt/issues/332) remains the
     only live tracker context
   - current pg-delta already covers resolved pgschema issue
@@ -153,51 +155,52 @@ Three resolved-issue benchmark scenarios remain active as unresolved behavior:
     diagnostics for commented rows, not to become diff-visible facts
   - `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still
     emits a plain `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL`
-  - the 2026-10-09 pg-delta delta only touches declarative-e2e execution plus
-    extension-member grant export / policy handling; there is still no exact
-    current pg-toolbelt issue or PR for this benchmark
+  - the 2026-10-10 pg-delta delta only touches `extract/routines.ts`,
+    `extract/scoped-read.ts`, frontends/export / settle paths,
+    `src/policy/policy.ts`, and related tests; there is still no exact current
+    pg-toolbelt issue or PR for this benchmark
 
 Because today's refresh advances checked-in/live `pg-toolbelt` through merged
-PRs [#528](https://github.com/supabase/pg-toolbelt/pull/528) and
-[#529](https://github.com/supabase/pg-toolbelt/pull/529) while leaving the
+PRs [#514](https://github.com/supabase/pg-toolbelt/pull/514) and
+[#527](https://github.com/supabase/pg-toolbelt/pull/527) while leaving the
 active benchmark source paths untouched, source rechecks on the current head
 still find `a.attislocal` in `relations.ts`, generated-column kind still
 collapsed to expression presence plus a hard-coded `... STORED` renderer, and
 PG18 table `contype = 'n'` rows still kept out of diff-visible facts. Exact
 duplicate searches for `pgschema#499`, `pgschema#501`, `pgschema#564`,
-`pgschema#625`, and `pgschema#626` still return no dedicated pg-toolbelt issue
-or PR; keyword searches for `"PARTITION OF"` now surface umbrella issue
-[#332](https://github.com/supabase/pg-toolbelt/issues/332), adjacent follow-up
-[#502](https://github.com/supabase/pg-toolbelt/issues/502), open rewrite-risk
-issue [#530](https://github.com/supabase/pg-toolbelt/issues/530), merged
-partition PRs [#501](https://github.com/supabase/pg-toolbelt/pull/501),
-[#503](https://github.com/supabase/pg-toolbelt/pull/503), and
-[#504](https://github.com/supabase/pg-toolbelt/pull/504), plus declarative
-settling PR [#514](https://github.com/supabase/pg-toolbelt/pull/514) as
-separate context; `"VIRTUAL" generated` still surfaces live umbrella issue
+`pgschema#627`, `pgschema#638`, `pgschema#639`, `pgschema#640`, and
+`pgschema#641` still return no dedicated pg-toolbelt issue or PR; keyword
+`"PARTITION OF"` searches now also surface open settle-definition issues
+[#526](https://github.com/supabase/pg-toolbelt/issues/526) and
+[#535](https://github.com/supabase/pg-toolbelt/issues/535) alongside umbrella
+issue [#332](https://github.com/supabase/pg-toolbelt/issues/332), adjacent
+follow-up [#502](https://github.com/supabase/pg-toolbelt/issues/502),
+rewrite-risk issue [#530](https://github.com/supabase/pg-toolbelt/issues/530),
+and merged partition PRs
+[#501](https://github.com/supabase/pg-toolbelt/pull/501),
+[#503](https://github.com/supabase/pg-toolbelt/pull/503),
+[#504](https://github.com/supabase/pg-toolbelt/pull/504), and
+[#514](https://github.com/supabase/pg-toolbelt/pull/514); `"VIRTUAL"
+generated` still only surfaces live umbrella issue
 [#332](https://github.com/supabase/pg-toolbelt/issues/332) plus historical
 merged PRs [#378](https://github.com/supabase/pg-toolbelt/pull/378) and
 [#299](https://github.com/supabase/pg-toolbelt/pull/299); and
-`"NOT NULL" "NOT VALID"` with `--include-prs` still surfaces merged
-domain-only PR [#484](https://github.com/supabase/pg-toolbelt/pull/484)
-rather than an exact table-column PG18 validation tracker. Open pg-toolbelt
-issues [#525](https://github.com/supabase/pg-toolbelt/issues/525),
-[#530](https://github.com/supabase/pg-toolbelt/issues/530), and
-[#531](https://github.com/supabase/pg-toolbelt/issues/531) plus open PRs
-[#514](https://github.com/supabase/pg-toolbelt/pull/514),
-[#527](https://github.com/supabase/pg-toolbelt/pull/527),
-[#532](https://github.com/supabase/pg-toolbelt/pull/532), and release PR
-[#522](https://github.com/supabase/pg-toolbelt/pull/522) are separate
-declarative settle / export / test work or baseline-grant follow-ups, while
-open pgschema issues [#625](https://github.com/pgplex/pgschema/issues/625) and
-[#626](https://github.com/pgplex/pgschema/issues/626) are already covered by
-the current composite-attribute planning and dependency extraction paths.
-Umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332)
-therefore still only covers benchmarks **021** / **022**, benchmark **024**
-still has no exact current pg-toolbelt issue or PR, the focused 2026-08-14
-runtime observations for benchmarks **021** / **022** remain the latest direct
-runtime evidence, and benchmark **024** remains source-level not covered on the
-new current head.
+`"NOT NULL" "NOT VALID"` still surfaces only adjacent merged PRs
+[#484](https://github.com/supabase/pg-toolbelt/pull/484) and
+[#485](https://github.com/supabase/pg-toolbelt/pull/485) plus umbrella issue
+[#332](https://github.com/supabase/pg-toolbelt/issues/332). New open pgschema
+issues [#638](https://github.com/pgplex/pgschema/issues/638),
+[#639](https://github.com/pgplex/pgschema/issues/639),
+[#640](https://github.com/pgplex/pgschema/issues/640), and
+[#641](https://github.com/pgplex/pgschema/issues/641) are already covered or
+avoided by current pg-delta, while the broader global-state cluster rooted at
+[#627](https://github.com/pgplex/pgschema/issues/627) plus open PR
+[#637](https://github.com/pgplex/pgschema/pull/637) does not produce a new
+benchmark parity item in this repo. Umbrella issue
+[#332](https://github.com/supabase/pg-toolbelt/issues/332) therefore still only
+covers benchmarks **021** / **022**, benchmark **024** still has no exact
+current pg-toolbelt issue or PR, and there is still **no open uncovered parity
+candidate**.
 
 ## Open pgschema issue screening (current state)
 
@@ -208,137 +211,147 @@ The current open pgschema watch list is now:
 [#559](https://github.com/pgplex/pgschema/issues/559),
 [#597](https://github.com/pgplex/pgschema/issues/597),
 [#598](https://github.com/pgplex/pgschema/issues/598),
-[#623](https://github.com/pgplex/pgschema/issues/623), and
+[#623](https://github.com/pgplex/pgschema/issues/623),
 [#624](https://github.com/pgplex/pgschema/issues/624),
-[#625](https://github.com/pgplex/pgschema/issues/625), and
-[#626](https://github.com/pgplex/pgschema/issues/626).
+[#625](https://github.com/pgplex/pgschema/issues/625),
+[#626](https://github.com/pgplex/pgschema/issues/626),
+[#627](https://github.com/pgplex/pgschema/issues/627),
+[#628](https://github.com/pgplex/pgschema/issues/628),
+[#629](https://github.com/pgplex/pgschema/issues/629),
+[#630](https://github.com/pgplex/pgschema/issues/630),
+[#631](https://github.com/pgplex/pgschema/issues/631),
+[#632](https://github.com/pgplex/pgschema/issues/632),
+[#633](https://github.com/pgplex/pgschema/issues/633),
+[#634](https://github.com/pgplex/pgschema/issues/634),
+[#635](https://github.com/pgplex/pgschema/issues/635),
+[#636](https://github.com/pgplex/pgschema/issues/636),
+[#638](https://github.com/pgplex/pgschema/issues/638),
+[#639](https://github.com/pgplex/pgschema/issues/639),
+[#640](https://github.com/pgplex/pgschema/issues/640), and
+[#641](https://github.com/pgplex/pgschema/issues/641).
 
 Screened candidates:
 
 - **#49** explicit rename / refactor workflow proposal - **not parity work for
   pg-delta**
-- **#52** explicit before / after SQL file execution in plan output -
-  **not parity work for pg-delta**
+- **#52** explicit before / after SQL file execution in plan output - **not
+  parity work for pg-delta**
 - **#84** feedback / testimonial collection thread - **not parity work for
   pg-delta**
-- **#559** config-table data evolution / reference-data management -
-  **not parity work for pg-delta**; merged pgschema PR
-  [#612](https://github.com/pgplex/pgschema/pull/612) reverted that feature
-  out of `main`, but row-data synchronization remains outside pg-delta's
-  schema-diff scope
+- **#559** config-table data evolution / reference-data management - **not
+  parity work for pg-delta**
 - **#597** broad multi-schema complexity / auto-ignore feedback - **not parity
-  work for pg-delta**; it is general product feedback rather than a concrete
-  pg-delta parity scenario
+  work for pg-delta**
 - **#598** interrupted `CREATE INDEX CONCURRENTLY` leaves an invalid index
   behind - **covered** in current pg-delta:
   - `src/extract/relations.ts` captures regular-index `indisvalid` as semantic
     `valid`
   - `src/plan/rules/indexes.ts` diffs `valid` with the `"replace"` strategy
   - `tests/index-invalid-repair.test.ts` covers the invalid-index repair path
-  - open pgschema PR [#611](https://github.com/pgplex/pgschema/pull/611) is
-    the upstream fix path on the pgschema side
-- **#623** publish release checksums - **not parity work for pg-delta**;
-  release-asset verification is outside pg-delta's schema-diff scope
-- **#624** SQL function created before `ADD COLUMN` it depends on -
-  **covered** in current pg-delta:
-  - `src/plan/preamble.ts` deliberately keeps `check_function_bodies = off`
-    for routine-touching plans because quoted SQL/plpgsql bodies do not record
-    body-dependency edges
-  - `src/plan/preamble.test.ts` and `src/plan/render-sql.test.ts` assert that
-    routine plans retain and emit that preamble
-  - `corpus/function-ops--sql-body-cross-reference/b.sql` already covers the
-    same forward-referencing SQL-language function-body pattern
-  - exact duplicate search `pgschema#624` still returns no dedicated
-    pg-toolbelt issue or PR, so no new tracker issue is needed
+- **#623** publish release checksums - **not parity work for pg-delta**
+- **#624** SQL function created before `ADD COLUMN` it depends on - **covered**
+  in current pg-delta via the routine-plan `check_function_bodies = off`
+  preamble plus existing SQL-body forward-reference coverage
 - **#625** existing composite-type attribute changes are silently skipped -
+  **covered** in current pg-delta via composite `typeAttribute` facts and
+  `ALTER TYPE ... ADD ATTRIBUTE ... CASCADE` planning
+- **#626** composite type creation runs before its required table - **covered**
+  in current pg-delta via dependency extraction that resolves composite row-type
+  edges back onto the owning table fact
+- **#627 - #636** opt-in global-state roles / ownership cluster (plus open PR
+  [#637](https://github.com/pgplex/pgschema/pull/637)) - **not added as new
+  benchmark parity items in this repo**. These issues describe pgschema's new
+  separate global-manifest surface; adjacent pg-delta role / owner work exists
+  in open PRs [#471](https://github.com/supabase/pg-toolbelt/pull/471) and
+  [#493](https://github.com/supabase/pg-toolbelt/pull/493) plus merged
+  membership fixes [#117](https://github.com/supabase/pg-toolbelt/pull/117),
+  [#118](https://github.com/supabase/pg-toolbelt/pull/118), and
+  [#461](https://github.com/supabase/pg-toolbelt/pull/461), but exact duplicate
+  search `pgschema#627` still returns no dedicated pg-toolbelt issue or PR
+- **#638** mixed column-privilege rendering (`GRANT INSERT, UPDATE (cols)`) -
   **covered** in current pg-delta:
-  - `tests/extract.test.ts` verifies composite attributes are extracted as
-    standalone `typeAttribute` facts rather than being collapsed into the
-    parent type payload
-  - `src/plan/rules/types.ts` already emits
-    `ALTER TYPE ... ADD ATTRIBUTE ... CASCADE` for additive composite
-    attribute changes
-  - related tests cover composite attribute rename, drop, and type-change
-    paths, and exact duplicate search `pgschema#625` returned no dedicated
-    pg-toolbelt issue or PR
-- **#626** composite type creation runs before its required table -
-  **covered** in current pg-delta at source level:
-  - `src/extract/dependencies.ts` resolves composite-attribute dependency
-    edges onto the parent composite type fact (`comptype`) and maps table row
-    types - including array wrappers - back onto the owning table fact
-  - that dependency graph ordering means a composite type depending on
-    `example[]` is planned after table `example`, not before it
-  - exact duplicate search `pgschema#626` returned no dedicated pg-toolbelt
-    issue or PR
+  - `renderGrantSql()` renders column privileges as `PRIV (col), PRIV (col)`
+  - `tests/column-grant-fidelity.test.ts` covers extracted table column grants
+  - `src/frontends/sql-format/format-grant.test.ts` explicitly pins
+    `GRANT SELECT (col), UPDATE (col) ...`
+- **#639** partition bounds / attachment drift - **covered** in current
+  pg-delta:
+  - extracted table facts preserve `partitionBound` and `parentTable`
+  - `src/plan/rules/tables.ts` treats both attributes as `"replace"`
+  - corpuses `table-ops--attach-partition` and `table-ops--detach-partition`
+    cover attach / detach state changes
+- **#640** privileges on partitioned tables are omitted - **covered** in
+  current pg-delta:
+  - relation extraction already includes partitioned tables in the table ACL
+    path (`c.relkind IN ('r', 'p')`)
+  - column ACL extraction likewise includes `relkind 'p'`
+- **#641** schema-unqualified wait query after `CREATE INDEX CONCURRENTLY` -
+  **covered / not a pg-delta gap**:
+  - pg-delta apply executes action SQL directly via `client.query(action.sql)`
+    instead of a separate name-based wait loop
+  - invalid concurrent-index residue is already modeled through `indisvalid`
+    and covered by `tests/index-invalid-repair.test.ts`
 
 There is currently **no open uncovered parity candidate** on the pgschema
 side. The remaining active benchmarks **021** / **022** still only have
 umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332) as
 exact tracker context, benchmark **024** still has no exact current
 pg-toolbelt issue or PR, and the current pg-toolbelt head now reflects merged
-PRs [#528](https://github.com/supabase/pg-toolbelt/pull/528) and
-[#529](https://github.com/supabase/pg-toolbelt/pull/529). Direct inspection of
-the new open pg-toolbelt issues
-[#525](https://github.com/supabase/pg-toolbelt/issues/525),
-[#530](https://github.com/supabase/pg-toolbelt/issues/530), and
-[#531](https://github.com/supabase/pg-toolbelt/issues/531) plus open PRs
-[#514](https://github.com/supabase/pg-toolbelt/pull/514),
-[#527](https://github.com/supabase/pg-toolbelt/pull/527),
-[#532](https://github.com/supabase/pg-toolbelt/pull/532), and release PR
-[#522](https://github.com/supabase/pg-toolbelt/pull/522) shows declarative
-settle / export / test work or baseline-grant follow-ups rather than new
-parity coverage or duplicates. Open pgschema issues
-[#624](https://github.com/pgplex/pgschema/issues/624),
-[#625](https://github.com/pgplex/pgschema/issues/625), and
-[#626](https://github.com/pgplex/pgschema/issues/626) remain covered rather
-than becoming new tracker gaps. This repository still has no local tracker
-issues.
+PRs [#514](https://github.com/supabase/pg-toolbelt/pull/514) and
+[#527](https://github.com/supabase/pg-toolbelt/pull/527). This repository
+still has no local tracker issues.
 
 ## Recent closed-issue / tracker updates
 
 No benchmark item changed status in this refresh. The most relevant current
 tracker updates are:
 
-- `gh search issues --repo pgplex/pgschema --updated '>=2026-10-08'`
-  surfaced open issues [#625](https://github.com/pgplex/pgschema/issues/625)
-  and [#626](https://github.com/pgplex/pgschema/issues/626); the matching
-  `--include-prs` query returned the same two issues; open PRs
-  [#611](https://github.com/pgplex/pgschema/pull/611) and
-  [#622](https://github.com/pgplex/pgschema/pull/622) remain open without new
-  updates
-- issues [#625](https://github.com/pgplex/pgschema/issues/625) and
-  [#626](https://github.com/pgplex/pgschema/issues/626) are both covered by
-  current pg-delta's composite-type support paths, and exact duplicate searches
-  `pgschema#625` / `pgschema#626` both returned `[]`
-- `gh search issues --repo supabase/pg-toolbelt --include-prs --updated '>=2026-10-08'`
-  surfaced merged PRs [#528](https://github.com/supabase/pg-toolbelt/pull/528)
-  and [#529](https://github.com/supabase/pg-toolbelt/pull/529), open PRs
-  [#514](https://github.com/supabase/pg-toolbelt/pull/514),
+- `gh issue list --repo pgplex/pgschema --state open --search
+  'updated:>=2026-10-09'` surfaced open issues
+  [#623](https://github.com/pgplex/pgschema/issues/623) and
+  [#627](https://github.com/pgplex/pgschema/issues/627) through
+  [#641](https://github.com/pgplex/pgschema/issues/641); the matching PR query
+  surfaced open PR [#637](https://github.com/pgplex/pgschema/pull/637)
+- the new pgschema global-state cluster rooted at
+  [#627](https://github.com/pgplex/pgschema/issues/627) /
+  [#637](https://github.com/pgplex/pgschema/pull/637) is not being promoted
+  into new benchmark gap docs in this repo, and the new schema-diff issues
+  [#638](https://github.com/pgplex/pgschema/issues/638),
+  [#639](https://github.com/pgplex/pgschema/issues/639),
+  [#640](https://github.com/pgplex/pgschema/issues/640), and
+  [#641](https://github.com/pgplex/pgschema/issues/641) are already covered or
+  avoided in current pg-delta
+- `gh issue list --repo supabase/pg-toolbelt --state all --search
+  'updated:>=2026-10-09'` plus `gh pr list --repo supabase/pg-toolbelt --state
+  all --search 'updated:>=2026-10-09'` surfaced merged PRs
+  [#514](https://github.com/supabase/pg-toolbelt/pull/514) and
+  [#527](https://github.com/supabase/pg-toolbelt/pull/527), open PRs
+  [#471](https://github.com/supabase/pg-toolbelt/pull/471),
   [#522](https://github.com/supabase/pg-toolbelt/pull/522),
-  [#527](https://github.com/supabase/pg-toolbelt/pull/527), and
-  [#532](https://github.com/supabase/pg-toolbelt/pull/532), open issues
-  [#525](https://github.com/supabase/pg-toolbelt/issues/525),
-  [#530](https://github.com/supabase/pg-toolbelt/issues/530), and
-  [#531](https://github.com/supabase/pg-toolbelt/issues/531), plus closed
-  issue [#519](https://github.com/supabase/pg-toolbelt/issues/519)
+  [#532](https://github.com/supabase/pg-toolbelt/pull/532),
+  [#534](https://github.com/supabase/pg-toolbelt/pull/534),
+  [#536](https://github.com/supabase/pg-toolbelt/pull/536), and
+  [#537](https://github.com/supabase/pg-toolbelt/pull/537), open issues
+  [#533](https://github.com/supabase/pg-toolbelt/issues/533) and
+  [#535](https://github.com/supabase/pg-toolbelt/issues/535), plus closed
+  issues [#510](https://github.com/supabase/pg-toolbelt/issues/510) and
+  [#521](https://github.com/supabase/pg-toolbelt/issues/521)
 - direct inspection of updated pg-toolbelt work plus
-  `git -C repos/pg-toolbelt diff --name-only 8a62438b03300c1922cb04b292d2140fcc694b25..3c60914eae50ff9d28084a8a1ce4e110b9c3d55d`
-  showed only declarative-e2e infrastructure, `src/frontends/schema-plan.ts`,
-  `src/policy/policy.ts`, `src/policy/supabase.ts`, and related tests changed;
-  the active benchmark paths `src/extract/relations.ts`,
+  `git -C repos/pg-toolbelt diff --name-only 3c60914eae50ff9d28084a8a1ce4e110b9c3d55d..7f2fd64e05945fe3ef5860e3ee4569dc28c9ddb4`
+  showed only `src/extract/routines.ts`, `src/extract/scoped-read.ts`,
+  frontends/export / settle paths, `src/policy/policy.ts`, and related tests
+  changed; the active benchmark paths `src/extract/relations.ts`,
   `src/extract/dependencies.ts`, `src/plan/rules/tables.ts`,
   `src/plan/rules/helpers.ts`, and `src/plan/rules/types.ts` stayed unchanged
 - exact duplicate searches for `pgschema#499`, `pgschema#501`, `pgschema#564`,
-  `pgschema#625`, and `pgschema#626` still returned `[]`; keyword searches for
-  `"PARTITION OF"` now surfaced open issue
-  [#530](https://github.com/supabase/pg-toolbelt/issues/530) alongside the
-  existing umbrella / adjacent context, while `"VIRTUAL" generated"` still
-  only surfaced the existing umbrella / historical context and
-  `"NOT NULL" "NOT VALID" --include-prs` still only surfaced historical
-  domain-only PR [#484](https://github.com/supabase/pg-toolbelt/pull/484)
-- the checked-in/live pg-toolbelt head advanced to
-  `3c60914eae50ff9d28084a8a1ce4e110b9c3d55d`, but the active gap source paths
-  stayed unchanged
+  `pgschema#627`, `pgschema#638`, `pgschema#639`, `pgschema#640`, and
+  `pgschema#641` still returned `[]`; keyword searches for `"PARTITION OF"`
+  now also surface open issues
+  [#526](https://github.com/supabase/pg-toolbelt/issues/526) and
+  [#535](https://github.com/supabase/pg-toolbelt/issues/535) alongside the
+  existing umbrella / adjacent partition context, while `"VIRTUAL" generated`
+  and `"NOT NULL" "NOT VALID"` still only surface the historical / umbrella
+  context already recorded in active benchmarks **022** and **024**
 - previously screened pgschema verdicts remain unchanged: open issue
   [#598](https://github.com/pgplex/pgschema/issues/598) remains **covered**,
   open issues [#49](https://github.com/pgplex/pgschema/issues/49),
@@ -348,85 +361,92 @@ tracker updates are:
   [#597](https://github.com/pgplex/pgschema/issues/597), and
   [#623](https://github.com/pgplex/pgschema/issues/623) remain **not parity**,
   open issues [#624](https://github.com/pgplex/pgschema/issues/624),
-  [#625](https://github.com/pgplex/pgschema/issues/625), and
-  [#626](https://github.com/pgplex/pgschema/issues/626) remain **covered**,
-  closed issues
-  [#599](https://github.com/pgplex/pgschema/issues/599),
-  [#600](https://github.com/pgplex/pgschema/issues/600),
-  [#601](https://github.com/pgplex/pgschema/issues/601),
-  [#602](https://github.com/pgplex/pgschema/issues/602),
-  [#603](https://github.com/pgplex/pgschema/issues/603), and
-  [#606](https://github.com/pgplex/pgschema/issues/606) remain **covered**, and
-  closed issues [#596](https://github.com/pgplex/pgschema/issues/596) and
-  [#607](https://github.com/pgplex/pgschema/issues/607) remain
-  **not parity work**
-- **#564** safer `NOT NULL` additions / PG18 native validation workflow remains
-  **not covered** in current pg-delta as benchmark **024**
+  [#625](https://github.com/pgplex/pgschema/issues/625),
+  [#626](https://github.com/pgplex/pgschema/issues/626),
+  [#638](https://github.com/pgplex/pgschema/issues/638),
+  [#639](https://github.com/pgplex/pgschema/issues/639),
+  [#640](https://github.com/pgplex/pgschema/issues/640), and
+  [#641](https://github.com/pgplex/pgschema/issues/641) remain **covered**,
+  the new global-state cluster [#627](https://github.com/pgplex/pgschema/issues/627)
+  through [#636](https://github.com/pgplex/pgschema/issues/636) is still
+  treated as **not added as a benchmark parity gap in this repo**, and active
+  resolved benchmarks [#499](https://github.com/pgplex/pgschema/issues/499),
+  [#501](https://github.com/pgplex/pgschema/issues/501), and
+  [#564](https://github.com/pgplex/pgschema/issues/564) remain **tracked** /
+  **tracked** / **not covered** respectively
 - `gh issue list -R avallete/delta-schema-compare --state all --limit 200`
   still returned `[]`
-- there are still no local tracker issues in this repository
 
 ## Upstream watch list
 
 - checked-in/live `pgschema` remains at
   `580f4040d0f3c1bfad1497918200c9c1f638a020`; the updated-since issue query
-  surfaced open issues [#625](https://github.com/pgplex/pgschema/issues/625)
-  and [#626](https://github.com/pgplex/pgschema/issues/626), the matching
-  `--include-prs` query returned the same two issues, and open PRs
-  [#611](https://github.com/pgplex/pgschema/pull/611) and
-  [#622](https://github.com/pgplex/pgschema/pull/622) remain in flight without
-  new updates since 2026-09-20 / 2026-09-24
+  surfaced open issues [#623](https://github.com/pgplex/pgschema/issues/623)
+  and [#627](https://github.com/pgplex/pgschema/issues/627) through
+  [#641](https://github.com/pgplex/pgschema/issues/641), while the matching PR
+  query surfaced open PR [#637](https://github.com/pgplex/pgschema/pull/637)
+  as the upstream implementation branch for the new global-state surface
 - checked-in/live `pg-toolbelt` now sits at
-  `3c60914eae50ff9d28084a8a1ce4e110b9c3d55d`, which comes from merged PRs
-  [#528](https://github.com/supabase/pg-toolbelt/pull/528) and
-  [#529](https://github.com/supabase/pg-toolbelt/pull/529); the updated-since
-  query for `>=2026-10-08` surfaced merged PRs
-  [#528](https://github.com/supabase/pg-toolbelt/pull/528) and
-  [#529](https://github.com/supabase/pg-toolbelt/pull/529), open PRs
-  [#514](https://github.com/supabase/pg-toolbelt/pull/514),
+  `7f2fd64e05945fe3ef5860e3ee4569dc28c9ddb4`, which comes from merged PRs
+  [#514](https://github.com/supabase/pg-toolbelt/pull/514) and
+  [#527](https://github.com/supabase/pg-toolbelt/pull/527); the updated-since
+  queries for `>=2026-10-09` surfaced open PRs
+  [#471](https://github.com/supabase/pg-toolbelt/pull/471),
   [#522](https://github.com/supabase/pg-toolbelt/pull/522),
-  [#527](https://github.com/supabase/pg-toolbelt/pull/527), and
-  [#532](https://github.com/supabase/pg-toolbelt/pull/532), open issues
-  [#525](https://github.com/supabase/pg-toolbelt/issues/525),
-  [#530](https://github.com/supabase/pg-toolbelt/issues/530), and
-  [#531](https://github.com/supabase/pg-toolbelt/issues/531), plus closed
-  issue [#519](https://github.com/supabase/pg-toolbelt/issues/519), but the
-  only new merged code lands in declarative-e2e infrastructure plus
-  extension-member grant export / policy handling rather than the active
-  benchmark source paths
+  [#532](https://github.com/supabase/pg-toolbelt/pull/532),
+  [#534](https://github.com/supabase/pg-toolbelt/pull/534),
+  [#536](https://github.com/supabase/pg-toolbelt/pull/536), and
+  [#537](https://github.com/supabase/pg-toolbelt/pull/537), open issues
+  [#533](https://github.com/supabase/pg-toolbelt/issues/533) and
+  [#535](https://github.com/supabase/pg-toolbelt/issues/535), plus closed
+  issues [#510](https://github.com/supabase/pg-toolbelt/issues/510) and
+  [#521](https://github.com/supabase/pg-toolbelt/issues/521), but the only new
+  merged code lands in `extract/routines.ts`, `extract/scoped-read.ts`,
+  frontends/export / settle paths, `policy/policy.ts`, and related tests
+  rather than the active benchmark source paths
 - the nearby benchmark-relevant pg-toolbelt issue/PR landscape remains
   unchanged at the exact-gap level, and so does the parity mapping:
   - open issue [#332](https://github.com/supabase/pg-toolbelt/issues/332)
     still points at benchmarks **021** / **022**; exact searches for
     `pgschema#499` and `pgschema#501` still return no dedicated issue or PR
-  - open issue [#502](https://github.com/supabase/pg-toolbelt/issues/502)
-    remains the over-destructive partition-tree follow-up for benchmark
-    **021**, keyword `"PARTITION OF" --include-prs` searches now also surface
-    open issue [#530](https://github.com/supabase/pg-toolbelt/issues/530), and
-    the full result set still includes issue
-    [#502](https://github.com/supabase/pg-toolbelt/issues/502), issue
-    [#332](https://github.com/supabase/pg-toolbelt/issues/332), open PR
-    [#514](https://github.com/supabase/pg-toolbelt/pull/514), and merged
-    partition PRs [#501](https://github.com/supabase/pg-toolbelt/pull/501),
-    [#503](https://github.com/supabase/pg-toolbelt/pull/503), and
-    [#504](https://github.com/supabase/pg-toolbelt/pull/504); issue #530 is
-    adjacent rewrite-risk tracking rather than an exact child-local override
-    fix
+  - open issues [#502](https://github.com/supabase/pg-toolbelt/issues/502)
+    and [#530](https://github.com/supabase/pg-toolbelt/issues/530) remain the
+    adjacent partition follow-up / rewrite-risk context for benchmark **021**;
+    keyword `"PARTITION OF"` searches now also surface older settle issue
+    [#526](https://github.com/supabase/pg-toolbelt/issues/526), newer settle
+    issue [#535](https://github.com/supabase/pg-toolbelt/issues/535), and
+    merged PRs [#501](https://github.com/supabase/pg-toolbelt/pull/501),
+    [#503](https://github.com/supabase/pg-toolbelt/pull/503),
+    [#504](https://github.com/supabase/pg-toolbelt/pull/504), and
+    [#514](https://github.com/supabase/pg-toolbelt/pull/514); those are still
+    adjacent settle / replace-root work rather than exact child-local override
+    fixes
   - historical PR [#174](https://github.com/supabase/pg-toolbelt/pull/174)
     remains legacy-engine-only context for benchmark **024**; exact
     `pgschema#564` searches still return no current pg-toolbelt issue or PR,
-    while keyword `"NOT NULL" "NOT VALID" --include-prs` still surfaces
-    merged domain-only PR
-    [#484](https://github.com/supabase/pg-toolbelt/pull/484) as adjacent
-    historical context rather than an exact tracker for that workflow
-  - open pgschema issues
-    [#624](https://github.com/pgplex/pgschema/issues/624),
-    [#625](https://github.com/pgplex/pgschema/issues/625), and
-    [#626](https://github.com/pgplex/pgschema/issues/626) have no dedicated
-    pg-toolbelt issue or PR because current routine plans already disable
-    function-body validation through `check_function_bodies = off`, composite
-    attribute changes already plan through `typeAttribute`, and composite
-    row-type dependencies are already modeled in the dependency extractor
+    while keyword `"NOT NULL" "NOT VALID"` still surfaces merged PRs
+    [#484](https://github.com/supabase/pg-toolbelt/pull/484) and
+    [#485](https://github.com/supabase/pg-toolbelt/pull/485) plus umbrella
+    issue [#332](https://github.com/supabase/pg-toolbelt/issues/332) as
+    adjacent context rather than an exact tracker for that workflow
+  - new open pgschema issues
+    [#638](https://github.com/pgplex/pgschema/issues/638),
+    [#639](https://github.com/pgplex/pgschema/issues/639),
+    [#640](https://github.com/pgplex/pgschema/issues/640), and
+    [#641](https://github.com/pgplex/pgschema/issues/641) have no dedicated
+    pg-toolbelt issue or PR because current pg-delta already renders column
+    grants correctly, models partition attachment / bounds, includes
+    partitioned tables in ACL extraction, and executes concurrent-index SQL
+    directly without a name-based wait loop
+  - the broader global-state cluster rooted at
+    [#627](https://github.com/pgplex/pgschema/issues/627) plus PR
+    [#637](https://github.com/pgplex/pgschema/pull/637) is not being promoted
+    into new benchmark gap docs in this repo; adjacent pg-delta owner / role
+    work exists in open PRs [#471](https://github.com/supabase/pg-toolbelt/pull/471)
+    and [#493](https://github.com/supabase/pg-toolbelt/pull/493) plus merged
+    role / membership fixes [#117](https://github.com/supabase/pg-toolbelt/pull/117),
+    [#118](https://github.com/supabase/pg-toolbelt/pull/118), and
+    [#461](https://github.com/supabase/pg-toolbelt/pull/461)
 - the target repo still has no local tracker issues
 
 ## Historical notes

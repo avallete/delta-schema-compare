@@ -4,6 +4,82 @@
 
 ## Context
 
+## Refresh note (2026-10-10)
+
+This recheck advances checked-in/live `pg-delta` from
+`3c60914eae50ff9d28084a8a1ce4e110b9c3d55d` to
+`7f2fd64e05945fe3ef5860e3ee4569dc28c9ddb4` through merged PRs
+[#514](https://github.com/supabase/pg-toolbelt/pull/514) and
+[#527](https://github.com/supabase/pg-toolbelt/pull/527), while checked-in/live
+`pgschema` remains `580f4040d0f3c1bfad1497918200c9c1f638a020`.
+
+Today's upstream activity still does not close the active partition-child
+override gap:
+
+- `gh issue list --repo pgplex/pgschema --state open --search
+  'updated:>=2026-10-09'` surfaced open issues
+  [#623](https://github.com/pgplex/pgschema/issues/623) and
+  [#627](https://github.com/pgplex/pgschema/issues/627) through
+  [#641](https://github.com/pgplex/pgschema/issues/641), while `gh pr list ...`
+  surfaced open PR [#637](https://github.com/pgplex/pgschema/pull/637); the
+  new global-state cluster rooted at [#627](https://github.com/pgplex/pgschema/issues/627)
+  plus [#637](https://github.com/pgplex/pgschema/pull/637) is separate opt-in
+  manifest work, and the new schema-diff issues
+  [#638](https://github.com/pgplex/pgschema/issues/638),
+  [#639](https://github.com/pgplex/pgschema/issues/639),
+  [#640](https://github.com/pgplex/pgschema/issues/640), and
+  [#641](https://github.com/pgplex/pgschema/issues/641) are all already covered
+  or avoided in current pg-delta
+- `gh issue list --repo supabase/pg-toolbelt --state all --search
+  'updated:>=2026-10-09'` plus `gh pr list ...` surfaced open issues
+  [#533](https://github.com/supabase/pg-toolbelt/issues/533) and
+  [#535](https://github.com/supabase/pg-toolbelt/issues/535), merged PRs
+  [#514](https://github.com/supabase/pg-toolbelt/pull/514) and
+  [#527](https://github.com/supabase/pg-toolbelt/pull/527), and open PRs
+  [#471](https://github.com/supabase/pg-toolbelt/pull/471),
+  [#522](https://github.com/supabase/pg-toolbelt/pull/522),
+  [#532](https://github.com/supabase/pg-toolbelt/pull/532),
+  [#534](https://github.com/supabase/pg-toolbelt/pull/534),
+  [#536](https://github.com/supabase/pg-toolbelt/pull/536), and
+  [#537](https://github.com/supabase/pg-toolbelt/pull/537)
+- `git -C repos/pg-toolbelt diff --name-only
+  3c60914eae50ff9d28084a8a1ce4e110b9c3d55d..7f2fd64e05945fe3ef5860e3ee4569dc28c9ddb4 -- packages/pg-delta/src/extract/relations.ts
+  packages/pg-delta/src/extract/dependencies.ts
+  packages/pg-delta/src/plan/rules/tables.ts
+  packages/pg-delta/src/plan/rules/helpers.ts
+  packages/pg-delta/src/plan/rules/types.ts` returned no paths; the merged code
+  lands in `src/extract/routines.ts`, `src/extract/scoped-read.ts`,
+  frontends/export / settle paths, `src/policy/policy.ts`, and related tests,
+  not the active partition-child extract / plan path
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still filters
+  inherited child columns with `a.attislocal`, so child-local overrides on
+  inherited partition columns remain absent from diff-visible facts
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still
+  serializes partition-child creation as bare
+  `CREATE TABLE ... PARTITION OF ... ${bound}` with no typed child
+  column-element list for local `DEFAULT` / `NOT NULL` overrides
+- exact searches for `pgschema#499` still return no dedicated pg-toolbelt issue
+  or PR. Keyword `"PARTITION OF" --include-prs` now also surfaces open settle-
+  definition issues [#526](https://github.com/supabase/pg-toolbelt/issues/526)
+  and [#535](https://github.com/supabase/pg-toolbelt/issues/535) alongside
+  umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332),
+  follow-up [#502](https://github.com/supabase/pg-toolbelt/issues/502),
+  rewrite-risk issue [#530](https://github.com/supabase/pg-toolbelt/issues/530),
+  and merged partition PRs
+  [#501](https://github.com/supabase/pg-toolbelt/pull/501),
+  [#503](https://github.com/supabase/pg-toolbelt/pull/503),
+  [#504](https://github.com/supabase/pg-toolbelt/pull/504), and
+  [#514](https://github.com/supabase/pg-toolbelt/pull/514); #526 / #535 remain
+  settle-definition work and #530 remains rewrite-risk tracking rather than the
+  exact child-local override fix tracked here
+
+The focused 2026-08-14 runtime observation therefore still stands: pg-delta
+emits only the bare partition-child `CREATE TABLE ... PARTITION OF ... FOR
+VALUES ...` statement, omits the child-specific `DEFAULT` / `NOT NULL`
+overrides, and still lets the proof loop return `proofOk: true` with zero
+drift afterward. Benchmark 021 therefore remains **behaviorally uncovered**
+with only **umbrella-thread tracker context**.
+
 ## Refresh note (2026-10-09)
 
 This recheck advances checked-in/live `pg-delta` from

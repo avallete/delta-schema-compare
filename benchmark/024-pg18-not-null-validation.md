@@ -4,6 +4,72 @@
 
 ## Context
 
+## Refresh note (2026-10-10)
+
+This recheck advances checked-in/live `pg-delta` from
+`3c60914eae50ff9d28084a8a1ce4e110b9c3d55d` to
+`7f2fd64e05945fe3ef5860e3ee4569dc28c9ddb4` through merged PRs
+[#514](https://github.com/supabase/pg-toolbelt/pull/514) and
+[#527](https://github.com/supabase/pg-toolbelt/pull/527), while checked-in/live
+`pgschema` remains `580f4040d0f3c1bfad1497918200c9c1f638a020`.
+
+Today's upstream activity still does not change this PG18 nullability
+workflow gap:
+
+- `gh issue list --repo pgplex/pgschema --state open --search
+  'updated:>=2026-10-09'` surfaced open issues
+  [#623](https://github.com/pgplex/pgschema/issues/623) and
+  [#627](https://github.com/pgplex/pgschema/issues/627) through
+  [#641](https://github.com/pgplex/pgschema/issues/641), while `gh pr list ...`
+  surfaced open PR [#637](https://github.com/pgplex/pgschema/pull/637); the
+  new global-state cluster rooted at [#627](https://github.com/pgplex/pgschema/issues/627)
+  plus [#637](https://github.com/pgplex/pgschema/pull/637) is separate opt-in
+  manifest work, and the new schema-diff issues
+  [#638](https://github.com/pgplex/pgschema/issues/638),
+  [#639](https://github.com/pgplex/pgschema/issues/639),
+  [#640](https://github.com/pgplex/pgschema/issues/640), and
+  [#641](https://github.com/pgplex/pgschema/issues/641) are all already covered
+  or avoided in current pg-delta
+- `gh issue list --repo supabase/pg-toolbelt --state all --search
+  'updated:>=2026-10-09'` plus `gh pr list ...` surfaced open issues
+  [#533](https://github.com/supabase/pg-toolbelt/issues/533) and
+  [#535](https://github.com/supabase/pg-toolbelt/issues/535), merged PRs
+  [#514](https://github.com/supabase/pg-toolbelt/pull/514) and
+  [#527](https://github.com/supabase/pg-toolbelt/pull/527), and open PRs
+  [#471](https://github.com/supabase/pg-toolbelt/pull/471),
+  [#522](https://github.com/supabase/pg-toolbelt/pull/522),
+  [#532](https://github.com/supabase/pg-toolbelt/pull/532),
+  [#534](https://github.com/supabase/pg-toolbelt/pull/534),
+  [#536](https://github.com/supabase/pg-toolbelt/pull/536), and
+  [#537](https://github.com/supabase/pg-toolbelt/pull/537)
+- `git -C repos/pg-toolbelt diff --name-only
+  3c60914eae50ff9d28084a8a1ce4e110b9c3d55d..7f2fd64e05945fe3ef5860e3ee4569dc28c9ddb4 -- packages/pg-delta/src/extract/relations.ts
+  packages/pg-delta/src/plan/rules/constraints.ts
+  packages/pg-delta/src/plan/rules/tables.ts` returned no paths; the merged
+  code lands in `src/extract/routines.ts`, `src/extract/scoped-read.ts`,
+  frontends/export / settle paths, `src/policy/policy.ts`, and related tests,
+  not the active PG18 nullability extraction or planning path
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still records
+  column nullability through `a.attnotnull` and still keeps PG18
+  `contype = 'n'` rows out of diff-visible facts, aside from the
+  informational `table_not_null_comment_skipped` diagnostic path
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still keeps
+  `SET NOT NULL` in place for this path and does not emit the native
+  PostgreSQL 18 `ADD CONSTRAINT ... NOT NULL ... NOT VALID` plus
+  `VALIDATE CONSTRAINT` workflow
+- direct exact searches for `pgschema#564` still return no dedicated
+  pg-toolbelt issue or PR. Keyword `"NOT NULL" "NOT VALID"` still only
+  surfaces adjacent merged PRs
+  [#484](https://github.com/supabase/pg-toolbelt/pull/484) and
+  [#485](https://github.com/supabase/pg-toolbelt/pull/485) plus umbrella issue
+  [#332](https://github.com/supabase/pg-toolbelt/issues/332), not an exact
+  table-column PG18 validation tracker
+
+Benchmark 024 therefore remains **not covered** in current pg-delta: the PG18
+native nullability state is still collapsed away during extraction, pending
+validation is still invisible on a later diff, and the current planner still
+falls back to a plain `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL`.
+
 ## Refresh note (2026-10-09)
 
 This recheck advances checked-in/live `pg-delta` from

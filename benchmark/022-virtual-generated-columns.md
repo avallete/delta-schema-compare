@@ -4,6 +4,70 @@
 
 ## Context
 
+## Refresh note (2026-10-10)
+
+This recheck advances checked-in/live `pg-delta` from
+`3c60914eae50ff9d28084a8a1ce4e110b9c3d55d` to
+`7f2fd64e05945fe3ef5860e3ee4569dc28c9ddb4` through merged PRs
+[#514](https://github.com/supabase/pg-toolbelt/pull/514) and
+[#527](https://github.com/supabase/pg-toolbelt/pull/527), while checked-in/live
+`pgschema` remains `580f4040d0f3c1bfad1497918200c9c1f638a020`.
+
+Today's upstream activity still stays outside the active generated-kind gap:
+
+- `gh issue list --repo pgplex/pgschema --state open --search
+  'updated:>=2026-10-09'` surfaced open issues
+  [#623](https://github.com/pgplex/pgschema/issues/623) and
+  [#627](https://github.com/pgplex/pgschema/issues/627) through
+  [#641](https://github.com/pgplex/pgschema/issues/641), while `gh pr list ...`
+  surfaced open PR [#637](https://github.com/pgplex/pgschema/pull/637); the
+  new global-state cluster rooted at [#627](https://github.com/pgplex/pgschema/issues/627)
+  plus [#637](https://github.com/pgplex/pgschema/pull/637) is separate opt-in
+  manifest work, and the new schema-diff issues
+  [#638](https://github.com/pgplex/pgschema/issues/638),
+  [#639](https://github.com/pgplex/pgschema/issues/639),
+  [#640](https://github.com/pgplex/pgschema/issues/640), and
+  [#641](https://github.com/pgplex/pgschema/issues/641) are all already covered
+  or avoided in current pg-delta
+- `gh issue list --repo supabase/pg-toolbelt --state all --search
+  'updated:>=2026-10-09'` plus `gh pr list ...` surfaced open issues
+  [#533](https://github.com/supabase/pg-toolbelt/issues/533) and
+  [#535](https://github.com/supabase/pg-toolbelt/issues/535), merged PRs
+  [#514](https://github.com/supabase/pg-toolbelt/pull/514) and
+  [#527](https://github.com/supabase/pg-toolbelt/pull/527), and open PRs
+  [#471](https://github.com/supabase/pg-toolbelt/pull/471),
+  [#522](https://github.com/supabase/pg-toolbelt/pull/522),
+  [#532](https://github.com/supabase/pg-toolbelt/pull/532),
+  [#534](https://github.com/supabase/pg-toolbelt/pull/534),
+  [#536](https://github.com/supabase/pg-toolbelt/pull/536), and
+  [#537](https://github.com/supabase/pg-toolbelt/pull/537)
+- `git -C repos/pg-toolbelt diff --name-only
+  3c60914eae50ff9d28084a8a1ce4e110b9c3d55d..7f2fd64e05945fe3ef5860e3ee4569dc28c9ddb4 -- packages/pg-delta/src/extract/relations.ts
+  packages/pg-delta/src/plan/rules/helpers.ts
+  packages/pg-delta/src/plan/rules/tables.ts` returned no paths; the merged
+  code lands in `src/extract/routines.ts`, `src/extract/scoped-read.ts`,
+  frontends/export / settle paths, `src/policy/policy.ts`, and related tests,
+  not the active generated-kind extract / render path
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still reads
+  `attgenerated`, but only preserves generated-expression presence as
+  `generatedExpr`, not the actual `VIRTUAL` versus `STORED` kind
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts` still
+  hard-codes generated-column rendering as
+  `GENERATED ALWAYS AS (...) STORED`
+- direct exact searches for `pgschema#501` still return no dedicated
+  pg-toolbelt issue or PR. Keyword search for `"VIRTUAL" generated` still
+  surfaces live umbrella issue
+  [#332](https://github.com/supabase/pg-toolbelt/issues/332) plus historical
+  merged PRs [#378](https://github.com/supabase/pg-toolbelt/pull/378) and
+  [#299](https://github.com/supabase/pg-toolbelt/pull/299), but there is still
+  no exact current tracker for the generated-kind distinction itself
+
+The focused 2026-08-14 runtime observation therefore still stands: pg-delta
+serializes the generated column as `... STORED`, collapses away the
+PostgreSQL 18 `VIRTUAL` keyword, and still lets the proof loop return
+`proofOk: true` with zero drift afterward. Benchmark 022 therefore remains
+**behaviorally uncovered** with only **umbrella-thread tracker context**.
+
 ## Refresh note (2026-10-09)
 
 This recheck advances checked-in/live `pg-delta` from
@@ -49,8 +113,7 @@ Today's upstream activity still stays outside the active generated-kind gap:
   hard-codes generated-column rendering as
   `GENERATED ALWAYS AS (...) STORED`
 - direct exact searches for `pgschema#501` still return no dedicated
-  pg-toolbelt issue or PR. Keyword `"VIRTUAL" generated --include-prs"`
-  searches still surface live umbrella issue
+  pg-toolbelt issue or PR. Keyword search for `"VIRTUAL" generated` still surfaces live umbrella issue
   [#332](https://github.com/supabase/pg-toolbelt/issues/332) plus historical
   merged PRs [#378](https://github.com/supabase/pg-toolbelt/pull/378) and
   [#299](https://github.com/supabase/pg-toolbelt/pull/299), but there is still
@@ -107,8 +170,7 @@ Today's upstream activity still stays outside the active generated-kind gap:
   hard-codes generated-column rendering as
   `GENERATED ALWAYS AS (...) STORED`
 - direct exact searches for `pgschema#501` still return no dedicated
-  pg-toolbelt issue or PR. Keyword `"VIRTUAL" generated --include-prs`
-  searches still surface live umbrella issue
+  pg-toolbelt issue or PR. Keyword search for `"VIRTUAL" generated` still surfaces live umbrella issue
   [#332](https://github.com/supabase/pg-toolbelt/issues/332) plus historical
   merged PRs [#378](https://github.com/supabase/pg-toolbelt/pull/378) and
   [#299](https://github.com/supabase/pg-toolbelt/pull/299), but there is still
