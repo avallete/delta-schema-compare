@@ -4,6 +4,43 @@
 
 ## Context
 
+## Refresh note (2026-10-11)
+
+This recheck keeps checked-in/live `pg-delta` at
+`7f2fd64e05945fe3ef5860e3ee4569dc28c9ddb4` and checked-in/live `pgschema` at
+`580f4040d0f3c1bfad1497918200c9c1f638a020`; neither head moved since the
+2026-10-10 refresh.
+
+Today's upstream activity still stays outside the active generated-kind gap:
+
+- `gh search issues --repo pgplex/pgschema --include-prs --updated '>=2026-10-10'`
+  returned `[]`, so there is no new pgschema issue or PR delta on this family
+- `gh search issues --repo supabase/pg-toolbelt --include-prs --updated '>=2026-10-10'`
+  surfaced only closed PR
+  [#538](https://github.com/supabase/pg-toolbelt/pull/538) (Bun pin update)
+  and open PR [#537](https://github.com/supabase/pg-toolbelt/pull/537)
+  (benchmark regression gate); neither is merged into the checked-in/live head
+  and neither touches the active generated-kind extract / render path
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still reads
+  `attgenerated`, but only preserves generated-expression presence as
+  `generatedExpr`, not the actual `VIRTUAL` versus `STORED` kind
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts` still
+  hard-codes generated-column rendering as
+  `GENERATED ALWAYS AS (...) STORED`
+- direct exact searches for `pgschema#501` still return no dedicated
+  pg-toolbelt issue or PR. Keyword `"VIRTUAL" generated` still surfaces live
+  umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332)
+  plus historical merged PRs
+  [#378](https://github.com/supabase/pg-toolbelt/pull/378) and
+  [#299](https://github.com/supabase/pg-toolbelt/pull/299), but there is still
+  no exact current tracker for the generated-kind distinction itself
+
+The focused 2026-08-14 runtime observation therefore still stands: pg-delta
+serializes the generated column as `... STORED`, collapses away the
+PostgreSQL 18 `VIRTUAL` keyword, and still lets the proof loop return
+`proofOk: true` with zero drift afterward. Benchmark 022 therefore remains
+**behaviorally uncovered** with only **umbrella-thread tracker context**.
+
 ## Refresh note (2026-10-10)
 
 This recheck advances checked-in/live `pg-delta` from

@@ -4,6 +4,44 @@
 
 ## Context
 
+## Refresh note (2026-10-11)
+
+This recheck keeps checked-in/live `pg-delta` at
+`7f2fd64e05945fe3ef5860e3ee4569dc28c9ddb4` and checked-in/live `pgschema` at
+`580f4040d0f3c1bfad1497918200c9c1f638a020`; neither head moved since the
+2026-10-10 refresh.
+
+Today's upstream activity still does not change this PG18 nullability
+workflow gap:
+
+- `gh search issues --repo pgplex/pgschema --include-prs --updated '>=2026-10-10'`
+  returned `[]`, so there is no new pgschema issue or PR delta on this family
+- `gh search issues --repo supabase/pg-toolbelt --include-prs --updated '>=2026-10-10'`
+  surfaced only closed PR
+  [#538](https://github.com/supabase/pg-toolbelt/pull/538) (Bun pin update)
+  and open PR [#537](https://github.com/supabase/pg-toolbelt/pull/537)
+  (benchmark regression gate); neither is merged into the checked-in/live head
+  and neither touches the active PG18 nullability extraction or planning path
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still records
+  column nullability through `a.attnotnull` and still keeps PG18
+  `contype = 'n'` rows out of diff-visible facts, aside from the
+  informational `table_not_null_comment_skipped` diagnostic path
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still keeps
+  `SET NOT NULL` in place for this path and does not emit the native
+  PostgreSQL 18 `ADD CONSTRAINT ... NOT NULL ... NOT VALID` plus
+  `VALIDATE CONSTRAINT` workflow
+- direct exact searches for `pgschema#564` still return no dedicated
+  pg-toolbelt issue or PR. Keyword `"NOT NULL" "NOT VALID"` still surfaces
+  merged PR [#484](https://github.com/supabase/pg-toolbelt/pull/484), while
+  umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332)
+  remains broader adjacent fidelity context rather than an exact table-column
+  PG18 validation tracker
+
+Benchmark 024 therefore remains **not covered** in current pg-delta: the PG18
+native nullability state is still collapsed away during extraction, pending
+validation is still invisible on a later diff, and the current planner still
+falls back to a plain `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL`.
+
 ## Refresh note (2026-10-10)
 
 This recheck advances checked-in/live `pg-delta` from
