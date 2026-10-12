@@ -4,6 +4,51 @@
 
 ## Context
 
+## Refresh note (2026-10-12)
+
+This recheck keeps checked-in/live `pg-delta` at
+`7f2fd64e05945fe3ef5860e3ee4569dc28c9ddb4` and checked-in/live `pgschema` at
+`580f4040d0f3c1bfad1497918200c9c1f638a020`; neither head moved since the
+2026-10-11 refresh.
+
+Today's upstream activity still does not close the active partition-child
+override gap:
+
+- `gh search issues --repo pgplex/pgschema --include-prs --updated '>=2026-10-11'`
+  surfaced only open PR
+  [#637](https://github.com/pgplex/pgschema/pull/637)
+  (`feat: manage global roles and ownership`), which still belongs to the
+  separate global-state cluster rather than this schema-diff benchmark family
+- `gh search issues --repo supabase/pg-toolbelt --include-prs --updated '>=2026-10-11'`
+  returned `[]`, so there is no new pg-toolbelt code or tracker delta beyond
+  the existing partition context
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still filters
+  inherited child columns with `a.attislocal`, so child-local overrides on
+  inherited partition columns remain absent from diff-visible facts
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still
+  serializes partition-child creation as bare
+  `CREATE TABLE ... PARTITION OF ... ${bound}` with no typed child
+  column-element list for local `DEFAULT` / `NOT NULL` overrides
+- exact searches for `pgschema#499` still return no dedicated pg-toolbelt
+  issue or PR. Keyword `"PARTITION OF"` still surfaces umbrella issue
+  [#332](https://github.com/supabase/pg-toolbelt/issues/332), follow-up
+  [#502](https://github.com/supabase/pg-toolbelt/issues/502), rewrite-risk
+  issue [#530](https://github.com/supabase/pg-toolbelt/issues/530), and
+  adjacent partition PRs [#501](https://github.com/supabase/pg-toolbelt/pull/501),
+  [#503](https://github.com/supabase/pg-toolbelt/pull/503),
+  [#504](https://github.com/supabase/pg-toolbelt/pull/504),
+  [#470](https://github.com/supabase/pg-toolbelt/pull/470),
+  [#383](https://github.com/supabase/pg-toolbelt/pull/383), and
+  [#514](https://github.com/supabase/pg-toolbelt/pull/514), but still no exact
+  child-local override tracker
+
+The focused 2026-08-14 runtime observation therefore still stands: pg-delta
+emits only the bare partition-child `CREATE TABLE ... PARTITION OF ... FOR
+VALUES ...` statement, omits the child-specific `DEFAULT` / `NOT NULL`
+overrides, and still lets the proof loop return `proofOk: true` with zero
+drift afterward. Benchmark 021 therefore remains **behaviorally uncovered**
+with only **umbrella-thread tracker context**.
+
 ## Refresh note (2026-10-11)
 
 This recheck keeps checked-in/live `pg-delta` at
