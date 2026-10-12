@@ -46,12 +46,12 @@
       "verdict": "covered"
     },
     "623": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-09-30T23:47:00Z\", \"pgdelta_sha\": \"7f2fd64e05945fe3ef5860e3ee4569dc28c9ddb4\", \"pgschema_sha\": \"580f4040d0f3c1bfad1497918200c9c1f638a020\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-10-09T09:25:43Z\", \"pgdelta_sha\": \"7f2fd64e05945fe3ef5860e3ee4569dc28c9ddb4\", \"pgschema_sha\": \"580f4040d0f3c1bfad1497918200c9c1f638a020\"}",
       "issue_number": 623,
       "issue_title": "Publish a checksums file with each release",
-      "issue_updated_at": "2026-09-30T23:47:00Z",
+      "issue_updated_at": "2026-10-09T09:25:43Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/623",
-      "reviewed_at": "2026-10-10T07:13:55+00:00",
+      "reviewed_at": "2026-10-12T07:04:24+00:00",
       "verdict": "not_parity"
     },
     "624": {
