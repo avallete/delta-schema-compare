@@ -4,6 +4,64 @@
 
 ## Context
 
+## Refresh note (2026-10-13)
+
+This recheck advances checked-in/live `pg-delta` from
+`7f2fd64e05945fe3ef5860e3ee4569dc28c9ddb4` to
+`0abee28a54bd855c13d45e2d7ebb5cb647b46693` through merged PRs
+[#534](https://github.com/supabase/pg-toolbelt/pull/534),
+[#536](https://github.com/supabase/pg-toolbelt/pull/536),
+[#537](https://github.com/supabase/pg-toolbelt/pull/537),
+[#540](https://github.com/supabase/pg-toolbelt/pull/540), and release PR
+[#522](https://github.com/supabase/pg-toolbelt/pull/522), and advances
+checked-in/live `pgschema` from `580f4040d0f3c1bfad1497918200c9c1f638a020` to
+`2bb3352d40c5fc55c3c43abcce395dd11cd22450` through merged PR
+[#642](https://github.com/pgplex/pgschema/pull/642).
+
+Today's upstream activity still stays outside the active generated-kind gap:
+
+- `gh search issues --repo pgplex/pgschema --include-prs --updated '>=2026-10-12'`
+  surfaced merged PR
+  [#642](https://github.com/pgplex/pgschema/pull/642)
+  (`fix: preserve deferred foreign-key order in multi-file dumps`) plus open
+  PR [#643](https://github.com/pgplex/pgschema/pull/643)
+  (`fix: preserve partition-index names and attachments in dumps`); #642 lands
+  in dump multi-file ordering and #643 is still open and outside the
+  checked-in/live head, so neither changes this generated-column benchmark
+- `gh search issues --repo supabase/pg-toolbelt --include-prs --updated '>=2026-10-12'`
+  surfaced merged PRs #534 / #536 / #537 / #540, release PR #522, closed
+  issue [#533](https://github.com/supabase/pg-toolbelt/issues/533), closed
+  PR [#532](https://github.com/supabase/pg-toolbelt/pull/532), and open PR
+  [#506](https://github.com/supabase/pg-toolbelt/pull/506)
+- `git -C repos/pg-toolbelt diff --name-only
+  7f2fd64e05945fe3ef5860e3ee4569dc28c9ddb4..0abee28a54bd855c13d45e2d7ebb5cb647b46693
+  -- packages/pg-delta/src/extract/relations.ts
+  packages/pg-delta/src/plan/rules/helpers.ts
+  packages/pg-delta/src/plan/rules/tables.ts` returned no paths; the new
+  checked-in/live code lands in `src/core/fact.ts`,
+  `src/frontends/export-sql-files.ts`, `src/plan/graph.ts`,
+  `src/plan/internal.ts`, and `src/plan/phases/replacement-expansion.ts`, not
+  the active generated-kind extract / render path
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still reads
+  `attgenerated`, but only preserves generated-expression presence as
+  `generatedExpr`, not the actual `VIRTUAL` versus `STORED` kind
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts` still
+  hard-codes generated-column rendering as
+  `GENERATED ALWAYS AS (...) STORED`
+- direct exact searches for `pgschema#501` still return no dedicated
+  pg-toolbelt issue or PR. Keyword `"VIRTUAL" generated` still surfaces live
+  umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332)
+  plus historical merged PRs
+  [#378](https://github.com/supabase/pg-toolbelt/pull/378) and
+  [#299](https://github.com/supabase/pg-toolbelt/pull/299), but there is still
+  no exact current tracker for the generated-kind distinction itself
+
+The focused 2026-08-14 runtime observation therefore still stands: pg-delta
+serializes the generated column as `... STORED`, collapses away the
+PostgreSQL 18 `VIRTUAL` keyword, and still lets the proof loop return
+`proofOk: true` with zero drift afterward. Benchmark 022 therefore remains
+**behaviorally uncovered** with only **umbrella-thread tracker context**.
+
 ## Refresh note (2026-10-12)
 
 This recheck keeps checked-in/live `pg-delta` at
