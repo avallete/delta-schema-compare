@@ -4,6 +4,65 @@
 
 ## Context
 
+## Refresh note (2026-10-13)
+
+This recheck advances checked-in/live `pg-delta` from
+`7f2fd64e05945fe3ef5860e3ee4569dc28c9ddb4` to
+`0abee28a54bd855c13d45e2d7ebb5cb647b46693` through merged PRs
+[#534](https://github.com/supabase/pg-toolbelt/pull/534),
+[#536](https://github.com/supabase/pg-toolbelt/pull/536),
+[#537](https://github.com/supabase/pg-toolbelt/pull/537),
+[#540](https://github.com/supabase/pg-toolbelt/pull/540), and release PR
+[#522](https://github.com/supabase/pg-toolbelt/pull/522), and advances
+checked-in/live `pgschema` from `580f4040d0f3c1bfad1497918200c9c1f638a020` to
+`2bb3352d40c5fc55c3c43abcce395dd11cd22450` through merged PR
+[#642](https://github.com/pgplex/pgschema/pull/642).
+
+Today's upstream activity still does not change this PG18 nullability
+workflow gap:
+
+- `gh search issues --repo pgplex/pgschema --include-prs --updated '>=2026-10-12'`
+  surfaced merged PR
+  [#642](https://github.com/pgplex/pgschema/pull/642)
+  (`fix: preserve deferred foreign-key order in multi-file dumps`) plus open
+  PR [#643](https://github.com/pgplex/pgschema/pull/643)
+  (`fix: preserve partition-index names and attachments in dumps`); #642 lands
+  in dump multi-file ordering and #643 is still open and outside the
+  checked-in/live head, so neither changes this PG18 table-column benchmark
+- `gh search issues --repo supabase/pg-toolbelt --include-prs --updated '>=2026-10-12'`
+  surfaced merged PRs #534 / #536 / #537 / #540, release PR #522, closed
+  issue [#533](https://github.com/supabase/pg-toolbelt/issues/533), closed
+  PR [#532](https://github.com/supabase/pg-toolbelt/pull/532), and open PR
+  [#506](https://github.com/supabase/pg-toolbelt/pull/506)
+- `git -C repos/pg-toolbelt diff --name-only
+  7f2fd64e05945fe3ef5860e3ee4569dc28c9ddb4..0abee28a54bd855c13d45e2d7ebb5cb647b46693
+  -- packages/pg-delta/src/extract/relations.ts
+  packages/pg-delta/src/plan/rules/constraints.ts
+  packages/pg-delta/src/plan/rules/tables.ts` returned no paths; the new
+  checked-in/live code lands in `src/core/fact.ts`,
+  `src/frontends/export-sql-files.ts`, `src/plan/graph.ts`,
+  `src/plan/internal.ts`, and `src/plan/phases/replacement-expansion.ts`, not
+  the active PG18 nullability extraction or planning path
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still records
+  column nullability through `a.attnotnull` and still keeps PG18
+  `contype = 'n'` rows out of diff-visible facts, aside from the
+  informational `table_not_null_comment_skipped` diagnostic path
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still keeps
+  `SET NOT NULL` in place for this path and does not emit the native
+  PostgreSQL 18 `ADD CONSTRAINT ... NOT NULL ... NOT VALID` plus
+  `VALIDATE CONSTRAINT` workflow
+- direct exact searches for `pgschema#564` still return no dedicated
+  pg-toolbelt issue or PR. Keyword `"NOT NULL" "NOT VALID"` still only
+  surfaces merged PR [#484](https://github.com/supabase/pg-toolbelt/pull/484),
+  while umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332)
+  remains broader adjacent fidelity context rather than an exact table-column
+  PG18 validation tracker
+
+Benchmark 024 therefore remains **not covered** in current pg-delta: the PG18
+native nullability state is still collapsed away during extraction, pending
+validation is still invisible on a later diff, and the current planner still
+falls back to a plain `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL`.
+
 ## Refresh note (2026-10-12)
 
 This recheck keeps checked-in/live `pg-delta` at
