@@ -207,6 +207,15 @@
       "reviewed_at": "2026-10-13T07:18:00+00:00",
       "verdict": "covered"
     },
+    "644": {
+      "fingerprint": "{\"issue_updated_at\": \"2026-10-14T06:14:32Z\", \"pgdelta_sha\": \"0abee28a54bd855c13d45e2d7ebb5cb647b46693\", \"pgschema_sha\": \"2bb3352d40c5fc55c3c43abcce395dd11cd22450\"}",
+      "issue_number": 644,
+      "issue_title": "dump and plan are slow over high-latency connections: one query per privilege row and per constraint column",
+      "issue_updated_at": "2026-10-14T06:14:32Z",
+      "issue_url": "https://github.com/pgplex/pgschema/issues/644",
+      "reviewed_at": "2026-10-14T07:09:42+00:00",
+      "verdict": "not_parity"
+    },
     "84": {
       "fingerprint": "{\"issue_updated_at\": \"2026-09-08T03:04:25Z\", \"pgdelta_sha\": \"0abee28a54bd855c13d45e2d7ebb5cb647b46693\", \"pgschema_sha\": \"2bb3352d40c5fc55c3c43abcce395dd11cd22450\"}",
       "issue_number": 84,
