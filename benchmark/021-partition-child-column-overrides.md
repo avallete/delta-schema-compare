@@ -4,6 +4,73 @@
 
 ## Context
 
+## Refresh note (2026-10-15)
+
+This recheck keeps checked-in/live `pg-delta` at
+`0abee28a54bd855c13d45e2d7ebb5cb647b46693` and advances checked-in/live
+`pgschema` from `2bb3352d40c5fc55c3c43abcce395dd11cd22450` to
+`dcba3be89d42eeca1ede3b939672a6c3e9009f87` through merged PRs
+[#643](https://github.com/pgplex/pgschema/pull/643) and
+[#649](https://github.com/pgplex/pgschema/pull/649).
+
+Today's upstream activity still does not close the active partition-child
+override gap:
+
+- `gh search issues --repo pgplex/pgschema --include-prs --updated '>=2026-10-14'`
+  surfaced merged PR
+  [#643](https://github.com/pgplex/pgschema/pull/643)
+  (`fix: preserve partition-index names and attachments in dumps`), merged PR
+  [#649](https://github.com/pgplex/pgschema/pull/649) / closed issue
+  [#648](https://github.com/pgplex/pgschema/issues/648), open PR
+  [#645](https://github.com/pgplex/pgschema/pull/645), open PR
+  [#646](https://github.com/pgplex/pgschema/pull/646), open PR
+  [#647](https://github.com/pgplex/pgschema/pull/647), open issue
+  [#641](https://github.com/pgplex/pgschema/issues/641), and open issue
+  [#644](https://github.com/pgplex/pgschema/issues/644)
+- PR #643 is now in the checked-in/live `pgschema` head, but it lands in
+  partition-index attachment / naming fidelity plus nested-partition generation
+  rather than child-specific `PARTITION OF` column elements; open follow-up PR
+  #645 is inherited-constraint partition-index work in the same adjacent family
+- pgschema issue #648 is covered in current pg-delta's CHECK-constraint path
+  and does not change this partition-child benchmark
+- `gh search issues --repo supabase/pg-toolbelt --include-prs --updated '>=2026-10-14'`
+  surfaced only open PR
+  [#541](https://github.com/supabase/pg-toolbelt/pull/541)
+  (`fix(pg-delta): declare rewrites of partitions and inheritance children (CLI-2657)`)
+- PR #541 closes rewrite-risk issue
+  [#530](https://github.com/supabase/pg-toolbelt/issues/530), but it only
+  touches `packages/pg-delta/src/proof/prove.ts` plus the
+  `table-ops--retype-column-with-children` corpus. It does not change
+  `src/extract/relations.ts` or `src/plan/rules/tables.ts`, where child-local
+  partition column elements are still unmodeled
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still filters
+  inherited child columns with `a.attislocal`, so child-local overrides on
+  inherited partition columns remain absent from diff-visible facts
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still
+  serializes partition-child creation as bare
+  `CREATE TABLE ... PARTITION OF ... ${bound}` with no typed child
+  column-element list for local `DEFAULT` / `NOT NULL` overrides
+- exact searches for `pgschema#499` still return no dedicated pg-toolbelt
+  issue or PR. Keyword `"PARTITION OF"` now surfaces umbrella issue
+  [#332](https://github.com/supabase/pg-toolbelt/issues/332), follow-up
+  [#502](https://github.com/supabase/pg-toolbelt/issues/502), rewrite-risk
+  issue [#530](https://github.com/supabase/pg-toolbelt/issues/530), open PR
+  [#541](https://github.com/supabase/pg-toolbelt/pull/541), and adjacent
+  merged partition PRs [#501](https://github.com/supabase/pg-toolbelt/pull/501),
+  [#503](https://github.com/supabase/pg-toolbelt/pull/503),
+  [#504](https://github.com/supabase/pg-toolbelt/pull/504),
+  [#470](https://github.com/supabase/pg-toolbelt/pull/470),
+  [#383](https://github.com/supabase/pg-toolbelt/pull/383), and
+  [#514](https://github.com/supabase/pg-toolbelt/pull/514), but still no exact
+  child-local override tracker
+
+The focused 2026-08-14 runtime observation therefore still stands: pg-delta
+emits only the bare partition-child `CREATE TABLE ... PARTITION OF ... FOR
+VALUES ...` statement, omits the child-specific `DEFAULT` / `NOT NULL`
+overrides, and still lets the proof loop return `proofOk: true` with zero
+drift afterward. Benchmark 021 therefore remains **behaviorally uncovered**
+with only **umbrella-thread tracker context**.
+
 ## Refresh note (2026-10-14)
 
 This recheck keeps checked-in/live `pg-delta` at

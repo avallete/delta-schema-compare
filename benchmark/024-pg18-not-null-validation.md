@@ -4,6 +4,59 @@
 
 ## Context
 
+## Refresh note (2026-10-15)
+
+This recheck keeps checked-in/live `pg-delta` at
+`0abee28a54bd855c13d45e2d7ebb5cb647b46693` and advances checked-in/live
+`pgschema` from `2bb3352d40c5fc55c3c43abcce395dd11cd22450` to
+`dcba3be89d42eeca1ede3b939672a6c3e9009f87` through merged PRs
+[#643](https://github.com/pgplex/pgschema/pull/643) and
+[#649](https://github.com/pgplex/pgschema/pull/649).
+
+Today's upstream activity still does not change this PG18 nullability
+workflow gap:
+
+- `gh search issues --repo pgplex/pgschema --include-prs --updated '>=2026-10-14'`
+  surfaced merged PR
+  [#643](https://github.com/pgplex/pgschema/pull/643)
+  (`fix: preserve partition-index names and attachments in dumps`), merged PR
+  [#649](https://github.com/pgplex/pgschema/pull/649) / closed issue
+  [#648](https://github.com/pgplex/pgschema/issues/648), open PR
+  [#645](https://github.com/pgplex/pgschema/pull/645), open PR
+  [#646](https://github.com/pgplex/pgschema/pull/646), open PR
+  [#647](https://github.com/pgplex/pgschema/pull/647), open issue
+  [#641](https://github.com/pgplex/pgschema/issues/641), and open issue
+  [#644](https://github.com/pgplex/pgschema/issues/644)
+- the new pgschema movement lands in partition-index fidelity, CHECK / LIKE
+  expression preservation, and covered open-issue fix paths for #640 / #641;
+  none changes PG18 native table-column nullability modeling
+- `gh search issues --repo supabase/pg-toolbelt --include-prs --updated '>=2026-10-14'`
+  surfaced only open PR
+  [#541](https://github.com/supabase/pg-toolbelt/pull/541)
+  (`fix(pg-delta): declare rewrites of partitions and inheritance children (CLI-2657)`)
+- PR #541 only touches `packages/pg-delta/src/proof/prove.ts` plus the
+  `table-ops--retype-column-with-children` corpus; it does not change the
+  active PG18 nullability extraction or planning path
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still records
+  column nullability through `a.attnotnull` and still keeps PG18
+  `contype = 'n'` rows out of diff-visible facts, aside from the
+  informational `table_not_null_comment_skipped` diagnostic path
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still keeps
+  `SET NOT NULL` in place for this path and does not emit the native
+  PostgreSQL 18 `ADD CONSTRAINT ... NOT NULL ... NOT VALID` plus
+  `VALIDATE CONSTRAINT` workflow
+- direct exact searches for `pgschema#564` still return no dedicated
+  pg-toolbelt issue or PR. Keyword `"NOT NULL" "NOT VALID"` still only
+  surfaces merged PR [#484](https://github.com/supabase/pg-toolbelt/pull/484),
+  while umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332)
+  remains broader adjacent fidelity context rather than an exact table-column
+  PG18 validation tracker
+
+Benchmark 024 therefore remains **not covered** in current pg-delta: the PG18
+native nullability state is still collapsed away during extraction, pending
+validation is still invisible on a later diff, and the current planner still
+falls back to a plain `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL`.
+
 ## Refresh note (2026-10-14)
 
 This recheck keeps checked-in/live `pg-delta` at
