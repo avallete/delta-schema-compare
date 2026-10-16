@@ -4,6 +4,58 @@
 
 ## Context
 
+## Refresh note (2026-10-16)
+
+This recheck keeps checked-in/live `pg-delta` at
+`0abee28a54bd855c13d45e2d7ebb5cb647b46693` and advances checked-in/live `pgschema` from
+`dcba3be89d42eeca1ede3b939672a6c3e9009f87` to `24c6b689aa6571b2aaf94e8c5b915f0d9f58ecca` through merged PRs
+[#646](https://github.com/pgplex/pgschema/pull/646),
+[#647](https://github.com/pgplex/pgschema/pull/647),
+[#655](https://github.com/pgplex/pgschema/pull/655),
+[#656](https://github.com/pgplex/pgschema/pull/656),
+[#657](https://github.com/pgplex/pgschema/pull/657),
+[#658](https://github.com/pgplex/pgschema/pull/658), and release bumps
+[#652](https://github.com/pgplex/pgschema/pull/652) /
+[#659](https://github.com/pgplex/pgschema/pull/659).
+
+Today's upstream activity still stays outside the active generated-kind gap:
+
+- `gh search issues --repo pgplex/pgschema --include-prs --updated '>=2026-10-15'`
+  surfaced the new open issue [#653](https://github.com/pgplex/pgschema/issues/653),
+  open PRs [#645](https://github.com/pgplex/pgschema/pull/645) and
+  [#660](https://github.com/pgplex/pgschema/pull/660), newly closed issues
+  [#623](https://github.com/pgplex/pgschema/issues/623),
+  [#640](https://github.com/pgplex/pgschema/issues/640),
+  [#641](https://github.com/pgplex/pgschema/issues/641),
+  [#644](https://github.com/pgplex/pgschema/issues/644), and
+  [#654](https://github.com/pgplex/pgschema/issues/654), plus the merged PRs above
+- those pgschema changes land in partition-index replay, partition attach /
+  detach planning, privilege inspection, remote-latency batching, release
+  checksums, and docs; none preserves generated-column kind
+- `gh search issues --repo supabase/pg-toolbelt --include-prs --updated '>=2026-10-15'`
+  surfaced only open issue [#542](https://github.com/supabase/pg-toolbelt/issues/542),
+  which is an apply-time verification hook unrelated to the active
+  `relations.ts` / `helpers.ts` path
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still reads
+  `attgenerated`, but only preserves generated-expression presence as
+  `generatedExpr`, not the actual `VIRTUAL` versus `STORED` kind
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts` still
+  hard-codes generated-column rendering as
+  `GENERATED ALWAYS AS (...) STORED`
+- direct exact searches for `pgschema#501` still return no dedicated
+  pg-toolbelt issue or PR. Keyword `"VIRTUAL" generated` still surfaces live
+  umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332)
+  plus historical merged PRs
+  [#378](https://github.com/supabase/pg-toolbelt/pull/378) and
+  [#299](https://github.com/supabase/pg-toolbelt/pull/299), but there is still
+  no exact current tracker for the generated-kind distinction itself
+
+The focused 2026-08-14 runtime observation therefore still stands: pg-delta
+serializes the generated column as `... STORED`, collapses away the
+PostgreSQL 18 `VIRTUAL` keyword, and still lets the proof loop return
+`proofOk: true` with zero drift afterward. Benchmark 022 therefore remains
+**behaviorally uncovered** with only **umbrella-thread tracker context**.
+
 ## Refresh note (2026-10-15)
 
 This recheck keeps checked-in/live `pg-delta` at

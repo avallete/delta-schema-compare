@@ -4,6 +4,72 @@
 
 ## Context
 
+## Refresh note (2026-10-16)
+
+This recheck keeps checked-in/live `pg-delta` at
+`0abee28a54bd855c13d45e2d7ebb5cb647b46693` and advances checked-in/live `pgschema` from
+`dcba3be89d42eeca1ede3b939672a6c3e9009f87` to `24c6b689aa6571b2aaf94e8c5b915f0d9f58ecca` through merged PRs
+[#646](https://github.com/pgplex/pgschema/pull/646),
+[#647](https://github.com/pgplex/pgschema/pull/647),
+[#655](https://github.com/pgplex/pgschema/pull/655),
+[#656](https://github.com/pgplex/pgschema/pull/656),
+[#657](https://github.com/pgplex/pgschema/pull/657),
+[#658](https://github.com/pgplex/pgschema/pull/658), and release bumps
+[#652](https://github.com/pgplex/pgschema/pull/652) /
+[#659](https://github.com/pgplex/pgschema/pull/659).
+
+Today's upstream activity still does not close the active partition-child
+override gap:
+
+- `gh search issues --repo pgplex/pgschema --include-prs --updated '>=2026-10-15'`
+  surfaced the new open issue [#653](https://github.com/pgplex/pgschema/issues/653),
+  open PRs [#645](https://github.com/pgplex/pgschema/pull/645) and
+  [#660](https://github.com/pgplex/pgschema/pull/660), newly closed issues
+  [#623](https://github.com/pgplex/pgschema/issues/623),
+  [#640](https://github.com/pgplex/pgschema/issues/640),
+  [#641](https://github.com/pgplex/pgschema/issues/641),
+  [#644](https://github.com/pgplex/pgschema/issues/644), and
+  [#654](https://github.com/pgplex/pgschema/issues/654), plus the merged PRs above
+- new open issue [#653](https://github.com/pgplex/pgschema/issues/653) is
+  **covered / avoided** in current pg-delta rather than a new gap: the create
+  path in `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts`
+  consumes parent indexes and parent PRIMARY KEY / UNIQUE constraints before
+  creating the child `PARTITION OF`, and
+  `repos/pg-toolbelt/packages/pg-delta/src/plan/partition-index-attach.test.ts`
+  already covers child `CREATE INDEX` + `ATTACH PARTITION` plus parent-index
+  rename / replacement behavior
+- open PR [#660](https://github.com/pgplex/pgschema/pull/660) is the upstream
+  fix path for covered issue [#639](https://github.com/pgplex/pgschema/issues/639);
+  current pg-delta already treats `partitionBound` and `parentTable` as
+  diff-visible facts and exercises attach / detach in the
+  `table-ops--attach-partition` and `table-ops--detach-partition` corpuses
+- `gh search issues --repo supabase/pg-toolbelt --include-prs --updated '>=2026-10-15'`
+  surfaced only open issue [#542](https://github.com/supabase/pg-toolbelt/issues/542),
+  which is an apply-time verification hook and does not change
+  `src/extract/relations.ts` or `src/plan/rules/tables.ts`
+- `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` still filters
+  inherited child columns with `a.attislocal`, so child-local overrides on
+  inherited partition columns remain absent from diff-visible facts
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` still
+  serializes partition-child creation as bare
+  `CREATE TABLE ... PARTITION OF ... ${bound}` with no typed child
+  column-element list for local `DEFAULT` / `NOT NULL` overrides
+- exact searches for `pgschema#499` and `pgschema#653` still return no
+  dedicated pg-toolbelt issue or PR. Keyword `"PARTITION OF"` still surfaces
+  umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332),
+  follow-up [#502](https://github.com/supabase/pg-toolbelt/issues/502),
+  rewrite-risk issue [#530](https://github.com/supabase/pg-toolbelt/issues/530),
+  open PR [#541](https://github.com/supabase/pg-toolbelt/pull/541), and the
+  adjacent merged partition PRs already recorded here, but still no exact
+  child-local override tracker
+
+The focused 2026-08-14 runtime observation therefore still stands: pg-delta
+emits only the bare partition-child `CREATE TABLE ... PARTITION OF ... FOR
+VALUES ...` statement, omits the child-specific `DEFAULT` / `NOT NULL`
+overrides, and still lets the proof loop return `proofOk: true` with zero
+drift afterward. Benchmark 021 therefore remains **behaviorally uncovered**
+with only **umbrella-thread tracker context**.
+
 ## Refresh note (2026-10-15)
 
 This recheck keeps checked-in/live `pg-delta` at
