@@ -840,13 +840,13 @@
       "verdict": "covered"
     },
     "534": {
-      "fingerprint": "{\"issue_updated_at\": \"2026-08-14T08:59:00Z\", \"pgdelta_sha\": \"47bf101558f0c1e42cf59b272ac943537b5af483\", \"pgschema_sha\": \"843aac05eac082b3f9e486504a5d72f0c7983d7f\"}",
+      "fingerprint": "{\"issue_updated_at\": \"2026-08-14T08:59:00Z\", \"pgdelta_sha\": \"0abee28a54bd855c13d45e2d7ebb5cb647b46693\", \"pgschema_sha\": \"24c6b689aa6571b2aaf94e8c5b915f0d9f58ecca\"}",
       "issue_number": 534,
       "issue_title": "Self-referencing FK to a non-PK UNIQUE constraint is always inlined in `CREATE TABLE`, breaking `dump`/`plan` (\"no unique constraint matching given keys\") \u2014 PR #533 does not cover this path",
       "issue_updated_at": "2026-08-14T08:59:00Z",
       "issue_url": "https://github.com/pgplex/pgschema/issues/534",
-      "reviewed_at": "2026-08-18T07:06:59+00:00",
-      "verdict": "covered"
+      "reviewed_at": "2026-10-17T07:06:48Z",
+      "verdict": "tracked"
     },
     "535": {
       "fingerprint": "{\"issue_updated_at\": \"2026-08-14T07:50:55Z\", \"pgdelta_sha\": \"47bf101558f0c1e42cf59b272ac943537b5af483\", \"pgschema_sha\": \"843aac05eac082b3f9e486504a5d72f0c7983d7f\"}",
