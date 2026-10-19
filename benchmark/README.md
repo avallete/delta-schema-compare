@@ -4,43 +4,61 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-10-18)
+## Latest refresh snapshot (2026-10-19)
 
 Refreshed against:
 
 - checked-in/live `repos/pg-toolbelt` @ `0abee28a54bd855c13d45e2d7ebb5cb647b46693`
 - checked-in/live `repos/pgschema` @ `24c6b689aa6571b2aaf94e8c5b915f0d9f58ecca`
 
-> The 2026-10-18 refresh keeps checked-in/live `repos/pg-toolbelt` at
+> The 2026-10-19 refresh keeps checked-in/live `repos/pg-toolbelt` at
 > `0abee28a54bd855c13d45e2d7ebb5cb647b46693` and keeps checked-in/live
 > `repos/pgschema` at `24c6b689aa6571b2aaf94e8c5b915f0d9f58ecca`; no submodule
-> SHA moved from the 2026-10-17 refresh.
+> SHA moved from the 2026-10-18 refresh.
 >
-> - `gh search issues --repo pgplex/pgschema --state open --updated '>=2026-10-17'`
+> - `gh search issues --repo pgplex/pgschema --state open --updated '>=2026-10-18'`
 >   returned `[]`
-> - `gh search prs --repo pgplex/pgschema --state open --updated '>=2026-10-17'`
->   surfaced open PR [#662](https://github.com/pgplex/pgschema/pull/662) only
-> - PR [#662](https://github.com/pgplex/pgschema/pull/662) adds
->   `MATCH FULL` preservation for foreign keys on the pgschema side, but it has
->   no linked pgschema issue and exact duplicate searches for `"MATCH FULL"` and
->   `confmatchtype` still returned no pg-toolbelt issue or PR
-> - current pg-delta source likely preserves that syntax already via verbatim
+> - `gh search issues --repo pgplex/pgschema --state closed --updated '>=2026-10-18'`
+>   returned `[]`
+> - `gh search prs --repo pgplex/pgschema --state open --updated '>=2026-10-18'`
+>   surfaced open PR [#645](https://github.com/pgplex/pgschema/pull/645) only
+> - PR [#645](https://github.com/pgplex/pgschema/pull/645) remains the open
+>   implementation thread for covered pgschema issue
+>   [#653](https://github.com/pgplex/pgschema/issues/653), while exact duplicate
+>   searches for `pgschema#653` and `inherited partition index` still returned
+>   no pg-toolbelt issue or PR
+> - older open PR [#662](https://github.com/pgplex/pgschema/pull/662) remains
+>   watch-only upstream context for `MATCH FULL` foreign keys even though it did
+>   not move in today's updated-since sweep: exact duplicate searches for
+>   `"MATCH FULL"` and `confmatchtype` still returned no pg-toolbelt issue or PR
+> - current pg-delta source still likely preserves `MATCH FULL` through verbatim
 >   `pg_get_constraintdef(con.oid)` extraction in
 >   `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` plus verbatim
 >   `def` replay in
 >   `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/constraints.ts`, but the
 >   current tree still lacks a dedicated `MATCH FULL` extract/export round-trip
->   test, so PR #662 is kept as a watch-only note rather than a benchmark item
-> - `gh search issues --repo supabase/pg-toolbelt --state open --updated '>=2026-10-17'`
->   still surfaced only issues
->   [#543](https://github.com/supabase/pg-toolbelt/issues/543) and
->   [#544](https://github.com/supabase/pg-toolbelt/issues/544), with no new open
+>   test, so PR #662 stays watch-only rather than a benchmark item
+> - `gh search issues --repo supabase/pg-toolbelt --state open --updated '>=2026-10-18'`
+>   surfaced open issues
+>   [#518](https://github.com/supabase/pg-toolbelt/issues/518) and
+>   [#545](https://github.com/supabase/pg-toolbelt/issues/545), with no new open
 >   or merged PRs
+> - issue [#518](https://github.com/supabase/pg-toolbelt/issues/518) is
+>   adjacent export-column-order context that also surfaces
+>   [#330](https://github.com/supabase/pg-toolbelt/issues/330) and
+>   [#332](https://github.com/supabase/pg-toolbelt/issues/332), but it does not
+>   cover benchmark **022**'s `VIRTUAL` generated-column gap and has no matching
+>   pgschema issue from today's keyword sweeps
+> - issue [#545](https://github.com/supabase/pg-toolbelt/issues/545) is a new
+>   drop-ordering / dependency-cycle bug in the same planner area, but today's
+>   pgschema keyword sweeps found no matching counterpart, so it does not become
+>   a benchmark item here
 > - issue [#543](https://github.com/supabase/pg-toolbelt/issues/543) remains
 >   the exact current tracker for benchmark **025** /
 >   [#534](https://github.com/pgplex/pgschema/issues/534), while issue
 >   [#544](https://github.com/supabase/pg-toolbelt/issues/544) still has no
->   matching pgschema counterpart from keyword searches
+>   matching pgschema counterpart even though neither moved in today's
+>   updated-since sweep
 > - direct source rechecks show the existing active gap paths remain unchanged:
 >   benchmark **021** still hinges on `a.attislocal` plus bare
 >   `PARTITION OF ... ${bound}` rendering, benchmark **022** still collapses
@@ -52,7 +70,8 @@ Refreshed against:
 >   still returned `[]`
 > - `benchmark/review-memory.json` did not need a new issue fingerprint update
 >   today because no tracked pgschema issue changed and the checked-in/live
->   submodule heads stayed fixed
+>   submodule heads stayed fixed; today's movement was PR-only or
+>   pg-toolbelt-side only
 >
 > The active benchmarked gap set remains **021**, **022**, **024**, and
 > **025**, and there is still **no open uncovered parity candidate** on the
@@ -157,28 +176,30 @@ Four resolved-issue benchmark scenarios remain active as unresolved behavior:
     still proves the loader cannot repair same-file statement order
 
 Because today's refresh keeps both checked-in/live submodule SHAs unchanged
-while updated-since checks surface no new open pgschema issue, only the new
-open pgschema PR [#662](https://github.com/pgplex/pgschema/pull/662), and no
-new pg-toolbelt PR activity, the active benchmark set stays stable at
-**021** / **022** / **024** / **025**. Benchmarks **021** / **022** /
-**024** remain unchanged on the current heads, and benchmark **025** remains
-tracked by open pg-toolbelt issue
+while updated-since checks surface no new open or closed pgschema issue, only
+open pgschema PR [#645](https://github.com/pgplex/pgschema/pull/645) and open
+pg-toolbelt issues [#518](https://github.com/supabase/pg-toolbelt/issues/518)
+and [#545](https://github.com/supabase/pg-toolbelt/issues/545) as new
+movement, the active benchmark set stays stable at **021** / **022** / **024**
+/ **025**. Benchmarks **021** / **022** / **024** remain unchanged on the
+current heads, and benchmark **025** remains tracked by open pg-toolbelt issue
 [#543](https://github.com/supabase/pg-toolbelt/issues/543): current
 `src/frontends/export-sql-files.ts` still treats genuine self-references as
 inline-safe, `src/plan/rules/constraints.ts` and `src/plan/internal.ts` still
 fold validated FKs inline during export, and the loader still cannot repair
-same-file order once the FK and its backing unique index land together. By
-contrast, pg-toolbelt issue
-[#544](https://github.com/supabase/pg-toolbelt/issues/544) still has no
-matching pgschema counterpart from today's keyword sweeps, so it does not
-become a benchmark item here. PR
-[#662](https://github.com/pgplex/pgschema/pull/662) is also kept out of the
-benchmark set for now: pg-delta appears to preserve `MATCH FULL` already
-through verbatim constraint-definition extraction and replay, but no dedicated
-scenario test exists and no linked pgschema issue/pg-toolbelt tracker exists
-yet. Exact duplicate searches for `pgschema#499`, `pgschema#501`,
-`pgschema#564`, and `pgschema#534` still return no dedicated pg-toolbelt issue
-or PR, so umbrella issue
+same-file order once the FK and its backing unique index land together. PR
+[#645](https://github.com/pgplex/pgschema/pull/645) remains covered context for
+issue [#653](https://github.com/pgplex/pgschema/issues/653), while PR
+[#662](https://github.com/pgplex/pgschema/pull/662) remains watch-only:
+pg-delta still appears to preserve `MATCH FULL` through verbatim
+constraint-definition extraction and replay, but no dedicated scenario test
+exists and no linked pgschema issue / pg-toolbelt tracker exists yet. Issues
+[#518](https://github.com/supabase/pg-toolbelt/issues/518) and
+[#545](https://github.com/supabase/pg-toolbelt/issues/545) add unmatched
+pg-toolbelt-side context only; they do not map to active pgschema benchmark
+items from today's keyword sweeps. Exact duplicate searches for `pgschema#499`,
+`pgschema#501`, `pgschema#564`, `pgschema#534`, and `pgschema#653` still return
+no dedicated pg-toolbelt issue or PR, so umbrella issue
 [#332](https://github.com/supabase/pg-toolbelt/issues/332) still only covers
 benchmarks **021** / **022** and benchmark **024** still has no exact current
 pg-toolbelt issue or PR. There is still **no open uncovered parity candidate**
@@ -294,20 +315,35 @@ updates are:
     adjacent partition rewrite-risk context for benchmark **021**
   - open issue [#543](https://github.com/supabase/pg-toolbelt/issues/543)
     remains the exact tracker for benchmark **025**
+- pg-toolbelt issue [#518](https://github.com/supabase/pg-toolbelt/issues/518)
+  updated the nearby column-order / export-fidelity conversation, but it lines
+  up with existing pg-toolbelt issues
+  [#330](https://github.com/supabase/pg-toolbelt/issues/330) and
+  [#332](https://github.com/supabase/pg-toolbelt/issues/332) rather than with a
+  new pgschema parity item or benchmark **022**
 - pg-toolbelt issue [#544](https://github.com/supabase/pg-toolbelt/issues/544)
   still has no matching pgschema counterpart from today's keyword search, so it
   does not create a new benchmark item in this repo
-- new pgschema PR [#662](https://github.com/pgplex/pgschema/pull/662)
-  (`MATCH FULL` foreign keys) is recorded as watch-only upstream context:
-  exact duplicate searches still found no pgschema issue or pg-toolbelt issue /
-  PR for that scenario, pg-delta already appears to preserve the clause through
-  verbatim `pg_get_constraintdef` extraction and verbatim `def` replay, but the
-  current tree still lacks a dedicated scenario test
+- pg-toolbelt issue [#545](https://github.com/supabase/pg-toolbelt/issues/545)
+  is a planner drop-cycle bug with no matching pgschema counterpart from
+  today's keyword sweeps, so it does not create a new benchmark item in this
+  repo
+- pgschema PR [#645](https://github.com/pgplex/pgschema/pull/645) is the only
+  pgschema open PR that moved since yesterday, and it remains covered /
+  avoided context for issue [#653](https://github.com/pgplex/pgschema/issues/653)
+- pgschema PR [#662](https://github.com/pgplex/pgschema/pull/662)
+  (`MATCH FULL` foreign keys) remains watch-only upstream context even though
+  it did not move in today's updated-since sweep: exact duplicate searches
+  still found no linked pgschema issue or pg-toolbelt issue / PR, pg-delta
+  already appears to preserve the clause through verbatim
+  `pg_get_constraintdef` extraction and verbatim `def` replay, but the current
+  tree still lacks a dedicated scenario test
 - exact duplicate searches for `pgschema#499`, `pgschema#501`, `pgschema#564`,
-  and `pgschema#534` still returned `[]`; keyword `"PARTITION OF"`,
-  `"VIRTUAL" generated`, `"NOT NULL" "NOT VALID"`, and the self-referencing
+  `pgschema#534`, and `pgschema#653` still returned `[]`; keyword
+  `"PARTITION OF"`, `"VIRTUAL" generated`, `"NOT NULL" "NOT VALID"`,
+  `"column order"`, `inherited partition index`, and the self-referencing
   unique-index search still only surface the existing active tracker context
-  already recorded in benchmarks **021**, **022**, **024**, and **025**
+  or unmatched watch-only notes already recorded in this repo
 - label-filtered dry-run `compare_issues.py` / `compare_resolved.py` still
   returned **0 open** and **0 resolved** issues, so manual unlabeled sweeps
   remain required
@@ -338,28 +374,34 @@ updates are:
 ## Upstream watch list
 
 - checked-in/live `pgschema` still sits at
-  `24c6b689aa6571b2aaf94e8c5b915f0d9f58ecca`; the updated-since open-issue
-  query for `>=2026-10-17` returned `[]`, and the updated-since open-PR query
-  surfaced only
-  [#662](https://github.com/pgplex/pgschema/pull/662). That PR is new upstream
-  context for `MATCH FULL` foreign keys, but it has no linked pgschema issue
-  and does not yet change the benchmark set. Open PR
-  [#660](https://github.com/pgplex/pgschema/pull/660), open PR
-  [#661](https://github.com/pgplex/pgschema/pull/661), and open PR
-  [#645](https://github.com/pgplex/pgschema/pull/645) remain covered /
-  adjacent context already reflected in prior refreshes; they simply did not
-  move in today's updated-since sweep
+  `24c6b689aa6571b2aaf94e8c5b915f0d9f58ecca`; the updated-since open-issue and
+  closed-issue queries for `>=2026-10-18` both returned `[]`, while the
+  updated-since open-PR query surfaced only
+  [#645](https://github.com/pgplex/pgschema/pull/645). That PR remains the
+  implementation thread for covered issue
+  [#653](https://github.com/pgplex/pgschema/issues/653), not a new benchmark
+  gap. Open PR [#662](https://github.com/pgplex/pgschema/pull/662) remains
+  watch-only `MATCH FULL` context but did not move in today's updated-since
+  sweep. Open PR [#660](https://github.com/pgplex/pgschema/pull/660) and open
+  PR [#661](https://github.com/pgplex/pgschema/pull/661) remain covered /
+  adjacent context already reflected in prior refreshes
 - checked-in/live `pg-toolbelt` still sits at
   `0abee28a54bd855c13d45e2d7ebb5cb647b46693`; the updated-since query for
-  `>=2026-10-17` still surfaced only open issues
-  [#543](https://github.com/supabase/pg-toolbelt/issues/543) and
-  [#544](https://github.com/supabase/pg-toolbelt/issues/544), with no new open
+  `>=2026-10-18` surfaced only open issues
+  [#518](https://github.com/supabase/pg-toolbelt/issues/518) and
+  [#545](https://github.com/supabase/pg-toolbelt/issues/545), with no new open
   or merged PRs
 - the nearby benchmark-relevant pg-toolbelt issue / PR landscape therefore
   stays stable:
   - open issue [#332](https://github.com/supabase/pg-toolbelt/issues/332)
     still points at benchmarks **021** / **022**; exact searches for
     `pgschema#499` and `pgschema#501` still return no dedicated issue or PR
+  - open issue [#518](https://github.com/supabase/pg-toolbelt/issues/518) plus
+    issues [#330](https://github.com/supabase/pg-toolbelt/issues/330) and
+    [#332](https://github.com/supabase/pg-toolbelt/issues/332) reflect adjacent
+    column-order / export-fidelity context, but today's pgschema keyword sweeps
+    found no matching parity item and they do not change benchmark **022**'s
+    `VIRTUAL` generated-column verdict
   - open issues [#502](https://github.com/supabase/pg-toolbelt/issues/502)
     and [#530](https://github.com/supabase/pg-toolbelt/issues/530) plus open
     PR [#541](https://github.com/supabase/pg-toolbelt/pull/541) remain the
@@ -371,10 +413,17 @@ updates are:
   - issue [#544](https://github.com/supabase/pg-toolbelt/issues/544) remains
     unmatched upstream context; today's pgschema keyword searches still found
     no matching counterpart, so it does not enter the benchmark set
+  - issue [#545](https://github.com/supabase/pg-toolbelt/issues/545) remains
+    unmatched planner-ordering context; today's pgschema keyword sweeps still
+    found no counterpart, so it does not enter the benchmark set
   - exact `"MATCH FULL"` / `confmatchtype` duplicate searches still return no
     pg-toolbelt issue or PR that maps to pgschema PR #662; current pg-delta
     source likely preserves the clause already, but the test gap keeps that
     scenario in watch-only status for now
+  - exact `pgschema#653` and `inherited partition index` searches still return
+    no pg-toolbelt issue or PR; current pg-delta still appears to avoid the
+    collision through partition-index attach planning and child `PARTITION OF`
+    create ordering
   - historical PR [#174](https://github.com/supabase/pg-toolbelt/pull/174)
     remains legacy-engine-only context for benchmark **024**; exact
     `pgschema#564` searches still return no current pg-toolbelt issue or PR
