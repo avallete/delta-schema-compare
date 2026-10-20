@@ -4,6 +4,51 @@
 
 ## Context
 
+## Refresh note (2026-10-20)
+
+This recheck advances checked-in/live `pg-delta` from
+`0abee28a54bd855c13d45e2d7ebb5cb647b46693` to `7931d4167c18c9d849a4ea5737dfcc13f09e36aa` through merged PR
+[#541](https://github.com/supabase/pg-toolbelt/pull/541), while
+checked-in/live `pgschema` stays at `24c6b689aa6571b2aaf94e8c5b915f0d9f58ecca`.
+
+Today's upstream activity sharpens the tracker picture for this active export
+parity gap without yet closing it on the checked-in/live head:
+
+- `gh search issues --repo pgplex/pgschema --state open --updated '>=2026-10-19'`
+  returned `[]`
+- `gh search issues --repo pgplex/pgschema --state closed --updated '>=2026-10-19'`
+  returned `[]`
+- `gh search prs --repo pgplex/pgschema --state open --updated '>=2026-10-19'`
+  returned `[]`
+- `gh search issues --repo supabase/pg-toolbelt --state open --updated '>=2026-10-19'`
+  surfaced the exact tracker issue
+  [#543](https://github.com/supabase/pg-toolbelt/issues/543), while
+  `gh search prs --repo supabase/pg-toolbelt --state open --updated '>=2026-10-19'`
+  surfaced the exact fix PR [#546](https://github.com/supabase/pg-toolbelt/pull/546)
+- PR [#546](https://github.com/supabase/pg-toolbelt/pull/546) is not in the
+  checked-in/live head yet; it patches
+  `packages/pg-delta/src/plan/internal.ts` and adds
+  `packages/pg-delta/tests/export-self-fk-on-unique-index.test.ts`, but the
+  current checked-in/live source still keeps the failing export shape
+- `repos/pg-toolbelt/packages/pg-delta/src/frontends/export-sql-files.ts`
+  still treats a genuine self-reference as safe to keep inline:
+  `cyclicForeignKeys()` explicitly skips self-referencing FKs and only splits
+  multi-table cycles into sibling `.fk.sql` files
+- `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/constraints.ts` and
+  `repos/pg-toolbelt/packages/pg-delta/src/plan/internal.ts` still make
+  validated FOREIGN KEY constraints eligible for export-only inline folding on
+  the checked-in/live head
+- `repos/pg-toolbelt/packages/pg-delta/tests/load-sql-files-reorder-on-failure.test.ts`
+  still confirms the loader cannot repair same-file ordering hazards:
+  `loadOrder cannot fix same-file order - edit or split the file.`
+- pg-toolbelt issue [#544](https://github.com/supabase/pg-toolbelt/issues/544)
+  remains a separate unmatched CHECK-constraint normalization bug, not a fix or
+  duplicate for this benchmark
+
+Benchmark 025 therefore remains **tracked** rather than solved: the exact
+pg-toolbelt issue and fix PR now exist, but they have not landed in the
+checked-in/live head yet.
+
 pgschema issue #534 is the self-referencing follow-up to the broader
 constraint-ordering family around issues #532 and #506. The failing shape is a
 table whose foreign key points back to the same table, but targets a non-PK
@@ -153,7 +198,7 @@ The PR added targeted regressions for both slices:
 | Self-referencing FK to a non-PK UNIQUE constraint or unique index | No - current export still keeps this FK inline, matching open issue [#543](https://github.com/supabase/pg-toolbelt/issues/543) |
 | Same-file loader recovery once the FK and unique index land in one file | No - current load-assist explicitly says same-file order cannot be repaired via `loadOrder` |
 | Exact committed pg-delta regression for this scenario | No - current export tests cover mutual cross-table cycles and generic validated FK folding, but not this same-table non-PK UNIQUE-key slice |
-| Existing pg-toolbelt tracker | Yes - open issue [#543](https://github.com/supabase/pg-toolbelt/issues/543), no fixing PR yet |
+| Existing pg-toolbelt tracker | Yes - open issue [#543](https://github.com/supabase/pg-toolbelt/issues/543) plus open PR [#546](https://github.com/supabase/pg-toolbelt/pull/546), but PR #546 is not in the checked-in/live head yet |
 
 ## Comparison of approaches
 
