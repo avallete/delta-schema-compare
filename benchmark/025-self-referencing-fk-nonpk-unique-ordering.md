@@ -1,8 +1,55 @@
-# Self-referencing FK to a non-PK UNIQUE key stays inline in export
+# Self-referencing FK to a non-PK UNIQUE key in export
 
 > pgschema issue [#534](https://github.com/pgplex/pgschema/issues/534) (closed), fixed by [pgschema#540](https://github.com/pgplex/pgschema/pull/540)
 
 ## Context
+
+## Refresh note (2026-10-21)
+
+This recheck advances checked-in/live `pg-delta` from
+`7931d4167c18c9d849a4ea5737dfcc13f09e36aa` to `72e47ea0d5c33bd28c2beef0486126f5c63f44d3` through merged PRs
+[#546](https://github.com/supabase/pg-toolbelt/pull/546),
+[#549](https://github.com/supabase/pg-toolbelt/pull/549), and
+[#552](https://github.com/supabase/pg-toolbelt/pull/552), while
+checked-in/live `pgschema` stays at `24c6b689aa6571b2aaf94e8c5b915f0d9f58ecca`.
+
+Today's upstream activity closes this exact export parity gap on the
+checked-in/live head:
+
+- `gh search issues --repo pgplex/pgschema --state open --updated '>=2026-10-20'`
+  returned `[]`
+- `gh search issues --repo pgplex/pgschema --state closed --updated '>=2026-10-20'`
+  returned `[]`
+- `gh search prs --repo pgplex/pgschema --state open --updated '>=2026-10-20'`
+  returned `[]`
+- `gh search prs --repo supabase/pg-toolbelt --merged --updated '>=2026-10-20'`
+  surfaced merged PRs [#546](https://github.com/supabase/pg-toolbelt/pull/546),
+  [#549](https://github.com/supabase/pg-toolbelt/pull/549), and
+  [#552](https://github.com/supabase/pg-toolbelt/pull/552); PR #546 is the
+  benchmark-relevant change here
+- PR [#546](https://github.com/supabase/pg-toolbelt/pull/546) closes issue
+  [#543](https://github.com/supabase/pg-toolbelt/issues/543) and is now in the
+  checked-in/live head; it updates
+  `packages/pg-delta/src/plan/internal.ts` so export-time compaction refuses
+  to inline a same-table constraint when one of its dependencies is emitted
+  after `CREATE TABLE`
+- `packages/pg-delta/tests/export-self-fk-on-unique-index.test.ts` now covers
+  export -> reload -> `rootHash` for the exact self-referencing non-PK
+  UNIQUE-key case, and
+  `packages/declarative-e2e/scenarios/self-fk-on-unique-index/` now exercises
+  the same shape through the declarative-e2e harness
+- merged PR [#549](https://github.com/supabase/pg-toolbelt/pull/549) and
+  merged PR [#552](https://github.com/supabase/pg-toolbelt/pull/552) are
+  adjacent global-state / harness work; they do not change this benchmark's
+  verdict
+- exact `pgschema#534` text search still returns no dedicated pg-toolbelt issue
+  or PR, but the exact tracker history is now closed issue
+  [#543](https://github.com/supabase/pg-toolbelt/issues/543) plus merged PR
+  [#546](https://github.com/supabase/pg-toolbelt/pull/546)
+
+Benchmark 025 therefore now moves to **Solved in pg-delta** on the
+checked-in/live head. The historical notes below are retained as the record of
+when this slice was still tracked.
 
 ## Refresh note (2026-10-20)
 
@@ -152,26 +199,12 @@ the self-referencing FK as a trailing `ALTER TABLE ... ADD CONSTRAINT` or by
 splitting it into a later sibling FK file so the non-PK UNIQUE key exists
 first.
 
-**Actual on current pg-delta:** open issue
-[#543](https://github.com/supabase/pg-toolbelt/issues/543) shows the table file
-still loads in the unsafe order:
-
-```sql
-create table "test_schema"."people" (
-  "id" bigint not null,
-  "org_id" integer not null,
-  "merge_target_id" bigint,
-  constraint "people_pkey" primary key (id),
-  constraint "people_merge_target_fkey" foreign key (org_id, merge_target_id)
-    references test_schema.people(org_id, id)
-);
-
-create unique index uq_people_org_id_id
-  on test_schema.people using btree (org_id, id);
-```
-
-Loading that file into an empty database fails because there is still "no
-unique constraint matching given keys for referenced table".
+**Actual on current pg-delta:** this exact scenario now converges. Merged PR
+[#546](https://github.com/supabase/pg-toolbelt/pull/546) keeps the
+self-referencing non-PK UNIQUE-key FK out of the exported `CREATE TABLE` until
+its same-table unique index exists, and the committed regression
+`packages/pg-delta/tests/export-self-fk-on-unique-index.test.ts` now round-
+trips the export -> reload -> hash-compare path for this SQL.
 
 ## How pgschema handled it
 
@@ -194,32 +227,28 @@ The PR added targeted regressions for both slices:
 | Aspect | Status |
 |---|---|
 | Cross-table mutual FK export cycle handling | Yes - `cyclicForeignKeys()` moves only multi-table cycles into sibling `.fk.sql` files |
-| Self-referencing FK to the table PK | Assumed safe inline by current export heuristics |
-| Self-referencing FK to a non-PK UNIQUE constraint or unique index | No - current export still keeps this FK inline, matching open issue [#543](https://github.com/supabase/pg-toolbelt/issues/543) |
-| Same-file loader recovery once the FK and unique index land in one file | No - current load-assist explicitly says same-file order cannot be repaired via `loadOrder` |
-| Exact committed pg-delta regression for this scenario | No - current export tests cover mutual cross-table cycles and generic validated FK folding, but not this same-table non-PK UNIQUE-key slice |
-| Existing pg-toolbelt tracker | Yes - open issue [#543](https://github.com/supabase/pg-toolbelt/issues/543) plus open PR [#546](https://github.com/supabase/pg-toolbelt/pull/546), but PR #546 is not in the checked-in/live head yet |
+| Self-referencing FK to the table PK | Yes - current export still allows the safe PK-target slice to stay inline |
+| Self-referencing FK to a non-PK UNIQUE constraint or unique index | Yes - merged PR [#546](https://github.com/supabase/pg-toolbelt/pull/546) keeps this FK out of `CREATE TABLE` when its same-table dependency is emitted later |
+| Same-file loader recovery once the FK and unique index land in one file | Still no - current load-assist still cannot repair same-file order, but the export no longer relies on that fallback for this benchmark |
+| Exact committed pg-delta regression for this scenario | Yes - `packages/pg-delta/tests/export-self-fk-on-unique-index.test.ts` plus the declarative-e2e `self-fk-on-unique-index` scenario |
+| Existing pg-toolbelt tracker | Yes - closed issue [#543](https://github.com/supabase/pg-toolbelt/issues/543) plus merged PR [#546](https://github.com/supabase/pg-toolbelt/pull/546) are now in the checked-in/live head |
 
 ## Comparison of approaches
 
 | | pgschema | pg-delta |
 |---|---|---|
-| **Key export decision** | Distinguishes self-ref-to-PK from self-ref-to-non-PK UNIQUE and defers the latter | Distinguishes only multi-table cycles from non-cycles; a genuine self-reference is assumed inline-safe |
+| **Key export decision** | Distinguishes self-ref-to-PK from self-ref-to-non-PK UNIQUE and defers the latter | Current checked-in/live export now also refuses to inline the same-table non-PK UNIQUE-key slice when the dependency emits after `CREATE TABLE` |
 | **Self-referencing FK to PK** | Inline | Inline |
-| **Self-referencing FK to non-PK UNIQUE key** | Deferred until after the backing UNIQUE object exists | Still folded into the table file before the backing unique index |
-| **Current parity state** | Fixed | Tracked via open issue [#543](https://github.com/supabase/pg-toolbelt/issues/543) |
+| **Self-referencing FK to non-PK UNIQUE key** | Deferred until after the backing UNIQUE object exists | Deferred on the current checked-in/live head |
+| **Current parity state** | Fixed | Covered |
 
 ## Plan to handle it in pg-delta
 
-1. Add export-time analysis for self-referencing FKs whose referenced column
-   set does not match the table's primary key, and exclude them from inline
-   folding.
-2. Keep self-ref-to-PK FKs inline, but emit the non-PK UNIQUE-key slice as a
-   later `ALTER TABLE ... ADD CONSTRAINT` (or sibling `.fk.sql`) after the
-   backing UNIQUE constraint/index is present.
-3. Add a regression in
-   `repos/pg-toolbelt/packages/pg-delta/tests/export-fidelity.test.ts` or a
-   dedicated export test that round-trips the exact self-referencing
-   unique-index case through `exportSqlFiles()` and `loadSqlFiles()`.
-4. Treat load-assist only as a diagnostic fallback; the correct export shape
-   should make this scenario load without manual file editing or splitting.
+1. No additional engine change is currently required for the exact
+   self-referencing non-PK UNIQUE-key export slice on the checked-in/live head.
+2. Retain `packages/pg-delta/tests/export-self-fk-on-unique-index.test.ts`
+   and the declarative-e2e `self-fk-on-unique-index` scenario as regression
+   coverage for future export compaction refactors.
+3. If a future export/planner change touches same-table dependency checks,
+   rerun this benchmark before altering the fold rules or relaxing the current
+   regression coverage.
