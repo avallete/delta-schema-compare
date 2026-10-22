@@ -4,6 +4,44 @@
 
 ## Context
 
+## Refresh note (2026-10-22)
+
+This recheck advances checked-in/live `pg-delta` from
+`72e47ea0d5c33bd28c2beef0486126f5c63f44d3` to
+`63b3f653d99f936fa40c5a7689d771e829f09f45` through merged PR
+[#553](https://github.com/supabase/pg-toolbelt/pull/553), while
+checked-in/live `pgschema` stays at
+`24c6b689aa6571b2aaf94e8c5b915f0d9f58ecca`.
+
+Today's planner change touches generated columns and still leaves the
+`VIRTUAL` versus `STORED` gap open:
+
+- merged PR [#553](https://github.com/supabase/pg-toolbelt/pull/553) now gives
+  generated columns a fold hint in `src/plan/rules/tables.ts`, so a generated
+  column can land inside `CREATE TABLE` when compaction allows it. The folded
+  clause still comes from `columnClause()`
+- `src/plan/rules/helpers.ts` still appends
+  `GENERATED ALWAYS AS (...) STORED` for every `generatedExpr`
+- `src/extract/relations.ts` still stores only whether `attgenerated` is
+  present, as `generatedExpr`. A search for `VIRTUAL` under
+  `packages/pg-delta` still returns no matches
+- exact search for `pgschema#501` still returns no dedicated pg-toolbelt issue
+  or PR. Keyword `"VIRTUAL" generated` still surfaces only umbrella issue
+  [#332](https://github.com/supabase/pg-toolbelt/issues/332) plus historical
+  merged PRs [#378](https://github.com/supabase/pg-toolbelt/pull/378) and
+  [#299](https://github.com/supabase/pg-toolbelt/pull/299)
+- open follow-up issue
+  [#554](https://github.com/supabase/pg-toolbelt/issues/554) is a separate
+  apply-failure for a generated column whose zero-argument `IMMUTABLE`
+  function reads a later column. pgschema searches for `zero-arg` and
+  `generated expression column order` returned `[]`, so it stays unmatched
+  pg-toolbelt context rather than a new benchmark item
+
+Benchmark 022 therefore remains **behaviorally uncovered** with only
+**umbrella-thread tracker context**. Folding generated columns into
+`CREATE TABLE` now hits the same hard-coded `STORED` rendering that
+`ADD COLUMN` already used.
+
 ## Refresh note (2026-10-16)
 
 This recheck keeps checked-in/live `pg-delta` at
