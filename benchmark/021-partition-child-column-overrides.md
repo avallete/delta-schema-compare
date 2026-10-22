@@ -4,6 +4,40 @@
 
 ## Context
 
+## Refresh note (2026-10-22)
+
+This recheck advances checked-in/live `pg-delta` from
+`72e47ea0d5c33bd28c2beef0486126f5c63f44d3` to
+`63b3f653d99f936fa40c5a7689d771e829f09f45` through merged PR
+[#553](https://github.com/supabase/pg-toolbelt/pull/553), while
+checked-in/live `pgschema` stays at
+`24c6b689aa6571b2aaf94e8c5b915f0d9f58ecca`.
+
+Today's upstream activity still leaves the partition-child override gap open:
+
+- `gh search issues --repo pgplex/pgschema --state open --updated '>=2026-10-21'`
+  returned `[]`
+- `gh search issues --repo pgplex/pgschema --state closed --updated '>=2026-10-21'`
+  returned `[]`
+- `gh search prs --repo pgplex/pgschema --state open --updated '>=2026-10-21'`
+  returned `[]`
+- `gh search prs --repo supabase/pg-toolbelt --merged --updated '>=2026-10-21'`
+  surfaced only merged PR
+  [#553](https://github.com/supabase/pg-toolbelt/pull/553)
+- that PR updates `src/plan/rules/tables.ts` so generated columns receive a
+  fold hint, plus `src/plan/phases/action-graph.ts` and
+  `src/plan/internal.ts`. The partition-child create string is still the bare
+  `CREATE TABLE ... PARTITION OF ... ${bound}` form, and
+  `src/extract/relations.ts` still gates inherited child columns with
+  `a.attislocal`
+- exact search for `pgschema#499` still returns no dedicated pg-toolbelt issue
+  or PR. Umbrella issue
+  [#332](https://github.com/supabase/pg-toolbelt/issues/332) remains the only
+  tracker context
+
+Benchmark 021 therefore remains **behaviorally uncovered** with only
+**umbrella-thread tracker context**.
+
 ## Refresh note (2026-10-20)
 
 This recheck advances checked-in/live `pg-delta` from

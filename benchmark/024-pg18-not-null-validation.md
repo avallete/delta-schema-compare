@@ -4,6 +4,35 @@
 
 ## Context
 
+## Refresh note (2026-10-22)
+
+This recheck advances checked-in/live `pg-delta` from
+`72e47ea0d5c33bd28c2beef0486126f5c63f44d3` to
+`63b3f653d99f936fa40c5a7689d771e829f09f45` through merged PR
+[#553](https://github.com/supabase/pg-toolbelt/pull/553), while
+checked-in/live `pgschema` stays at
+`24c6b689aa6571b2aaf94e8c5b915f0d9f58ecca`.
+
+Today's upstream activity still leaves the PostgreSQL 18 nullability workflow
+open:
+
+- merged PR [#553](https://github.com/supabase/pg-toolbelt/pull/553) changes
+  generated-column folding and column-create ordering. It does not change
+  `a.attnotnull` extraction, the PG18 `contype = 'n'` skip in
+  `src/extract/relations.ts`, or the plain
+  `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL` path in
+  `src/plan/rules/tables.ts`
+- exact search for `pgschema#564` still returns no dedicated pg-toolbelt issue
+  or PR. Keyword `"NOT NULL" "NOT VALID"` still surfaces only merged PR
+  [#484](https://github.com/supabase/pg-toolbelt/pull/484), which is the
+  domain double-render fix
+- open issue [#554](https://github.com/supabase/pg-toolbelt/issues/554) and
+  open PR [#555](https://github.com/supabase/pg-toolbelt/pull/555) are
+  generated-column apply ordering and rename/respell settlement. Neither
+  models native `NOT NULL ... NOT VALID`
+
+Benchmark 024 therefore remains **not covered** in current pg-delta.
+
 ## Refresh note (2026-10-16)
 
 This recheck keeps checked-in/live `pg-delta` at
