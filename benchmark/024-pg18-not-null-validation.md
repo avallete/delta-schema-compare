@@ -4,6 +4,43 @@
 
 ## Context
 
+## Refresh note (2026-10-23)
+
+This recheck advances checked-in/live `pg-delta` from
+`63b3f653d99f936fa40c5a7689d771e829f09f45` to
+`265af521e462577886ea6fdbb5777e1a23811cce` through merged PRs
+[#550](https://github.com/supabase/pg-toolbelt/pull/550),
+[#551](https://github.com/supabase/pg-toolbelt/pull/551),
+[#556](https://github.com/supabase/pg-toolbelt/pull/556),
+[#557](https://github.com/supabase/pg-toolbelt/pull/557), and release PR
+[#547](https://github.com/supabase/pg-toolbelt/pull/547), while
+checked-in/live `pgschema` stays at
+`24c6b689aa6571b2aaf94e8c5b915f0d9f58ecca`.
+
+Today's upstream activity still leaves the PostgreSQL 18 nullability workflow
+open:
+
+- merged PR [#550](https://github.com/supabase/pg-toolbelt/pull/550) changes
+  parent-table extraction and index reloptions in
+  `src/extract/relations.ts`, plus export fold rules in
+  `src/plan/internal.ts`. It does not change `a.attnotnull` extraction, the
+  PG18 `contype = 'n'` skip, or the plain
+  `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL` path in
+  `src/plan/rules/tables.ts`
+- merged PR [#556](https://github.com/supabase/pg-toolbelt/pull/556) moves
+  `columnClause()` into `tables.ts` and leaves the `notNull` alter as
+  `SET NOT NULL` / `DROP NOT NULL`
+- exact search for `pgschema#564` still returns no dedicated pg-toolbelt issue
+  or PR. Keyword `"NOT NULL" "NOT VALID"` still surfaces only merged PR
+  [#484](https://github.com/supabase/pg-toolbelt/pull/484), which is the
+  domain double-render fix
+- open issue [#554](https://github.com/supabase/pg-toolbelt/issues/554) and
+  open PR [#555](https://github.com/supabase/pg-toolbelt/pull/555) are
+  generated-column apply ordering and rename/respell settlement. Neither
+  models native `NOT NULL ... NOT VALID`
+
+Benchmark 024 therefore remains **not covered** in current pg-delta.
+
 ## Refresh note (2026-10-22)
 
 This recheck advances checked-in/live `pg-delta` from

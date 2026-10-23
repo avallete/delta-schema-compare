@@ -4,6 +4,45 @@
 
 ## Context
 
+## Refresh note (2026-10-23)
+
+This recheck advances checked-in/live `pg-delta` from
+`63b3f653d99f936fa40c5a7689d771e829f09f45` to
+`265af521e462577886ea6fdbb5777e1a23811cce` through merged PRs
+[#550](https://github.com/supabase/pg-toolbelt/pull/550),
+[#556](https://github.com/supabase/pg-toolbelt/pull/556), and the other
+commits listed in the 2026-10-23 parity report, while checked-in/live
+`pgschema` stays at `24c6b689aa6571b2aaf94e8c5b915f0d9f58ecca`.
+
+Today's planner move touches generated-column SQL and still leaves the
+`VIRTUAL` versus `STORED` gap open:
+
+- merged PR [#556](https://github.com/supabase/pg-toolbelt/pull/556) moves
+  `columnClause()` from `src/plan/rules/helpers.ts` into
+  `src/plan/rules/tables.ts`. The helper still appends
+  `GENERATED ALWAYS AS (...) STORED` for every `generatedExpr`
+- `src/extract/relations.ts` still stores only whether `attgenerated` is
+  present, as `generatedExpr`. A search for `VIRTUAL` under
+  `packages/pg-delta` still returns no matches
+- merged PR [#550](https://github.com/supabase/pg-toolbelt/pull/550) changes
+  parent-table extraction and index reloptions. It does not read
+  `attgenerated` as a kind
+- exact search for `pgschema#501` still returns no dedicated pg-toolbelt issue
+  or PR. Keyword `"VIRTUAL" generated` still surfaces only umbrella issue
+  [#332](https://github.com/supabase/pg-toolbelt/issues/332) plus historical
+  merged PRs [#378](https://github.com/supabase/pg-toolbelt/pull/378) and
+  [#299](https://github.com/supabase/pg-toolbelt/pull/299)
+- open follow-up issue
+  [#554](https://github.com/supabase/pg-toolbelt/issues/554) stayed open
+  (`updatedAt` `2026-10-21T15:42:52Z`). pgschema searches for `zero-arg` and
+  `generated expression column order` returned `[]`, so it stays unmatched
+  pg-toolbelt context
+
+Benchmark 022 therefore remains **behaviorally uncovered** with only
+**umbrella-thread tracker context**. The hard-coded `STORED` rendering now
+lives in `tables.ts` `columnClause()`, which is also what folded
+`CREATE TABLE` output uses.
+
 ## Refresh note (2026-10-22)
 
 This recheck advances checked-in/live `pg-delta` from
@@ -1949,7 +1988,7 @@ keyword intact in the resolved scenario.
 |---|---|
 | Extract reads generated columns at all | Partially - `repos/pg-toolbelt/packages/pg-delta/src/extract/relations.ts` reads `attgenerated`, but only uses it to decide whether `default_expr` should be treated as a generated expression |
 | Extract / IR preserves `VIRTUAL` vs `STORED` kind | No - the current payload stores `generatedExpr` but not the actual generated kind |
-| SQL emission preserves `VIRTUAL` | No - `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts` hard-codes `... STORED` in `columnClause()` |
+| SQL emission preserves `VIRTUAL` | No - `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts` hard-codes `... STORED` in `columnClause()` after merged PR [#556](https://github.com/supabase/pg-toolbelt/pull/556) moved the helper out of `helpers.ts` |
 | Focused proof on the exact PG18 scenario | No user-visible fidelity - the focused 2026-08-14 probe emitted `... STORED` yet still proved cleanly because the current model collapses the kind |
 | Existing exact pg-toolbelt issue / PR | No dedicated exact tracker or PR yet; keyword duplicate searches only surface umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332), and comments on that issue thread now carry the PG17/18 virtual-generated-column note |
 
@@ -1969,9 +2008,10 @@ keyword intact in the resolved scenario.
 2. Update the diff path so `VIRTUAL` versus `STORED` is treated as a
    meaningful change.
 3. Update
-   `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/helpers.ts`
-   (and any related create/alter rule helpers) so generated-column SQL
-   preserves the correct PostgreSQL 18 keyword.
+   `repos/pg-toolbelt/packages/pg-delta/src/plan/rules/tables.ts`
+   `columnClause()` (moved there by merged PR
+   [#556](https://github.com/supabase/pg-toolbelt/pull/556)) so
+   generated-column SQL preserves the correct PostgreSQL 18 keyword.
 4. Add a focused pg18 regression under `packages/pg-delta/tests/` for the
    exact `VIRTUAL` scenario above, and make sure the proof loop fails until
    the kind is preserved end-to-end.
