@@ -4,6 +4,29 @@
 
 ## Context
 
+## Refresh note (2026-10-23)
+
+This recheck advances checked-in/live `pg-delta` from
+`63b3f653d99f936fa40c5a7689d771e829f09f45` to
+`265af521e462577886ea6fdbb5777e1a23811cce`, while checked-in/live `pgschema`
+stays at `24c6b689aa6571b2aaf94e8c5b915f0d9f58ecca`.
+
+The solved verdict stays in place:
+
+- merged PR [#546](https://github.com/supabase/pg-toolbelt/pull/546) remains
+  in the checked-in/live history
+- `packages/pg-delta/src/plan/internal.ts` still refuses an export constraint
+  fold when a same-table column or a same-table dependent (including the
+  unique index a self-referencing FK targets) is emitted after `CREATE TABLE`
+- merged PR [#550](https://github.com/supabase/pg-toolbelt/pull/550) adds a
+  neighboring veto for a predecessor that itself needs the fold target, such
+  as a `CHECK` calling a function over the table's row type. That veto sits
+  beside the same-table guard and does not reopen this benchmark
+- `packages/pg-delta/tests/export-self-fk-on-unique-index.test.ts` remains
+  the committed regression for the exact export-reload scenario
+
+Benchmark 025 therefore stays **Solved in pg-delta**.
+
 ## Refresh note (2026-10-21)
 
 This recheck advances checked-in/live `pg-delta` from

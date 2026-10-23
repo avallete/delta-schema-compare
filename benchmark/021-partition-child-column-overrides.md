@@ -4,6 +4,49 @@
 
 ## Context
 
+## Refresh note (2026-10-23)
+
+This recheck advances checked-in/live `pg-delta` from
+`63b3f653d99f936fa40c5a7689d771e829f09f45` to
+`265af521e462577886ea6fdbb5777e1a23811cce` through merged PRs
+[#550](https://github.com/supabase/pg-toolbelt/pull/550),
+[#551](https://github.com/supabase/pg-toolbelt/pull/551),
+[#556](https://github.com/supabase/pg-toolbelt/pull/556),
+[#557](https://github.com/supabase/pg-toolbelt/pull/557), and release PR
+[#547](https://github.com/supabase/pg-toolbelt/pull/547), while
+checked-in/live `pgschema` stays at
+`24c6b689aa6571b2aaf94e8c5b915f0d9f58ecca`.
+
+Today's upstream activity still leaves the partition-child override gap open:
+
+- `gh search issues --repo pgplex/pgschema --state open --updated '>=2026-10-22'`
+  returned `[]`
+- `gh search issues --repo pgplex/pgschema --state closed --updated '>=2026-10-22'`
+  returned `[]`
+- `gh search prs --repo pgplex/pgschema --state open --updated '>=2026-10-22'`
+  returned `[]`
+- `gh search prs --repo supabase/pg-toolbelt --merged --updated '>=2026-10-22'`
+  surfaced merged PRs
+  [#547](https://github.com/supabase/pg-toolbelt/pull/547),
+  [#550](https://github.com/supabase/pg-toolbelt/pull/550),
+  [#551](https://github.com/supabase/pg-toolbelt/pull/551),
+  [#556](https://github.com/supabase/pg-toolbelt/pull/556), and
+  [#557](https://github.com/supabase/pg-toolbelt/pull/557)
+- merged PR [#550](https://github.com/supabase/pg-toolbelt/pull/550) edits
+  `src/extract/relations.ts` and `src/plan/rules/tables.ts`. It keeps every
+  `INHERITS` parent and restores a non-subpartitioned child's own index
+  storage options after `PARTITION OF`. The partition-child create string is
+  still the bare `CREATE TABLE ... PARTITION OF ... ${bound}` form, and
+  `src/extract/relations.ts` still gates inherited child columns with
+  `a.attislocal`
+- exact search for `pgschema#499` still returns no dedicated pg-toolbelt issue
+  or PR. Umbrella issue
+  [#332](https://github.com/supabase/pg-toolbelt/issues/332) remains the only
+  tracker context
+
+Benchmark 021 therefore remains **behaviorally uncovered** with only
+**umbrella-thread tracker context**.
+
 ## Refresh note (2026-10-22)
 
 This recheck advances checked-in/live `pg-delta` from
