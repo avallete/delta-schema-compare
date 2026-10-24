@@ -4,6 +4,34 @@
 
 ## Context
 
+## Refresh note (2026-10-24)
+
+This recheck advances checked-in/live `pg-delta` from
+`265af521e462577886ea6fdbb5777e1a23811cce` to
+`6b82eff84dba925a176f0c6a78e5a16843885366` through merged PR
+[#559](https://github.com/supabase/pg-toolbelt/pull/559). That commit only
+edits `.github/CODEOWNERS`. Checked-in/live `pgschema` stays at
+`24c6b689aa6571b2aaf94e8c5b915f0d9f58ecca`.
+
+The PostgreSQL 18 nullability workflow stays open:
+
+- `src/extract/relations.ts` still models table-column nullability through
+  `a.attnotnull` (line 121). PG18 `contype = 'n'` rows still only survive
+  long enough to emit `table_not_null_comment_skipped` (lines 361-396)
+- `src/plan/rules/tables.ts` still emits
+  `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL` / `DROP NOT NULL`
+  (line 449)
+- exact search for `pgschema#564` still returns no dedicated pg-toolbelt
+  issue or PR. Keyword `"NOT NULL" "NOT VALID"` still surfaces only merged
+  PR [#484](https://github.com/supabase/pg-toolbelt/pull/484), the domain
+  double-render fix
+- open issue [#554](https://github.com/supabase/pg-toolbelt/issues/554) and
+  open PR [#555](https://github.com/supabase/pg-toolbelt/pull/555) did not
+  move in the `>=2026-10-23` window. Neither models native
+  `NOT NULL ... NOT VALID`
+
+Benchmark 024 therefore stays **Not covered**.
+
 ## Refresh note (2026-10-23)
 
 This recheck advances checked-in/live `pg-delta` from
