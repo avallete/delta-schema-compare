@@ -4,6 +4,33 @@
 
 ## Context
 
+## Refresh note (2026-10-24)
+
+This recheck advances checked-in/live `pg-delta` from
+`265af521e462577886ea6fdbb5777e1a23811cce` to
+`6b82eff84dba925a176f0c6a78e5a16843885366` through merged PR
+[#559](https://github.com/supabase/pg-toolbelt/pull/559), while
+checked-in/live `pgschema` stays at
+`24c6b689aa6571b2aaf94e8c5b915f0d9f58ecca`. That commit only edits
+`.github/CODEOWNERS`, so `packages/pg-delta` is unchanged.
+
+The solved verdict stays in place:
+
+- merged PR [#546](https://github.com/supabase/pg-toolbelt/pull/546) remains
+  in the checked-in/live history
+- `packages/pg-delta/src/plan/internal.ts` still refuses an export constraint
+  fold when a same-table column or a same-table dependent is emitted after
+  `CREATE TABLE` (lines 779-793)
+- `packages/pg-delta/tests/export-self-fk-on-unique-index.test.ts` remains
+  the committed regression
+- exact search for `pgschema#534` still returns no dedicated pg-toolbelt
+  issue or PR. Closed issue
+  [#543](https://github.com/supabase/pg-toolbelt/issues/543) plus merged PR
+  [#546](https://github.com/supabase/pg-toolbelt/pull/546) remain the
+  effective tracker
+
+Benchmark 025 therefore stays **Solved in pg-delta**.
+
 ## Refresh note (2026-10-23)
 
 This recheck advances checked-in/live `pg-delta` from
