@@ -4,6 +4,31 @@
 
 ## Context
 
+## Refresh note (2026-10-25)
+
+This recheck leaves both checked-in heads unchanged: `pg-delta` at
+`6b82eff84dba925a176f0c6a78e5a16843885366` and `pgschema` at
+`24c6b689aa6571b2aaf94e8c5b915f0d9f58ecca`.
+
+The `VIRTUAL` versus `STORED` gap stays open:
+
+- `src/extract/relations.ts` still stores generated-expression presence as
+  `generatedExpr` (lines 211 and 261) and drops the `attgenerated` kind
+- `columnClause()` in `src/plan/rules/tables.ts` still appends
+  `GENERATED ALWAYS AS (...) STORED` (line 712)
+- a `VIRTUAL` search under `packages/pg-delta/src` still returns no matches
+- exact search for `pgschema#501` still returns no dedicated pg-toolbelt
+  issue or PR. Keyword `"VIRTUAL" generated` still surfaces only umbrella
+  issue [#332](https://github.com/supabase/pg-toolbelt/issues/332) plus
+  historical merged PRs [#378](https://github.com/supabase/pg-toolbelt/pull/378)
+  and [#299](https://github.com/supabase/pg-toolbelt/pull/299)
+- open follow-up issue
+  [#554](https://github.com/supabase/pg-toolbelt/issues/554) stayed open
+  (`updatedAt` `2026-10-21T15:42:52Z`). pgschema searches for `zero-arg` and
+  `generated expression column order` returned `[]`
+
+Benchmark 022 therefore stays **Tracked (umbrella thread only)**.
+
 ## Refresh note (2026-10-24)
 
 This recheck advances checked-in/live `pg-delta` from
