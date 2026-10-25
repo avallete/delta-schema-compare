@@ -4,6 +4,32 @@
 
 ## Context
 
+## Refresh note (2026-10-25)
+
+This recheck leaves checked-in/live `pg-delta` at
+`6b82eff84dba925a176f0c6a78e5a16843885366` and checked-in/live `pgschema` at
+`24c6b689aa6571b2aaf94e8c5b915f0d9f58ecca`. Neither `main` moved.
+
+The partition-child override gap stays open:
+
+- `src/extract/relations.ts` still gates column facts with `a.attislocal`
+  (line 189), so inherited partition columns with a local `DEFAULT` or
+  `NOT NULL` override stay out of the diff
+- `src/plan/rules/tables.ts` still emits
+  `CREATE TABLE ... PARTITION OF ... ${bound}` (line 52) with no child
+  column-element list
+- exact search for `pgschema#499` still returns no dedicated pg-toolbelt
+  issue or PR. Umbrella issue
+  [#332](https://github.com/supabase/pg-toolbelt/issues/332) remains the
+  only tracker, and its `updatedAt` is still `2026-09-29T15:57:49Z`
+- open pgschema PR [#645](https://github.com/pgplex/pgschema/pull/645)
+  gained a review on 2026-10-24 and no new commits. Its head is still
+  `6a620735` from 2026-10-16. It still implements covered issue
+  [#653](https://github.com/pgplex/pgschema/issues/653). The pg-delta
+  parent-index consume path in `tables.ts` (lines 94-100) is unchanged
+
+Benchmark 021 therefore stays **Tracked (umbrella thread only)**.
+
 ## Refresh note (2026-10-24)
 
 This recheck advances checked-in/live `pg-delta` from
