@@ -4,6 +4,33 @@
 
 ## Context
 
+## Refresh note (2026-10-26)
+
+This recheck leaves both checked-in heads unchanged: `pg-delta` at
+`6b82eff84dba925a176f0c6a78e5a16843885366` and `pgschema` at
+`24c6b689aa6571b2aaf94e8c5b915f0d9f58ecca`.
+
+The solved verdict stays in place:
+
+- merged PR [#546](https://github.com/supabase/pg-toolbelt/pull/546) remains
+  in the checked-in/live history
+- `packages/pg-delta/src/plan/internal.ts` still refuses an export constraint
+  fold when a same-table column or a same-table dependent is emitted after
+  `CREATE TABLE` (lines 779-793)
+- `packages/pg-delta/tests/export-self-fk-on-unique-index.test.ts` remains
+  the committed regression
+- exact search for `pgschema#534` still returns no dedicated pg-toolbelt
+  issue or PR. Closed issue
+  [#543](https://github.com/supabase/pg-toolbelt/issues/543) plus merged PR
+  [#546](https://github.com/supabase/pg-toolbelt/pull/546) remain the
+  effective tracker
+- open PR [#555](https://github.com/supabase/pg-toolbelt/pull/555) also
+  edits `internal.ts`, but only to skip same-schema renames when building
+  the alterer index. That edit is not in the checked-in head, and the merge
+  of `main` at `a638ed1` does not touch the fold guard
+
+Benchmark 025 therefore stays **Solved in pg-delta**.
+
 ## Refresh note (2026-10-25)
 
 This recheck leaves both checked-in heads unchanged: `pg-delta` at

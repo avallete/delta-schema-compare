@@ -4,31 +4,31 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-10-25)
+## Latest refresh snapshot (2026-10-26)
 
 Refreshed against:
 
 - checked-in/live `repos/pg-toolbelt` @ `6b82eff84dba925a176f0c6a78e5a16843885366`
 - checked-in/live `repos/pgschema` @ `24c6b689aa6571b2aaf94e8c5b915f0d9f58ecca`
 
-> The 2026-10-25 refresh leaves both checked-in/live heads where the
+> The 2026-10-26 refresh leaves both checked-in/live heads where the
 > 2026-10-24 refresh put them. `git ls-remote` for `pgplex/pgschema` `main`
 > and `supabase/pg-toolbelt` `main` still returns
 > `24c6b689aa6571b2aaf94e8c5b915f0d9f58ecca` and
 > `6b82eff84dba925a176f0c6a78e5a16843885366`. `packages/pg-delta` is
 > unchanged, so no benchmark verdict changes today.
 >
-> - `gh search issues --repo pgplex/pgschema --state open --updated '>=2026-10-24'`
+> - `gh search issues --repo pgplex/pgschema --state open --updated '>=2026-10-25'`
 >   returned `[]`
-> - `gh search issues --repo pgplex/pgschema --state closed --updated '>=2026-10-24'`
+> - `gh search issues --repo pgplex/pgschema --state closed --updated '>=2026-10-25'`
 >   returned `[]`
-> - `gh search prs --repo pgplex/pgschema --state open --updated '>=2026-10-24'`
->   surfaced open PR [#645](https://github.com/pgplex/pgschema/pull/645)
->   (`updatedAt` `2026-10-24T15:23:10Z`). The update is a review from `inadr`
->   supporting inherited partition-index name preservation. The head is still
->   `6a620735` from 2026-10-16. It remains the implementation thread for
->   covered issue [#653](https://github.com/pgplex/pgschema/issues/653)
-> - `gh search prs --repo pgplex/pgschema --merged --updated '>=2026-10-24'`
+> - `gh search prs --repo pgplex/pgschema --state open --updated '>=2026-10-25'`
+>   returned `[]`. Direct view of open PR
+>   [#645](https://github.com/pgplex/pgschema/pull/645) still shows
+>   `updatedAt` `2026-10-24T15:23:10Z` and head `6a620735` from 2026-10-16.
+>   It remains the implementation thread for covered issue
+>   [#653](https://github.com/pgplex/pgschema/issues/653)
+> - `gh search prs --repo pgplex/pgschema --merged --updated '>=2026-10-25'`
 >   returned `[]`
 > - the live open pgschema issue set is unchanged:
 >   **#49 / #52 / #84 / #559 / #597 / #598 / #624 / #625 / #626 / #627 / #638 /
@@ -40,27 +40,35 @@ Refreshed against:
 >   pg-delta still preserves the clause via verbatim
 >   `pg_get_constraintdef(con.oid)` extraction plus verbatim `def` replay.
 >   The current tree still lacks a dedicated scenario test
-> - `gh search issues --repo supabase/pg-toolbelt --state open --updated '>=2026-10-24'`
+> - `gh search issues --repo supabase/pg-toolbelt --state open --updated '>=2026-10-25'`
 >   returned `[]`. Direct views keep issues
->   [#332](https://github.com/supabase/pg-toolbelt/issues/332),
+>   [#332](https://github.com/supabase/pg-toolbelt/issues/332)
+>   (`updatedAt` `2026-09-29T15:57:49Z`),
 >   [#518](https://github.com/supabase/pg-toolbelt/issues/518)
 >   (`updatedAt` `2026-10-20T13:17:30Z`), and
 >   [#554](https://github.com/supabase/pg-toolbelt/issues/554)
 >   (`updatedAt` `2026-10-21T15:42:52Z`) open
-> - `gh search issues --repo supabase/pg-toolbelt --state closed --updated '>=2026-10-24'`
+> - `gh search issues --repo supabase/pg-toolbelt --state closed --updated '>=2026-10-25'`
 >   returned `[]`
-> - `gh search prs --repo supabase/pg-toolbelt --state open --updated '>=2026-10-24'`
->   surfaced open PR [#558](https://github.com/supabase/pg-toolbelt/pull/558)
->   (`updatedAt` `2026-10-24T08:12:11Z`). The new commit `9cd4770` merges
->   `main` and only brings in `.github/CODEOWNERS`. The PR itself remains CI
->   sharding of the export round-trip job. Direct views keep open PRs
->   [#471](https://github.com/supabase/pg-toolbelt/pull/471),
+> - `gh search prs --repo supabase/pg-toolbelt --state open --updated '>=2026-10-25'`
+>   surfaced only open PR [#555](https://github.com/supabase/pg-toolbelt/pull/555)
+>   (`updatedAt` `2026-10-25T10:00:47Z`). The new commit `a638ed1`
+>   (`2026-10-25T09:55:52Z`) merges `main` (`6b82eff`) into the previous head
+>   `a907325`. Its file list is the already-reviewed main history:
+>   apply search-path hints ([#551](https://github.com/supabase/pg-toolbelt/pull/551)),
+>   shadow-load durability ([#557](https://github.com/supabase/pg-toolbelt/pull/557)),
+>   the alpha release ([#547](https://github.com/supabase/pg-toolbelt/pull/547)),
+>   and `.github/CODEOWNERS` ([#559](https://github.com/supabase/pg-toolbelt/pull/559)).
+>   The PR's own diff against `main` is still the rename/respell settlement,
+>   including the same-schema rename cycle guard in `internal.ts`. That guard
+>   is not the same-table fold guard for benchmark **025**. Direct views keep
+>   open PRs [#471](https://github.com/supabase/pg-toolbelt/pull/471),
 >   [#493](https://github.com/supabase/pg-toolbelt/pull/493),
 >   [#506](https://github.com/supabase/pg-toolbelt/pull/506),
 >   [#548](https://github.com/supabase/pg-toolbelt/pull/548), and
->   [#555](https://github.com/supabase/pg-toolbelt/pull/555) at their
->   2026-10-22 `updatedAt` values
-> - `gh search prs --repo supabase/pg-toolbelt --merged --updated '>=2026-10-24'`
+>   [#558](https://github.com/supabase/pg-toolbelt/pull/558) at their prior
+>   `updatedAt` values
+> - `gh search prs --repo supabase/pg-toolbelt --merged --updated '>=2026-10-25'`
 >   returned `[]`
 > - direct source rechecks on the same head keep the active gap paths open:
 >   benchmark **021** still hinges on `a.attislocal` (`relations.ts` line 189)
@@ -69,12 +77,11 @@ Refreshed against:
 >   (`relations.ts` lines 211 and 261) plus hard-coded `... STORED` in
 >   `tables.ts` `columnClause()` (line 712), and benchmark **024** still keeps
 >   PG18 `contype = 'n'` rows out of diff-visible facts (`relations.ts` lines
->   361-396) while planning plain `SET NOT NULL` (`tables.ts` line 449)
+>   361-396) while planning plain `SET NOT NULL` (`tables.ts` line 449).
+>   A `VIRTUAL` search under `packages/pg-delta/src` still returns no matches
 > - exact duplicate searches for `pgschema#499`, `pgschema#501`, `pgschema#564`,
 >   `pgschema#534`, and `pgschema#653` still returned no dedicated pg-toolbelt
 >   issue or PR
-> - `gh issue list -R avallete/delta-schema-compare --state all --limit 20`
->   still returned `[]`
 > - `benchmark/review-memory.json` stays unchanged. Issue `updated_at` values
 >   and both submodule SHAs already match the stored fingerprints, so there
 >   is no stale-cache refresh to record
@@ -179,12 +186,15 @@ benchmark set stays **021** / **022** / **024**. The previous pg-delta
 advance, from `265af521e462577886ea6fdbb5777e1a23811cce` to
 `6b82eff84dba925a176f0c6a78e5a16843885366` through merged PR
 [#559](https://github.com/supabase/pg-toolbelt/pull/559), still edits only
-`.github/CODEOWNERS`. The pgschema open-issue, closed-issue, and merged-PR
-updated-since queries for `>=2026-10-24` returned `[]`. The only open PR in
-that window is [#645](https://github.com/pgplex/pgschema/pull/645), which
-gained a review and no new commits. Open pg-toolbelt PR
-[#558](https://github.com/supabase/pg-toolbelt/pull/558) merged `main` and
-stayed CI-only. Merged PRs
+`.github/CODEOWNERS`. The pgschema open-issue, closed-issue, open-PR, and
+merged-PR updated-since queries for `>=2026-10-25` returned `[]`. Open PR
+[#645](https://github.com/pgplex/pgschema/pull/645) did not move today; its
+head is still `6a620735`. Open pg-toolbelt PR
+[#555](https://github.com/supabase/pg-toolbelt/pull/555) is the only item in
+today's window. Commit `a638ed1` merges current `main` and adds no new
+settle-spelling behavior. The PR remains unmatched rename/respell work, and
+its `internal.ts` edit still only skips same-schema renames when indexing
+alterers. Merged PRs
 [#550](https://github.com/supabase/pg-toolbelt/pull/550) and
 [#556](https://github.com/supabase/pg-toolbelt/pull/556) remain in history:
 the first fixes multi-parent `INHERITS`, partition-child index storage
@@ -194,22 +204,20 @@ into `tables.ts` while still appending `STORED`. Those changes leave the
 path, and the PG18 `NOT NULL ... NOT VALID` workflow open. Benchmark **025**
 stays solved from merged PR
 [#546](https://github.com/supabase/pg-toolbelt/pull/546); the same-table fold
-guard in `src/plan/internal.ts` is unchanged on this head. PR
+guard in `src/plan/internal.ts` (lines 779-793) is unchanged on this head. PR
 [#662](https://github.com/pgplex/pgschema/pull/662) remains watch-only because
 pg-delta preserves `MATCH FULL` through verbatim constraint-definition
 extraction and replay, with no dedicated scenario test or linked tracker yet.
 Open issue [#518](https://github.com/supabase/pg-toolbelt/issues/518) stays
 open after partial coverage from merged PR
 [#553](https://github.com/supabase/pg-toolbelt/pull/553); open follow-up
-[#554](https://github.com/supabase/pg-toolbelt/issues/554) and open PR
-[#555](https://github.com/supabase/pg-toolbelt/pull/555) are unmatched
-pg-toolbelt-side context and did not move in today's window. Exact duplicate
-searches for `pgschema#499`, `pgschema#501`, `pgschema#564`, and
-`pgschema#653` still return no dedicated pg-toolbelt issue or PR, so umbrella
-issue [#332](https://github.com/supabase/pg-toolbelt/issues/332) still only
-covers benchmarks **021** / **022** and benchmark **024** still has no exact
-current pg-toolbelt issue or PR. There is still **no open uncovered parity
-candidate** on the pgschema side.
+[#554](https://github.com/supabase/pg-toolbelt/issues/554) did not move.
+Exact duplicate searches for `pgschema#499`, `pgschema#501`, `pgschema#564`,
+and `pgschema#653` still return no dedicated pg-toolbelt issue or PR, so
+umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332)
+still only covers benchmarks **021** / **022** and benchmark **024** still
+has no exact current pg-toolbelt issue or PR. There is still **no open
+uncovered parity candidate** on the pgschema side.
 
 ## Open pgschema issue screening (current state)
 
