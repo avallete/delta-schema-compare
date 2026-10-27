@@ -4,6 +4,30 @@
 
 ## Context
 
+## Refresh note (2026-10-27)
+
+This recheck leaves checked-in/live `pg-delta` at
+`6b82eff84dba925a176f0c6a78e5a16843885366`. Checked-in/live `pgschema`
+advanced to `8703c276c3ee4bab6d4e30b14e6e8982ace14b89`. The new commits do
+not touch PostgreSQL 18 `NOT NULL ... NOT VALID` modeling.
+
+The PostgreSQL 18 nullability workflow stays open:
+
+- `src/extract/relations.ts` still models table-column nullability through
+  `a.attnotnull` (line 121). PG18 `contype = 'n'` rows still only survive
+  long enough to emit `table_not_null_comment_skipped` (lines 361-396)
+- `src/plan/rules/tables.ts` still emits
+  `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL` / `DROP NOT NULL`
+  (line 449)
+- exact search for `pgschema#564` still returns no dedicated pg-toolbelt
+  issue or PR
+- open issue [#554](https://github.com/supabase/pg-toolbelt/issues/554)
+  did not move. Open PR
+  [#555](https://github.com/supabase/pg-toolbelt/pull/555) did not update.
+  Neither models native `NOT NULL ... NOT VALID`
+
+Benchmark 024 therefore stays **Not covered**.
+
 ## Refresh note (2026-10-26)
 
 This recheck leaves both checked-in heads unchanged: `pg-delta` at

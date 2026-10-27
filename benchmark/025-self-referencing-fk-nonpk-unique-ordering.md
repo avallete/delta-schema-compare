@@ -4,6 +4,35 @@
 
 ## Context
 
+## Refresh note (2026-10-27)
+
+This recheck leaves checked-in/live `pg-delta` at
+`6b82eff84dba925a176f0c6a78e5a16843885366`. Checked-in/live `pgschema`
+advanced to `8703c276c3ee4bab6d4e30b14e6e8982ace14b89`. Merged PR
+[#662](https://github.com/pgplex/pgschema/pull/662) now preserves
+`MATCH FULL` on foreign keys upstream. That clause is separate from this
+benchmark: pg-delta already replays it through verbatim
+`pg_get_constraintdef` text.
+
+The solved verdict stays in place:
+
+- merged PR [#546](https://github.com/supabase/pg-toolbelt/pull/546) remains
+  in the checked-in/live history
+- `packages/pg-delta/src/plan/internal.ts` still refuses an export constraint
+  fold when a same-table column or a same-table dependent is emitted after
+  `CREATE TABLE` (lines 779-793)
+- `packages/pg-delta/tests/export-self-fk-on-unique-index.test.ts` remains
+  the committed regression
+- exact search for `pgschema#534` still returns no dedicated pg-toolbelt
+  issue or PR. Closed issue
+  [#543](https://github.com/supabase/pg-toolbelt/issues/543) plus merged PR
+  [#546](https://github.com/supabase/pg-toolbelt/pull/546) remain the
+  effective tracker
+- open PR [#555](https://github.com/supabase/pg-toolbelt/pull/555) did not
+  update. Its `internal.ts` edit is still absent from the checked-in head
+
+Benchmark 025 therefore stays **Solved in pg-delta**.
+
 ## Refresh note (2026-10-26)
 
 This recheck leaves both checked-in heads unchanged: `pg-delta` at

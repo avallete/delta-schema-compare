@@ -4,6 +4,40 @@
 
 ## Context
 
+## Refresh note (2026-10-27)
+
+This recheck leaves checked-in/live `pg-delta` at
+`6b82eff84dba925a176f0c6a78e5a16843885366`. Checked-in/live `pgschema`
+advanced from `24c6b689aa6571b2aaf94e8c5b915f0d9f58ecca` to
+`8703c276c3ee4bab6d4e30b14e6e8982ace14b89`.
+
+The partition-child override gap stays open:
+
+- `src/extract/relations.ts` still gates column facts with `a.attislocal`
+  (line 189), so inherited partition columns with a local `DEFAULT` or
+  `NOT NULL` override stay out of the diff
+- `src/plan/rules/tables.ts` still emits
+  `CREATE TABLE ... PARTITION OF ... ${bound}` (line 52) with no child
+  column-element list
+- exact search for `pgschema#499` still returns no dedicated pg-toolbelt
+  issue or PR. Umbrella issue
+  [#332](https://github.com/supabase/pg-toolbelt/issues/332) remains the
+  only tracker, and its `updatedAt` is still `2026-09-29T15:57:49Z`
+- merged pgschema PR [#663](https://github.com/pgplex/pgschema/pull/663)
+  closes [#653](https://github.com/pgplex/pgschema/issues/653). Its
+  `issue_653_partition_default_function_chain` fixture emits
+  `CREATE TABLE ... PARTITION OF ... (payload DEFAULT count_events_text())`.
+  That child-column default is this benchmark, and the pg-delta paths above
+  still drop it. The inherited-index name collision in the same PR stays
+  covered by the parent-index consume path (`tables.ts` lines 94-100) plus
+  the constraint-backed index exclusion (`relations.ts` lines 466-469).
+  Open PR [#645](https://github.com/pgplex/pgschema/pull/645) closed
+  without merge
+- open pg-toolbelt PR [#555](https://github.com/supabase/pg-toolbelt/pull/555)
+  did not update (`updatedAt` `2026-10-25T10:00:47Z`, head `a638ed1`)
+
+Benchmark 021 therefore stays **Tracked (umbrella thread only)**.
+
 ## Refresh note (2026-10-26)
 
 This recheck leaves checked-in/live `pg-delta` at
