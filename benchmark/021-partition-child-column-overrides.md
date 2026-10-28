@@ -4,6 +4,37 @@
 
 ## Context
 
+## Refresh note (2026-10-28)
+
+This recheck leaves checked-in/live `pg-delta` at
+`6b82eff84dba925a176f0c6a78e5a16843885366`. Checked-in/live `pgschema`
+advanced from `8703c276c3ee4bab6d4e30b14e6e8982ace14b89` to
+`36a38ff3c25db956ae8b5be2eee552d8bc69fb47`.
+
+The partition-child override gap stays open:
+
+- `src/extract/relations.ts` still gates column facts with `a.attislocal`
+  (line 189), so inherited partition columns with a local `DEFAULT` or
+  `NOT NULL` override stay out of the diff
+- `src/plan/rules/tables.ts` still emits
+  `CREATE TABLE ... PARTITION OF ... ${bound}` (line 52) with no child
+  column-element list
+- exact search for `pgschema#499` still returns no dedicated pg-toolbelt
+  issue or PR. Umbrella issue
+  [#332](https://github.com/supabase/pg-toolbelt/issues/332) remains the
+  only tracker, and its `updatedAt` is still `2026-09-29T15:57:49Z`
+- merged pgschema PR [#668](https://github.com/pgplex/pgschema/pull/668)
+  closes [#639](https://github.com/pgplex/pgschema/issues/639) with
+  `DETACH` / `ATTACH` for a parent or bound change. That is benchmark
+  **026**. It does not emit child column elements inside `PARTITION OF`,
+  so this benchmark stays open
+- open pg-toolbelt PR [#555](https://github.com/supabase/pg-toolbelt/pull/555)
+  gained commit `67793ef` in `src/frontends/settle-desired.ts`. That commit
+  pairs respelled check names across a table rename and does not touch
+  `a.attislocal` or the `PARTITION OF` create path
+
+Benchmark 021 therefore stays **Tracked (umbrella thread only)**.
+
 ## Refresh note (2026-10-27)
 
 This recheck leaves checked-in/live `pg-delta` at
