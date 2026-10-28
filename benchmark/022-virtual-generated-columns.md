@@ -4,6 +4,34 @@
 
 ## Context
 
+## Refresh note (2026-10-28)
+
+This recheck leaves checked-in/live `pg-delta` at
+`6b82eff84dba925a176f0c6a78e5a16843885366`. Checked-in/live `pgschema`
+advanced to `36a38ff3c25db956ae8b5be2eee552d8bc69fb47`. The new commits are
+partition detach/attach, `check_function_bodies` on apply, and an embedded
+PostgreSQL port retry. None of them model generated column kind.
+
+The `VIRTUAL` versus `STORED` gap stays open:
+
+- `src/extract/relations.ts` still stores generated-expression presence as
+  `generatedExpr` (lines 211 and 261) and drops the `attgenerated` kind
+- `columnClause()` in `src/plan/rules/tables.ts` still appends
+  `GENERATED ALWAYS AS (...) STORED` (line 712)
+- a `VIRTUAL` search under `packages/pg-delta/src` still returns no matches
+- exact search for `pgschema#501` still returns no dedicated pg-toolbelt
+  issue or PR. Umbrella issue
+  [#332](https://github.com/supabase/pg-toolbelt/issues/332) remains the
+  only tracker
+- open follow-up issue
+  [#554](https://github.com/supabase/pg-toolbelt/issues/554) stayed open
+  (`updatedAt` `2026-10-21T15:42:52Z`)
+- open PR [#555](https://github.com/supabase/pg-toolbelt/pull/555) moved to
+  head `67793ef`. The new commit edits `src/frontends/settle-desired.ts`
+  for respelled check names and still does not model generated-column kind
+
+Benchmark 022 therefore stays **Tracked (umbrella thread only)**.
+
 ## Refresh note (2026-10-27)
 
 This recheck leaves checked-in/live `pg-delta` at
