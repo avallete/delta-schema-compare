@@ -4,6 +4,29 @@
 
 ## Context
 
+## Refresh note (2026-10-30)
+
+This recheck moves checked-in/live `pg-delta` to
+`36ac91d3c3a5d5b578edf192d2e7d3b6b6b9687c` and `pgschema` to
+`9de190efdf78cd422850a3bc3db13ee84a11462d`. Neither new commit models
+PostgreSQL 18 `NOT NULL ... NOT VALID`.
+
+The PostgreSQL 18 nullability workflow stays open:
+
+- `src/extract/relations.ts` still models table-column nullability through
+  `a.attnotnull` (line 121). PG18 `contype = 'n'` rows still only survive
+  long enough to emit `table_not_null_comment_skipped` (lines 361-396)
+- `src/plan/rules/tables.ts` still emits
+  `ALTER TABLE ... ALTER COLUMN ... SET NOT NULL` / `DROP NOT NULL`
+  (line 449)
+- exact search for `pgschema#564` still returns no dedicated pg-toolbelt
+  issue or PR
+- merged PR [#555](https://github.com/supabase/pg-toolbelt/pull/555) edits
+  settle-before-rename and a rename-cycle guard. It does not touch the
+  `contype = 'n'` path
+
+Benchmark 024 therefore stays **Not covered**.
+
 ## Refresh note (2026-10-28)
 
 This recheck leaves checked-in/live `pg-delta` at

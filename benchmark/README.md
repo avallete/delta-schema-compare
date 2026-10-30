@@ -4,19 +4,105 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-10-28)
+## Latest refresh snapshot (2026-10-30)
+
+Refreshed against:
+
+- checked-in/live `repos/pg-toolbelt` @ `36ac91d3c3a5d5b578edf192d2e7d3b6b6b9687c`
+- checked-in/live `repos/pgschema` @ `9de190efdf78cd422850a3bc3db13ee84a11462d`
+
+> `git ls-remote` confirms both `main` branches moved.
+> `supabase/pg-toolbelt` advanced from
+> `6b82eff84dba925a176f0c6a78e5a16843885366` to
+> `36ac91d3c3a5d5b578edf192d2e7d3b6b6b9687c` through merged PR
+> [#555](https://github.com/supabase/pg-toolbelt/pull/555).
+> `pgplex/pgschema` advanced from
+> `36a38ff3c25db956ae8b5be2eee552d8bc69fb47` to
+> `9de190efdf78cd422850a3bc3db13ee84a11462d`. Full notes are in
+> [`docs/parity-refresh-2026-10-30.md`](../docs/parity-refresh-2026-10-30.md).
+> The 2026-10-28 record remains in
+> [`docs/parity-refresh-2026-10-28.md`](../docs/parity-refresh-2026-10-28.md).
+>
+> pgschema commits on that range:
+>
+> - [#678](https://github.com/pgplex/pgschema/pull/678) merged — re-emit
+>   `COMMENT ON` when a function or procedure is dropped and recreated,
+>   closing [#677](https://github.com/pgplex/pgschema/issues/677)
+>   (`9de190ef`)
+> - [#675](https://github.com/pgplex/pgschema/pull/675) merged — Alpine
+>   base image bump (`f2ebe96b`). Outside schema-diff parity.
+>
+> [#677](https://github.com/pgplex/pgschema/issues/677) is **covered**.
+> A return-type change replaces the routine, and the replace path
+> recreates unchanged child facts
+> (`src/plan/phases/action-emitter.ts` lines 373-389), including the
+> comment satellite. No new benchmark. The same path recreates unchanged
+> ACL children, so the grants follow-up noted in PR #678 is not a
+> pg-delta gap. It is unfiled on the pgschema side and stays watch-only.
+>
+> New unlabeled open issues, screened by hand because the label-filtered
+> compare scripts still return zero rows:
+>
+> - [#673](https://github.com/pgplex/pgschema/issues/673) `INCLUDE`
+>   columns on PRIMARY KEY and UNIQUE constraints — **covered**.
+>   `pg_get_constraintdef` is stored as `def` and emitted verbatim
+>   (`src/extract/relations.ts` line 335,
+>   `src/plan/rules/constraints.ts` lines 18-21). `def` is `"replace"`,
+>   so an INCLUDE-only change replaces the constraint. Partition children
+>   clone that definition through `PARTITION OF`. Open pgschema PR
+>   [#676](https://github.com/pgplex/pgschema/pull/676) is the upstream
+>   fix and is not merged. Exact search for `pgschema#673` returned no
+>   pg-toolbelt issue or PR. No tracker was opened.
+> - [#674](https://github.com/pgplex/pgschema/issues/674) comments on
+>   table constraints, including distinct comments on inherited partition
+>   constraints — **not covered** for the child comment. Local constraint
+>   comments already round-trip. Inherited rows (`conislocal = false`)
+>   are skipped (`relations.ts` line 360), so a child comment that
+>   differs from the parent is never extracted. Exact search for
+>   `pgschema#674` returned no pg-toolbelt issue or PR. Umbrella issue
+>   [#332](https://github.com/supabase/pg-toolbelt/issues/332) item 4 is
+>   view column comments, not this case. The draft is
+>   [`docs/parity-issue-drafts-2026-10-30.md`](../docs/parity-issue-drafts-2026-10-30.md).
+>   No issue was opened. The pgschema issue is still open, so this stays
+>   on the watch list as `not_covered` rather than a numbered benchmark.
+>
+> No benchmark verdict changed. Active gaps remain **021**, **022**,
+> **024**, and **026**. Benchmark **025** stays solved. The same-table
+> fold guard is now `src/plan/internal.ts` lines 783-797. It was lines
+> 779-793 before PR #555 inserted a four-line rename-cycle guard at
+> line 277. The check itself is unchanged.
+>
+> Direct source rechecks on the new pg-delta head: `relations.ts` line
+> 189 still gates `a.attislocal`; `tables.ts` line 52 still emits bare
+> `PARTITION OF`; `relations.ts` lines 211 and 261 still collapse
+> generated kind to `generatedExpr`; `tables.ts` line 712 still
+> hard-codes `STORED`; `relations.ts` line 121 still uses `a.attnotnull`;
+> `relations.ts` lines 361-396 still skip PG18 `contype = 'n'` except for
+> the comment diagnostic; `tables.ts` line 449 still plans plain
+> `SET NOT NULL`. A `VIRTUAL` search and a `DETACH PARTITION` search
+> under `packages/pg-delta` TypeScript still return no matches.
+>
+> The open pgschema watch list is now **#49 / #52 / #84 / #559 / #597 /
+> #598 / #624 / #625 / #626 / #627 / #670 / #672 / #673 / #674**.
+> **#674** is the new open `not_covered` candidate. **#673** is
+> `covered`. **#677** is resolved `covered`.
+>
+> Previous snapshot (2026-10-28), kept below for the commit range that
+> introduced benchmark **026**:
+
+## Previous refresh snapshot (2026-10-28)
 
 Refreshed against:
 
 - checked-in/live `repos/pg-toolbelt` @ `6b82eff84dba925a176f0c6a78e5a16843885366`
 - checked-in/live `repos/pgschema` @ `36a38ff3c25db956ae8b5be2eee552d8bc69fb47`
 
-> `git ls-remote` confirms `supabase/pg-toolbelt` `main` is still
-> `6b82eff84dba925a176f0c6a78e5a16843885366`. `pgplex/pgschema` `main`
-> advanced from `8703c276c3ee4bab6d4e30b14e6e8982ace14b89` to
-> `36a38ff3c25db956ae8b5be2eee552d8bc69fb47`. `packages/pg-delta` is
-> unchanged, so benchmarks **021**, **022**, **024**, and **025** keep
-> their previous verdicts. Full notes are in
+> `git ls-remote` on 2026-10-28 confirmed `supabase/pg-toolbelt` `main` was
+> still `6b82eff84dba925a176f0c6a78e5a16843885366`. `pgplex/pgschema` `main`
+> had advanced from `8703c276c3ee4bab6d4e30b14e6e8982ace14b89` to
+> `36a38ff3c25db956ae8b5be2eee552d8bc69fb47`. `packages/pg-delta` was
+> unchanged that day, so benchmarks **021**, **022**, **024**, and **025**
+> kept their previous verdicts. Full notes are in
 > [`docs/parity-refresh-2026-10-28.md`](../docs/parity-refresh-2026-10-28.md).
 >
 > pgschema commits on that range:
@@ -121,7 +207,14 @@ Refreshed against:
 
 ## Active benchmarked gaps after refresh
 
-Four resolved-issue benchmark scenarios remain active as unresolved behavior:
+Four resolved-issue benchmark scenarios remain active as unresolved behavior.
+Rechecked on 2026-10-30 against pg-toolbelt `36ac91d3` and pgschema
+`9de190ef`. Merged pg-toolbelt PR
+[#555](https://github.com/supabase/pg-toolbelt/pull/555) settles renamed
+check spelling before rename discovery. It does not close any of these
+gaps. The benchmark **025** fold guard moved from `internal.ts` lines
+779-793 to lines 783-797 because that PR inserts a rename-cycle guard;
+the same-table check itself is unchanged.
 
 - **021** - child-specific `DEFAULT` / `NOT NULL` column overrides in
   `CREATE TABLE ... PARTITION OF ...`
@@ -198,10 +291,16 @@ Four resolved-issue benchmark scenarios remain active as unresolved behavior:
     issue or PR. The draft is
     [`docs/parity-issue-drafts-2026-10-28.md`](../docs/parity-issue-drafts-2026-10-28.md)
 
+As of 2026-10-30, PR
+[#555](https://github.com/supabase/pg-toolbelt/pull/555) is merged at
+`36ac91d3c3a5d5b578edf192d2e7d3b6b6b9687c` and is on the checked-in head.
+The paragraph below is the 2026-10-28 record.
+
 The 2026-10-28 pgschema advance adds benchmark **026** and leaves **021** /
 **022** / **024** in place. The active set is now **021** / **022** /
 **024** / **026**. The 2026-10-27 advance did not change that older set,
-which was **021** / **022** / **024**. `pg-toolbelt` `main` did not move. The
+which was **021** / **022** / **024**. On that day `pg-toolbelt` `main` did
+not move. The
 previous pg-delta advance, from
 `265af521e462577886ea6fdbb5777e1a23811cce` to
 `6b82eff84dba925a176f0c6a78e5a16843885366` through merged PR
@@ -229,7 +328,8 @@ into `tables.ts` while still appending `STORED`. Those changes leave the
 path, and the PG18 `NOT NULL ... NOT VALID` workflow open. Benchmark **025**
 stays solved from merged PR
 [#546](https://github.com/supabase/pg-toolbelt/pull/546); the same-table fold
-guard in `src/plan/internal.ts` (lines 779-793) is unchanged on this head. PR
+guard in `src/plan/internal.ts` is now lines 783-797 (lines 779-793 before
+merged PR [#555](https://github.com/supabase/pg-toolbelt/pull/555)). PR
 [#662](https://github.com/pgplex/pgschema/pull/662) is now merged. pg-delta
 already preserves `MATCH FULL` through verbatim constraint-definition
 extraction and replay, with no dedicated scenario test or linked tracker yet,
@@ -242,11 +342,12 @@ Exact duplicate searches for `pgschema#499`, `pgschema#501`, `pgschema#564`,
 and `pgschema#653` still return no dedicated pg-toolbelt issue or PR, so
 umbrella issue [#332](https://github.com/supabase/pg-toolbelt/issues/332)
 still only covers benchmarks **021** / **022**. Benchmarks **024** and
-**026** still have no exact current pg-toolbelt issue or PR. The open
-pgschema watch list has no uncovered parity candidate; the new uncovered
-case is closed issue
+**026** still have no exact current pg-toolbelt issue or PR. On 2026-10-28
+the open pgschema watch list had no uncovered parity candidate; the new
+uncovered case that day was closed issue
 [#639](https://github.com/pgplex/pgschema/issues/639), recorded as
-benchmark **026**.
+benchmark **026**. On 2026-10-30 the open uncovered candidate is
+[#674](https://github.com/pgplex/pgschema/issues/674).
 
 ## Open pgschema issue screening (current state)
 
@@ -261,8 +362,12 @@ The current open pgschema watch list is now:
 [#625](https://github.com/pgplex/pgschema/issues/625),
 [#626](https://github.com/pgplex/pgschema/issues/626),
 [#627](https://github.com/pgplex/pgschema/issues/627),
-[#670](https://github.com/pgplex/pgschema/issues/670), and
-[#672](https://github.com/pgplex/pgschema/issues/672).
+[#670](https://github.com/pgplex/pgschema/issues/670),
+[#672](https://github.com/pgplex/pgschema/issues/672),
+[#673](https://github.com/pgplex/pgschema/issues/673), and
+[#674](https://github.com/pgplex/pgschema/issues/674).
+Closed on 2026-10-30 and recorded as **covered**:
+[#677](https://github.com/pgplex/pgschema/issues/677).
 Closed on 2026-10-27 and already in `review-memory.resolved` as **covered**:
 [#638](https://github.com/pgplex/pgschema/issues/638) and
 [#653](https://github.com/pgplex/pgschema/issues/653).
@@ -305,9 +410,12 @@ Screened candidates:
   2026-10-27; it had closed child issues **#628-#636**) - **not added as a new
   benchmark parity item in this repo**. This remains pgschema's separate
   explicit global-manifest surface;
-  adjacent pg-delta role / owner work exists in open PRs
-  [#471](https://github.com/supabase/pg-toolbelt/pull/471) and
-  [#493](https://github.com/supabase/pg-toolbelt/pull/493) plus merged
+  adjacent pg-delta role / owner work exists in open PR
+  [#471](https://github.com/supabase/pg-toolbelt/pull/471) and open PR
+  [#564](https://github.com/supabase/pg-toolbelt/pull/564). PR
+  [#493](https://github.com/supabase/pg-toolbelt/pull/493) closed unmerged
+  on 2026-10-29, as did PR
+  [#548](https://github.com/supabase/pg-toolbelt/pull/548), plus merged
   membership fixes [#117](https://github.com/supabase/pg-toolbelt/pull/117),
   [#118](https://github.com/supabase/pg-toolbelt/pull/118), and
   [#461](https://github.com/supabase/pg-toolbelt/pull/461), but exact duplicate
@@ -335,6 +443,21 @@ Screened candidates:
 - **#671** apostrophes in quoted identifiers during desired-state
   qualification - closed `NOT_PLANNED`. **Not parity work for pg-delta**;
   `qid()` already quotes identifiers for plan output
+- **#673** `INCLUDE` columns on PRIMARY KEY and UNIQUE constraints -
+  **covered** in current pg-delta. Open pgschema PR
+  [#676](https://github.com/pgplex/pgschema/pull/676) is not merged.
+  `pg_get_constraintdef` is the constraint `def`, and create/fold emit
+  that text verbatim
+- **#674** comments on inherited partition constraints - **not covered**
+  for a child comment that differs from its parent. Local constraint
+  comments already use `COMMENT ON CONSTRAINT`. Inherited
+  `conislocal = false` rows are skipped, so the child comment is never
+  extracted. Draft only:
+  [`docs/parity-issue-drafts-2026-10-30.md`](../docs/parity-issue-drafts-2026-10-30.md)
+- **#677** function `COMMENT` lost across `DROP` + `CREATE` - **covered**.
+  Closed by pgschema PR
+  [#678](https://github.com/pgplex/pgschema/pull/678). pg-delta recreates
+  unchanged comment children when the routine is replaced
 - **#653** inherited partition-index name collisions during dump replay -
   **covered / avoided** in current pg-delta. Merged PR
   [#663](https://github.com/pgplex/pgschema/pull/663) closed the issue;
@@ -349,14 +472,17 @@ Screened candidates:
     `CREATE INDEX` + `ATTACH PARTITION` plus parent-index rename / replacement
     behavior
 
-There is currently **no open uncovered parity candidate** on the pgschema
-side. Closed issue
+The open uncovered parity candidate is now
+[#674](https://github.com/pgplex/pgschema/issues/674) (inherited partition
+constraint comments). It is drafted and not opened. Closed issue
 [#639](https://github.com/pgplex/pgschema/issues/639) is benchmark **026**
 and is **not covered**. The remaining active benchmarks **021** / **022**
 still only have umbrella issue
 [#332](https://github.com/supabase/pg-toolbelt/issues/332) as exact tracker
 context, and benchmarks **024** and **026** still have no exact current
-pg-toolbelt issue or PR. Benchmark
+pg-toolbelt issue or PR. Open issue
+[#673](https://github.com/pgplex/pgschema/issues/673) is **covered** through
+verbatim `pg_get_constraintdef` replay. Benchmark
 [#534](https://github.com/pgplex/pgschema/issues/534) stays **covered**
 through merged PR [#546](https://github.com/supabase/pg-toolbelt/pull/546).
 Closed issue [#665](https://github.com/pgplex/pgschema/issues/665) is
@@ -369,9 +495,12 @@ closed without merge and is still not a benchmark gap. Open issue
 [#518](https://github.com/supabase/pg-toolbelt/issues/518) stays open after
 partial coverage from merged PR
 [#553](https://github.com/supabase/pg-toolbelt/pull/553). Open follow-up
-[#554](https://github.com/supabase/pg-toolbelt/issues/554) did not move.
-Open PR [#555](https://github.com/supabase/pg-toolbelt/pull/555) gained
-commit `67793ef` in `settle-desired.ts` and remains unmatched. This
+[#554](https://github.com/supabase/pg-toolbelt/issues/554) is still open.
+Its `updatedAt` moved to `2026-10-28T11:36:22Z` with no comments; the title
+is still the zero-arg IMMUTABLE generated-column apply failure and does
+not close benchmark **022**. PR
+[#555](https://github.com/supabase/pg-toolbelt/pull/555) merged on
+2026-10-29 (`36ac91d3`) and is now the checked-in head. This
 repository still has no local tracker issues.
 
 ## Recent closed-issue / tracker updates
