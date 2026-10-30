@@ -4,6 +4,29 @@
 
 Severity: **Critical**. A bound-only change planned as `DROP TABLE` deletes the partition's rows. When a foreign key references the partitioned parent, PostgreSQL also rejects `DROP TABLE` on the partition, so the plan fails at apply.
 
+## Refresh note (2026-10-30)
+
+This recheck moves checked-in/live `pg-delta` from
+`6b82eff84dba925a176f0c6a78e5a16843885366` to
+`36ac91d3c3a5d5b578edf192d2e7d3b6b6b9687c` and `pgschema` from
+`36a38ff3c25db956ae8b5be2eee552d8bc69fb47` to
+`9de190efdf78cd422850a3bc3db13ee84a11462d`.
+
+The non-destructive rebind stays open:
+
+- `src/plan/rules/tables.ts` still marks `partitionBound` and `parentTable`
+  `"replace"` (lines 246-247)
+- `src/extract/relations.ts` still stores both (lines 92-96)
+- a `DETACH PARTITION` search under `packages/pg-delta` TypeScript still
+  returns no matches
+- exact search for `pgschema#639` still returns no dedicated pg-toolbelt
+  issue or PR. The draft remains
+  [`docs/parity-issue-drafts-2026-10-28.md`](../docs/parity-issue-drafts-2026-10-28.md)
+- merged PR [#555](https://github.com/supabase/pg-toolbelt/pull/555) does
+  not add a detach/attach plan
+
+Benchmark 026 therefore stays **Not covered**.
+
 ## Context
 
 pgschema issue #639 reported that `plan` ignored a partition's bound and whether it was attached. A re-attached partition with a narrower bound, or a detached partition, produced `No changes detected`. Merged PR #668 closes that issue by comparing `PartitionOf` and `PartitionBound` and applying a parent or bound change as `ALTER TABLE ... DETACH PARTITION` followed by `ALTER TABLE ... ATTACH PARTITION`.
@@ -67,7 +90,7 @@ The emitted plan for the fixture starts with `ALTER TABLE ... DETACH PARTITION` 
 
 ## Current pg-delta status
 
-Checked on `repos/pg-toolbelt` @ `6b82eff84dba925a176f0c6a78e5a16843885366`.
+Checked on `repos/pg-toolbelt` @ `36ac91d3c3a5d5b578edf192d2e7d3b6b6b9687c`. The 2026-10-28 check used `6b82eff84dba925a176f0c6a78e5a16843885366`. Merged PR #555 did not move these lines.
 
 - `src/extract/relations.ts` (lines 92-96) stores `partitionBound` from `pg_get_expr(relpartbound)` and `parentTable` from the first inheritance parent.
 - `src/plan/rules/tables.ts` line 246 marks `partitionBound` and `parentTable` as `"replace"`. The create path (line 52) emits `CREATE TABLE ... PARTITION OF ... ${bound}` for a new partition.

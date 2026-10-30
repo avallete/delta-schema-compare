@@ -4,6 +4,35 @@
 
 ## Context
 
+## Refresh note (2026-10-30)
+
+This recheck moves checked-in/live `pg-delta` from
+`6b82eff84dba925a176f0c6a78e5a16843885366` to
+`36ac91d3c3a5d5b578edf192d2e7d3b6b6b9687c` and `pgschema` from
+`36a38ff3c25db956ae8b5be2eee552d8bc69fb47` to
+`9de190efdf78cd422850a3bc3db13ee84a11462d`.
+
+The partition-child override gap stays open:
+
+- `src/extract/relations.ts` still gates column facts with `a.attislocal`
+  (line 189)
+- `src/plan/rules/tables.ts` still emits
+  `CREATE TABLE ... PARTITION OF ... ${bound}` (line 52) with no child
+  column-element list
+- exact search for `pgschema#499` still returns no dedicated pg-toolbelt
+  issue or PR. Umbrella issue
+  [#332](https://github.com/supabase/pg-toolbelt/issues/332) remains the
+  only tracker (`updatedAt` `2026-09-29T15:57:49Z`)
+- merged pg-toolbelt PR
+  [#555](https://github.com/supabase/pg-toolbelt/pull/555) settles renamed
+  check spelling. It does not edit `relations.ts` or the `PARTITION OF`
+  create path
+- merged pgschema PR
+  [#678](https://github.com/pgplex/pgschema/pull/678) re-emits routine
+  comments and does not emit child column elements
+
+Benchmark 021 therefore stays **Tracked (umbrella thread only)**.
+
 ## Refresh note (2026-10-28)
 
 This recheck leaves checked-in/live `pg-delta` at

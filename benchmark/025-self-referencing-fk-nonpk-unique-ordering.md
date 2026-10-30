@@ -4,6 +4,31 @@
 
 ## Context
 
+## Refresh note (2026-10-30)
+
+This recheck moves checked-in/live `pg-delta` to
+`36ac91d3c3a5d5b578edf192d2e7d3b6b6b9687c` through merged PR
+[#555](https://github.com/supabase/pg-toolbelt/pull/555). `pgschema`
+advanced to `9de190efdf78cd422850a3bc3db13ee84a11462d`.
+
+The solved verdict stays in place:
+
+- merged PR [#546](https://github.com/supabase/pg-toolbelt/pull/546) remains
+  in the checked-in/live history
+- `packages/pg-delta/src/plan/internal.ts` still refuses an export constraint
+  fold when a same-table column or a same-table dependent is emitted after
+  `CREATE TABLE`. The guard moved from lines 779-793 to lines 783-797
+  because PR #555 inserts a four-line rename-cycle skip at line 277. The
+  same-table check itself is unchanged
+- `packages/pg-delta/tests/export-self-fk-on-unique-index.test.ts` remains
+  the committed regression
+- exact search for `pgschema#534` still returns no second tracker. Closed
+  issue [#543](https://github.com/supabase/pg-toolbelt/issues/543) plus
+  merged PR [#546](https://github.com/supabase/pg-toolbelt/pull/546) remain
+  the effective fix
+
+Benchmark 025 therefore stays **Solved in pg-delta**.
+
 ## Refresh note (2026-10-28)
 
 This recheck leaves checked-in/live `pg-delta` at

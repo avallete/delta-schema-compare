@@ -4,6 +4,34 @@
 
 ## Context
 
+## Refresh note (2026-10-30)
+
+This recheck moves checked-in/live `pg-delta` to
+`36ac91d3c3a5d5b578edf192d2e7d3b6b6b9687c` and `pgschema` to
+`9de190efdf78cd422850a3bc3db13ee84a11462d`. Neither new commit models
+generated column kind.
+
+The `VIRTUAL` versus `STORED` gap stays open:
+
+- `src/extract/relations.ts` still stores generated-expression presence as
+  `generatedExpr` (lines 211 and 261) and drops the `attgenerated` kind
+- `columnClause()` in `src/plan/rules/tables.ts` still appends
+  `GENERATED ALWAYS AS (...) STORED` (line 712)
+- a `VIRTUAL` search under `packages/pg-delta` TypeScript still returns no
+  matches
+- exact search for `pgschema#501` still returns no dedicated pg-toolbelt
+  issue or PR. Umbrella issue
+  [#332](https://github.com/supabase/pg-toolbelt/issues/332) remains the
+  only tracker
+- open follow-up issue
+  [#554](https://github.com/supabase/pg-toolbelt/issues/554) is still open.
+  `updatedAt` moved to `2026-10-28T11:36:22Z` and the issue has no comments.
+  It is still the zero-arg IMMUTABLE generated-expression apply failure
+- merged PR [#555](https://github.com/supabase/pg-toolbelt/pull/555) does
+  not change `columnClause()`
+
+Benchmark 022 therefore stays **Tracked (umbrella thread only)**.
+
 ## Refresh note (2026-10-28)
 
 This recheck leaves checked-in/live `pg-delta` at
