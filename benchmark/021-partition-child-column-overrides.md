@@ -4,6 +4,32 @@
 
 ## Context
 
+## Refresh note (2026-10-31)
+
+This recheck leaves checked-in/live `pg-delta` at
+`36ac91d3c3a5d5b578edf192d2e7d3b6b6b9687c` and `pgschema` at
+`9de190efdf78cd422850a3bc3db13ee84a11462d`. `git ls-remote` matches both.
+No commit since 2026-10-30 touches partition-child column overrides.
+
+The partition-child override gap stays open:
+
+- `src/extract/relations.ts` still gates column facts with `a.attislocal`
+  (line 189)
+- `src/plan/rules/tables.ts` still emits
+  `CREATE TABLE ... PARTITION OF ... ${bound}` (line 52) with no child
+  column-element list
+- exact search for `pgschema#499` still returns no dedicated pg-toolbelt
+  issue or PR. Umbrella issue
+  [#332](https://github.com/supabase/pg-toolbelt/issues/332) remains the
+  only tracker (`updatedAt` `2026-09-29T15:57:49Z`)
+- open pgschema PR
+  [#679](https://github.com/pgplex/pgschema/pull/679) is an unmerged
+  online-index candidate-name fix for
+  [#670](https://github.com/pgplex/pgschema/issues/670). It does not emit
+  child column elements
+
+Benchmark 021 therefore stays **Tracked (umbrella thread only)**.
+
 ## Refresh note (2026-10-30)
 
 This recheck moves checked-in/live `pg-delta` from
