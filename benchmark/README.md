@@ -4,7 +4,65 @@ This directory tracks parity between resolved pgschema issues and pg-delta.
 Each benchmark file documents a scenario that was previously missing or
 insufficient in pg-delta.
 
-## Latest refresh snapshot (2026-10-30)
+## Latest refresh snapshot (2026-10-31)
+
+Refreshed against:
+
+- checked-in/live `repos/pg-toolbelt` @ `36ac91d3c3a5d5b578edf192d2e7d3b6b6b9687c`
+- checked-in/live `repos/pgschema` @ `9de190efdf78cd422850a3bc3db13ee84a11462d`
+
+> `git ls-remote` confirms both `main` branches are still those SHAs. Neither
+> head moved since the 2026-10-30 refresh, so no benchmark verdict changed.
+> Full notes are in
+> [`docs/parity-refresh-2026-10-31.md`](../docs/parity-refresh-2026-10-31.md).
+> The 2026-10-30 record remains in
+> [`docs/parity-refresh-2026-10-30.md`](../docs/parity-refresh-2026-10-30.md).
+>
+> The only upstream item newer than that refresh is open pgschema PR
+> [#679](https://github.com/pgplex/pgschema/pull/679) (`16b7d85e`, updated
+> `2026-10-30T09:11:22Z`, not merged). It shortens the `_pgschema_new`
+> candidate for a 63-byte index name and would close
+> [#670](https://github.com/pgplex/pgschema/issues/670). That mechanism is
+> still **not parity** for pg-delta: a `_pgschema_new` search under
+> `packages/pg-delta` returns no matches, and pg-delta builds concurrent
+> indexes under the final name. #670 stays open (`updatedAt`
+> `2026-10-27T21:05:08Z`). No tracker was opened.
+>
+> Active gaps remain **021**, **022**, **024**, and **026**. Benchmark
+> **025** stays solved. The same-table fold guard is still
+> `src/plan/internal.ts` lines 783-797. Direct source rechecks on the
+> unchanged pg-delta head keep the previous citations: `relations.ts` line
+> 189 (`a.attislocal`), `tables.ts` line 52 (bare `PARTITION OF`),
+> `relations.ts` lines 211 and 261 (`generatedExpr`), `tables.ts` line 712
+> (hard-coded `STORED`), `relations.ts` line 121 (`a.attnotnull`),
+> `relations.ts` lines 361-396 (PG18 `contype = 'n'` skipped except the
+> comment diagnostic), `tables.ts` line 449 (plain `SET NOT NULL`), and
+> `tables.ts` lines 246-247 (`partitionBound` / `parentTable` replace).
+> A `VIRTUAL` search and a `DETACH PARTITION` search under
+> `packages/pg-delta` TypeScript still return no matches.
+>
+> Exact duplicate searches for `pgschema#499`, `pgschema#501`,
+> `pgschema#564`, `pgschema#534`, `pgschema#639`, `pgschema#670`,
+> `pgschema#673`, `pgschema#674`, and `pgschema#677` still returned no
+> dedicated pg-toolbelt issue or PR. Umbrella issue
+> [#332](https://github.com/supabase/pg-toolbelt/issues/332) is still
+> `updatedAt` `2026-09-29T15:57:49Z`. Issue
+> [#554](https://github.com/supabase/pg-toolbelt/issues/554) is still
+> `updatedAt` `2026-10-28T11:36:22Z`. Open pgschema PR
+> [#676](https://github.com/pgplex/pgschema/pull/676) is still unmerged, so
+> [#673](https://github.com/pgplex/pgschema/issues/673) stays **covered**
+> here and open upstream. [#674](https://github.com/pgplex/pgschema/issues/674)
+> stays the open `not_covered` candidate; the draft remains
+> [`docs/parity-issue-drafts-2026-10-30.md`](../docs/parity-issue-drafts-2026-10-30.md)
+> and was not opened. No new numbered benchmark.
+>
+> `benchmark/review-memory.json` is unchanged. Both submodule SHAs and the
+> watched issue `updated_at` values are the same as the 2026-10-30
+> fingerprints. This repository still has no local tracker issues.
+>
+> Previous snapshot (2026-10-30), kept below:
+
+## Previous refresh snapshot (2026-10-30)
 
 Refreshed against:
 
@@ -90,7 +148,7 @@ Refreshed against:
 > Previous snapshot (2026-10-28), kept below for the commit range that
 > introduced benchmark **026**:
 
-## Previous refresh snapshot (2026-10-28)
+## Earlier refresh snapshot (2026-10-28)
 
 Refreshed against:
 
@@ -208,8 +266,11 @@ Refreshed against:
 ## Active benchmarked gaps after refresh
 
 Four resolved-issue benchmark scenarios remain active as unresolved behavior.
-Rechecked on 2026-10-30 against pg-toolbelt `36ac91d3` and pgschema
-`9de190ef`. Merged pg-toolbelt PR
+Rechecked on 2026-10-31 against the same pg-toolbelt `36ac91d3` and pgschema
+`9de190ef` heads. Neither `main` moved, and no benchmark verdict changed.
+Open pgschema PR [#679](https://github.com/pgplex/pgschema/pull/679) is the
+only newer upstream item. It is unmerged and is not a pg-delta gap. The
+2026-10-30 recheck against those same heads found that merged pg-toolbelt PR
 [#555](https://github.com/supabase/pg-toolbelt/pull/555) settles renamed
 check spelling before rename discovery. It does not close any of these
 gaps. The benchmark **025** fold guard moved from `internal.ts` lines
@@ -439,7 +500,10 @@ Screened candidates:
   is on - **covered** by the routine-plan preamble
 - **#669 / #670 / #672** online index replacement candidate names
   (`_pgschema_new`) - **not parity work for pg-delta**. #669 closed
-  completed with no source change; #670 and #672 stay open
+  completed with no source change; #670 and #672 stay open. Open PR
+  [#679](https://github.com/pgplex/pgschema/pull/679) (created
+  2026-10-30, not merged) would close #670 by shortening a 63-byte
+  `_pgschema_new` candidate. pg-delta does not use that temporary name
 - **#671** apostrophes in quoted identifiers during desired-state
   qualification - closed `NOT_PLANNED`. **Not parity work for pg-delta**;
   `qid()` already quotes identifiers for plan output

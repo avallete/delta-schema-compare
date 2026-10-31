@@ -4,6 +4,25 @@
 
 Severity: **Critical**. A bound-only change planned as `DROP TABLE` deletes the partition's rows. When a foreign key references the partitioned parent, PostgreSQL also rejects `DROP TABLE` on the partition, so the plan fails at apply.
 
+## Refresh note (2026-10-31)
+
+This recheck leaves checked-in/live `pg-delta` at
+`36ac91d3c3a5d5b578edf192d2e7d3b6b6b9687c` and `pgschema` at
+`9de190efdf78cd422850a3bc3db13ee84a11462d`. Neither head moved, so the
+detach/attach plan is unchanged.
+
+The non-destructive rebind stays open:
+
+- `src/plan/rules/tables.ts` still marks `partitionBound` and `parentTable`
+  `"replace"` (lines 246-247)
+- a `DETACH PARTITION` search under `packages/pg-delta` TypeScript still
+  returns no matches
+- exact search for `pgschema#639` still returns no dedicated pg-toolbelt
+  issue or PR. The draft remains
+  [`docs/parity-issue-drafts-2026-10-28.md`](../docs/parity-issue-drafts-2026-10-28.md)
+
+Benchmark 026 therefore stays **Not covered**.
+
 ## Refresh note (2026-10-30)
 
 This recheck moves checked-in/live `pg-delta` from
